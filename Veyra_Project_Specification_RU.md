@@ -619,6 +619,8 @@ spec:
 
 Правило принадлежит ровно одному scope: `default`, профилю или устройству. Профиль задаёт `defaultAction`; отдельного «пользовательского» scope нет — `User` в модели означает администратора (§17.1).
 
+Рабочий пример с разделами `nodes` и `devices`, на которые ссылаются правила, — `configs/examples/home.yaml`; проверка — `veyra validate`.
+
 ### 8.4. Rule Tester / Explain
 
 На вход: `client`, `profile`, `domain` или `destination`, `protocol`, `port`, `mode`, `config version`.
