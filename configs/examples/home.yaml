@@ -1,0 +1,50 @@
+# Example Veyra policy (spec §8.3). Validate: veyra validate configs/examples/home.yaml
+apiVersion: veyra.io/v1alpha1
+kind: PolicyBundle
+metadata:
+  name: home-default
+spec:
+  nodes:
+    - id: de-01
+  profiles:
+    - id: home
+      defaultAction: direct
+  devices:
+    - id: tv
+      profile: home
+    - id: work-laptop
+      profile: home
+  rules:
+    - id: video-through-germany
+      enabled: true
+      scope: { profile: home }
+      match:
+        domains: ["suffix:media.example"]
+      action:
+        type: proxy_node
+        node: de-01
+        onFailure: block
+      modesAllowed: ["smartdns_tcp", "explicit_proxy", "tunnel"]
+    - id: media-login-direct            # exact beats suffix (§8.2.1)
+      enabled: true
+      scope: { profile: home }
+      match:
+        domains: ["login.media.example"]
+      action:
+        type: direct
+    - id: work-resolver
+      enabled: true
+      scope: { device: work-laptop }
+      match:
+        domains: ["suffix:corp.example"]
+      dns:
+        upstreamGroup: corp             # resolver choice, not egress (§6.4)
+      action:
+        type: direct
+    - id: block-ads
+      enabled: true
+      scope: default
+      match:
+        domains: ["suffix:ads.example"]
+      action:
+        type: block
