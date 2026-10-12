@@ -111,10 +111,12 @@ pub enum Scope {
 
 /// Route action (spec §6.4). The single-node MVP has direct, block and proxy_node.
 #[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
-#[serde(tag = "type", rename_all = "snake_case")]
+#[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 pub enum Action {
-    Direct,
-    Block,
+    // Empty struct variants, not unit ones: serde silently drops extra keys for
+    // unit variants of an internally tagged enum even with deny_unknown_fields.
+    Direct {},
+    Block {},
     ProxyNode {
         node: String,
         #[serde(default, rename = "onFailure")]
@@ -199,6 +201,21 @@ mod tests {
         let err = Bundle::from_yaml(&yaml).unwrap_err();
         assert!(err.contains("unknown field `priority`"), "{err}");
         assert!(err.contains("line"), "{err}");
+    }
+
+    #[test]
+    fn rejects_unknown_fields_under_action() {
+        for yaml in [
+            "type: block\nnode: de-01\n",
+            "type: direct\nonFailure: direct\n",
+            "type: proxy_node\nnode: de-01\nonfailure: direct\n",
+            "type: proxy_node\nnode: de-01\npriority: 5\n",
+        ] {
+            let err = serde_saphyr::from_str::<Action>(yaml)
+                .map(|a| format!("accepted as {a:?}"))
+                .unwrap_or_else(|e| e.to_string());
+            assert!(err.contains("unknown field"), "{yaml:?}: {err}");
+        }
     }
 
     #[test]

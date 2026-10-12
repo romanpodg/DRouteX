@@ -117,8 +117,8 @@ impl Policy {
             profile: subject.profile.clone(),
             device: subject.device.clone(),
             route: match self.profiles.get(&subject.profile) {
-                Some(DefaultAction::Block) => Action::Block,
-                _ => Action::Direct,
+                Some(DefaultAction::Block) => Action::Block {},
+                _ => Action::Direct {},
             },
             upstream_group: None,
             matched_rule_id: None,
@@ -200,7 +200,7 @@ mod tests {
     #[test]
     fn exact_exception_beats_suffix() {
         let d = decide(&example(), Some("home"), None, "login.media.example");
-        assert_eq!(d.route, Action::Direct);
+        assert_eq!(d.route, Action::Direct {});
         assert_eq!(d.matched_rule_id.as_deref(), Some("media-login-direct"));
         assert_eq!(d.decided_by, DecidedBy::Specificity);
     }
@@ -224,7 +224,7 @@ mod tests {
         );
         assert_eq!(
             decide(&p, Some("home"), None, "a.x.example").route,
-            Action::Block
+            Action::Block {}
         );
     }
 
@@ -250,7 +250,7 @@ mod tests {
              - { id: b, scope: default, match: { domains: [\"*.x.example\"] }, action: { type: block } }\n",
         );
         let d = decide(&p, Some("home"), None, "a.x.example");
-        assert_eq!(d.route, Action::Block);
+        assert_eq!(d.route, Action::Block {});
         assert_eq!(d.decided_by, DecidedBy::Action);
     }
 
@@ -271,11 +271,11 @@ mod tests {
         let home = decide(&p, Some("home"), None, "x.example");
         assert_eq!(
             (home.route, home.decided_by),
-            (Action::Direct, DecidedBy::Default)
+            (Action::Direct {}, DecidedBy::Default)
         );
         assert_eq!(
             decide(&p, Some("strict"), None, "x.example").route,
-            Action::Block
+            Action::Block {}
         );
     }
 
@@ -296,7 +296,7 @@ mod tests {
             "    - { id: a, scope: default, match: { domains: [\"suffix:пример.рф\"] }, action: { type: block } }\n",
         );
         let d = decide(&p, Some("home"), None, "WWW.Пример.РФ.");
-        assert_eq!(d.route, Action::Block);
+        assert_eq!(d.route, Action::Block {});
         assert_eq!(d.domain, "www.xn--e1afmkfd.xn--p1ai");
     }
 

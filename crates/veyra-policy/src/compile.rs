@@ -65,11 +65,16 @@ impl Rule {
     /// Spec §8.2.1 steps 3 and 4: BLOCK > PROXY > DIRECT, then the smaller rule id.
     pub(crate) fn late_rank(&self) -> (u8, Reverse<&str>) {
         let action = match self.action {
-            Action::Block => 2,
+            Action::Block {} => 2,
             Action::ProxyNode { .. } => 1,
-            Action::Direct => 0,
+            Action::Direct {} => 0,
         };
         (action, Reverse(self.id.as_str()))
+    }
+
+    /// Everything the rule decides: the route and the DNS upstream (spec §6.4).
+    fn outcome(&self) -> (&Action, Option<&DnsSpec>) {
+        (&self.action, self.dns.as_ref())
     }
 }
 
@@ -251,14 +256,15 @@ fn check_overlaps(rules: &[Rule], issues: &mut Vec<Issue>) {
         for b in rules
             .iter()
             .skip(i + 1)
-            .filter(|b| b.scope == a.scope && b.action != a.action)
+            .filter(|b| b.scope == a.scope && b.outcome() != a.outcome())
         {
             for p in &a.patterns {
                 for q in &b.patterns {
                     let ids = [a.id.as_str(), b.id.as_str()];
                     if p == q {
-                        let msg =
-                            format!("both match {p} in the same scope with different actions");
+                        let msg = format!(
+                            "both match {p} in the same scope with different actions or upstream groups"
+                        );
                         issues.push(issue(
                             Severity::Error,
                             IssueCode::PatternConflict,
@@ -281,14 +287,14 @@ fn check_overlaps(rules: &[Rule], issues: &mut Vec<Issue>) {
         }
     }
     for r in rules {
-        // An identical pattern with another action is already a PatternConflict error.
+        // An identical pattern with another outcome is already a PatternConflict error.
         let hidden = |p: &Pattern| {
             rules.iter().any(|o| {
                 o.id != r.id
                     && o.scope == r.scope
                     && o.late_rank() > r.late_rank()
                     && o.patterns.iter().any(|q| {
-                        covers_at_same_specificity(q, p) && (q != p || o.action == r.action)
+                        covers_at_same_specificity(q, p) && (q != p || o.outcome() == r.outcome())
                     })
             })
         };
@@ -407,6 +413,20 @@ mod tests {
     }
 
     #[test]
+    fn same_pattern_with_different_upstream_groups_is_an_error() {
+        let rules = "    - { id: a, scope: default, match: { domains: [x.example] }, dns: { upstreamGroup: corp }, action: { type: direct } }\n    \
+                     - { id: b, scope: default, match: { domains: [x.example] }, dns: { upstreamGroup: public }, action: { type: direct } }\n";
+        assert_eq!(errors(rules), vec![PatternConflict]);
+    }
+
+    #[test]
+    fn wildcard_and_suffix_with_different_upstream_groups_warn() {
+        let rules = "    - { id: a, scope: default, match: { domains: [\"*.x.example\"] }, dns: { upstreamGroup: corp }, action: { type: direct } }\n    \
+                     - { id: b, scope: default, match: { domains: [\"suffix:x.example\"] }, dns: { upstreamGroup: public }, action: { type: direct } }\n";
+        assert_eq!(warnings(rules), vec![TieBrokenLate]);
+    }
+
+    #[test]
     fn same_pattern_in_different_scopes_is_fine() {
         let rules = "    - { id: a, scope: default, match: { domains: [x.example] }, action: { type: block } }\n    \
                      - { id: b, scope: { profile: home }, match: { domains: [x.example] }, action: { type: direct } }\n";
@@ -458,7 +478,7 @@ mod tests {
         let issues = Policy::compile(&bundle(rules)).unwrap_err();
         assert_eq!(
             issues[0].to_string(),
-            "error[PatternConflict] a, b: both match x.example in the same scope with different actions"
+            "error[PatternConflict] a, b: both match x.example in the same scope with different actions or upstream groups"
         );
     }
 }
