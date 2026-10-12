@@ -1,10 +1,12 @@
 //! Turns a parsed `Bundle` into a checked `Policy`, collecting every problem
 //! instead of stopping at the first one (spec §8.2.1 validator rules, §17.2).
 
-use crate::model::{API_VERSION, Action, Bundle, DnsSpec, KIND, Mode, OnFailure, Scope};
+use crate::model::{
+    API_VERSION, Action, Bundle, DefaultAction, DnsSpec, KIND, Mode, OnFailure, Scope,
+};
 use crate::pattern::Pattern;
 use std::cmp::Reverse;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -74,6 +76,8 @@ impl Rule {
 #[derive(Debug, Clone)]
 pub struct Policy {
     pub name: String,
+    pub(crate) profiles: BTreeMap<String, DefaultAction>,
+    pub(crate) devices: BTreeMap<String, String>,
     pub(crate) rules: Vec<Rule>,
 }
 
@@ -203,6 +207,16 @@ impl Policy {
         }
         let policy = Policy {
             name: bundle.metadata.name.clone(),
+            profiles: spec
+                .profiles
+                .iter()
+                .map(|p| (p.id.clone(), p.default_action))
+                .collect(),
+            devices: spec
+                .devices
+                .iter()
+                .map(|d| (d.id.clone(), d.profile.clone()))
+                .collect(),
             rules,
         };
         Ok((policy, issues))
