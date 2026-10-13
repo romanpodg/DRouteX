@@ -5,7 +5,7 @@ use serde::Serialize;
 use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
-use veyra_policy::{Bundle, Decision, Issue, Mode, Name, Policy};
+use veyra_policy::{Bundle, Decision, DnsPlan, Issue, Mode, Name, Policy, QueryKind};
 
 #[derive(Parser)]
 #[command(name = "veyra", version, about = "Veyra policy tools")]
@@ -47,6 +47,37 @@ struct Explain<'a> {
     source: Option<IpAddr>,
     #[serde(skip_serializing_if = "Option::is_none")]
     source_binding: Option<String>,
+    /// Present when the config has a `dns:` section and the mode is smartdns_tcp.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    dns_answer: Option<DnsAnswer>,
+}
+
+/// What the DNS engine would answer (spec §9.5): addresses, `"NODATA"`, or
+/// `"forward:<group>"`.
+#[derive(Serialize)]
+struct DnsAnswer {
+    #[serde(rename = "A")]
+    a: serde_json::Value,
+    #[serde(rename = "AAAA")]
+    aaaa: serde_json::Value,
+    #[serde(rename = "HTTPS")]
+    https: serde_json::Value,
+    ttl: u32,
+}
+
+fn dns_answer(policy: &Policy, decision: &Decision) -> Option<DnsAnswer> {
+    let config = policy.dns()?;
+    let show = |kind| match policy.dns_plan(decision, kind) {
+        DnsPlan::Forward { group } => serde_json::json!(format!("forward:{group}")),
+        DnsPlan::Addresses(ips) => serde_json::json!(ips),
+        DnsPlan::NoData => serde_json::json!("NODATA"),
+    };
+    Some(DnsAnswer {
+        a: show(QueryKind::A),
+        aaaa: show(QueryKind::Aaaa),
+        https: show(QueryKind::Https),
+        ttl: config.synth_ttl,
+    })
 }
 
 fn main() -> ExitCode {
@@ -118,6 +149,11 @@ fn run(cli: Cli) -> Result<(), String> {
                 mode,
                 source,
                 source_binding,
+                dns_answer: if mode == Mode::SmartdnsTcp {
+                    dns_answer(&policy, &decision)
+                } else {
+                    None
+                },
             };
             let json = serde_json::to_string_pretty(&explain).map_err(|e| e.to_string())?;
             println!("{json}");

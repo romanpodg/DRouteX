@@ -221,3 +221,28 @@ fn explain_by_source_address_uses_admission() {
     ]);
     assert_eq!(both.status.code(), Some(2));
 }
+
+#[test]
+fn explain_shows_the_dns_answer_in_dns_mode() {
+    let run = |args: &[&str]| {
+        let mut full = vec!["explain", "--config", EXAMPLE];
+        full.extend_from_slice(args);
+        let out = veyra(&full);
+        assert!(out.status.success(), "{}", text(&out.stderr));
+        serde_json::from_slice::<serde_json::Value>(&out.stdout).expect("json on stdout")
+    };
+    let proxied = run(&["--profile", "home", "media.example"]);
+    assert_eq!(
+        proxied["dns_answer"]["A"],
+        serde_json::json!(["203.0.113.10"])
+    );
+    assert_eq!(proxied["dns_answer"]["AAAA"], "NODATA");
+    assert_eq!(proxied["dns_answer"]["HTTPS"], "NODATA");
+    assert_eq!(proxied["dns_answer"]["ttl"], 60);
+
+    let direct = run(&["--profile", "home", "example.org"]);
+    assert_eq!(direct["dns_answer"]["A"], "forward:default");
+
+    let tunnel = run(&["--profile", "home", "--mode", "tunnel", "media.example"]);
+    assert!(tunnel.get("dns_answer").is_none(), "{tunnel}");
+}
