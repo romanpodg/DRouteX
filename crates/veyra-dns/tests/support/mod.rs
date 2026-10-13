@@ -9,7 +9,8 @@ use std::net::{Ipv4Addr, SocketAddr};
 use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
-use tokio::net::UdpSocket;
+use tokio::io::{AsyncReadExt, AsyncWriteExt};
+use tokio::net::{TcpListener, UdpSocket};
 use veyra_dns::{Engine, Transport};
 use veyra_policy::{Bundle, Policy};
 
@@ -48,6 +49,40 @@ pub async fn upstream(reply: impl Fn(&Message) -> Message + Send + Sync + 'stati
         }
     });
     Upstream { addr, queries }
+}
+
+/// An upstream that answers UDP with a truncated reply (TC set, no records) and
+/// TCP, on the same port, with `reply(query)` in full.
+pub async fn truncating_upstream(
+    reply: impl Fn(&Message) -> Message + Send + Sync + Clone + 'static,
+) -> Upstream {
+    let full = reply.clone();
+    let udp = upstream(move |q| full(q).truncate()).await;
+    let listener = TcpListener::bind(udp.addr)
+        .await
+        .expect("bind TCP on the same port");
+    tokio::spawn(async move {
+        loop {
+            let Ok((mut stream, _)) = listener.accept().await else {
+                continue;
+            };
+            let reply = reply.clone();
+            tokio::spawn(async move {
+                let mut len = [0u8; 2];
+                stream.read_exact(&mut len).await.expect("length prefix");
+                let mut buf = vec![0; usize::from(u16::from_be_bytes(len))];
+                stream.read_exact(&mut buf).await.expect("query");
+                let query = Message::from_vec(&buf).expect("valid query");
+                let bytes = reply(&query).to_vec().expect("encode fake reply");
+                let len = u16::try_from(bytes.len())
+                    .expect("reply fits")
+                    .to_be_bytes();
+                stream.write_all(&len).await.expect("write length");
+                stream.write_all(&bytes).await.expect("write reply");
+            });
+        }
+    });
+    udp
 }
 
 /// An address where nothing listens.

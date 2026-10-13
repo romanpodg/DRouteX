@@ -1,11 +1,13 @@
 //! One DNS query in, at most one reply out (spec §9).
 
+use crate::cache::{Cache, Key};
 use crate::synth::{self, MAX_UDP_PAYLOAD};
 use crate::upstream;
 use hickory_proto::op::{Message, MessageType, OpCode, Query, ResponseCode};
 use hickory_proto::rr::{DNSClass, RecordType};
 use std::net::IpAddr;
-use std::time::Duration;
+use std::sync::{Mutex, MutexGuard, PoisonError};
+use std::time::{Duration, Instant};
 use veyra_policy::{DnsConfig, DnsPlan, Mode, Name, Policy, QueryKind, Subject};
 
 /// How the query arrived: UDP replies must fit the client's buffer.
@@ -15,10 +17,14 @@ pub enum Transport {
     Tcp,
 }
 
+/// Upstream answers kept at once (spec §9.3).
+const CACHE_ENTRIES: usize = 10_000;
+
 pub struct Engine {
     policy: Policy,
     config: DnsConfig,
     upstream_timeout: Duration,
+    cache: Mutex<Cache>,
 }
 
 impl Engine {
@@ -32,6 +38,7 @@ impl Engine {
             policy,
             config,
             upstream_timeout: Duration::from_secs(2),
+            cache: Mutex::new(Cache::new(CACHE_ENTRIES)),
         })
     }
 
@@ -84,16 +91,42 @@ impl Engine {
     }
 
     async fn forward(&self, request: &Message, group: &str) -> Message {
+        let key = Key::new(request, group);
+        let hit = key
+            .as_ref()
+            .and_then(|key| self.cache().get(key, Instant::now()));
+        if let Some(hit) = hit {
+            return for_client(hit, request);
+        }
         let servers = self
             .config
             .upstreams
             .get(group)
             .map_or(&[][..], Vec::as_slice);
         match upstream::exchange(servers, request, self.upstream_timeout).await {
-            Some(reply) => reply,
+            Some(reply) => {
+                if let Some(key) = key {
+                    self.cache().put(key, &reply, Instant::now());
+                }
+                reply
+            }
             None => synth::reply(request, ResponseCode::ServFail),
         }
     }
+
+    /// Never held across an `.await`; a poisoned lock still holds a usable cache.
+    fn cache(&self) -> MutexGuard<'_, Cache> {
+        self.cache.lock().unwrap_or_else(PoisonError::into_inner)
+    }
+}
+
+/// A cached reply readdressed to this request: its id, RD bit, and question
+/// spelled the way this client spelled it.
+fn for_client(mut reply: Message, request: &Message) -> Message {
+    reply.metadata.id = request.metadata.id;
+    reply.metadata.recursion_desired = request.metadata.recursion_desired;
+    reply.queries = request.queries.clone();
+    reply
 }
 
 fn kind(query: &Query) -> QueryKind {
