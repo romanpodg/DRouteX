@@ -9,3 +9,4 @@ mod upstream;
 
 pub use engine::{Engine, Transport};
 pub use server::Listeners;
+pub use upstream::lookup;

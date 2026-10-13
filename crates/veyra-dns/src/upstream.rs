@@ -1,9 +1,10 @@
 //! Forwarding to upstream resolvers.
 
 use crate::synth::MAX_UDP_PAYLOAD;
-use hickory_proto::op::{Edns, Message, MessageType};
+use hickory_proto::op::{Edns, Message, MessageType, Query, ResponseCode};
+use hickory_proto::rr::{Name, RData, RecordType};
 use std::io;
-use std::net::{Ipv4Addr, Ipv6Addr, SocketAddr};
+use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::time::Duration;
 use tokio::io::{AsyncRead, AsyncReadExt, AsyncWrite, AsyncWriteExt};
 use tokio::net::{TcpStream, UdpSocket};
@@ -30,6 +31,34 @@ pub(crate) async fn exchange(
         }
     }
     None
+}
+
+/// The addresses of `name` straight from upstream servers, IPv4 first: how the
+/// gateway finds origins (spec §10.3). It bypasses the policy, so the gateway
+/// never gets a gateway address back from Veyra. Empty when nothing resolves.
+// ponytail: no cache, two upstream queries per gateway connection; cache by TTL
+// if connection setup latency shows up.
+pub async fn lookup(servers: &[SocketAddr], name: &str, wait: Duration) -> Vec<IpAddr> {
+    let Ok(name) = Name::from_ascii(format!("{}.", name.trim_end_matches('.'))) else {
+        return Vec::new();
+    };
+    let ask = |record_type| {
+        let mut request = Message::query();
+        request.add_query(Query::query(name.clone(), record_type));
+        async move { exchange(servers, &request, wait).await }
+    };
+    let (v4, v6) = tokio::join!(ask(RecordType::A), ask(RecordType::AAAA));
+    [v4, v6]
+        .into_iter()
+        .flatten()
+        .filter(|reply| reply.metadata.response_code == ResponseCode::NoError)
+        .flat_map(|reply| reply.answers)
+        .filter_map(|record| match record.data {
+            RData::A(a) => Some(IpAddr::V4(a.0)),
+            RData::AAAA(aaaa) => Some(IpAddr::V6(aaaa.0)),
+            _ => None,
+        })
+        .collect()
 }
 
 /// The query Veyra sends upstream for `request`: a random id of its own, so a
