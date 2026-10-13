@@ -2,10 +2,12 @@
 
 use hickory_proto::op::{Message, MessageType, OpCode, Query, ResponseCode};
 use hickory_proto::rr::{Name, RData, RecordType};
-use std::io::{BufRead, BufReader, Read, Write};
+use std::io::{BufRead, BufReader, ErrorKind, Read, Write};
 use std::net::{Ipv4Addr, SocketAddr, TcpStream, UdpSocket};
 use std::path::PathBuf;
 use std::process::{Child, Command, Stdio};
+use std::sync::mpsc;
+use std::thread;
 use std::time::Duration;
 
 const CONFIG: &str = r#"
@@ -40,9 +42,10 @@ fn write_config(name: &str, text: &str) -> PathBuf {
     path
 }
 
-/// Start the binary and wait for its "listening on <addr>" line.
-fn start(config: &str) -> (Server, SocketAddr) {
-    let path = write_config("serve", config);
+/// Start the binary on a config file of its own (tests run in parallel) and
+/// read its first `lines` "listening on <addr> (...)" lines.
+fn start(name: &str, config: &str, lines: usize) -> (Server, Vec<SocketAddr>) {
+    let path = write_config(name, config);
     let mut child = Command::new(env!("CARGO_BIN_EXE_veyra-dataplane"))
         .args(["--config".as_ref(), path.as_os_str()])
         .stdout(Stdio::piped())
@@ -51,16 +54,28 @@ fn start(config: &str) -> (Server, SocketAddr) {
         .expect("start veyra-dataplane");
     let stdout = child.stdout.take().expect("stdout");
     let server = Server(child);
-    let mut line = String::new();
-    BufReader::new(stdout)
-        .read_line(&mut line)
-        .expect("read startup line");
-    let addr = line
-        .split_whitespace()
-        .nth(2)
-        .and_then(|a| a.parse().ok())
-        .unwrap_or_else(|| panic!("unexpected startup line {line:?}"));
-    (server, addr)
+    // Read on a thread: a binary that prints fewer lines fails the test instead
+    // of hanging it, and later output never meets a closed pipe.
+    let (tx, rx) = mpsc::channel();
+    thread::spawn(move || {
+        for line in BufReader::new(stdout).lines().map_while(Result::ok) {
+            if tx.send(line).is_err() {
+                break;
+            }
+        }
+    });
+    let addrs = (0..lines)
+        .map(|_| {
+            let line = rx
+                .recv_timeout(Duration::from_secs(10))
+                .expect("a listening line within 10 s");
+            line.split_whitespace()
+                .nth(2)
+                .and_then(|a| a.parse().ok())
+                .unwrap_or_else(|| panic!("unexpected startup line {line:?}"))
+        })
+        .collect();
+    (server, addrs)
 }
 
 fn query(name: &str, record_type: RecordType) -> Vec<u8> {
@@ -75,7 +90,8 @@ fn query(name: &str, record_type: RecordType) -> Vec<u8> {
 
 #[test]
 fn serves_synthesized_answers_over_udp_and_tcp() {
-    let (_server, addr) = start(CONFIG);
+    let (_server, addrs) = start("dns", CONFIG, 1);
+    let addr = addrs[0];
 
     let udp = UdpSocket::bind("127.0.0.1:0").expect("bind client");
     udp.set_read_timeout(Some(Duration::from_secs(5)))
@@ -117,4 +133,50 @@ fn refuses_a_config_without_a_dns_section() {
     assert_eq!(out.status.code(), Some(1));
     let err = String::from_utf8_lossy(&out.stderr);
     assert!(err.contains("no dns section"), "{err}");
+}
+
+/// True when the peer closed the connection, false when the read timed out.
+fn closed_by_peer(stream: &mut TcpStream) -> bool {
+    match stream.read(&mut [0u8; 1]) {
+        Ok(0) => true,
+        Ok(_) => false,
+        Err(e) => !matches!(e.kind(), ErrorKind::WouldBlock | ErrorKind::TimedOut),
+    }
+}
+
+#[test]
+fn the_gateway_refuses_unrouted_names_and_rejects_udp() {
+    let gateway = "  gateway: { node: de-01, tls: [\"127.0.0.1:0\"], http: [\"127.0.0.1:0\"] }\n";
+    let (_server, addrs) = start("gateway", &format!("{CONFIG}{gateway}"), 3);
+    let (tls, http) = (addrs[1], addrs[2]);
+
+    for (addr, head) in [
+        (tls, &b"not a ClientHello"[..]),
+        (http, &b"GET / HTTP/1.1\r\nHost: example.org\r\n\r\n"[..]),
+    ] {
+        let mut client = TcpStream::connect(addr).expect("connect");
+        client
+            .set_read_timeout(Some(Duration::from_secs(5)))
+            .expect("timeout");
+        client.write_all(head).expect("write");
+        assert!(closed_by_peer(&mut client), "{addr}");
+    }
+
+    // UDP to the TLS port is rejected (ICMP port unreachable), not dropped, so
+    // HTTP/3 clients fall back to TCP at once (spec §10.1, REQ-GW-002).
+    let udp = UdpSocket::bind("127.0.0.1:0").expect("bind client");
+    udp.connect(tls).expect("connect");
+    udp.set_read_timeout(Some(Duration::from_secs(1)))
+        .expect("timeout");
+    udp.send(b"QUIC initial").expect("send");
+    let err = udp
+        .recv(&mut [0u8; 64])
+        .expect_err("nothing serves UDP on the gateway port");
+    assert!(
+        matches!(
+            err.kind(),
+            ErrorKind::ConnectionRefused | ErrorKind::ConnectionReset
+        ),
+        "{err:?}"
+    );
 }

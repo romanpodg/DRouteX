@@ -8,6 +8,7 @@ publish.workspace = true
 [dependencies]
 veyra-policy.workspace = true
 veyra-dns.workspace = true
+veyra-gateway.workspace = true
 clap.workspace = true
 tokio.workspace = true
 tracing.workspace = true

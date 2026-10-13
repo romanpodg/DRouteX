@@ -4,8 +4,10 @@
 
 mod egress;
 mod gateway;
+mod server;
 mod sniff;
 
 pub use egress::{Egress, SPECIAL_PURPOSE};
 pub use gateway::{Gateway, Refusal};
+pub use server::Listeners;
 pub use sniff::{MAX_HEAD, Service, Sniff, sniff};

@@ -62,3 +62,7 @@ spec:
         servers: ["1.1.1.1", "9.9.9.9"]
       - id: corp
         servers: ["10.0.0.53"]
+  gateway:                              # this data plane is de-01's gateway (§10)
+    node: de-01
+    tls: ["127.0.0.1:10443"]            # routed by SNI; production on Linux: ["[::]:443"]
+    http: ["127.0.0.1:10080"]           # routed by Host; production on Linux: ["[::]:80"]
