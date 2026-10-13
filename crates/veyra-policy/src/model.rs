@@ -140,6 +140,22 @@ pub enum Mode {
     Tunnel,
 }
 
+impl std::str::FromStr for Mode {
+    type Err = String;
+
+    /// The same names as `modesAllowed` in the YAML file.
+    fn from_str(s: &str) -> Result<Mode, String> {
+        match s {
+            "smartdns_tcp" => Ok(Mode::SmartdnsTcp),
+            "explicit_proxy" => Ok(Mode::ExplicitProxy),
+            "tunnel" => Ok(Mode::Tunnel),
+            _ => Err(format!(
+                "unknown mode {s:?}; expected smartdns_tcp, explicit_proxy or tunnel"
+            )),
+        }
+    }
+}
+
 impl Bundle {
     pub fn from_yaml(text: &str) -> Result<Bundle, String> {
         serde_saphyr::from_str(text).map_err(|e| e.to_string())
@@ -223,5 +239,13 @@ mod tests {
         let yaml = EXAMPLE.replace("type: block", "type: teleport");
         let err = Bundle::from_yaml(&yaml).unwrap_err();
         assert!(err.contains("teleport"), "{err}");
+    }
+
+    #[test]
+    fn modes_parse_from_their_yaml_names() {
+        assert_eq!("smartdns_tcp".parse::<Mode>(), Ok(Mode::SmartdnsTcp));
+        assert_eq!("explicit_proxy".parse::<Mode>(), Ok(Mode::ExplicitProxy));
+        assert_eq!("tunnel".parse::<Mode>(), Ok(Mode::Tunnel));
+        assert!("udp".parse::<Mode>().is_err());
     }
 }

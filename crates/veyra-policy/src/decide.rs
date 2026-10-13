@@ -1,7 +1,7 @@
 //! Rule selection (spec §8.2.1) and the explanation `veyra explain` prints (spec §8.4).
 
 use crate::compile::{Policy, Rule};
-use crate::model::{Action, DefaultAction, Scope};
+use crate::model::{Action, DefaultAction, Mode, Scope};
 use crate::name::Name;
 use crate::pattern::{Pattern, Specificity};
 use serde::Serialize;
@@ -91,11 +91,18 @@ impl Policy {
         }
     }
 
+    /// Decide ignoring `modesAllowed`: every enabled rule may apply.
     pub fn decide(&self, subject: &Subject, name: &Name) -> Decision {
+        self.decide_in(subject, name, None)
+    }
+
+    /// Decide for one connection mode: rules whose `modesAllowed` excludes
+    /// `mode` do not apply (spec §8.3, §12.6).
+    pub fn decide_in(&self, subject: &Subject, name: &Name, mode: Option<Mode>) -> Decision {
         let mut candidates: Vec<(Key<'_>, &Rule, &Pattern)> = self
             .rules
             .iter()
-            .filter(|r| applies(&r.scope, subject))
+            .filter(|r| applies(&r.scope, subject) && mode.is_none_or(|m| r.modes.contains(&m)))
             .filter_map(|r| {
                 let best = r
                     .patterns
@@ -113,20 +120,7 @@ impl Policy {
             .collect();
         candidates.sort_by(|a, b| b.0.cmp(&a.0));
 
-        let mut decision = Decision {
-            policy: self.name.clone(),
-            domain: name.to_string(),
-            profile: subject.profile.clone(),
-            device: subject.device.clone(),
-            route: match self.profiles.get(&subject.profile) {
-                Some(DefaultAction::Block) => Action::Block {},
-                _ => Action::Direct {},
-            },
-            upstream_group: None,
-            matched_rule_id: None,
-            matched_pattern: None,
-            decided_by: DecidedBy::Default,
-        };
+        let mut decision = self.default_decision(subject, name.as_str());
         if let Some((best, rule, pattern)) = candidates.first() {
             decision.route = rule.action.clone();
             decision.upstream_group = rule.dns.as_ref().map(|d| d.upstream_group.clone());
@@ -141,6 +135,25 @@ impl Policy {
             };
         }
         decision
+    }
+
+    /// The decision when no rule matches: the profile's `defaultAction`. The DNS
+    /// engine also uses it for query names that do not normalize to a `Name`.
+    pub fn default_decision(&self, subject: &Subject, domain: &str) -> Decision {
+        Decision {
+            policy: self.name.clone(),
+            domain: domain.to_string(),
+            profile: subject.profile.clone(),
+            device: subject.device.clone(),
+            route: match self.profiles.get(&subject.profile) {
+                Some(DefaultAction::Block) => Action::Block {},
+                _ => Action::Direct {},
+            },
+            upstream_group: None,
+            matched_rule_id: None,
+            matched_pattern: None,
+            decided_by: DecidedBy::Default,
+        }
     }
 }
 
@@ -163,7 +176,7 @@ fn scope_rank(scope: &Scope) -> u8 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::model::{Bundle, OnFailure};
+    use crate::model::{Bundle, Mode, OnFailure};
 
     const EXAMPLE: &str = include_str!("../../../configs/examples/home.yaml");
 
@@ -300,6 +313,36 @@ mod tests {
         let d = decide(&p, Some("home"), None, "WWW.Пример.РФ.");
         assert_eq!(d.route, Action::Block {});
         assert_eq!(d.domain, "www.xn--e1afmkfd.xn--p1ai");
+    }
+
+    #[test]
+    fn rules_outside_the_mode_do_not_apply() {
+        let p = policy(
+            "    - { id: a, scope: default, match: { domains: [x.example] }, action: { type: block }, modesAllowed: [tunnel] }\n",
+        );
+        let subject = p.subject(Some("home"), None).unwrap();
+        let name = Name::parse("x.example").unwrap();
+        assert_eq!(
+            p.decide_in(&subject, &name, Some(Mode::Tunnel)).route,
+            Action::Block {}
+        );
+        let dns = p.decide_in(&subject, &name, Some(Mode::SmartdnsTcp));
+        assert_eq!(
+            (dns.route, dns.decided_by),
+            (Action::Direct {}, DecidedBy::Default)
+        );
+        assert_eq!(p.decide(&subject, &name).route, Action::Block {});
+    }
+
+    #[test]
+    fn default_decision_uses_the_profile_default() {
+        let p = policy("    []\n");
+        let strict = p.subject(Some("strict"), None).unwrap();
+        let d = p.default_decision(&strict, "not a name");
+        assert_eq!(
+            (d.route, d.decided_by, d.domain.as_str()),
+            (Action::Block {}, DecidedBy::Default, "not a name")
+        );
     }
 
     #[test]

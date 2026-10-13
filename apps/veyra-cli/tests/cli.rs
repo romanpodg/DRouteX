@@ -9,6 +9,7 @@ const EXAMPLE: &str = concat!(
 const CONFLICT: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/conflict.yaml");
 const BROKEN: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/broken.yaml");
 const WARN: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/warn.yaml");
+const MODES: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/modes.yaml");
 
 fn veyra(args: &[&str]) -> Output {
     Command::new(env!("CARGO_BIN_EXE_veyra"))
@@ -139,4 +140,39 @@ fn explain_prints_compile_warnings_to_stderr() {
     assert!(err.contains("warning[TieBrokenLate] a, b"), "{err}");
     let v: serde_json::Value = serde_json::from_slice(&out.stdout).expect("json on stdout");
     assert_eq!(v["decided_by"], "action");
+}
+
+#[test]
+fn explain_reports_and_honours_the_mode() {
+    let run = |extra: &[&str]| {
+        let mut args = vec!["explain", "--config", MODES, "--profile", "home"];
+        args.extend_from_slice(extra);
+        args.push("x.example");
+        let out = veyra(&args);
+        assert!(out.status.success(), "{}", text(&out.stderr));
+        serde_json::from_slice::<serde_json::Value>(&out.stdout).expect("json on stdout")
+    };
+    let default = run(&[]);
+    assert_eq!(default["mode"], "smartdns_tcp");
+    assert_eq!(default["decided_by"], "default");
+    let tunnel = run(&["--mode", "tunnel"]);
+    assert_eq!(tunnel["mode"], "tunnel");
+    assert_eq!(tunnel["route"]["type"], "block");
+
+    let bad = veyra(&[
+        "explain",
+        "--config",
+        MODES,
+        "--profile",
+        "home",
+        "--mode",
+        "udp",
+        "x.example",
+    ]);
+    assert_eq!(bad.status.code(), Some(2));
+    assert!(
+        text(&bad.stderr).contains("unknown mode"),
+        "{}",
+        text(&bad.stderr)
+    );
 }

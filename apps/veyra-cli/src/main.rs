@@ -1,9 +1,10 @@
 //! `veyra` command line, stage 1a (spec §23.2): validate and explain a policy file.
 
 use clap::{Parser, Subcommand};
+use serde::Serialize;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
-use veyra_policy::{Bundle, Issue, Name, Policy};
+use veyra_policy::{Bundle, Decision, Issue, Mode, Name, Policy};
 
 #[derive(Parser)]
 #[command(name = "veyra", version, about = "Veyra policy tools")]
@@ -24,8 +25,20 @@ enum Command {
         profile: Option<String>,
         #[arg(long)]
         device: Option<String>,
+        /// Connection mode: smartdns_tcp, explicit_proxy or tunnel.
+        #[arg(long, default_value = "smartdns_tcp")]
+        mode: Mode,
         domain: String,
     },
+}
+
+/// The `veyra explain` JSON: the decision plus the inputs it was made for.
+/// Fields are only ever added during stage 1a, never renamed.
+#[derive(Serialize)]
+struct Explain<'a> {
+    #[serde(flatten)]
+    decision: &'a Decision,
+    mode: Mode,
 }
 
 fn main() -> ExitCode {
@@ -59,6 +72,7 @@ fn run(cli: Cli) -> Result<(), String> {
             config,
             profile,
             device,
+            mode,
             domain,
         } => {
             let policy = match load(&config)? {
@@ -78,8 +92,12 @@ fn run(cli: Cli) -> Result<(), String> {
                 .subject(profile.as_deref(), device.as_deref())
                 .map_err(|e| e.to_string())?;
             let name = Name::parse(&domain).map_err(|e| format!("{domain:?}: {e}"))?;
-            let decision = policy.decide(&subject, &name);
-            let json = serde_json::to_string_pretty(&decision).map_err(|e| e.to_string())?;
+            let decision = policy.decide_in(&subject, &name, Some(mode));
+            let explain = Explain {
+                decision: &decision,
+                mode,
+            };
+            let json = serde_json::to_string_pretty(&explain).map_err(|e| e.to_string())?;
             println!("{json}");
             Ok(())
         }
