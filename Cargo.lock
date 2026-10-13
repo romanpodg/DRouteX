@@ -1071,6 +1071,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "veyra-gateway"
+version = "0.1.0"
+dependencies = [
+ "veyra-policy",
+]
+
+[[package]]
 name = "veyra-policy"
 version = "0.1.0"
 dependencies = [

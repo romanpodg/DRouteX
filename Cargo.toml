@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["crates/veyra-policy", "crates/veyra-dns", "apps/veyra-cli", "apps/veyra-dataplane"]
+members = ["crates/veyra-policy", "crates/veyra-dns", "crates/veyra-gateway", "apps/veyra-cli", "apps/veyra-dataplane"]
 
 [workspace.package]
 version = "0.1.0"
