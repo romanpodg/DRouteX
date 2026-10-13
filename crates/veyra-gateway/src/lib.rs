@@ -2,6 +2,8 @@
 //! through to the origin without terminating TLS. Decisions come from
 //! `veyra-policy`; this crate owns the sockets and the protocol sniffing.
 
+mod egress;
 mod sniff;
 
+pub use egress::{Egress, SPECIAL_PURPOSE};
 pub use sniff::{MAX_HEAD, Service, Sniff, sniff};
