@@ -2,6 +2,7 @@
 
 use clap::{Parser, Subcommand};
 use serde::Serialize;
+use std::net::IpAddr;
 use std::path::{Path, PathBuf};
 use std::process::ExitCode;
 use veyra_policy::{Bundle, Decision, Issue, Mode, Name, Policy};
@@ -17,14 +18,17 @@ struct Cli {
 enum Command {
     /// Check a policy file and print every error and warning.
     Validate { config: PathBuf },
-    /// Show which rule decides a domain for a profile or device, as JSON.
+    /// Show which rule decides a domain for a profile, device or source address, as JSON.
     Explain {
         #[arg(long)]
         config: PathBuf,
-        #[arg(long, required_unless_present = "device")]
+        #[arg(long, required_unless_present_any = ["device", "source"])]
         profile: Option<String>,
         #[arg(long)]
         device: Option<String>,
+        /// Client address; its profile comes from `admission` like a DNS query's would.
+        #[arg(long, conflicts_with_all = ["profile", "device"])]
+        source: Option<IpAddr>,
         /// Connection mode: smartdns_tcp, explicit_proxy or tunnel.
         #[arg(long, default_value = "smartdns_tcp")]
         mode: Mode,
@@ -39,6 +43,10 @@ struct Explain<'a> {
     #[serde(flatten)]
     decision: &'a Decision,
     mode: Mode,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    source: Option<IpAddr>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    source_binding: Option<String>,
 }
 
 fn main() -> ExitCode {
@@ -72,6 +80,7 @@ fn run(cli: Cli) -> Result<(), String> {
             config,
             profile,
             device,
+            source,
             mode,
             domain,
         } => {
@@ -88,14 +97,27 @@ fn run(cli: Cli) -> Result<(), String> {
                     ));
                 }
             };
-            let subject = policy
-                .subject(profile.as_deref(), device.as_deref())
-                .map_err(|e| e.to_string())?;
+            let (subject, source_binding) = match source {
+                Some(ip) => {
+                    let admitted = policy
+                        .admit(ip)
+                        .ok_or_else(|| format!("source {ip} is not admitted (spec §9.6)"))?;
+                    (admitted.subject, Some(admitted.binding))
+                }
+                None => {
+                    let subject = policy
+                        .subject(profile.as_deref(), device.as_deref())
+                        .map_err(|e| e.to_string())?;
+                    (subject, None)
+                }
+            };
             let name = Name::parse(&domain).map_err(|e| format!("{domain:?}: {e}"))?;
             let decision = policy.decide_in(&subject, &name, Some(mode));
             let explain = Explain {
                 decision: &decision,
                 mode,
+                source,
+                source_binding,
             };
             let json = serde_json::to_string_pretty(&explain).map_err(|e| e.to_string())?;
             println!("{json}");

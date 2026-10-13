@@ -49,6 +49,11 @@ spec:
         domains: ["suffix:ads.example"]
       action:
         type: block
+  admission:                            # who may use this DNS (§9.6); others are dropped
+    - { cidr: 127.0.0.0/8, profile: home }
+    - { cidr: "::1/128", profile: home }
+    - { cidr: 192.168.1.0/24, profile: home }
+    - { cidr: 192.168.1.50/32, device: tv }
   dns:
     listen: ["127.0.0.1:5353"]          # production: ["0.0.0.0:53", "[::]:53"]
     synthTtl: 60

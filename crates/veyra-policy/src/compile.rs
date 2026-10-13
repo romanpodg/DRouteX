@@ -1,6 +1,8 @@
 //! Turns a parsed `Bundle` into a checked `Policy`, collecting every problem
 //! instead of stopping at the first one (spec §8.2.1 validator rules, §17.2).
 
+use crate::admission::{Cidr, compile_admission};
+use crate::decide::Subject;
 use crate::dns_config::{DnsConfig, compile_dns};
 use crate::model::{
     API_VERSION, Action, Bundle, DefaultAction, DnsSpec, GatewaySpec, KIND, Mode, OnFailure, Scope,
@@ -32,6 +34,9 @@ pub enum IssueCode {
     InvalidValue,
     MissingGateway,
     UpstreamLoop,
+    InvalidBinding,
+    SourceBindingConflict,
+    NoAdmission,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -92,6 +97,7 @@ pub struct Policy {
     pub(crate) rules: Vec<Rule>,
     pub(crate) gateways: BTreeMap<String, GatewaySpec>,
     pub(crate) dns: Option<DnsConfig>,
+    pub(crate) bindings: Vec<(Cidr, Subject)>,
 }
 
 pub(crate) fn issue(severity: Severity, code: IssueCode, rules: &[&str], message: String) -> Issue {
@@ -215,6 +221,7 @@ impl Policy {
         }
         check_overlaps(&rules, &mut issues);
         let dns = compile_dns(spec, &mut issues);
+        let bindings = compile_admission(spec, &mut issues);
 
         if issues.iter().any(|i| i.severity == Error) {
             return Err(issues);
@@ -238,6 +245,7 @@ impl Policy {
                 .filter_map(|n| Some((n.id.clone(), n.gateway?)))
                 .collect(),
             dns,
+            bindings,
         };
         Ok((policy, issues))
     }

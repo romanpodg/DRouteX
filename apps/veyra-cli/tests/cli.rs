@@ -176,3 +176,48 @@ fn explain_reports_and_honours_the_mode() {
         text(&bad.stderr)
     );
 }
+
+#[test]
+fn explain_by_source_address_uses_admission() {
+    let out = veyra(&[
+        "explain",
+        "--config",
+        EXAMPLE,
+        "--source",
+        "192.168.1.50",
+        "media.example",
+    ]);
+    assert!(out.status.success(), "{}", text(&out.stderr));
+    let v: serde_json::Value = serde_json::from_slice(&out.stdout).expect("json on stdout");
+    assert_eq!(v["profile"], "home");
+    assert_eq!(v["device"], "tv");
+    assert_eq!(v["source"], "192.168.1.50");
+    assert_eq!(v["source_binding"], "192.168.1.50/32");
+
+    let stranger = veyra(&[
+        "explain",
+        "--config",
+        EXAMPLE,
+        "--source",
+        "10.9.9.9",
+        "media.example",
+    ]);
+    assert_eq!(stranger.status.code(), Some(1));
+    assert!(
+        text(&stranger.stderr).contains("not admitted"),
+        "{}",
+        text(&stranger.stderr)
+    );
+
+    let both = veyra(&[
+        "explain",
+        "--config",
+        EXAMPLE,
+        "--source",
+        "127.0.0.1",
+        "--profile",
+        "home",
+        "media.example",
+    ]);
+    assert_eq!(both.status.code(), Some(2));
+}

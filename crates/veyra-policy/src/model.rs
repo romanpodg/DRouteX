@@ -37,6 +37,20 @@ pub struct BundleSpec {
     /// DNS-only checks (upstream groups, gateways) do not run.
     #[serde(default)]
     pub dns: Option<DnsEngineSpec>,
+    /// Source networks allowed to use DNS (spec §9.6). Empty admits nobody.
+    #[serde(default)]
+    pub admission: Vec<AdmissionSpec>,
+}
+
+/// One `admission` entry: a network and exactly one of `profile` or `device`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct AdmissionSpec {
+    pub cidr: String,
+    #[serde(default)]
+    pub profile: Option<String>,
+    #[serde(default)]
+    pub device: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
