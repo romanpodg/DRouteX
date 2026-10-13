@@ -104,7 +104,7 @@ pub(crate) fn compile_dns(spec: &BundleSpec, issues: &mut Vec<Issue>) -> Option<
 }
 
 /// `ip:port` or `[ipv6]:port`; with a `default_port`, a bare IP too.
-fn socket_addr(
+pub(crate) fn socket_addr(
     text: &str,
     default_port: Option<u16>,
     field: &str,

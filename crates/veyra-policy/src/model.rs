@@ -40,6 +40,23 @@ pub struct BundleSpec {
     /// Source networks allowed to use DNS (spec §9.6). Empty admits nobody.
     #[serde(default)]
     pub admission: Vec<AdmissionSpec>,
+    /// The gateway (spec §10). Without it this data plane serves DNS only.
+    #[serde(default)]
+    pub gateway: Option<GatewayEngineSpec>,
+}
+
+/// The `gateway:` section: this data plane is the gateway of `node` and
+/// accepts the connections DNS sends there (spec §10.1, §10.2).
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct GatewayEngineSpec {
+    pub node: String,
+    /// `ip:port` for TLS, routed by SNI; a bare IP means port 443.
+    #[serde(default)]
+    pub tls: Vec<String>,
+    /// `ip:port` for HTTP, routed by `Host`; a bare IP means port 80.
+    #[serde(default)]
+    pub http: Vec<String>,
 }
 
 /// One `admission` entry: a network and exactly one of `profile` or `device`.
