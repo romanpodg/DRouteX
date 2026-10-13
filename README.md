@@ -41,4 +41,4 @@ The example's names are made up. To see a real passthrough, route a real domain 
 curl --resolve example.com:10443:127.0.0.1 https://example.com:10443/
 ```
 
-Connections for other names, and from sources not under `admission:`, are closed at once. On a server, the firewall must reject, not drop, traffic to ports the gateway does not serve: the kernel's TCP reset and ICMP port unreachable are what make clients fail fast (spec §10.1).
+Connections for other names, and from sources not under `admission:`, are closed at once. On Linux the gateway serves at most one connection per 8 files the process may open (`ulimit -n`, `LimitNOFILE` under systemd), so a stock limit of 1024 allows 128; raise the limit to serve more. On a server, the firewall must reject, not drop, traffic to ports the gateway does not serve: the kernel's TCP reset and ICMP port unreachable are what make clients fail fast (spec §10.1).

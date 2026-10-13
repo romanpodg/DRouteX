@@ -12,8 +12,9 @@ use tokio::task::JoinSet;
 use tokio::time::sleep;
 use veyra_policy::GatewayConfig;
 
-/// Connections served at once; beyond this, new ones are closed at once
-/// (spec §10.1 limits). Each holds two sockets: keep it under the file limit.
+/// Connections served at once when the open-file limit is unknown (not Linux);
+/// on Linux the cap follows the limit (`session_cap`). Beyond the cap, new
+/// connections are closed at once (spec §10.1 limits).
 const MAX_SESSIONS: usize = 1024;
 
 /// Bound sockets. Binding first lets the caller learn the real addresses
@@ -33,9 +34,10 @@ impl Listeners {
         for (addr, service) in tls.chain(http) {
             bound.push((TcpListener::bind(addr).await?, service));
         }
+        let limits = std::fs::read_to_string("/proc/self/limits").ok();
         Ok(Listeners {
             bound,
-            max_sessions: MAX_SESSIONS,
+            max_sessions: session_cap(limits.as_deref().and_then(soft_file_limit)),
         })
     }
 
@@ -97,5 +99,47 @@ async fn serve_listener(
             }
             drop(permit);
         });
+    }
+}
+
+/// Sessions the open-file limit can carry. A session holds two TCP sockets,
+/// and two UDP sockets while it resolves its origin; DNS in the same process
+/// keeps the other half of the limit. `MAX_SESSIONS` when the limit is unknown.
+fn session_cap(file_limit: Option<u64>) -> usize {
+    file_limit.map_or(MAX_SESSIONS, |limit| {
+        usize::try_from(limit / 8).unwrap_or(usize::MAX).max(1)
+    })
+}
+
+/// The soft "Max open files" limit from Linux's `/proc/self/limits`.
+fn soft_file_limit(limits: &str) -> Option<u64> {
+    let line = limits.lines().find(|l| l.starts_with("Max open files"))?;
+    line.split_whitespace().nth(3)?.parse().ok()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    const LIMITS: &str = "\
+Limit                     Soft Limit           Hard Limit           Units     
+Max cpu time              unlimited            unlimited            seconds   
+Max open files            1024                 524288               files     
+";
+
+    #[test]
+    fn the_session_cap_fits_the_open_file_limit() {
+        assert_eq!(soft_file_limit(LIMITS), Some(1024));
+        assert_eq!(
+            session_cap(Some(1024)),
+            128,
+            "systemd's default soft limit for a service"
+        );
+        assert_eq!(session_cap(Some(65_536)), 8192);
+        assert_eq!(session_cap(Some(4)), 1);
+        assert_eq!(session_cap(None), MAX_SESSIONS, "no /proc: not Linux");
+        let unlimited =
+            "Max open files            unlimited            unlimited            files\n";
+        assert_eq!(soft_file_limit(unlimited), None);
     }
 }
