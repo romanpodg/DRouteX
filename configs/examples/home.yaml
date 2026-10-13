@@ -55,7 +55,7 @@ spec:
     - { cidr: 192.168.1.0/24, profile: home }
     - { cidr: 192.168.1.50/32, device: tv }
   dns:
-    listen: ["127.0.0.1:5353"]          # production: ["0.0.0.0:53", "[::]:53"]
+    listen: ["127.0.0.1:10053"]         # 5353 is mDNS; production: ["0.0.0.0:53", "[::]:53"]
     synthTtl: 60
     upstreams:
       - id: default

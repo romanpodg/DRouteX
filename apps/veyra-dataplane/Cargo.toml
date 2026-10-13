@@ -1,0 +1,20 @@
+[package]
+name = "veyra-dataplane"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dependencies]
+veyra-policy.workspace = true
+veyra-dns.workspace = true
+clap.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+[dev-dependencies]
+hickory-proto.workspace = true
+
+[lints]
+workspace = true
