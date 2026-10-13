@@ -6,6 +6,7 @@ metadata:
 spec:
   nodes:
     - id: de-01
+      gateway: { ipv4: 203.0.113.10 }   # where DNS sends mode-B clients (§10.2)
   profiles:
     - id: home
       defaultAction: direct
@@ -48,3 +49,11 @@ spec:
         domains: ["suffix:ads.example"]
       action:
         type: block
+  dns:
+    listen: ["127.0.0.1:5353"]          # production: ["0.0.0.0:53", "[::]:53"]
+    synthTtl: 60
+    upstreams:
+      - id: default
+        servers: ["1.1.1.1", "9.9.9.9"]
+      - id: corp
+        servers: ["10.0.0.53"]

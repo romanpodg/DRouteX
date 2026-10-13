@@ -1,8 +1,9 @@
 //! Turns a parsed `Bundle` into a checked `Policy`, collecting every problem
 //! instead of stopping at the first one (spec §8.2.1 validator rules, §17.2).
 
+use crate::dns_config::{DnsConfig, compile_dns};
 use crate::model::{
-    API_VERSION, Action, Bundle, DefaultAction, DnsSpec, KIND, Mode, OnFailure, Scope,
+    API_VERSION, Action, Bundle, DefaultAction, DnsSpec, GatewaySpec, KIND, Mode, OnFailure, Scope,
 };
 use crate::pattern::Pattern;
 use std::cmp::Reverse;
@@ -27,6 +28,10 @@ pub enum IssueCode {
     Shadowed,
     FailOpen,
     InvalidId,
+    InvalidAddress,
+    InvalidValue,
+    MissingGateway,
+    UpstreamLoop,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -85,9 +90,11 @@ pub struct Policy {
     pub(crate) profiles: BTreeMap<String, DefaultAction>,
     pub(crate) devices: BTreeMap<String, String>,
     pub(crate) rules: Vec<Rule>,
+    pub(crate) gateways: BTreeMap<String, GatewaySpec>,
+    pub(crate) dns: Option<DnsConfig>,
 }
 
-fn issue(severity: Severity, code: IssueCode, rules: &[&str], message: String) -> Issue {
+pub(crate) fn issue(severity: Severity, code: IssueCode, rules: &[&str], message: String) -> Issue {
     Issue {
         severity,
         code,
@@ -207,6 +214,7 @@ impl Policy {
             }
         }
         check_overlaps(&rules, &mut issues);
+        let dns = compile_dns(spec, &mut issues);
 
         if issues.iter().any(|i| i.severity == Error) {
             return Err(issues);
@@ -224,6 +232,12 @@ impl Policy {
                 .map(|d| (d.id.clone(), d.profile.clone()))
                 .collect(),
             rules,
+            gateways: spec
+                .nodes
+                .iter()
+                .filter_map(|n| Some((n.id.clone(), n.gateway?)))
+                .collect(),
+            dns,
         };
         Ok((policy, issues))
     }
@@ -232,9 +246,19 @@ impl Policy {
     pub fn rules(&self) -> &[Rule] {
         &self.rules
     }
+
+    /// The checked `dns:` section, if the bundle has one.
+    pub fn dns(&self) -> Option<&DnsConfig> {
+        self.dns.as_ref()
+    }
+
+    /// The gateway endpoint of a node, if it has one.
+    pub fn gateway(&self, node: &str) -> Option<&GatewaySpec> {
+        self.gateways.get(node)
+    }
 }
 
-fn unique_ids<'a>(
+pub(crate) fn unique_ids<'a>(
     kind: &str,
     ids: impl Iterator<Item = &'a str>,
     issues: &mut Vec<Issue>,

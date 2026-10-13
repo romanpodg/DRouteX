@@ -2,6 +2,7 @@
 //! `Policy::compile` turns them into a checked policy.
 
 use serde::{Deserialize, Serialize};
+use std::net::{Ipv4Addr, Ipv6Addr};
 
 pub const API_VERSION: &str = "veyra.io/v1alpha1";
 pub const KIND: &str = "PolicyBundle";
@@ -32,12 +33,53 @@ pub struct BundleSpec {
     pub devices: Vec<DeviceSpec>,
     #[serde(default)]
     pub rules: Vec<RuleSpec>,
+    /// The DNS engine. Without it the file is a rules-only bundle and the
+    /// DNS-only checks (upstream groups, gateways) do not run.
+    #[serde(default)]
+    pub dns: Option<DnsEngineSpec>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct NodeSpec {
     pub id: String,
+    #[serde(default)]
+    pub gateway: Option<GatewaySpec>,
+}
+
+/// The gateway endpoint DNS hands out for mode B (spec §10.2, §17.1 `GatewayEndpoint`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct GatewaySpec {
+    pub ipv4: Ipv4Addr,
+    /// Without it, AAAA queries for proxied names get NODATA (spec §9.5).
+    #[serde(default)]
+    pub ipv6: Option<Ipv6Addr>,
+}
+
+/// The `dns:` section (spec §9). Addresses stay strings here so `compile` can
+/// report every bad one with a clear message.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields, rename_all = "camelCase")]
+pub struct DnsEngineSpec {
+    /// `ip:port` to serve DNS on, UDP and TCP.
+    pub listen: Vec<String>,
+    /// TTL of synthesized answers, 30 to 300 seconds (spec §9.5).
+    #[serde(default = "default_synth_ttl")]
+    pub synth_ttl: u32,
+    pub upstreams: Vec<UpstreamGroupSpec>,
+}
+
+fn default_synth_ttl() -> u32 {
+    60
+}
+
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct UpstreamGroupSpec {
+    pub id: String,
+    /// `ip`, `ip:port` or `[ipv6]:port`; a bare IP means port 53.
+    pub servers: Vec<String>,
 }
 
 #[derive(Debug, Clone, Deserialize)]
