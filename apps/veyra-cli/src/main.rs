@@ -62,7 +62,10 @@ fn run(cli: Cli) -> Result<(), String> {
             domain,
         } => {
             let policy = match load(&config)? {
-                Ok((policy, _)) => policy,
+                Ok((policy, warnings)) => {
+                    warnings.iter().for_each(|w| eprintln!("{w}"));
+                    policy
+                }
                 Err(issues) => {
                     issues.iter().for_each(|i| eprintln!("{i}"));
                     return Err(format!(

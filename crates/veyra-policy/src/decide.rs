@@ -101,7 +101,9 @@ impl Policy {
                     .patterns
                     .iter()
                     .filter(|p| p.matches(name))
-                    .max_by_key(|p| p.specificity())?;
+                    // On equal specificity the smallest pattern wins, so the reported
+                    // pattern does not depend on the order of the domains list.
+                    .max_by_key(|p| (p.specificity(), Reverse(*p)))?;
                 Some((
                     (best.specificity(), scope_rank(&r.scope), r.late_rank()),
                     r,
@@ -298,6 +300,24 @@ mod tests {
         let d = decide(&p, Some("home"), None, "WWW.Пример.РФ.");
         assert_eq!(d.route, Action::Block {});
         assert_eq!(d.domain, "www.xn--e1afmkfd.xn--p1ai");
+    }
+
+    #[test]
+    fn matched_pattern_does_not_depend_on_pattern_order() {
+        for domains in [
+            "[\"*.y.example\", \"suffix:y.example\"]",
+            "[\"suffix:y.example\", \"*.y.example\"]",
+        ] {
+            let p = policy(&format!(
+                "    - {{ id: a, scope: default, match: {{ domains: {domains} }}, action: {{ type: block }} }}\n"
+            ));
+            let d = decide(&p, Some("home"), None, "a.y.example");
+            assert_eq!(
+                d.matched_pattern.as_deref(),
+                Some("*.y.example"),
+                "{domains}"
+            );
+        }
     }
 
     #[test]

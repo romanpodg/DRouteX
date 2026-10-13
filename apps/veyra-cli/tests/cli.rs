@@ -8,6 +8,7 @@ const EXAMPLE: &str = concat!(
 );
 const CONFLICT: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/conflict.yaml");
 const BROKEN: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/broken.yaml");
+const WARN: &str = concat!(env!("CARGO_MANIFEST_DIR"), "/tests/fixtures/warn.yaml");
 
 fn veyra(args: &[&str]) -> Output {
     Command::new(env!("CARGO_BIN_EXE_veyra"))
@@ -44,6 +45,11 @@ fn malformed_yaml_names_the_line() {
     let out = veyra(&["validate", BROKEN]);
     assert_eq!(out.status.code(), Some(1));
     assert!(text(&out.stderr).contains("line"), "{}", text(&out.stderr));
+    assert!(
+        !text(&out.stderr).contains("`match`"),
+        "{}",
+        text(&out.stderr)
+    );
 }
 
 #[test]
@@ -116,4 +122,21 @@ fn explain_refuses_a_config_with_errors() {
     ]);
     assert_eq!(out.status.code(), Some(1));
     assert!(text(&out.stderr).contains("veyra validate"));
+}
+
+#[test]
+fn explain_prints_compile_warnings_to_stderr() {
+    let out = veyra(&[
+        "explain",
+        "--config",
+        WARN,
+        "--profile",
+        "home",
+        "a.x.example",
+    ]);
+    assert!(out.status.success(), "{}", text(&out.stderr));
+    let err = text(&out.stderr);
+    assert!(err.contains("warning[TieBrokenLate] a, b"), "{err}");
+    let v: serde_json::Value = serde_json::from_slice(&out.stdout).expect("json on stdout");
+    assert_eq!(v["decided_by"], "action");
 }

@@ -26,6 +26,7 @@ pub enum IssueCode {
     TieBrokenLate,
     Shadowed,
     FailOpen,
+    InvalidId,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -240,12 +241,27 @@ fn unique_ids<'a>(
 ) -> BTreeSet<&'a str> {
     let mut seen = BTreeSet::new();
     for id in ids {
+        if !valid_id(id) {
+            let msg = format!(
+                "{kind} id {id:?} must start with a letter or digit and use only letters, digits, '.', '_' or '-'"
+            );
+            issues.push(issue(Severity::Error, IssueCode::InvalidId, &[id], msg));
+        }
         if !seen.insert(id) {
             let msg = format!("{kind} id {id} is used more than once");
             issues.push(issue(Severity::Error, IssueCode::DuplicateId, &[id], msg));
         }
     }
     seen
+}
+
+/// Ids name rules in issue lines and break the last precedence tie (spec §8.2.1),
+/// so they stay simple: a letter or digit, then letters, digits, `.`, `_` or `-`.
+fn valid_id(id: &str) -> bool {
+    id.starts_with(|c: char| c.is_ascii_alphanumeric())
+        && id
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '.' | '_' | '-'))
 }
 
 /// Pairwise checks inside one scope. Rules in different scopes are always
@@ -469,6 +485,13 @@ mod tests {
         let (policy, issues) = Policy::compile(&bundle(rules)).unwrap();
         assert!(issues.is_empty());
         assert_eq!(policy.rules.len(), 1);
+    }
+
+    #[test]
+    fn rejects_invalid_ids() {
+        let rules = "    - { id: \"\", scope: default, match: { domains: [x.example] }, action: { type: block } }\n    \
+                     - { id: \"b, c\", scope: default, match: { domains: [y.example] }, action: { type: block } }\n";
+        assert_eq!(errors(rules), vec![InvalidId, InvalidId]);
     }
 
     #[test]

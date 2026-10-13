@@ -6,4 +6,6 @@ spec:
   rules:
     - id: a
       scope: default
+      match:
+        domains: [x.example]
      action: { type: block }
