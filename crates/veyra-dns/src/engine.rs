@@ -108,7 +108,7 @@ impl Engine {
                 if let Some(key) = key {
                     self.cache().put(key, &reply, Instant::now());
                 }
-                reply
+                for_client(reply, request)
             }
             None => synth::reply(request, ResponseCode::ServFail),
         }
@@ -120,8 +120,8 @@ impl Engine {
     }
 }
 
-/// A cached reply readdressed to this request: its id, RD bit, and question
-/// spelled the way this client spelled it.
+/// An upstream or cached reply readdressed to this request: its id, RD bit,
+/// and question spelled the way this client spelled it.
 fn for_client(mut reply: Message, request: &Message) -> Message {
     reply.metadata.id = request.metadata.id;
     reply.metadata.recursion_desired = request.metadata.recursion_desired;

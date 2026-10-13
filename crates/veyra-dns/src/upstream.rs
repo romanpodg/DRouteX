@@ -1,6 +1,7 @@
 //! Forwarding to upstream resolvers.
 
-use hickory_proto::op::{Message, MessageType};
+use crate::synth::MAX_UDP_PAYLOAD;
+use hickory_proto::op::{Edns, Message, MessageType};
 use std::io;
 use std::net::{Ipv4Addr, Ipv6Addr, SocketAddr};
 use std::time::Duration;
@@ -15,8 +16,7 @@ pub(crate) async fn exchange(
     request: &Message,
     wait: Duration,
 ) -> Option<Message> {
-    let mut query = request.clone();
-    query.metadata.recursion_desired = true;
+    let query = upstream_query(request);
     let bytes = query.to_vec().ok()?;
     for &server in servers {
         let reply = match udp(server, &bytes, &query, wait).await {
@@ -30,6 +30,24 @@ pub(crate) async fn exchange(
         }
     }
     None
+}
+
+/// The query Veyra sends upstream for `request`: a random id of its own, so a
+/// spoofed reply must guess it as well as the source port (spec §19.1), and an
+/// OPT record of its own carrying only the DO bit, so client options such as a
+/// client subnet never reach the upstream or the shared cache (spec §9.7).
+fn upstream_query(request: &Message) -> Message {
+    let mut query = Message::query();
+    query.metadata.recursion_desired = true;
+    query.metadata.checking_disabled = request.metadata.checking_disabled;
+    query.add_queries(request.queries.iter().cloned());
+    if let Some(asked) = &request.edns {
+        let mut edns = Edns::new();
+        edns.set_max_payload(MAX_UDP_PAYLOAD);
+        edns.set_dnssec_ok(asked.flags().dnssec_ok);
+        query.set_edns(edns);
+    }
+    query
 }
 
 /// One query over TCP with the 2-byte length prefix of RFC 1035 §4.2.2.

@@ -6,23 +6,29 @@ use hickory_proto::op::{Message, MessageType, OpCode, Query};
 use hickory_proto::rr::rdata::A;
 use hickory_proto::rr::{Name, RData, Record, RecordType};
 use std::net::{Ipv4Addr, SocketAddr};
-use std::sync::Arc;
 use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::{Arc, Mutex};
 use std::time::Duration;
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::{TcpListener, UdpSocket};
 use veyra_dns::{Engine, Transport};
 use veyra_policy::{Bundle, Policy};
 
-/// A fake upstream and how many queries it has received.
+/// A fake upstream, how many queries it has received, and the queries themselves.
 pub struct Upstream {
     pub addr: SocketAddr,
     queries: Arc<AtomicUsize>,
+    received: Arc<Mutex<Vec<Message>>>,
 }
 
 impl Upstream {
     pub fn queries(&self) -> usize {
         self.queries.load(Ordering::SeqCst)
+    }
+
+    /// Every query the upstream received, as it arrived.
+    pub fn received(&self) -> Vec<Message> {
+        self.received.lock().expect("received lock").clone()
     }
 }
 
@@ -33,7 +39,8 @@ pub async fn upstream(reply: impl Fn(&Message) -> Message + Send + Sync + 'stati
         .expect("bind fake upstream");
     let addr = socket.local_addr().expect("fake upstream address");
     let queries = Arc::new(AtomicUsize::new(0));
-    let counter = queries.clone();
+    let received = Arc::new(Mutex::new(Vec::new()));
+    let (counter, log) = (queries.clone(), received.clone());
     tokio::spawn(async move {
         let mut buf = vec![0; 4096];
         loop {
@@ -44,11 +51,16 @@ pub async fn upstream(reply: impl Fn(&Message) -> Message + Send + Sync + 'stati
                 continue;
             };
             counter.fetch_add(1, Ordering::SeqCst);
+            log.lock().expect("received lock").push(query.clone());
             let bytes = reply(&query).to_vec().expect("encode fake reply");
             let _ = socket.send_to(&bytes, from).await;
         }
     });
-    Upstream { addr, queries }
+    Upstream {
+        addr,
+        queries,
+        received,
+    }
 }
 
 /// An upstream that answers UDP with a truncated reply (TC set, no records) and
