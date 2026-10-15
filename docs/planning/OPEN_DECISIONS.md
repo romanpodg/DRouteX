@@ -69,8 +69,8 @@ IPv6/QUIC/application enforcement.
 | D13 | WG/AWG/Xray kernel/client/engine versions and distribution inventory deferred | Post-MVP P5-01 | Version-specific lab evidence |
 | D14 | Routira license and relevant distribution notices remain open; engine redistribution later | P11-05 / later engine release | Owner review |
 | D15 | Separate master key/recovery, access-secret lifecycle and retention | P1-07 | Security/operator owner |
-| D16 | CodeScene account/repo/baseline and optional MCP | External P0-04 gate | User/maintainer |
-| D17 | User selected public romanpodg/Routira; initial push and PR #1 published, planning CI passed; Codecov OIDC/account/upload remains unverified | External P0-04 gate | User/maintainer; no product coverage report yet |
+| D16 | CodeScene project 86145 created; analysis 7965503 succeeded with limited history; selected-repo PR App grant pending; MCP optional | External P0-04 gate | User/maintainer |
+| D17 | Codecov Routira activated; root YAML validated; planning LCOV/OIDC prepared, first upload pending; Rust/frontend coverage awaits real workspaces | External P0-04 gate | User/maintainer; no product coverage report yet |
 | D18 | Measured DNS/TCP/proxy resource budgets; engine budgets later | P10-04 | Operator |
 | D19 | Select one first protected SOCKS5 or HTTP CONNECT outbound; no managed engine dependency; public explicit inbound is a separate decision | P0-05/P4-05 | Actual proxy/egress and credential transport test |
 | D20 | Proposed custom > service > filter > default ranks, explicit domain match modes and one active Profile per Endpoint; stacks/schedules deferred | P0-01/P2-01/P2-02 | CR-0002; golden/permutation/conflict tests |

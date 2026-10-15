@@ -11,8 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 def check_workflow(flow):
     assert flow['permissions'] == {'contents':'read'}
     jobs = flow['jobs']
-    for name in ('backend','frontend'):
-        assert 'permissions' not in jobs[name] or 'id-token' not in jobs[name]['permissions']
+    for name, job in jobs.items():
+        if name != 'upload':
+            assert 'id-token' not in job.get('permissions', {})
     upload = jobs['upload']
     assert 'head.repo.full_name == github.repository' in upload['if']
     assert upload['permissions']['id-token'] == 'write'
@@ -36,6 +37,16 @@ def main():
     # YAML 1.1 parses GitHub's bare `on` as True; actionlint separately validates Actions syntax.
     assert ('on' in flow or True in flow) and 'pull_request_target' not in str(flow.get('on',flow.get(True)))
     check_workflow(flow)
+    active = yaml.safe_load((ROOT/'.github/workflows/planning.yml').read_text(encoding='utf-8'))
+    assert 'pull_request_target' not in str(active.get('on',active.get(True)))
+    check_workflow(active)
+    active_config = yaml.safe_load((ROOT/'codecov.yml').read_text(encoding='utf-8'))
+    for kind in ('project', 'patch'):
+        statuses = active_config['coverage']['status'][kind]
+        assert statuses['default'] is False
+        assert statuses['planning']['flags'] == ['planning']
+        assert statuses['planning']['informational'] is True
+    assert active_config['flags']['planning']['carryforward'] is False
     quality = yaml.safe_load((proposals/'rust-quality.yml.example').read_text(encoding='utf-8'))
     assert quality['permissions'] == {'contents':'read'}
     assert 'pull_request_target' not in str(quality.get('on',quality.get(True)))
@@ -66,7 +77,23 @@ def main():
         pass
     else:
         raise AssertionError('Untrusted tests received OIDC permission')
-    result = {'status':'passed','yaml_files':3,'negative_authorization_cases':2,'service_side_validation':'not performed; automatic approval review rejected external transfer','workflow_execution':'blocked by missing workspaces and account setup'}
+    for mutation in ('fork', 'oidc', 'script', 'action'):
+        bad = copy.deepcopy(active)
+        if mutation == 'fork':
+            bad['jobs']['upload']['if'] = 'always()'
+        elif mutation == 'oidc':
+            bad['jobs']['verify']['permissions'] = {'id-token':'write'}
+        elif mutation == 'script':
+            bad['jobs']['upload']['steps'].append({'run':'python tools/render_planning.py'})
+        else:
+            bad['jobs']['upload']['steps'][0]['uses'] = 'actions/checkout@main'
+        try:
+            check_workflow(bad)
+        except AssertionError:
+            pass
+        else:
+            raise AssertionError(f'Unsafe active workflow accepted: {mutation}')
+    result = {'status':'passed','yaml_files':5,'negative_authorization_cases':6,'service_side_validation':'not performed by this local validator','workflow_execution':'local configuration checks only; remote runs recorded in integration documentation'}
     (ROOT/'docs/environment').mkdir(parents=True, exist_ok=True)
     (ROOT/'docs/environment/quality-proposal-verification.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
     print(json.dumps(result))

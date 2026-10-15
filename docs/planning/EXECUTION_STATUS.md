@@ -39,9 +39,16 @@ and preserved EN/RU bytes on Ubuntu and Windows. It does not activate the propos
 Rust/frontend workflows or complete P0-04. Source specifications are not normalized
 by Git, because their exact bytes are checked by the planning validator.
 
-CodeScene account/repository integration is user-managed and unverified until an
-actual result exists. Codecov likewise needs a real coverage-producing workspace,
-report and configured upload; installing its app alone cannot create a report.
+The user authorized configuring CodeScene and Codecov on 2026-10-15. GitHub CLI
+admin access and both browser sign-ins are verified. Codecov Routira is activated
+and its root YAML passed the official validator; CodeScene project 86145 exists.
+Its PR App grant awaits permission confirmation. The planning workflow
+now measures its three Python tools and has a separate OIDC upload job with the
+`planning` flag. First OIDC upload remains unverified. CodeScene review-branch
+analysis 7965503 completed; Code Health needs attention and history is limited.
+Product Codecov coverage still needs a real application workspace and report;
+installing an app alone cannot create that report. See
+[Codecov](../quality/CODECOV_INTEGRATION.md) and [CodeScene](../quality/CODESCENE_INTEGRATION.md).
 No coverage/Code Health score or required branch-protection status is invented.
 
 First remote evidence: [Actions run 38706557088](https://github.com/romanpodg/Routira/actions/runs/38706557088)

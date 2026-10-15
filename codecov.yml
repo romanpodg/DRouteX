@@ -1,0 +1,22 @@
+# Only planning tools exist today; product coverage is added separately in P0-04.
+coverage:
+  status:
+    project:
+      default: false
+      planning:
+        flags: [planning]
+        target: auto
+        informational: true
+    patch:
+      default: false
+      planning:
+        flags: [planning]
+        target: auto
+        informational: true
+flags:
+  planning:
+    paths:
+      - tools/render_planning.py
+      - tools/verify_planning.py
+      - tools/verify_quality_proposals.py
+    carryforward: false

@@ -52,7 +52,8 @@ tests under that revised plan; no product evidence is implied by planning checks
 Reviewed future CI file: [Rust quality workflow proposal](proposals/rust-quality.yml.example).
 It remains inactive until P0-04 verifies the actual feature matrix, license posture and first run.
 The separate [planning-only workflow](../../.github/workflows/planning.yml) now checks
-the existing document/contract tools on Ubuntu and Windows. The
+the existing document/contract tools on Ubuntu and Windows, measures their
+[planning-only coverage](CODECOV_INTEGRATION.md), and isolates its OIDC upload job. The
 [first remote run](https://github.com/romanpodg/Routira/actions/runs/38706557088)
 passed for commit 46b7e51; this is not product CI, coverage or P0-04 completion.
 
@@ -67,7 +68,7 @@ passed for commit 46b7e51; this is not product CI, coverage or P0-04 completion.
 | Feature combinations/MSRV/dependency resolution | Planned P0-02/P0-04; current crate candidates are not a verified lockfile |
 | Frontend type/lint/Vitest/browser coverage | Planned; no application package exists |
 | Real Linux DNS/proxy/namespaces/VPS | Platform-dependent; no product network acceptance performed; engine/tunnel tests deferred to G3 |
-| Codecov/CodeScene | External activation/auth/baseline required; no scores/uploads/PR checks claimed |
+| Codecov/CodeScene | Codecov repo activated/YAML validated; first OIDC upload pending. CodeScene analysis 7965503 completed; PR App grant pending. No product scores claimed |
 | Planning graph/schema/link/DAG checks | Evidence recorded in environment report after final verification |
 
 ## Coverage and code health

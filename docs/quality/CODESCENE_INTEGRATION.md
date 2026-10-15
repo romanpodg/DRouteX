@@ -2,10 +2,21 @@
 
 Status on 2026-10-15: portable native CLI **1.0.53**, build
 c46e3cba9e527cb84281355e7cd6d7d2ead627df, installed in .tools/codescene.
-Version/help/auth status were executed. OAuth is not signed in. No analysis, Code Health
-score, baseline, GitHub PR integration or MCP connection has been verified.
-The user has selected [romanpodg/Routira](https://github.com/romanpodg/Routira) and
-will connect CodeScene. The initial PR monitor will inspect actual results; repository
+Version/help/auth status were executed. CLI OAuth is not signed in; browser analysis
+is verified below. No CLI analysis or MCP connection has been verified.
+The user authorized configuring CodeScene and Codecov for
+[romanpodg/Routira](https://github.com/romanpodg/Routira) on 2026-10-15.
+GitHub CLI admin access and CodeScene browser sign-in are verified.
+Project [Routira, ID 86145](https://codescene.io/projects/86145/config) was created.
+The analysis ref is `docs/review-dns-proxy-foundation`, which contains the existing
+planning tools; return it to `main` after the owner merges that branch. The first
+review-branch analysis is [job 7965503](https://codescene.io/projects/86145/jobs/7965503/results).
+It completed successfully: Python/PowerShell were detected; Code Health needs
+attention and there is insufficient commit history for a useful technical-debt trend.
+These are tooling/repository results, not application quality evidence.
+Adding Routira to the pre-existing CodeScene Access GitHub
+App for PR checks is prepared but requires action-time permission confirmation.
+The initial PR monitor will inspect actual results; repository
 creation/publication alone does not establish a baseline or successful integration.
 
 [Official CLI documentation](https://www.codescene.io/docs/cli/index.html) documents native
@@ -16,16 +27,22 @@ CLI output supports `cs delta [branch [branch]]`, `--staged`, `--output-format j
 and `--error-on-warnings`; branch names must actually exist.
 
 [Supported languages](https://www.codescene.io/docs/usage/language-support.html) include Rust
-and TS/React. This establishes documented support, not a working analysis of this empty product.
+and TS/React. The completed tooling analysis does not establish product-language acceptance.
 
 ## Concrete activation plan
 
-1. User signs into CodeScene: `cs auth login`, then `cs auth status`.
+1. Sign into [CodeScene](https://codescene.io/login) with GitHub and select the
+   free Community Edition for this public repository. Account creation/terms and
+   any new security-sensitive GitHub permission grant require the user's action-time
+   confirmation. CLI sign-in is separate: `cs auth login`, then `cs auth status`.
    Do not put access tokens in tracked files or chat. CI credentials use approved secret
    storage; source code/service data upload requires account-side access selection.
 2. Create/choose the Routira GitHub repository; grant the CodeScene application only
    required repository access and configure the project/PR integration.
-3. After first cohesive implementation, run a real baseline and record exact engine/config
+3. Use the existing Python planning tools for an initial supported-code analysis if
+   the service can analyze the review branch. Main currently has no product baseline;
+   do not merge PR #1 or change its target to manufacture one. After first cohesive
+   implementation, run a product baseline and record exact engine/config
    version, score availability and review rules. Git history is needed for meaningful hotspots.
 4. For local change review use `cs delta` or `cs delta --staged`; for actual branches
    use `cs delta main feature-branch --error-on-warnings` after inspecting installed help.
@@ -42,7 +59,8 @@ CodeScene server. A CLI install does not create MCP access. No CodeScene tools a
 in this session. Do not install/configure the server until its exact version, required account
 permissions and source-analysis effects are reviewed. P0-04/D16 owns this optional addition.
 
-External blockers: CodeScene sign-in/account authorization, selected remote repository,
-actual implementation baseline and first verified PR run. Continue mandatory local checks.
+External blockers: selected-repository GitHub App grant for PR checks, first verified
+PR run and actual implementation baseline. Browser login does not sign the CLI in.
+Continue mandatory local checks.
 CLI startup update check can be disabled for deterministic help with
 `$env:CS_DISABLE_VERSION_CHECK = '1'`; this does not bypass authentication or analysis.

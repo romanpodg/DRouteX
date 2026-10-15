@@ -1,0 +1,8 @@
+[run]
+branch = true
+relative_files = true
+data_file = coverage/.coverage
+include =
+    tools/render_planning.py
+    tools/verify_planning.py
+    tools/verify_quality_proposals.py
