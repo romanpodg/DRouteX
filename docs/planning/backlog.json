@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "MVP roadmap execution authorized on 2026-10-15; P0-01 contracts in review",
+  "status": "P0-01 and CR-0002 accepted on 2026-10-15; P0-02 in progress",
   "date": "2026-10-15",
   "phases": {
     "P0": "Foundation",
@@ -40,11 +40,11 @@
         "docs/architecture/adr"
       ],
       "acceptance": "Owner reviews proposed CR-0002 Profile/Endpoint model, secure DNS capabilities, separate legacy/gateway group grants and opt-in learning, policy layers/private records, snapshots and Linux assumptions; no tunnel prerequisite",
-      "tests": "Design walkthrough of W1-W3 and F1-F5 in P0_01_FOUNDATION_REVIEW.md; owner review pending; runtime evidence belongs to dependent tasks",
+      "tests": "Owner explicitly accepted P0-01/CR-0002 in this chat on 2026-10-15 after W1-W3/F1-F5 review; runtime proof remains in dependent tasks",
       "security": "No scope reduction or unsafe default hidden in an ADR",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_review",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -75,7 +75,7 @@
       "security": "Supply-chain inventory and no secrets in examples",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -2593,16 +2593,17 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-15",
-    "source": "Direct user instruction in this chat to begin from MVP_SCOPE.md",
-    "scope": "Start roadmap work at P0-01; technical ADRs and task prerequisites remain gates"
+    "source": "Direct owner acceptance of P0-01/CR-0002 and instruction to continue through P0-02 in this chat",
+    "scope": "Through P0-02 only; no merge, reminder or later task implementation",
+    "through_task": "P0-02"
   },
   "design_proposals": [
     {
       "id": "CR-0002",
-      "status": "proposed",
+      "status": "accepted",
       "date": "2026-10-15",
       "source": "docs/architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md",
-      "authority": "User authorized Control D research and corresponding project model/plan edits; technical acceptance remains P0-01"
+      "authority": "Owner explicitly accepted P0-01/CR-0002 in this chat on 2026-10-15"
     }
   ],
   "repository": {
@@ -2611,5 +2612,12 @@
     "review_branch": "docs/review-dns-proxy-foundation",
     "visibility": "public",
     "review_pr": "https://github.com/romanpodg/Routira/pull/1"
+  },
+  "foundation_review": {
+    "status": "accepted",
+    "date": "2026-10-15",
+    "source": "Direct owner response accepting P0-01/CR-0002 and Debian 13 x86_64 assumptions",
+    "document": "docs/planning/P0_01_FOUNDATION_REVIEW.md",
+    "scope": "Foundation constraints and CR-0002 only; detailed cryptography, numeric limits and outbound transport retain their owning gates"
   }
 }

@@ -1,13 +1,14 @@
 # P0-01: DNS/proxy foundation review
 
-Date: 2026-10-15. Status: **In review; not approved**.
+Date: 2026-10-15. Status: **Accepted by the owner in this chat on 2026-10-15**.
 Authority: [MVP scope](MVP_SCOPE.md), [roadmap](DEVELOPMENT_ROADMAP.md),
 [CR-0001](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 This is a design walkthrough, not executable or network test evidence.
 
-Updated after the user's Control D research request: proposed
+Updated after the user's Control D research request: accepted
 [CR-0002](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md) and the
 [DNS product model](../architecture/DNS_PRODUCT_MODEL.md) now form this review packet.
+The owner explicitly accepted this package and CR-0002 before authorizing P0-02.
 They replace the earlier manual-IP-only mechanism proposal. The
 [research report](../research/CONTROLD_ANALYSIS.md) separates vendor documentation
 from Routira design inferences; no vendor runtime behavior was independently tested.
@@ -32,7 +33,7 @@ the security boundary. The Linux target has not been supplied by the operator.
 P0-01 defines ingress identity, destination authorization, process ownership,
 snapshot/failure semantics and the test target. Its deliverables are this review,
 the [threat model](../security/THREAT_MODEL.md), and references from existing ADRs.
-There are no existing application callers, fixtures, database migrations or exports.
+At the initial review there were no application callers, fixtures, database migrations or exports.
 
 P0-02 consumes these contracts for the minimal common/config/policy workspace.
 P0-03 consumes the platform and network scenarios for disposable fixtures.
@@ -42,7 +43,7 @@ P1-05/P1-06 consume the snapshot invariants. No prerequisite is waived by this r
 ## Public ingress decision: D05/D08
 
 Accepted legacy/gateway choice: public DNS-only clients can share a network/group
-context. Proposed CR-0002 also supports personal DoH/DoT Endpoints whose resolver
+context. Accepted CR-0002 also supports personal DoH/DoT Endpoints whose resolver
 capabilities select distinct DNS Profiles across changing IPs and shared NAT.
 This does not prove the device identity of an unrelated transparent TCP connection.
 
@@ -83,13 +84,13 @@ not a limitation that a client label or DNS transaction ID can fix.
 | Candidate | Client requirement | Authorization and limitation | Decision state |
 |---|---|---|---|
 | Authenticated explicit proxy over TLS | Client/application supports proxy credentials and a protected connection | Credential authorizes that connection; target checks and quotas still apply. Does not transparently cover all applications or DNS-only TVs | Not selected; requires a separate secured-ingress decision |
-| Personal DoH/DoT Endpoint | Configure a supported OS/browser DNS URL or hostname | Resolver capability selects DNS Profile; separate gateway group grant still required | Proposed CR-0002 core MVP path |
+| Personal DoH/DoT Endpoint | Configure a supported OS/browser DNS URL or hostname | Resolver capability selects DNS Profile; separate gateway group grant still required | Accepted CR-0002 core MVP path |
 | Administrator registration or opt-in secure observation | Clients only change DNS; operator enables the chosen grant mode | Temporary network/group grant; same-NAT/reassignment/expiry/IPv6 limitations above | Group scope accepted; concrete publication/learning mechanism proposed |
 | DNS setting alone plus individual authorization on a shared gateway | No additional client capability | No trustworthy per-device proof reaches the ordinary TCP connection; do not claim this combination works | User chose group access instead |
 
 DoH supports HTTP authentication mechanisms, but particular clients may not expose
 them ([RFC 8484, section 8.2](https://www.rfc-editor.org/rfc/rfc8484.html#section-8.2)).
-CR-0002 makes personal DoH/DoT required in the revised proposed MVP, with separate
+CR-0002 makes personal DoH/DoT required in the revised accepted MVP, with separate
 transport tests. A secret DNS hostname/path is a credential if used for authorization and
 must not be exposed in history, access logs, screenshots or ordinary API responses.
 
@@ -97,7 +98,7 @@ An explicit proxy is distinct from the already planned proxy **outbound**. Selec
 that ingress requires its own auth/TLS/revocation/rate-limit/client-compatibility
 criteria; it must not appear as an unreviewed expansion of P4-05.
 
-## Proposed contracts for owner review
+## Accepted foundation contracts and retained implementation choices
 
 | Contract | Proposed behavior | Owning tasks / decisions |
 |---|---|---|
@@ -131,7 +132,7 @@ an explicit new authorized change rather than an incidental rollback side effect
 
 | Flow | Design steps and expected observable evidence | Current result |
 |---|---|---|
-| W1: personal or group DNS policy | Secure capability selects Endpoint/Profile, or legacy source selects its unexpired group. Two secure Endpoints behind one NAT can differ. Apply layered BYPASS/BLOCK/local answers without secret logging or private-answer scope leaks | P2/P3/P4-08; D08/D09/CR-0002 review pending; no runtime pass |
+| W1: personal or group DNS policy | Secure capability selects Endpoint/Profile, or legacy source selects its unexpired group. Two secure Endpoints behind one NAT can differ. Apply layered BYPASS/BLOCK/local answers without secret logging or private-answer scope leaks | P2/P3/P4-08; Foundation accepted; D08/D09 implementation values pending; no runtime pass |
 | W2: authorized SmartDNS to direct VPS egress | Authorize the registered network and target in one active route context; publish compatible gateway answer; independently resolve/check/pin origin; forward TLS unchanged. Verify original certificate and VPS egress; unknown/expired ingress or target denied | Contract traced to P4-01/P4-02/P4-03/P4-08; D05 group scope accepted, D08 mechanism in review; no runtime pass |
 | W3: authorized gateway to protected proxy outbound | Start with valid ingress/binding; independently resolve/check/pin origin; authenticate the selected protected proxy connection and request that numeric target. Verify actual proxy egress and unchanged origin TLS | Contract traced to P0-05/P4-05/P4-08; D19 handshake not performed; no runtime pass |
 
@@ -163,24 +164,49 @@ answer. Debian lists amd64 among supported architectures in its
 This is target selection evidence, not Routira compatibility evidence. Record the
 actual image/package/kernel versions in P0-03; WSL cannot replace native systemd proof.
 
-P0-01 stays **in_review** until the owner reviews these concrete contracts,
-including D08 registration/expiry semantics and the proposed Linux assumptions.
-Review also covers CR-0002 secure endpoint credentials, observed-IP learning,
-layered filtering and private-record isolation. Research/plan editing is authorized;
-no technical proposal has been marked accepted merely because it was researched.
-Technical ADRs remain Proposed. P0-02/P0-03/P0-05 are not marked started or complete.
+The owner explicitly accepted P0-01/CR-0002 in this chat on 2026-10-15, including
+D08 foundation semantics and Debian 13 x86_64 as the first native acceptance target.
+Acceptance covers secure endpoint credentials, opt-in observations, layered filtering,
+private-record isolation and runtime safety. The owner then approved Rust 1.99.0/MSRV,
+Edition 2024, no external dependencies and limited Windows/Linux CI for P0-02.
+P0-01 is completed. P0-03/P0-05 are not started. ADR-0017 is Accepted; other technical
+ADRs retain Proposed status for detailed mechanisms outside this foundation decision.
 No tunnel prerequisite has been added; the existing planning validator checks the
 61-task revised MVP dependency closure and preserved source specifications.
+
+## Owner decision and next execution bound
+
+Owner decision recorded: explicit acceptance of P0-01/CR-0002 and continuation
+through P0-02. The following foundation is accepted; this is not blanket acceptance
+of every technical ADR:
+
+| Area | Foundation accepted at P0-01 |
+|---|---|
+| Product model | CR-0002: reusable Profiles, one active Profile per DNS Endpoint, personal DoH/DoT, pinned local filter/service revisions and Profile-isolated private records; custom > service > filter > default policy layers |
+| Public access | Secure DNS capability selects a DNS Profile. Legacy DNS and transparent TCP use separate, exact /32 or /128 network/group grants; same-NAT peers share authority. No per-device TCP identity claim |
+| Changing IPs | Manual authenticated registration/replacement is bootstrap/fallback. Secure-query observation learning is disabled by default, explicitly scoped, bounded and published by the controller; conflicts are denied, never merged or switched by the latest query |
+| Runtime safety | Separate unprivileged controller/runtime; authenticated immutable generations and last-known-good; expiry/revocation remains effective during outages/rollback; independent checked numeric origin dial, unchanged origin TLS and strict proxy failure denies access |
+| First platform and next task | Windows development; Debian 13 x86_64 as the accepted first native acceptance target, with actual image/kernel proof in P0-03. Then P0-02 creates only immediately needed common/config/policy crates with cross-host build checks |
+
+Numeric lease/clock/resource values, snapshot encoding/algorithm, key lifecycle,
+DNS response compatibility, exact protected outbound and the operator's actual lab
+remain open at their owning gates (D03/D08/D09/D11/D15/D18/D19). Accepting the
+foundation does not choose these silently or claim runtime compatibility.
+
+The owner-authorized execution bound is P0-02, followed by its reviewable diff and
+validation evidence. It does not authorize PR merging or completion of later tasks.
+Any later requested contract change must be recorded explicitly before dependent work.
 
 ## Verification for this review
 
 Regenerate with python3.12 tools/render_planning.py and verify with
 python3.12 tools/verify_planning.py --self-test. The revised validator checks 88 tasks,
-188 mappings, the 61-task MVP closure, links/ADR statuses and seven intentionally
+188 mappings, the 61-task MVP closure, links/ADR statuses and nine intentionally
 invalid cases, including missing secure-DNS/catalog gates. Actual results are in
 [planning-verification.json](../environment/planning-verification.json), not inferred
 from the design. Original EN/RU source hashes must remain unchanged.
-Additional assertions check that only P0-01 entered in_review and rendered status
-matches backlog.json. Rust version commands succeeded; Cargo product checks and
-native Linux network/recovery tests were not run because no workspace exists.
+Additional assertions require recorded owner acceptance, completed prerequisites,
+the P0-02 execution bound and exactly three workspace crates. Cargo workspace checks
+are tracked in EXECUTION_STATUS.md; native Linux network/recovery tests remain P0-03.
+The owner decision is not executable network evidence.
 CodeScene/Codecov remain unavailable as product evidence.

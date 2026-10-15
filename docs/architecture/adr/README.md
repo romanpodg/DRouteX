@@ -1,11 +1,11 @@
 # Architecture decision records
 
-ADR-0001–0015 and ADR-0017 remain **Proposed** on 2026-10-15. ADR-0016 is **Accepted** as the user-authorized DNS/proxy MVP scope amendment. The user authorized starting roadmap work and Control D research/plan adaptation; concrete technical contracts remain in P0-01 review. Administrator bootstrap plus later role assignment remains a confirmed requirement.
+ADR-0001–0015 retain **Proposed** status for detailed mechanisms. ADR-0016 and ADR-0017 are **Accepted**: DNS/proxy MVP scope and the Profile/Endpoint model. On 2026-10-15 the owner explicitly accepted the P0-01 foundation constraints and CR-0002, then authorized work through P0-02. This does not accept every detailed technical choice or claim runtime validation. Administrator bootstrap plus later role assignment remains a confirmed requirement.
 
 [P0-01 review](../../planning/P0_01_FOUNDATION_REVIEW.md) connects the proposals to
 three network flows, five failure cases and the [threat model](../../security/THREAT_MODEL.md).
 Public changing-IP, DNS-only network/group access is confirmed; concrete
-registration/binding/snapshot/Linux contracts remain for owner review.
+foundation contracts and Debian 13 x86_64 assumptions are accepted; numeric/cryptographic details retain their owning gates.
 
 | ADR | Topic |
 |---|---|
@@ -25,4 +25,4 @@ registration/binding/snapshot/Linux contracts remain for owner review.
 | [ADR-0014](ADR-0014-metrics-and-structured-event-ownership.md) | Metrics and structured event ownership |
 | [ADR-0015](ADR-0015-versioning-and-compatibility-policy.md) | Versioning and compatibility policy |
 | [ADR-0016](ADR-0016-dns-proxy-mvp-before-tunnels.md) | **Accepted:** DNS/proxy MVP before tunnels (CR-0001) |
-| [ADR-0017](ADR-0017-profile-endpoint-dns-product-model.md) | **Proposed:** Profiles, DNS Endpoints, personal secure DNS, catalogs and separate proxy grants (CR-0002) |
+| [ADR-0017](ADR-0017-profile-endpoint-dns-product-model.md) | **Accepted:** Profiles, DNS Endpoints, personal secure DNS, catalogs and separate proxy grants (CR-0002) |

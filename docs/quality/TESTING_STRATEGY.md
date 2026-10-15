@@ -2,7 +2,7 @@
 
 Status: Proposed. Base specification §22 plus accepted CR-0001 define applicability.
 DNS/proxy MVP and later engine/tunnel expansion have separate acceptance gates.
-Proposed [CR-0002](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md)
+Accepted [CR-0002](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md)
 adds mandatory personal DoH/DoT, layered catalogs/private records and separate
 legacy/gateway access grants to the revised MVP plan. No transport evidence exists yet.
 

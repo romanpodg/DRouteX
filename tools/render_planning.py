@@ -28,7 +28,7 @@ def render_backlog(plan):
     text = ['# Implementation backlog', '',
             f"**{plan['status']}.**", '',
             'Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).', '',
-            'Proposed CR-0002: [Profile/Endpoint DNS model](../architecture/DNS_PRODUCT_MODEL.md), including personal DoH/DoT and versioned filter/service catalogs. Technical acceptance remains P0-01.', '',
+            'Accepted CR-0002: [Profile/Endpoint DNS model](../architecture/DNS_PRODUCT_MODEL.md), including personal DoH/DoT and versioned filter/service catalogs. Owner accepted P0-01 on 2026-10-15; detailed implementation gates remain.', '',
             'Canonical status/delivery source: [backlog.json](backlog.json). Regenerate with python3.12 tools/render_planning.py.', '',
             'Workstream IDs are stable, not chronological release order. Delivery tags govern release applicability.', '',
             'S/M/L indicates relative complexity, not elapsed time. Quality bundles and full Definition of Done: [QUALITY_STRATEGY](../quality/QUALITY_STRATEGY.md).', '']
@@ -141,13 +141,13 @@ def render_amendments(trace, add):
          'requirement': 'Release DNS/proxy MVP without VPNs, managed engines, TUN or a custom privileged networking helper; retain real later protocol acceptance',
          'kind': 'Accepted user instruction', 'scope': 'Overrides first-release ordering in §§23.2/24.1/24.2; no implementation approval',
          'tasks': ['P4-08', 'P7-07', 'P11-06', 'P5-10'], 'scope_change': 'CR-0001'})
-    trace += ['', '## Proposed Control D reference design', '',
-              '| ID | Proposed design | Kind | Effective scope | Task deliveries | Work items |',
+    trace += ['', '## Accepted Control D reference design', '',
+              '| ID | Accepted design | Kind | Effective scope | Task deliveries | Work items |',
               '|---|---|---|---|---|---|']
     add({'id': 'R-CR-0002', 'section': 'design-proposal', 'line': 1, 'source_file': DESIGN_ADR,
          'title': 'Profile and endpoint DNS product model',
          'requirement': 'Separate Profiles, DNS Endpoints, resolver capabilities, filter/service revisions, private records and gateway grants; personal DoH/DoT in revised MVP',
-         'kind': 'Proposed design', 'scope': 'Authorized research and plan edits; technical acceptance pending P0-01',
+         'kind': 'Accepted user instruction', 'scope': 'Owner accepted P0-01/CR-0002 on 2026-10-15; dependent implementation tests remain',
          'tasks': ['P1-01', 'P2-07', 'P2-02', 'P3-07', 'P4-01', 'P6-03', 'P7-02', 'P7-04'],
          'scope_change': 'CR-0002'})
 
@@ -177,7 +177,7 @@ def render_traceability(mappings, by_id):
     render_checklists(spec_lines, trace, add)
     render_network_matrix(spec_lines, trace, add)
     render_amendments(trace, add)
-    trace += ['', f'Total mapping records (including rollups, checklist details, accepted amendment and proposed design): **{len(trace_records)}**.', '',
+    trace += ['', f'Total mapping records (including rollups, checklist details and accepted amendments): **{len(trace_records)}**.', '',
               'Task status is recorded in backlog.json. A mapping or deferral is neither implementation nor a passed acceptance test.', '']
     (ROOT / 'docs/planning/REQUIREMENTS_TRACEABILITY.md').write_text('\n'.join(trace), encoding='utf-8')
     (ROOT / 'docs/planning/traceability.json').write_text(json.dumps(

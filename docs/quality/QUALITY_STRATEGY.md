@@ -1,6 +1,6 @@
 # Quality strategy
 
-Status: Proposed; tools installed, product checks blocked by absent workspace/frontend.
+Status: Proposed full quality strategy; P0-02 workspace checks active, frontend absent.
 Specification §§16,19,22,24 plus accepted CR-0001/ADR-0016 are authoritative over generic skill defaults. Original engine/tunnel acceptance remains pending for G3.
 
 ## Mandatory bundles
@@ -44,8 +44,8 @@ production or for arbitrary fork code.
 **Q-DOC:** task fields/prerequisites/traceability valid, MVP dependency closure excludes
 future work, relative links resolve, ADR status accurate and source specs unchanged.
 User-authorized CR-0001 is explicit; original deferred obligations remain traceable.
-Proposed CR-0002 stays distinct from acceptance: validate the revised secure-DNS
-and catalog prerequisite gates, 61-task MVP closure and ADR-0017's Proposed state.
+Accepted CR-0002 has recorded owner evidence: validate the revised secure-DNS
+and catalog prerequisite gates, 61-task MVP closure and ADR-0017's Accepted state.
 Q-LINUX now includes personal DoH/DoT capability/roaming and separate gateway grant
 tests under that revised plan; no product evidence is implied by planning checks.
 
@@ -63,12 +63,12 @@ passed for commit 46b7e51; this is not product CI, coverage or P0-04 completion.
 |---|---|
 | rustc/cargo/rustfmt/Clippy/rust-analyzer/LLVM tools | Installed; versions/components verified |
 | Edition 2024 native compile/link/assertion | Executed successfully with portable Windows SDK and existing MSVC |
-| nextest/llvm-cov/deny/audit | Installed; version/help verified, no workspace analysis performed |
-| fmt/check/clippy/test/deny/coverage on Routira | Blocked by absent Cargo.toml/Cargo.lock; no dummy crates |
-| Feature combinations/MSRV/dependency resolution | Planned P0-02/P0-04; current crate candidates are not a verified lockfile |
+| nextest/llvm-cov/deny/audit | Installed; P0-02 check evidence recorded in EXECUTION_STATUS.md; no external dependency is added |
+| fmt/check/clippy/test/deny/coverage on Routira | Minimal three-crate workspace exists; P0-02 evidence in EXECUTION_STATUS.md; full product integration remains P0-04 |
+| Feature combinations/MSRV/dependency resolution | Owner approved Rust 1.99.0/MSRV; no optional features or external dependencies in initial Cargo.lock |
 | Frontend type/lint/Vitest/browser coverage | Planned; no application package exists |
 | Real Linux DNS/proxy/namespaces/VPS | Platform-dependent; no product network acceptance performed; engine/tunnel tests deferred to G3 |
-| Codecov/CodeScene | Codecov upload/report verified; runs 38709252934/38709858143 passed. CodeScene baseline/daily/PR delivery verified; review 7965631 fails on 15 tooling health findings. No product scores claimed |
+| Codecov/CodeScene | On inspected head 023ce20, run 38756886961 and Codecov planning patch check passed. CodeScene review 7971972 failed one argument-count rule in auxiliary build_doc_graph.py (9.69), outside the owner's quality-improvement scope; no suppression/gate change. No product scores claimed |
 | Planning graph/schema/link/DAG checks | Evidence recorded in environment report after final verification |
 
 ## Coverage and code health

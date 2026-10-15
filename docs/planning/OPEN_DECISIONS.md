@@ -4,7 +4,7 @@ Scope: user accepted **DNS/proxy MVP before tunnels**, CR-0001 on 2026-10-15.
 [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md) records the explicit
 override to original §23.2/§24.1/§24.2 ordering. Technical mechanisms remain proposed.
 Private Linux VPS, separate ports, strict proxy fail-closed and owner plus later admins are confirmed.
-The user authorized beginning MVP roadmap work on 2026-10-15. P0-01 is in review:
+The owner accepted P0-01/CR-0002 on 2026-10-15 and authorized work through P0-02:
 [contracts and design walkthroughs](P0_01_FOUNDATION_REVIEW.md),
 [threat model](../security/THREAT_MODEL.md). No technical ADR was automatically accepted.
 
@@ -13,7 +13,7 @@ DNS-setting-only clients. After discussing the shared transparent gateway's lack
 of individual device evidence, the user explicitly accepted **network-wide access
 and one profile shared behind the external IP**. A registered IP is therefore a
 coarse group grant, not a device identity. The subsequent Control D research request
-produced proposed [CR-0002](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md):
+produced accepted [CR-0002](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md):
 personal DoH/DoT Endpoints, reusable Profiles, filters/services/private records and
 optional scoped source observation. Manual updates remain bootstrap/fallback;
 no installed updater, DDNS polling or router integration is implied.
@@ -56,29 +56,29 @@ IPv6/QUIC/application enforcement.
 |---|---|---|---|
 | D01 | Confirmed owner bootstrap/later admins; define exact role/MFA/recovery/last-owner permission table | P6-01 | Product/security owner; role tests |
 | D02 | Confirmed Linux VPS initial product; Windows development host | P0-01 details | Operator |
-| D03 | Proposed Debian 13 x86_64 first target; no operator target supplied; pin actual image/kernel in lab; VPN kernel matrix deferred | P0-01 assumptions / P0-03 evidence | Operator; real VM/VPS |
+| D03 | Accepted Debian 13 x86_64 first target; no operator target supplied; pin actual image/kernel in lab; VPN kernel matrix deferred | P0-01 assumptions / P0-03 evidence | Operator; real VM/VPS |
 | D04 | Private admin and separate ports confirmed; allocate DNS/gateway/proxy bindings | P4-01/P11-01 | Operator; occupied-port tests |
-| D05 | Confirmed public changing-IP VPN-free DNS setup; proposed personal DoH/DoT capabilities select DNS Profiles, while legacy/gateway remain separately group-authorized | P0-01 / P3-07/P4-01 | Group tradeoff accepted; CR-0002 technical review and actual transport/NAT proof pending |
+| D05 | Confirmed public changing-IP VPN-free DNS setup; accepted personal DoH/DoT capabilities select DNS Profiles, while legacy/gateway remain separately group-authorized | P0-01 / P3-07/P4-01 | Group tradeoff and CR-0002 foundation accepted; actual transport/NAT proof pending |
 | D06 | Coherent IPv4/IPv6 inside DNS/proxy boundary, with explicit uncontrolled-client limits | P3-04/P4-08 | Network owner; captures |
 | D07 | Select controlled origin/proxy and 2–3 authorized DNS/proxy reference services; VPN clients chosen later | P4-08 | User/operator |
-| D08 | Exact-address manual bootstrap plus disabled-by-default secure observation learning; separate DNS/gateway scopes, bounded expiry, cause/revocation and no conflicting last-query Profile switch; no automatic /64 | P0-01 / P4-01/P3-06/P3-07 | Owner review; actual source-mismatch/conflict/expiry/derived-revocation tests |
+| D08 | Exact-address manual bootstrap plus disabled-by-default secure observation learning; separate DNS/gateway scopes, bounded expiry, cause/revocation and no conflicting last-query Profile switch; no automatic /64 | P0-01 / P4-01/P3-06/P3-07 | Foundation accepted; numeric/clock limits and actual source-mismatch/conflict/expiry/derived-revocation tests |
 | D09 | BLOCK answer, DNSSEC override and HTTPS/SVCB compatibility behavior | P3-04/P3-05 | Network owner; validating client tests |
 | D10 | Wildcard excludes apex; priority/specificity/stable ordering and conflict rejection | P2-01 | Product owner; properties |
 | D11 | Snapshot canonical format/auth/epoch and rotation policy | P1-05 | Security owner; replay/crash tests |
 | D12 | TUN-to-Xray bridge and privileged routing design deferred | Post-MVP P5/P9 | Real-engine spike before claiming support |
 | D13 | WG/AWG/Xray kernel/client/engine versions and distribution inventory deferred | Post-MVP P5-01 | Version-specific lab evidence |
-| D14 | Routira license and relevant distribution notices remain open; engine redistribution later | P11-05 / later engine release | Owner review |
+| D14 | Owner selected Apache-2.0 for original Routira code on 2026-10-15; external dependency/distribution notices still require inventory; engine redistribution later | P11-05 / later engine release | Owner review |
 | D15 | Separate master key/recovery, access-secret lifecycle and retention | P1-07 | Security/operator owner |
-| D16 | CodeScene baseline/daily analysis/PR delivery verified; review 7965631 fails on 15 findings in five Python tools; product baseline later; MCP optional | Tooling Code Health follow-up; product P0-04 gate | User/maintainer |
-| D17 | Codecov root YAML validated; planning LCOV/OIDC run 38709252934 and processed 95.95% report verified; Rust/frontend coverage awaits real workspaces | External product P0-04 gate | User/maintainer; no product coverage report yet |
+| D16 | CodeScene baseline/daily analysis/PR delivery verified; current inspected review 7971972 on 023ce20 fails one argument-count rule in auxiliary build_doc_graph.py (9.69); no score-only cleanup, suppression or gate change; product baseline later, MCP optional | Product P0-04 gate; auxiliary tools are outside the owner's quality-improvement scope | User/maintainer; see EXECUTION_STATUS.md for current-head evidence |
+| D17 | Codecov root YAML and earlier 95.95% planning report verified; current inspected run 38756886961 passes upload and planning patch check on 023ce20; Rust/frontend coverage awaits real workspaces | External product P0-04 gate | User/maintainer; no product coverage report yet |
 | D18 | Measured DNS/TCP/proxy resource budgets; engine budgets later | P10-04 | Operator |
 | D19 | Select one first protected SOCKS5 or HTTP CONNECT outbound; no managed engine dependency; public explicit inbound is a separate decision | P0-05/P4-05 | Actual proxy/egress and credential transport test |
-| D20 | Proposed custom > service > filter > default ranks, explicit domain match modes and one active Profile per Endpoint; stacks/schedules deferred | P0-01/P2-01/P2-02 | CR-0002; golden/permutation/conflict tests |
+| D20 | Accepted custom > service > filter > default ranks, explicit domain match modes and one active Profile per Endpoint; stacks/schedules deferred | P0-01/P2-01/P2-02 | CR-0002; golden/permutation/conflict tests |
 | D21 | Personal DoH/DoT token/hostname provisioning, TLS certificate lifecycle and optional IP restriction/learning bootstrap; possession is not hardware proof | P0-01/P3-07/P6-03 | CR-0002; redaction/rotation/revocation/roaming tests |
 | D22 | Bounded local catalog formats, source/license/hash evidence and isolated private DNS records; remote feeds/DDNS/router helper deferred | P0-05/P2-07/P3-04 | CR-0002; real import/update rollback and scope-isolation tests |
 
-Scope confirmation did not approve implementation. The later start instruction authorizes
-roadmap execution at P0-01; it does not accept all technical ADRs or pass their tests.
+The owner explicitly accepted the P0-01 foundation and CR-0002, then authorized
+P0-02. Other technical details and later task execution retain their own gates.
 
 ## Risk register
 

@@ -1,10 +1,10 @@
 # DNS/proxy MVP threat model
 
-Date: 2026-10-15. Status: **Proposed; P0-01 owner review pending**.
+Date: 2026-10-15. Status: **Foundation accepted at P0-01 on 2026-10-15; controls await implementation**.
 Scope: [accepted MVP](../planning/MVP_SCOPE.md), specification sections 3/5/10/19/22,
 and [foundation review](../planning/P0_01_FOUNDATION_REVIEW.md).
 No implemented security control or successful penetration test is claimed.
-Proposed [CR-0002 product model](../architecture/DNS_PRODUCT_MODEL.md) extends this
+Accepted [CR-0002 product model](../architecture/DNS_PRODUCT_MODEL.md) extends this
 review to personal DoH/DoT capabilities, versioned catalogs and opt-in learned grants.
 
 ## Assets and actors

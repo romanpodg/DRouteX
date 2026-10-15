@@ -1,9 +1,9 @@
 # Routira DNS product model
 
-Status: **Proposed**, 2026-10-15; design revision CR-0002. Prepared at the user's
+Status: **Accepted** by the owner at P0-01 on 2026-10-15; design revision CR-0002. Prepared at the user's
 request using the [Control D analysis](../research/CONTROLD_ANALYSIS.md).
 [ADR-0017](adr/ADR-0017-profile-endpoint-dns-product-model.md) records the decision.
-This supersedes the manual-IP-only proposal for review, not the preserved base specs
+This supersedes the manual-IP-only proposal, not the preserved base specs
 or accepted group authorization limits of ordinary transparent TCP ingress.
 
 ## Product structure
@@ -164,16 +164,16 @@ empty successful protection toggle. Explain includes layer/rule/profile/endpoint
 dataset revision, DNS and gateway identity scope, outcome and generation. Activity
 is aggregated by default; no fabricated per-device TCP attribution or exhaustive history.
 
-Reuse proposed crates: common owns IDs/states; config validates resources; policy
+The initial common/config/policy crates establish the workspace; later ownership is: common owns IDs/states; config validates resources; policy
 owns matching/catalog compilation; storage owns drafts/revisions/grants; dns owns
 UDP/TCP/DoH/DoT endpoint lookup; gateway owns checked passthrough/outbounds; api owns
 auth/CRUD/publication. The runtime still survives controller/database loss.
 Web feature folders follow profiles/endpoints/filters/services/dns/proxy/diagnostics.
-These are boundaries for later implementation, not new placeholder crates.
+Runtime/API/storage/web boundaries remain for later implementation, not placeholder crates.
 
 ## Delivery and acceptance
 
-P0-01 reviews this model. P1-01/P1-02/P1-03 establish resources and constraints.
+The owner accepted this model at P0-01. P1-01/P1-02/P1-03 establish resources and constraints.
 New P2-07 imports versioned catalogs; P2-01..06 compile and explain layered policy.
 P3-07 now implements mandatory personal DoH/DoT and diagnostics before P4-08.
 P4-01 enforces separate grants; P6-03/P6-04/P7-02..04 expose the product structure.

@@ -1,18 +1,18 @@
 # Development roadmap
 
-Status: **MVP roadmap execution authorized on 2026-10-15; P0-01 contracts in review.**
+Status: **P0-01/CR-0002 accepted on 2026-10-15; execution authorized through P0-02.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
-recorded in [EXECUTION_STATUS](EXECUTION_STATUS.md). The boundary is P0-01 review;
-P0-02 waits for explicit owner acceptance, and merging is not authorized.
+recorded in [EXECUTION_STATUS](EXECUTION_STATUS.md). The boundary is P0-02 workspace validation; later tasks and merging are not authorized.
 Primary source: [base specification](../../Routira_Project_Specification_EN.md), all 27 sections,
 with [accepted scope amendment ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
-Base EN/RU specifications remain unchanged. No application workspace or production logic exists.
+Base EN/RU specifications remain unchanged. A minimal common/config/policy workspace
+is being validated; runtime DNS/proxy services do not exist yet.
 The user authorized [Control D research](../research/CONTROLD_ANALYSIS.md) and plan
-adaptation. Proposed [CR-0002](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md)
+adaptation. Accepted [CR-0002](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md)
 introduces reusable Profiles, DNS Endpoints, personal DoH/DoT, filter/service catalogs,
-private records and separately scoped gateway grants. Its technical acceptance is pending.
+private records and separately scoped gateway grants. The owner accepted its foundation contracts; implementation evidence remains pending.
 
 ## Product outcome and accepted scope
 
@@ -35,7 +35,7 @@ CR-0001 explicitly moves original first-release protocol requirements to a later
 |---|---|---|
 | G0 Foundation | Approved DNS/proxy contracts, minimal workspace, storage/policy/snapshots, early auth, isolated DNS/TCP test harness | P0/P1/P2, early P6-01/P10-02; no tunnel/helper dependencies |
 | G1 First DNS/proxy slice | Real legacy and personal DoH/DoT endpoint policy → separately authorized TCP gateway → actual TLS origin; minimal UI/API | P3-07 before P4-08; same-NAT DNS Profiles, unchanged certificate, egress, grant/mismatch/failure/rollback negatives |
-| G2 DNS/proxy MVP | Profiles/Endpoints/Filters/Services/private records/Proxy Outbounds management, scoped opt-in IP learning, MFA/RBAC, encrypted restore/systemd | All 61 MVP tasks, especially P7-07/P11-06; CR-0001 scope and proposed CR-0002 model |
+| G2 DNS/proxy MVP | Profiles/Endpoints/Filters/Services/private records/Proxy Outbounds management, scoped opt-in IP learning, MFA/RBAC, encrypted restore/systemd | All 61 MVP tasks, especially P7-07/P11-06; CR-0001 scope and accepted CR-0002 model |
 | G3 Protocol/tunnel expansion | Independently verified WG/AWG, managed Xray if included, restricted helper, compatible exports/UI | P5/P10-01 after G2; P5-10 preserves original deferred §24.1 cases |
 | G4 Multi-node | Remote enrollment/control/snapshots, groups, verified cross-node routes and explicit partial deployment | P8/P9 real two-node acceptance after G3 |
 | G5 Advanced networking | Justified extra engines/UDP/TUN/router policies | F-01/F-02 separate approved work |
@@ -97,10 +97,11 @@ show exact dependencies and explicit amended dispositions. No original requireme
 After changes run `python3.12 tools/render_planning.py` and
 `python3.12 tools/verify_planning.py --self-test`; refresh the local graph.
 The scope amendment alone did not authorize implementation. The later user instruction
-to begin MVP work authorizes P0-01, now in review with a
+to begin MVP work authorizes P0-01, now accepted with a
 [threat model](../security/THREAT_MODEL.md), three flow walkthroughs and five failure cases.
 Public changing-IP, VPN-free DNS-only access with legacy/gateway network scope is confirmed.
 CR-0002 adds personal DNS Profiles and opt-in observed network grants to the proposed
 model; it does not turn group-authorized TCP into individual device authorization.
-Review the concrete registration/binding/snapshot/Linux contracts before closing P0-01
-and starting P0-02/P0-03/P0-05; do not waive dependencies.
+P0-01 foundation contracts and Debian 13 x86_64 assumptions are accepted. Continue
+only through P0-02; do not start P0-03/P0-05 without a subsequent execution instruction.
+Detailed implementation decisions and runtime proof remain at their owning gates.

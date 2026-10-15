@@ -10,7 +10,7 @@ DNS actions, traffic actions and decision-point DIRECT have different effects; r
 
 Priority then documented specificity then stable identifier; reject contradictory unresolved rules. Normalize IDNA names; wildcard excludes apex unless an exact rule is present. Explain identity trust, rule and revision.
 
-Proposed [CR-0002](ADR-0017-profile-endpoint-dns-product-model.md) refines priority
+Accepted [CR-0002](ADR-0017-profile-endpoint-dns-product-model.md) refines priority
 into explicit custom > service > filter > default ranks, with user priority within
 a rank. Exact/DomainAndSubdomains/SubdomainsOnly are distinct match modes.
 Explicit BYPASS skips lower rule layers, not safety checks; default BYPASS is only

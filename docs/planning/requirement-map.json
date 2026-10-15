@@ -456,9 +456,9 @@
         "P3-03",
         "P3-07"
       ],
-      "scope": "MVP; personal DoH/DoT required in proposed CR-0002",
-      "kind": "Base requirement with proposed CR-0002 extension",
-      "requirement": "Restricted UDP/TCP forwarder; personal DoH/DoT endpoint transports required by proposed CR-0002, separately tested; local policy/cache/metrics"
+      "scope": "MVP; personal DoH/DoT required in accepted CR-0002",
+      "kind": "Base requirement with accepted CR-0002 extension",
+      "requirement": "Restricted UDP/TCP forwarder; personal DoH/DoT endpoint transports required by accepted CR-0002, separately tested; local policy/cache/metrics"
     },
     "9.2": {
       "tasks": [

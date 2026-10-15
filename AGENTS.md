@@ -8,22 +8,28 @@ Read `Routira_Project_Specification_EN.md` with the accepted scope amendment
 The EN/RU base specifications are preserved. MVP is DNS routing and authorized TCP
 proxying only; tunnels, managed protocol engines and privileged network execution
 are post-MVP. The user authorized beginning MVP roadmap work on 2026-10-15.
-Current task: P0-01 contract review; no application workspace exists. Follow task
-prerequisites: close P0-01 owner review before dependent implementation.
+The owner explicitly accepted P0-01/CR-0002 on 2026-10-15 and authorized work
+through P0-02 only. The minimal common/config/policy workspace is now being validated.
+Stop after P0-02; later tasks retain their prerequisites and authorization gates.
 The user authorized initial GitHub commits/pushes, PR creation and activity monitoring
 on 2026-10-15. Repository: romanpodg/Routira; current review PR #1 and execution
 boundary are recorded in `docs/planning/EXECUTION_STATUS.md`. This does not authorize
 merging, force-pushing, changing branch protections or starting P0-02 before review.
 Public remote access from changing IPs without VPN is required. The user accepted
 network/group access for legacy DNS and ordinary transparent TCP.
-The user authorized Control D research and plan adaptation; proposed CR-0002 in
+The user authorized Control D research and plan adaptation; accepted CR-0002 in
 `docs/architecture/DNS_PRODUCT_MODEL.md` separates reusable Profiles, personal
 DoH/DoT Endpoints, filter/service revisions, private records and gateway group grants.
 Manual IP updates are bootstrap/fallback, not the only proposed DNS access path.
 Keep resolver capabilities separate from public EndpointId and transparent TCP
 identity; never switch gateway Profile based on the last DNS query or learn grants
 from untrusted input. Exact contracts are in `docs/planning/P0_01_FOUNDATION_REVIEW.md`.
-CR-0002/ADR-0017 and technical design choices remain Proposed pending P0-01 review.
+CR-0002/ADR-0017 and P0-01 foundation constraints are accepted. Detailed crypto,
+limits and outbound choices remain at their owning gates; other technical ADRs
+are not blanket-approved. Debian 13 x86_64 is the accepted first native test target.
+P0-02 uses owner-approved Rust 1.99.0/MSRV, Edition 2024, no external dependencies
+and a limited Windows/Linux workspace CI job. The owner selected Apache-2.0 for
+original Routira code; third-party licenses are preserved. No new reminder is authorized.
 User communication is Russian; code and
 technical documentation are English.
 

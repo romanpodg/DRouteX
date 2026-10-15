@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: MVP roadmap execution authorized on 2026-10-15; P0-01 contracts in review. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0-01 and CR-0002 accepted on 2026-10-15; P0-02 in progress. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

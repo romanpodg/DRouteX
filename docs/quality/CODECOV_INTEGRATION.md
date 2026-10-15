@@ -7,7 +7,7 @@ repository admin access. The user signed into Codecov; Routira is activated.
 The pre-existing Codecov GitHub App covers this repository; its permissions were
 not changed. Root YAML passed the official `https://codecov.io/validate` endpoint
 with `Valid!`. No permanent upload token is stored in this repository.
-No Cargo/frontend workspace exists. Planning coverage is separate from product
+The minimal P0-02 Cargo workspace exists; no frontend workspace exists. Planning coverage is separate from product
 coverage; see [execution status](../planning/EXECUTION_STATUS.md).
 
 [Actions run 38709252934](https://github.com/romanpodg/Routira/actions/runs/38709252934)

@@ -61,17 +61,29 @@ class ValidatorTests(unittest.TestCase):
         self.tasks = json.loads((ROOT / 'docs/planning/backlog.json').read_text(encoding='utf-8'))['tasks']
 
     def test_task_rejections_and_mvp_closure(self):
-        self.assertEqual(planning.self_test(self.tasks), 7)
+        self.assertEqual(planning.self_test(self.tasks), 9)
         counts, release = planning.validate_release(self.tasks)
         self.assertEqual(len(release), counts['MVP'])
 
     def test_invalid_task_fields_are_rejected(self):
-        cases = {'complexity': '?', 'delivery': 'UNKNOWN', 'scope_change': 'UNKNOWN', 'spec': [28]}
+        cases = {'complexity': '?', 'delivery': 'UNKNOWN', 'scope_change': 'UNKNOWN', 'spec': [28], 'status': 'unknown'}
         for field, value in cases.items():
             with self.subTest(field=field), self.assertRaises(AssertionError):
                 tasks = copy.deepcopy(self.tasks)
                 tasks[0][field] = value
                 planning.validate_tasks(tasks)
+
+    def test_foundation_acceptance_and_execution_limit_are_required(self):
+        plan = json.loads((ROOT / 'docs/planning/backlog.json').read_text(encoding='utf-8'))
+        missing_acceptance = copy.deepcopy(plan)
+        missing_acceptance['foundation_review']['status'] = 'proposed'
+        missing_evidence = copy.deepcopy(plan)
+        missing_evidence['foundation_review']['source'] = ''
+        later_work = copy.deepcopy(plan)
+        next(t for t in later_work['tasks'] if t['id'] == 'P0-03')['status'] = 'in_progress'
+        for case in (missing_acceptance, missing_evidence, later_work):
+            with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
+                planning.validate_review_boundary(case)
 
     def test_every_upload_mutation_is_rejected(self):
         flow = quality.read_yaml(ROOT / '.github/workflows/planning.yml')

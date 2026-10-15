@@ -12,7 +12,7 @@ Authorize ingress/service/profile/route independently; allowlist target and use 
 
 The user requires public changing-IP access without VPN and DNS-setting-only
 clients, and explicitly accepted access/profile shared by the network's external IP.
-Proposed CR-0002 adds personal secure DNS capabilities selecting Endpoint Profiles,
+Accepted CR-0002 adds personal secure DNS capabilities selecting Endpoint Profiles,
 including distinct DNS policy behind NAT. Legacy DNS and transparent gateway grants
 stay network scoped. Manual registration remains bootstrap/fallback; opt-in secure
 observations may produce bounded grants only through authenticated publication.

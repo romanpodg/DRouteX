@@ -61,7 +61,7 @@ All numbered headings/subsections were considered. Parent rows aggregate childre
 | R-8.4 | Explain rule/action/exit/limits/revision predicts policy; separate actual network test proves connectivity | Explicit requirement | MVP | MVP | P2-06, P6-06, P7-03 |
 | R-8.5 | Validate/simulate/compile/stage/activate/health/rollback; monotonic hash/version; no partial node state or restored-session promise | Explicit requirement | MVP + later | MVP, POST_MVP_MULTI_NODE | P1-05, P1-06, P6-05, P9-04 |
 | R-9 | DNS Engine: all mapped child obligations below | Section rollup | See child requirements | MVP | P0-02, P1-05, P3-01, P3-02, P3-03, P3-04, P3-05, P3-06, P3-07, P4-02, P7-04 |
-| R-9.1 | Restricted UDP/TCP forwarder; personal DoH/DoT endpoint transports required by proposed CR-0002, separately tested; local policy/cache/metrics | Base requirement with proposed CR-0002 extension | MVP; personal DoH/DoT required in proposed CR-0002 | MVP | P3-01, P3-02, P3-03, P3-07 |
+| R-9.1 | Restricted UDP/TCP forwarder; personal DoH/DoT endpoint transports required by accepted CR-0002, separately tested; local policy/cache/metrics | Base requirement with accepted CR-0002 extension | MVP; personal DoH/DoT required in accepted CR-0002 | MVP | P3-01, P3-02, P3-03, P3-07 |
 | R-9.2 | Pin compatible Hickory server/resolver features with Tokio/rustls; custom first-party policy layer | Proposed architecture | MVP | MVP | P0-02, P3-01 |
 | R-9.3 | Name/type/class/upstream/mode/scope/validation cache distinction prevents profile leakage | Explicit requirement | MVP | MVP | P3-03, P1-05 |
 | R-9.4 | Safe compatible overrides, coherent IPv4/IPv6, signed-answer integrity, loop and pattern/conflict checks | Explicit requirement | MVP | MVP | P3-04, P3-05, P3-06, P4-02 |
@@ -218,12 +218,12 @@ All numbered headings/subsections were considered. Parent rows aggregate childre
 |---|---|---|---|---|---|
 | R-CR-0001 | Release DNS/proxy MVP without VPNs, managed engines, TUN or a custom privileged networking helper; retain real later protocol acceptance | Accepted user instruction | Overrides first-release ordering in §§23.2/24.1/24.2; no implementation approval | MVP, POST_MVP_PROTOCOLS | P4-08, P7-07, P11-06, P5-10 |
 
-## Proposed Control D reference design
+## Accepted Control D reference design
 
-| ID | Proposed design | Kind | Effective scope | Task deliveries | Work items |
+| ID | Accepted design | Kind | Effective scope | Task deliveries | Work items |
 |---|---|---|---|---|---|
-| R-CR-0002 | Separate Profiles, DNS Endpoints, resolver capabilities, filter/service revisions, private records and gateway grants; personal DoH/DoT in revised MVP | Proposed design | Authorized research and plan edits; technical acceptance pending P0-01 | MVP | P1-01, P2-07, P2-02, P3-07, P4-01, P6-03, P7-02, P7-04 |
+| R-CR-0002 | Separate Profiles, DNS Endpoints, resolver capabilities, filter/service revisions, private records and gateway grants; personal DoH/DoT in revised MVP | Accepted user instruction | Owner accepted P0-01/CR-0002 on 2026-10-15; dependent implementation tests remain | MVP | P1-01, P2-07, P2-02, P3-07, P4-01, P6-03, P7-02, P7-04 |
 
-Total mapping records (including rollups, checklist details, accepted amendment and proposed design): **188**.
+Total mapping records (including rollups, checklist details and accepted amendments): **188**.
 
 Task status is recorded in backlog.json. A mapping or deferral is neither implementation nor a passed acceptance test.

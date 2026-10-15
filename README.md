@@ -4,9 +4,8 @@ Self-hosted SmartDNS, selective traffic routing and multi-protocol network manag
 The accepted MVP scope is **DNS routing and authorized TCP proxying on one Linux VPS**.
 Tunnels and managed WG/AWG/Xray engines follow after that release; see the
 [accepted scope amendment](docs/architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
-MVP roadmap work has started with **P0-01 architecture/security review**.
-This directory contains specifications, development tools and review documents;
-no application workspace exists yet.
+The owner accepted **P0-01 / CR-0002** on 2026-10-15. **P0-02** creates the minimal
+Rust common/config/policy workspace; no DNS/gateway service runs yet.
 
 - [Development roadmap](docs/planning/DEVELOPMENT_ROADMAP.md)
 - [Current execution boundary and repository handoff](docs/planning/EXECUTION_STATUS.md)
@@ -14,7 +13,7 @@ no application workspace exists yet.
 - [P0-01 contracts and ingress decision](docs/planning/P0_01_FOUNDATION_REVIEW.md)
 - [MVP threat model](docs/security/THREAT_MODEL.md)
 - [Control D reference analysis](docs/research/CONTROLD_ANALYSIS.md)
-- [Proposed Profiles / DNS Endpoints / filters / proxy model](docs/architecture/DNS_PRODUCT_MODEL.md)
+- [Accepted Profiles / DNS Endpoints / filters / proxy model](docs/architecture/DNS_PRODUCT_MODEL.md)
 - [Actionable backlog](docs/planning/IMPLEMENTATION_BACKLOG.md)
 - [Architecture and proposed decisions](docs/architecture/ARCHITECTURE_OVERVIEW.md)
 - [Environment and verification](docs/environment/ENVIRONMENT_REPORT.md)
@@ -24,4 +23,9 @@ no application workspace exists yet.
 Windows PowerShell development environment: `. ./tools/activate.ps1`.
 This uses local Rust tooling and existing Visual Studio without persistent PATH edits.
 Read AGENTS.md before work. The user authorized starting MVP roadmap work on 2026-10-15;
-P0-01 is in review before dependent implementation begins.
+P0-01 is accepted; the current authorized execution boundary is P0-02.
+See [Rust workspace posture](docs/agents/rust.md) for build commands and scope.
+
+Original Routira code is licensed under [Apache-2.0](LICENSE), selected by the owner
+on 2026-10-15. Vendored third-party skills/resources retain their own licenses and
+notices; see [their provenance](docs/environment/SKILLS_AND_TOOLS.md).

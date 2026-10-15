@@ -1062,9 +1062,9 @@
         "P3-03",
         "P3-07"
       ],
-      "scope": "MVP; personal DoH/DoT required in proposed CR-0002",
-      "kind": "Base requirement with proposed CR-0002 extension",
-      "requirement": "Restricted UDP/TCP forwarder; personal DoH/DoT endpoint transports required by proposed CR-0002, separately tested; local policy/cache/metrics",
+      "scope": "MVP; personal DoH/DoT required in accepted CR-0002",
+      "kind": "Base requirement with accepted CR-0002 extension",
+      "requirement": "Restricted UDP/TCP forwarder; personal DoH/DoT endpoint transports required by accepted CR-0002, separately tested; local policy/cache/metrics",
       "delivery": [
         "MVP"
       ],
@@ -3749,8 +3749,8 @@
       "source_file": "docs/architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md",
       "title": "Profile and endpoint DNS product model",
       "requirement": "Separate Profiles, DNS Endpoints, resolver capabilities, filter/service revisions, private records and gateway grants; personal DoH/DoT in revised MVP",
-      "kind": "Proposed design",
-      "scope": "Authorized research and plan edits; technical acceptance pending P0-01",
+      "kind": "Accepted user instruction",
+      "scope": "Owner accepted P0-01/CR-0002 on 2026-10-15; dependent implementation tests remain",
       "tasks": [
         "P1-01",
         "P2-07",

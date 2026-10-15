@@ -1,10 +1,10 @@
 # Implementation backlog
 
-**MVP roadmap execution authorized on 2026-10-15; P0-01 contracts in review.**
+**P0-01 and CR-0002 accepted on 2026-10-15; P0-02 in progress.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
-Proposed CR-0002: [Profile/Endpoint DNS model](../architecture/DNS_PRODUCT_MODEL.md), including personal DoH/DoT and versioned filter/service catalogs. Technical acceptance remains P0-01.
+Accepted CR-0002: [Profile/Endpoint DNS model](../architecture/DNS_PRODUCT_MODEL.md), including personal DoH/DoT and versioned filter/service catalogs. Owner accepted P0-01 on 2026-10-15; detailed implementation gates remain.
 
 Canonical status/delivery source: [backlog.json](backlog.json). Regenerate with python3.12 tools/render_planning.py.
 
@@ -16,7 +16,7 @@ S/M/L indicates relative complexity, not elapsed time. Quality bundles and full 
 
 ### P0-01: Approve architectural and security contracts
 
-Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§5,15,19,23,25.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§5,15,19,23,25.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -24,14 +24,14 @@ Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 | Prerequisites | Explicit roadmap approval and registered product decisions |
 | Expected files/modules | docs/planning/P0_01_FOUNDATION_REVIEW.md; docs/research/CONTROLD_ANALYSIS.md; docs/architecture/DNS_PRODUCT_MODEL.md; docs/security/THREAT_MODEL.md; docs/architecture/adr |
 | Acceptance criteria | Owner reviews proposed CR-0002 Profile/Endpoint model, secure DNS capabilities, separate legacy/gateway group grants and opt-in learning, policy layers/private records, snapshots and Linux assumptions; no tunnel prerequisite |
-| Tests | Design walkthrough of W1-W3 and F1-F5 in P0_01_FOUNDATION_REVIEW.md; owner review pending; runtime evidence belongs to dependent tasks |
+| Tests | Owner explicitly accepted P0-01/CR-0002 in this chat on 2026-10-15 after W1-W3/F1-F5 review; runtime proof remains in dependent tasks |
 | Security considerations | No scope reduction or unsafe default hidden in an ADR |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
 | Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |
 
 ### P0-02: Create minimal workspace and engineering posture
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§15,16,22.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§15,16,22.
 
 | Field | Deliverable / evidence |
 |---|---|

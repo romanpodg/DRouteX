@@ -10,7 +10,7 @@ Rewritten/validated answers and different profiles/upstreams cannot safely share
 
 Cache keys include normalized name/type/class/upstream/policy scope/response mode/validation provenance and suitable generation. TTL/negative expiry bounded. Bind DNS rewrite route generation to gateway authorized contexts.
 
-Under proposed CR-0002, effective Profile, pinned dataset/private-record revision and
+Under accepted CR-0002, effective Profile, pinned dataset/private-record revision and
 endpoint access mode must not leak answers across scopes. Raw resolver secrets are
 never cache/metric/log labels. Private DNS answers grant no gateway dial permission.
 

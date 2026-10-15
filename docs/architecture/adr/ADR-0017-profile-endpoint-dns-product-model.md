@@ -1,9 +1,9 @@
 # ADR-0017: Profile and endpoint DNS product model
 
-Status: **Proposed**. Date: 2026-10-15. Design revision: **CR-0002**.
-Authority: user requested Control D research, a comparable DNS/profile/proxy
-structure and necessary roadmap edits. That authorizes this proposal, not automatic
-technical acceptance or production implementation. CR-0001 remains accepted.
+Status: **Accepted**. Date: 2026-10-15. Design revision: **CR-0002**.
+Authority: the owner explicitly accepted P0-01/CR-0002 in this chat on 2026-10-15
+and authorized continuation through P0-02. This accepts the product/foundation
+contracts, not later technical choices or successful runtime behavior. CR-0001 remains accepted.
 Specification: sections 8/9/10/12/14/17/19, with preserved EN/RU source texts.
 
 ## Context
@@ -16,7 +16,7 @@ rules and separate source-network authorization for transparent proxy access.
 
 ## Decision
 
-Propose the [DNS product model](../DNS_PRODUCT_MODEL.md): reusable Profiles; named
+Adopt the [DNS product model](../DNS_PRODUCT_MODEL.md): reusable Profiles; named
 DNS Endpoints; rotatable secure resolver capabilities; versioned filter/service
 catalogs; explicit private records and rule layers; separate DNS/gateway grants;
 VPS direct egress and one protected proxy outbound. Require DoH/DoT in revised G2;
@@ -42,10 +42,10 @@ matching preserve deterministic publication without copying proprietary datasets
 ## Consequences
 
 Update existing task scopes and add P2-07 catalog import, with explicit traceability.
-The revised proposal has 88 tasks, 61 in MVP. Keep source specs and CR-0001 intact.
+The accepted model has 88 tasks, 61 in MVP. Keep source specs and CR-0001 intact.
 P3-07 becomes a P4-08 prerequisite; both secure transports remain independently tested.
-No new engine/tunnel/helper/multi-node dependency enters MVP. Technical ADRs remain
-Proposed pending P0-01 review; no application workspace is created by this change.
+No new engine/tunnel/helper/multi-node dependency enters MVP. Other technical ADRs retain their Proposed status for details outside the accepted
+foundation. The model itself supplies no runtime acceptance evidence.
 
 ## Risks
 

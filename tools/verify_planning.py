@@ -17,6 +17,7 @@ def validate_task_fields(task, ids):
     assert task['complexity'] in {'S','M','L'}, 'Unknown complexity'
     assert task['delivery'] in DELIVERIES, 'Unknown delivery'
     assert task['scope_change'] == 'CR-0001', 'Missing scope amendment'
+    assert task['status'] in {'planned', 'in_progress', 'in_review', 'completed'}, 'Unknown task status'
     assert all(1 <= section <= 27 for section in task['spec']), 'Unknown spec section'
     assert all(p in ids for p in task['prerequisites']), f"Unknown prerequisite: {task['id']}"
 
@@ -50,6 +51,9 @@ def validate_tasks(tasks):
         validate_task_fields(task, ids)
     validate_dependency_order(by_id)
     validate_dependency_cycles(by_id)
+    for task in tasks:
+        if task['status'] != 'planned':
+            assert all(by_id[p]['status'] == 'completed' for p in task['prerequisites']), f"Unfinished prerequisite: {task['id']}"
     assert 'P3-07' in by_id['P4-08']['prerequisites'], 'Missing required secure-DNS gate'
     assert 'P2-07' in by_id['P2-05']['prerequisites'], 'Missing required catalog gate'
     return ids
@@ -70,9 +74,15 @@ def invalid_task_cases(tasks):
     unpinned = copy.deepcopy(tasks)
     next(t for t in unpinned if t['id'] == 'P2-05')['prerequisites'].remove('P2-07')
     invalid.append(unpinned)
+    unknown_status = copy.deepcopy(tasks); unknown_status[0]['status'] = 'unknown'; invalid.append(unknown_status)
+    premature = copy.deepcopy(tasks)
+    next(t for t in premature if t['id'] == 'P0-01')['status'] = 'planned'
+    next(t for t in premature if t['id'] == 'P0-02')['status'] = 'in_progress'
+    invalid.append(premature)
     reasons = ('Missing task evidence field', 'Unknown prerequisite', 'Dependency cycle',
                'Duplicate task ID', 'Later-release dependency',
-               'Missing required secure-DNS gate', 'Missing required catalog gate')
+               'Missing required secure-DNS gate', 'Missing required catalog gate',
+               'Unknown task status', 'Unfinished prerequisite')
     return list(zip(invalid, reasons))
 
 
@@ -123,9 +133,9 @@ def validate_scope_amendments(plan, indexed):
     assert amendment['source_file'] == 'docs/architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md'
     assert amendment['kind'] == 'Accepted user instruction'
     proposal = indexed['R-CR-0002']
-    assert proposal['kind'] == 'Proposed design', 'Research must not silently accept a design'
+    assert proposal['kind'] == 'Accepted user instruction', 'Missing accepted CR-0002 trace'
     assert proposal['source_file'] == 'docs/architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md'
-    assert plan['design_proposals'][0]['status'] == 'proposed'
+    assert plan['design_proposals'][0]['status'] == 'accepted'
 
 
 def validate_traceability(plan, trace, ids):
@@ -175,7 +185,7 @@ def validate_links():
 
 def validate_adr(adr):
     content = adr.read_text(encoding='utf-8')
-    expected = 'Accepted' if adr.name.startswith('ADR-0016-') else 'Proposed'
+    expected = 'Accepted' if adr.name.startswith(('ADR-0016-', 'ADR-0017-')) else 'Proposed'
     assert f'Status: **{expected}**' in content
     for section in ('Context','Decision','Alternatives','Reasons','Consequences','Risks','Validation approach'):
         assert f'## {section}' in content, f'{adr.name}: {section}'
@@ -190,9 +200,16 @@ def validate_adrs():
     return adrs
 
 
-def validate_review_boundary():
-    assert not (ROOT/'Cargo.toml').exists(), 'Unexpected application workspace'
-    assert not (ROOT/'apps').exists() and not (ROOT/'crates').exists(), 'Unexpected production code'
+def validate_review_boundary(plan):
+    assert plan['foundation_review']['status'] == 'accepted', 'Missing owner acceptance'
+    assert plan['foundation_review']['source'], 'Missing owner decision evidence'
+    assert plan['execution_authorization']['through_task'] == 'P0-02', 'Unexpected execution boundary'
+    by_id = {task['id']: task for task in plan['tasks']}
+    assert by_id['P0-01']['status'] == 'completed', 'Foundation gate is still open'
+    assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02'}), 'Work exceeds P0-02'
+    assert (ROOT/'Cargo.toml').is_file() and (ROOT/'Cargo.lock').is_file(), 'Missing workspace'
+    assert {p.name for p in (ROOT/'crates').iterdir()} == {'routira-common', 'routira-config', 'routira-policy'}, 'Unexpected crate inventory'
+    assert not (ROOT/'apps').exists(), 'Runtime/frontend is outside P0-02'
     agents = (ROOT/'AGENTS.md').read_text(encoding='utf-8')
     assert 'mcp__node_repl__js' in agents and 'sky.list_apps()' in agents and 'browser-only' in agents
 
@@ -206,9 +223,9 @@ def main():
     headings = validate_source_specs(trace)
     link_count = validate_links()
     adrs = validate_adrs()
-    validate_review_boundary()
+    validate_review_boundary(plan)
     negatives = self_test(plan['tasks']) if '--self-test' in sys.argv else 0
-    result = {'status':'passed','scope_amendment':'CR-0001','design_proposal':'CR-0002','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':1,'negative_validator_cases':negatives,'source_specs_unchanged':True,'application_code_absent':True}
+    result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P0-02','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':3,'runtime_implementation_absent':True}
     (ROOT/'docs/environment').mkdir(parents=True, exist_ok=True)
     (ROOT/'docs/environment/planning-verification.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
     print(json.dumps(result))

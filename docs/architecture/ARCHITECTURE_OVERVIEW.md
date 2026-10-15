@@ -1,16 +1,17 @@
 # Proposed architecture
 
-Status: Proposed technical design; no application code exists. The DNS/proxy-only MVP
+Status: Foundation constraints accepted at P0-01; detailed technical design remains proposed.
+The minimal common/config/policy workspace exists; runtime services do not. The DNS/proxy-only MVP
 boundary is accepted under [ADR-0016 / CR-0001](adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 The base specification remains the long-term product reference.
 One initial owner can add administrators and assign roles.
-MVP roadmap execution is authorized; P0-01 remains in review. The
+The owner accepted P0-01/CR-0002 and authorized work through P0-02. The
 [foundation review](../planning/P0_01_FOUNDATION_REVIEW.md) and
 [threat model](../security/THREAT_MODEL.md) record the accepted public changing-IP,
 DNS-only network/group requirement and proposed registration/expiry contracts.
 
 The subsequent [Control D research](../research/CONTROLD_ANALYSIS.md) produced
-proposed [ADR-0017 / CR-0002](adr/ADR-0017-profile-endpoint-dns-product-model.md).
+accepted [ADR-0017 / CR-0002](adr/ADR-0017-profile-endpoint-dns-product-model.md).
 The [DNS product model](DNS_PRODUCT_MODEL.md) separates Profiles, DNS Endpoints,
 resolver capabilities, filter/service revisions, private records and proxy grants.
 Personal DoH/DoT is now on the revised MVP path; manual network registration is a
@@ -70,7 +71,8 @@ Post-MVP G3 adds routira-protocols, concrete adapters, isolated external engines
 executor only for verified OS actions. G4 adds remote agent/enrollment/control.
 Neither the helper nor a generic adapter framework belongs on the MVP dependency path.
 Do not make production code depend on test fixtures or use a universal mutable service registry.
-Exact dependencies/features/MSRV remain P0-02 decisions, not a resolved application lockfile.
+P0-02 uses owner-approved Rust 1.99.0/MSRV, Edition 2024 and no external dependencies;
+see [workspace posture](../agents/rust.md). Later dependencies/features remain their owning tasks.
 
 WG/AWG terminate tunnels. Managed Xray is a proxy engine; routing tunnel packets into it
 requires a separately validated bridge. These contracts and their kernel/engine tests remain
@@ -116,9 +118,10 @@ short-lived single-use enrollment is proposed for G4.
 ## Decisions still requiring validation
 
 Read [open decisions](../planning/OPEN_DECISIONS.md) and the
-[ADR index](adr/README.md): 16 technical proposals plus the accepted release-scope amendment.
-Authorization to begin roadmap work has not accepted those technical proposals.
-Current open choices include DNS/proxy ingress binding, supported Linux target, selected
-protected outbound, reference services and TTL/generation grace.
+[ADR index](adr/README.md): CR-0001/CR-0002 and foundation constraints are accepted;
+15 technical ADRs retain Proposed status for detailed mechanisms.
+Debian 13 x86_64 is the accepted first native target, not tested product compatibility.
+Open implementation choices include numeric ingress/grant limits, selected protected
+outbound, reference services and TTL/generation grace.
 AWG kernels, packet-to-proxy bridges, helper rollback and remote enrollment remain post-MVP.
 No DNS/proxy or protocol functionality is claimed before actual implementation and acceptance.

@@ -6,11 +6,15 @@ Scope: MVP inventories runtime dependencies; engine licenses, acquisition and di
 
 ## Context
 
-Crates and separate external engines have distinct license/distribution conditions; project license is undecided.
+Crates and separate external engines have distinct license/distribution conditions; the owner selected Apache-2.0 for original Routira code on 2026-10-15.
 
 ## Decision
 
-Record exact-version dependency/engine SBOM and notices; defer Routira license and redistribution packaging until owner review. Prefer verified externally acquired engines until distribution plan accepted.
+Owner decision on 2026-10-15: original Routira code uses Apache-2.0, with the
+official LICENSE text and inherited workspace metadata. Third-party resources
+retain their own licenses. The following distribution/inventory mechanisms remain proposed.
+
+Record exact-version dependency/engine SBOM and notices; keep external redistribution packaging subject to owner review. Prefer verified externally acquired engines until distribution plan accepted.
 
 ## Alternatives
 

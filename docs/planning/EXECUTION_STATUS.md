@@ -1,79 +1,94 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-15. Current boundary: **P0-01 review package; P0-02 is not authorized yet**.
-Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira), public.
+Date: 2026-10-15. Current boundary: **P0-02 workspace validation**.
+Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Review: [PR #1](https://github.com/romanpodg/Routira/pull/1), open against main.
-The user explicitly authorized the first commit/push, pull requests and PR activity
-monitoring. This does not accept technical ADRs or authorize merging a PR.
+No merging, force-pushing, branch-protection change or later task implementation is authorized.
 
-## Steps and stopping condition
+## Owner decisions and current progress
 
-1. Verify the [P0-01 contracts](P0_01_FOUNDATION_REVIEW.md),
-   [product model](../architecture/DNS_PRODUCT_MODEL.md), threat model and planning DAG.
-2. Establish main with repository exclusions and byte-preserving source attributes.
-   Initial commit: c55a6b2, pushed on 2026-10-15.
-3. Publish the complete current review package on docs/review-dns-proxy-foundation
-   through a pull request. Preserve all local tool/setup/graph exclusions.
-4. Run planning CI on Linux and Windows. Inspect current-head checks, review comments,
-   and any CodeScene/Codecov status supplied after the user connects those services.
-5. Present the review result and stop before P0-02. Start Rust implementation only
-   after the owner explicitly accepts P0-01's concrete contracts and assumptions.
+The owner explicitly accepted [P0-01/CR-0002](P0_01_FOUNDATION_REVIEW.md) in this chat
+on 2026-10-15 and instructed continuation through P0-02. Accepted foundation:
+Profiles, personal DoH/DoT Endpoints, separate legacy/gateway group grants, opt-in
+bounded source observation, private-record isolation, fixed policy layers and safe
+snapshot/origin/failure constraints. Debian 13 x86_64 is the first native acceptance
+target. Detailed cryptography, lease/clock/resource values, exact outbound transport
+and actual operator lab retain their owning gates.
 
-The persistent goal covers this bounded preparation/publication/monitoring setup.
-PR monitoring continues separately on a schedule in the same chat. A green planning
-check, external bot approval or PR creation cannot substitute for owner acceptance.
-The active monitor is monitor-routira-foundation-pr, scheduled every 15 minutes.
-It reports meaningful changes and stays quiet on unchanged state; it cannot merge
-or advance implementation beyond this gate.
+The owner also approved Rust 1.99.0/MSRV, Edition 2024, no external dependencies,
+minimal common/config/policy crates and a limited Windows/Linux CI job. After a
+real cargo-deny license failure the owner chose **Apache-2.0** for original Routira
+code, rather than deferring the check. LICENSE and workspace metadata record it;
+third-party licenses are preserved. D14's external notices/inventory work remains.
 
-## Evidence and external checks
+Current backlog: **1 completed (P0-01), 1 in_progress (P0-02), 86 planned**.
+The application foundation exists; there is no running DNS resolver, TCP gateway,
+controller, frontend, storage or product network-test evidence. P1/P2 features are
+not passed by a workspace bootstrap. No later task is started.
 
-Local checks: python3.12 tools/render_planning.py;
-python3.12 tools/verify_planning.py --self-test; reviewed staged diff and credential
-patterns; actionlint for the active planning workflow. Exact validation results
-remain in [planning-verification.json](../environment/planning-verification.json).
+Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
+17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,
+188 requirement mappings, the 88-task DAG and installed tooling. The MVP contains
+61 tasks; tunnels/helper/multi-node remain later work.
 
-The active [planning workflow](../../.github/workflows/planning.yml) uses Python 3.12,
-read-only permissions and immutable action revisions. It verifies planning artifacts
-and preserved EN/RU bytes on Ubuntu and Windows. It does not activate the proposed
-Rust/frontend workflows or complete P0-04. Source specifications are not normalized
-by Git, because their exact bytes are checked by the planning validator.
+## P0-02 implementation and local evidence
 
-The user authorized configuring CodeScene and Codecov on 2026-10-15. GitHub CLI
-admin access and both browser sign-ins are verified. Codecov Routira is activated
-and its root YAML passed the official validator; CodeScene project 86145 exists.
-The user confirmed its saved PR App grant; PR integration is enabled with findings
-in Check Run details. Review 7965631 on `32a458d` was delivered and completed with a
-failed quality gate: 15 complexity/size/nesting findings in five Python tools.
-This verifies delivery, not code-health acceptance; no findings were suppressed.
-The planning workflow
-now measures its three Python tools and has a separate OIDC upload job with the
-`planning` flag. [Run 38709252934](https://github.com/romanpodg/Routira/actions/runs/38709252934)
-passed both OS checks and OIDC upload for `2aef0d5`. Codecov processed the report:
-95.95% for the three planning tools; main has no baseline report yet. CodeScene review-branch
-analysis 7965503 completed; Code Health needs attention and history is limited.
-Its daily analysis is scheduled for 03:00 Asia/Omsk.
-Product Codecov coverage still needs a real application workspace and report;
-installing an app alone cannot create that report. See
-[Codecov](../quality/CODECOV_INTEGRATION.md) and [CodeScene](../quality/CODESCENE_INTEGRATION.md).
-No coverage/Code Health score or required branch-protection status is invented.
+The three crates provide shared RuleLayer vocabulary, the pure accepted precedence
+constant and typed configuration rejection of reordered/missing/duplicate/extra
+layers. No generic engine framework, wire parser or network service is introduced.
+See [Rust posture](../agents/rust.md) for dependency direction, inherited warning/unsafe
+policy and exact commands. Cargo.lock contains only the three local packages.
 
-First remote evidence: [Actions run 38706557088](https://github.com/romanpodg/Routira/actions/runs/38706557088)
-passed on Ubuntu and Windows for commit 46b7e51 on 2026-10-15. The automatic
-Copilot review reported a reviewer quota limit, not a successful code review.
-At that observation no CodeScene/Codecov check or coverage report was present.
-Later commits must be checked against their own head SHA by the monitor.
+On Windows with tools/activate.ps1, fmt/check/Clippy passed, including no-default
+and all-features static checks. Two Rust integration tests passed with default and
+no-default features. Inverting the validation branch made both tests fail; restoring
+it returned them to green. cargo-llvm-cov produced local coverage/p0-02.lcov:
+**62.50% of 8 instrumented source lines**, with the Display implementation uncovered.
+The accepted/rejected validation outcomes are tested; branch coverage was not measured.
+This is local Rust evidence, not a Codecov service report or a coverage target waiver.
 
-The CodeScene follow-up refactors only the five flagged Python tools. Fourteen
-regression tests preserve reviewed rendering output, negative task/workflow checks,
-resource integrity and graph shrink guards; the planning workflow runs them on
-both OS targets. Local tests, planning validators and actionlint passed. Local
-CodeScene review requires separate CLI credentials, so no local health score is
-claimed. No gate was relaxed and P0-02 remains unstarted; inspect the new head's
-GitHub check for the external remediation outcome.
+The first offline cargo-deny attempt lacked a cached RustSec database. After fetching
+it, advisories/bans/sources passed but licenses failed on the then-unlicensed local
+packages. After applying the selected Apache-2.0 license and a narrow explicit
+allow-list, `cargo deny --locked --offline check` passed advisories, bans, licenses
+and sources against the fetched database. No third-party dependency is present.
+No failure is hidden by an exclusion or an advisory suppression.
 
-Monitor notifications are limited to meaningful check/review/head/state changes,
-completion, failures or required user action. Absent unchanged integrations do not
-cause repeated reminders. Inspect current PR head to avoid reporting obsolete runs.
-No automatic merge, force-push, production deployment, unsolicited reviewer messages
-or work beyond P0-01 is authorized by this goal.
+The planning validators check owner acceptance, prerequisite completion, the P0-02
+bound, exactly three crates, 61-task MVP closure, 188 mappings, 17 ADRs and preserved
+EN/RU hashes. Nine intentionally invalid planning cases and six unsafe CI mutations
+are rejected. Fifteen Python regression tests passed with a workspace-local Temp;
+the system Temp path was denied by this Windows sandbox. No dependency installation
+was needed: the existing quality-venv provides Python 3.12.13/PyYAML 6.0.3.
+
+The limited Workspace CI job runs format/check/Clippy/tests on Ubuntu and Windows
+with pinned Rust, read-only permissions and no credentials/upload/network privileges.
+Its actual remote results must be checked before closing P0-02. It does not complete
+P0-04's full product CI/coverage/dependency/failure-injection acceptance.
+Native Debian DNS/TLS/proxy/systemd acceptance remains P0-03 and later integration.
+
+## Earlier remote evidence and quality scope
+
+At the start, local HEAD and open PR #1 matched `023ce200ebf9b3e1b53bb0a1218576d8db092e46`.
+[Actions run 38756886961](https://github.com/romanpodg/Routira/actions/runs/38756886961)
+passed Planning on Ubuntu and Windows and Codecov upload; the planning patch check
+also passed. [CodeScene review 7971972](https://codescene.io/projects/86145/delta/results/7971972)
+failed one argument-count rule in tools/build_doc_graph.py:add_markdown_links (9.69).
+That auxiliary score-only finding is outside the owner's quality-improvement scope;
+no refactor, suppression or gate change was made. Later heads need their own results.
+Copilot's only review reported quota exhaustion, not successful code review.
+
+[CodeScene integration](../quality/CODESCENE_INTEGRATION.md) and
+[Codecov integration](../quality/CODECOV_INTEGRATION.md) preserve service activation
+and earlier report evidence. No product CodeScene/Codecov pass is inferred from setup.
+
+## Stopping condition and continuation
+
+Close P0-02 only after reviewing the full diff and actual Windows/Linux build results,
+then stop. P0-03/P0-05 remain the next planned work; they are not started by this goal.
+No automatic merge, production deployment or unsolicited reviewer message is authorized.
+
+The user will manually reopen the chat after usage limits and requested no new
+reminder. No reminder/automation was created for this goal. The previously configured
+monitor-routira-foundation-pr is separate; its scheduler state was not checked or
+changed in this continuation.

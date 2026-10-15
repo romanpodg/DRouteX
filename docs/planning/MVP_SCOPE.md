@@ -2,7 +2,8 @@
 
 Status: **DNS/proxy-only MVP scope accepted by the user on 2026-10-15 (CR-0001).**
 The user authorized starting MVP roadmap work on 2026-10-15.
-P0-01 is [in review](P0_01_FOUNDATION_REVIEW.md); technical ADRs remain proposed.
+The owner accepted [P0-01/CR-0002](P0_01_FOUNDATION_REVIEW.md) and authorized
+work through P0-02; other detailed technical ADRs retain their own gates.
 [Accepted scope amendment](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md)
 supersedes the original specification's first-release WG/AWG/Xray ordering.
 The EN/RU base specifications are preserved unchanged.
@@ -16,10 +17,10 @@ for the proposed registration, expiry, revocation and same-NAT limitations.
 
 The user subsequently requested a Control D reference analysis and corresponding
 project/plan changes. [CR-0002 / ADR-0017](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md)
-proposes the [Profile/Endpoint product model](../architecture/DNS_PRODUCT_MODEL.md).
+records the accepted [Profile/Endpoint product model](../architecture/DNS_PRODUCT_MODEL.md).
 It replaces the manual-IP-only proposal with personal secure DNS plus separate
-legacy/gateway group grants. Research/plan editing is authorized; concrete technical
-acceptance remains P0-01. The accepted shared-IP limitation applies to legacy DNS
+legacy/gateway group grants. Foundation acceptance is recorded at P0-01; detailed
+implementation choices and runtime tests remain pending. The accepted shared-IP limitation applies to legacy DNS
 and ordinary transparent TCP, not to personalized secure DNS endpoint selection.
 
 ## MVP product boundary
@@ -31,7 +32,7 @@ administrators, role assignment, MFA, audit and last-owner protection.
 MVP includes:
 - Reusable filtering Profiles and named DNS Endpoints, personal rotatable resolver
   capabilities, versioned filter/service catalogs and profile-scoped private records
-  in the revised CR-0002 proposal; one active Profile per Endpoint initially.
+  in the revised CR-0002 model; one active Profile per Endpoint initially.
 - DNS UDP/TCP forwarding, approved upstream selection, TTL/negative caching, local records,
   DIRECT/BLOCK and conditional SmartDNS redirection for supported TCP/TLS services.
 - Deterministic profiles/rules, conflict validation, explain/simulation and real DNS/Route Test.
@@ -50,7 +51,7 @@ kernel VPN module, routing-table/nftables manager or custom privileged executor.
 systemd may grant only a narrow DNS bind capability/socket activation; the API never runs as root
 and no service receives NET_ADMIN. Host access controls remain explicit operator prerequisites.
 
-Proposed CR-0002 makes personal DoH/DoT required, separately tested MVP features.
+Accepted CR-0002 makes personal DoH/DoT required, separately tested MVP features.
 Legacy UDP/TCP remains available for group-authorized older clients. Manual network
 registration remains a bootstrap/fallback; scoped secure-query IP learning is opt-in,
 bounded, revocable and never grants individual TCP identity. DDNS/router helpers,
