@@ -3,8 +3,9 @@
 This is a trusted, manual Linux lab, not Routira DNS/gateway implementation or
 product acceptance. Review the scripts before privileged execution. Never wire
 this command to arbitrary PR code, a production host or a production root runner.
-The owner approved development in the existing WSL Ubuntu on 2026-10-15.
-Native Debian 13 acceptance remains pending.
+The owner approved development in the existing WSL Ubuntu on 2026-10-15 and the
+separate Debian 13 VPS lab on 2026-10-16. Both fixture runs passed; see the recorded
+evidence below. Product networking and systemd acceptance remain later work.
 
 Requirements: Python 3.12+, OpenSSL CLI, iproute2, nftables, tcpdump, util-linux
 (unshare/mount/setpriv) and GNU timeout. No Python/Rust dependency is added.

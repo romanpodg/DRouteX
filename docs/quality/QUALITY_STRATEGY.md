@@ -67,7 +67,7 @@ passed for commit 46b7e51; this is not product CI, coverage or P0-04 completion.
 | fmt/check/clippy/test/deny/coverage on Routira | Minimal three-crate workspace exists; P0-02 evidence in EXECUTION_STATUS.md; full product integration remains P0-04 |
 | Feature combinations/MSRV/dependency resolution | Owner approved Rust 1.99.0/MSRV; no optional features or external dependencies in initial Cargo.lock |
 | Frontend type/lint/Vitest/browser coverage | Planned; no application package exists |
-| Real Linux DNS/proxy/namespaces/VPS | P0-03 WSL dual-stack fixtures/pcap/cleanup passed; native Debian 13 and product network acceptance remain pending; engine/tunnel tests deferred to G3 |
+| Real Linux DNS/proxy/namespaces/VPS | P0-03 WSL and native Debian 13 dual-stack fixtures/pcap/four cleanup modes passed; product networking/systemd acceptance remains pending; engine/tunnel tests deferred to G3 |
 | Codecov/CodeScene | Implementation run 38760651619 on 7ac5f14 passed both Workspace/Planning OS jobs and Codecov upload. CodeScene review 7972404 failed one argument-count rule in auxiliary build_doc_graph.py (9.69), outside the owner's quality-improvement scope; no suppression/gate change. No product scores claimed |
 | Planning graph/schema/link/DAG checks | Evidence recorded in environment report after final verification |
 

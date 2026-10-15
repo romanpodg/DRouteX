@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "P0-01/P0-02 complete; P0-03 WSL fixtures passed, native Debian 13 acceptance in review",
-  "date": "2026-10-15",
+  "status": "P0-01/P0-02/P0-03 complete; WSL and native Debian 13 fixtures passed",
+  "date": "2026-10-16",
   "phases": {
     "P0": "Foundation",
     "P1": "Domain and configuration",
@@ -104,11 +104,11 @@
         ".github/workflows/planning.yml"
       ],
       "acceptance": "Real DNS and TCP/TLS/proxy fixture has separate clients/origins, dual-stack cases and reliable cleanup after failure",
-      "tests": "Four portable boundary tests and real dual-stack WSL DNS/TLS/proxy/NAT/source-mismatch/capture probes passed; setup-failure/SIGTERM/SIGKILL cleanup passed; native Debian 13 remains pending; see P0_03_NETWORK_HARNESS.md",
+      "tests": "Four portable boundary tests and 41 real dual-stack DNS/TLS/proxy observations passed; WSL and native Debian 13.4/KVM/kernel 6.12.85+deb13-amd64 passed normal/setup-failure/SIGTERM/SIGKILL cleanup with unchanged host networking; see P0_03_NETWORK_HARNESS.md",
       "security": "Privileged fixture setup remains isolated from production services; no production credentials or untrusted PR root runner",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_review",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2598,7 +2598,7 @@
   "execution_authorization": {
     "date": "2026-10-15",
     "source": "Direct user instruction to take the next step, followed by explicit approval of the WSL lab variant in this chat",
-    "scope": "Through P0-03 fixtures only; native Debian 13 review remains; no merge, reminder, P0-04/P0-05 or production changes",
+    "scope": "Through P0-03 fixtures only; native Debian VPS run separately approved on 2026-10-16 and passed; no merge, reminder, P0-04/P0-05 or production changes",
     "through_task": "P0-03"
   },
   "design_proposals": [
@@ -2644,7 +2644,15 @@
       "nftables",
       "tcpdump"
     ],
-    "native_acceptance_target": "Debian 13 x86_64; not yet supplied",
-    "privilege_scope": "Trusted manual lab setup/capture only; services/probes unprivileged; no privileged PR runner"
+    "native_acceptance_target": "Debian 13.4 x86_64 KVM VPS; kernel 6.12.85+deb13-amd64",
+    "privilege_scope": "Trusted manual lab setup/capture only; services/probes unprivileged; no privileged PR runner",
+    "native_acceptance": {
+      "date": "2026-10-16",
+      "status": "passed",
+      "source": "Direct owner approval of tcpdump/libpcap installation, reviewed fixture transfer and all four lifecycle modes on the separate test VPS in this chat",
+      "document": "docs/planning/P0_03_NETWORK_HARNESS.md",
+      "report_sha256": "79166809c50bf6adc4b2f4f70b2e67ed247e34cbd10e38bbc0e8146bfd146fa9",
+      "capture_sha256": "cd1ada9a8cb692572efd6dbb1cfb70bc7b8a32c9e0c735130f3d7cf572d85696"
+    }
   }
 }

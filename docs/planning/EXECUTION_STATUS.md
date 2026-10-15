@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-15. Current boundary: **P0-03 in review; WSL fixtures passed, native Debian 13 pending**.
+Date: 2026-10-16. Current boundary: **P0-03 complete; WSL and native Debian 13 fixtures passed**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Review: [PR #1](https://github.com/romanpodg/Routira/pull/1), open against main.
 No merging, force-pushing, branch-protection change or later task implementation is authorized.
@@ -21,8 +21,8 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **2 completed (P0-01/P0-02), 1 in_review (P0-03), 85 planned**.
-Two of the 61 MVP tasks are complete; the WSL fixture pass does not close P0-03.
+Current backlog: **3 completed (P0-01/P0-02/P0-03), 85 planned**.
+Three of the 61 MVP tasks are complete; native fixture evidence closes P0-03.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
 not passed by a workspace bootstrap. No task beyond P0-03 is started.
@@ -31,6 +31,60 @@ Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,
 188 requirement mappings, the 88-task DAG and installed tooling. The MVP contains
 61 tasks; tunnels/helper/multi-node remain later work.
+
+## Accepted selective reuse from PR #2
+
+On 2026-10-15 the owner selected **option A** after the read-only comparison:
+continue on PR #1 and reuse suitable PR #2 components and test scenarios only
+when their existing roadmap tasks are authorized and prerequisites are complete.
+This accepts a reuse strategy, not the old Veyra specification, task completion,
+dependency selection, whole-branch merge or blanket cherry-pick. No donor code has
+been imported. P0-03 was in_review when this strategy was selected and is now
+complete after the native run below; P0-04/P0-05 remain planned.
+
+Reviewed references: PR #1 at
+`5628f2ae3306bf86b22283b19003008fd3246bd7`; [PR #2](https://github.com/romanpodg/Routira/pull/2)
+at `3542426b744306ac71ca255161f5ebf65d3e1189`. This is a static source assessment;
+the donor was not checked out, built or executed. Its reported 147 tests and live
+curl result were not independently reproduced. Later donor changes need review.
+
+| Candidate from PR #2 | Owning tasks | Required adaptation before reuse |
+|---|---|---|
+| policy name/pattern primitives and normalization tests | P2-01 | Current explicit match modes/types; approved IDNA dependency |
+| permutation tests, validation/conflict diagnostics and Explain ideas | P1-02/P2-02/P2-03/P2-06 | CR-0002 layers and priority, typed resources, bounded input, endpoint/dataset/generation provenance |
+| DNS framing, truncation, forwarding and TTL/negative-cache tests | P3-01/P3-02/P3-03 | Separate access context, bounded connections/queues/deadlines and scoped cache generations |
+| TLS fixtures, fragmentation, numeric dial and byte-preservation scenarios | P4-02/P4-03/P4-04 | Separate destination grants, validated CNAME/address provenance, complete self-target checks, parser/ECH and lifecycle validation |
+
+Do not transplant these old decisions:
+
+- [Gateway authorization](https://github.com/romanpodg/Routira/blob/3542426b744306ac71ca255161f5ebf65d3e1189/crates/veyra-gateway/src/gateway.rs#L118)
+  reduces source admission to a boolean and unions all Profile/Device routes.
+  Its [cross-profile allowance test](https://github.com/romanpodg/Routira/blob/3542426b744306ac71ca255161f5ebf65d3e1189/crates/veyra-policy/tests/gateway.rs#L103)
+  must become a denial regression. Keep separate exact-address, expiring legacy
+  and gateway grants; DNS capability never establishes transparent TCP identity.
+- The old specificity/scope/action ordering and CIDR admission model do not replace
+  CR-0002's custom/service/filter/default layers, within-layer priority or distinct
+  Endpoint/credential/group identities. Old BLOCK and HTTPS/SVCB answer choices do
+  not close D09; a shared raw-upstream cache is not the accepted scoped cache design.
+- [Egress self detection](https://github.com/romanpodg/Routira/blob/3542426b744306ac71ca255161f5ebf65d3e1189/crates/veyra-gateway/src/egress.rs#L69)
+  omits additional local public addresses behind wildcard binds;
+  [origin lookup](https://github.com/romanpodg/Routira/blob/3542426b744306ac71ca255161f5ebf65d3e1189/crates/veyra-dns/src/upstream.rs#L55)
+  collects unrelated Answer addresses without owner/CNAME-chain validation.
+  Repair those boundaries and keep test-only egress bypasses out of production APIs.
+- [DNS TCP tasks](https://github.com/romanpodg/Routira/blob/3542426b744306ac71ca255161f5ebf65d3e1189/crates/veyra-dns/src/server.rs#L95)
+  have no connection cap; query permits do not bound connections and writes have
+  no deadline. Network components need bounded lifecycle and tracked shutdown.
+- The unimplemented old apply/deploy plan defers authenticated snapshots and
+  replay protection. Follow P1-05/P1-06 instead, preserving coordinated recovery,
+  increasing activation sequence and revocation through rollback.
+
+Keep the current Routira workspace, Rust 1.99.0, Apache-2.0 posture, specifications,
+ADRs and backlog. Do not import the old root manifests/lockfile or large plans as
+authority. P0-05 reviews dependency versions/licenses and the selected protected
+outbound. The donor tree/manifests declare no license; establish contribution
+permission/license and preserve attribution before copying its code or fixtures.
+Every actual port needs a focused diff review and tests against current contracts;
+donor tests do not establish native Debian or product acceptance.
 
 ## P0-03 continuation and actual lab evidence
 
@@ -47,8 +101,18 @@ and normal/setup-failure/SIGTERM/SIGKILL cleanup. All passed in WSL; the tested 
 network state matched before/after. Keys/config use private tmpfs; local captures
 and reports stay untracked. The CI addition runs only unprivileged boundary tests.
 
-No native Debian 13 VM/VPS/image was supplied. P0-03 stays in_review for that proof;
-this is fixture readiness, not Routira networking/security or systemd acceptance.
+On 2026-10-16 the owner supplied a separate Debian 13.4 x86_64 KVM VPS and approved
+tcpdump/libpcap installation plus execution of the reviewed fixtures. Verified SSH
+host identity and the source hashes preceded the run. All 41 protocol observations,
+both source-mismatch pairs and the four cleanup modes passed on kernel
+6.12.85+deb13-amd64. The 1,621-packet capture and report were downloaded and their
+hashes matched the VPS; private keys/raw evidence remain ignored and access-limited.
+Host network state matched before/after; subsequent checks found no fixture
+processes/named namespaces and only SSH listening, as before. Source, two installed
+packages and root-private evidence remain on the test VPS for reproducibility.
+Exact versions, installed-state identity, hashes and limitations are in the
+[P0-03 review](P0_03_NETWORK_HARNESS.md#native-debian-13-acceptance-2026-10-16).
+P0-03 is complete; product networking/security and systemd acceptance remain later work.
 
 ## P0-02 implementation and local evidence
 
@@ -87,7 +151,8 @@ For implementation commit `7ac5f14deb25bdb687b0aee2008e6fda11734be1`,
 passed both Workspace jobs, both Planning jobs and Codecov upload.
 This is Windows/Linux compile/test evidence, not Debian network compatibility. It does not complete
 P0-04's full product CI/coverage/dependency/failure-injection acceptance.
-Native Debian DNS/TLS/proxy/systemd acceptance remains P0-03 and later integration.
+Native Debian fixture acceptance passed in P0-03; product DNS/TLS/proxy/systemd
+acceptance remains in later integration tasks.
 
 ## Implementation check and earlier quality evidence
 
@@ -118,7 +183,7 @@ and earlier report evidence. No product CodeScene/Codecov pass is inferred from 
 
 P0-02 is closed after full-diff review, local checks and actual Windows/Linux build
 results. The owner subsequently authorized P0-03 and the WSL lab variant. P0-03
-remains in_review for native Debian 13 evidence; P0-04/P0-05 are not started.
+is now complete after the owner-approved native Debian 13 run; P0-04/P0-05 are not started.
 Stop before their implementation or new infrastructure without the owner decision.
 No automatic merge, production deployment or unsolicited reviewer message is authorized.
 

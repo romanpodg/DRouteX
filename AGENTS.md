@@ -8,16 +8,22 @@ Read `Routira_Project_Specification_EN.md` with the accepted scope amendment
 The EN/RU base specifications are preserved. MVP is DNS routing and authorized TCP
 proxying only; tunnels, managed protocol engines and privileged network execution
 are post-MVP. The user authorized beginning MVP roadmap work on 2026-10-15.
-P0-01/CR-0002 and P0-02 are complete. On 2026-10-15 the owner authorized the next
+P0-01/CR-0002, P0-02 and P0-03 are complete. On 2026-10-15 the owner authorized the next
 step, P0-03, and approved the existing WSL Ubuntu lab with Python stdlib/OpenSSL,
 isolated namespaces and lab iproute2/nftables/tcpdump. WSL fixture/cleanup checks
-passed; P0-03 remains in_review pending the accepted native Debian 13 target.
+passed. On 2026-10-16 the owner supplied a dedicated Debian 13 KVM VPS and approved
+tcpdump/libpcap installation and the isolated P0-03 run. All 41 protocol observations
+and four cleanup modes passed there with unchanged host networking. This proves
+fixture readiness, not Routira runtime or systemd acceptance.
 Stop before P0-04/P0-05; later tasks retain their gates. No production-root or
 untrusted privileged PR runner is authorized.
 The user authorized initial GitHub commits/pushes, PR creation and activity monitoring
 on 2026-10-15. Repository: romanpodg/Routira; current review PR #1 and execution
 boundary are recorded in `docs/planning/EXECUTION_STATUS.md`. This does not authorize
 merging, force-pushing, changing branch protections or starting P0-02 before review.
+The owner selected option A for PR #2 on 2026-10-15: keep PR #1 as the foundation,
+reuse only reviewed components/test scenarios at their owning roadmap gates, and
+preserve CR-0002. See EXECUTION_STATUS.md for donor provenance and exclusions.
 Public remote access from changing IPs without VPN is required. The user accepted
 network/group access for legacy DNS and ordinary transparent TCP.
 The user authorized Control D research and plan adaptation; accepted CR-0002 in

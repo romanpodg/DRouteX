@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0-01/P0-02 complete; P0-03 WSL fixtures passed, native Debian 13 acceptance in review. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0-01/P0-02/P0-03 complete; WSL and native Debian 13 fixtures passed. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

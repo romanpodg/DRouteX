@@ -209,7 +209,9 @@ def validate_review_boundary(plan):
     assert by_id['P0-02']['status'] == 'completed', 'Workspace gate is still open'
     assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02', 'P0-03'}), 'Work exceeds P0-03'
     assert plan['network_lab_decision']['source'], 'Missing lab authorization'
-    assert by_id['P0-03']['status'] == 'in_review', 'Native Debian 13 evidence is pending'
+    assert by_id['P0-03']['status'] == 'completed', 'Native Debian 13 fixture gate is not complete'
+    native = plan['network_lab_decision'].get('native_acceptance', {})
+    assert native.get('status') == 'passed' and native.get('source') and native.get('report_sha256'), 'Missing native Debian 13 evidence or authorization'
     assert (ROOT/'Cargo.toml').is_file() and (ROOT/'Cargo.lock').is_file(), 'Missing workspace'
     assert {p.name for p in (ROOT/'crates').iterdir()} == {'routira-common', 'routira-config', 'routira-policy'}, 'Unexpected crate inventory'
     assert not (ROOT/'apps').exists(), 'Runtime/frontend is outside P0-03'

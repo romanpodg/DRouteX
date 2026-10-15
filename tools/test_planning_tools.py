@@ -75,6 +75,7 @@ class ValidatorTests(unittest.TestCase):
 
     def test_foundation_acceptance_and_execution_limit_are_required(self):
         plan = json.loads((ROOT / 'docs/planning/backlog.json').read_text(encoding='utf-8'))
+        planning.validate_review_boundary(plan)
         missing_acceptance = copy.deepcopy(plan)
         missing_acceptance['foundation_review']['status'] = 'proposed'
         missing_evidence = copy.deepcopy(plan)
@@ -83,9 +84,14 @@ class ValidatorTests(unittest.TestCase):
         next(t for t in later_work['tasks'] if t['id'] == 'P0-04')['status'] = 'in_progress'
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
-        premature_native = copy.deepcopy(plan)
-        next(t for t in premature_native['tasks'] if t['id'] == 'P0-03')['status'] = 'completed'
-        for case in (missing_acceptance, missing_evidence, later_work, missing_lab, premature_native):
+        missing_native = copy.deepcopy(plan)
+        missing_native['network_lab_decision'].pop('native_acceptance')
+        unapproved_native = copy.deepcopy(plan)
+        unapproved_native['network_lab_decision']['native_acceptance']['source'] = ''
+        unfinished_native = copy.deepcopy(plan)
+        next(t for t in unfinished_native['tasks'] if t['id'] == 'P0-03')['status'] = 'in_review'
+        for case in (missing_acceptance, missing_evidence, later_work, missing_lab,
+                     missing_native, unapproved_native, unfinished_native):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
 

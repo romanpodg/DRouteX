@@ -2,7 +2,8 @@
 
 Inspection/setup date: **2026-10-15**, user timezone Asia/Omsk.
 Historical initial-setup snapshot below. P0-02 subsequently added the Rust workspace;
-P0-03 now has an owner-approved WSL network lab and real fixture evidence. No
+P0-03 now has owner-approved WSL and native Debian 13 labs with passing fixture
+and cleanup evidence (native run: 2026-10-16). No
 Routira production service/frontend exists. Current state is recorded in
 [execution status](../planning/EXECUTION_STATUS.md) and
 [network harness review](../planning/P0_03_NETWORK_HARNESS.md).

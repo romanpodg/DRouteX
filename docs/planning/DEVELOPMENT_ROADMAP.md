@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0-01/P0-02 complete; P0-03 WSL fixtures passed, native Debian 13 review pending.**
+Status: **P0-01/P0-02/P0-03 complete; WSL and native Debian 13 fixtures passed.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -104,6 +104,12 @@ CR-0002 adds personal DNS Profiles and opt-in observed network grants to the pro
 model; it does not turn group-authorized TCP into individual device authorization.
 P0-01 foundation contracts and Debian 13 x86_64 assumptions are accepted. Continue
 only through P0-03, authorized by the subsequent next-step instruction and explicit
-WSL lab approval. WSL fixture evidence is recorded in P0_03_NETWORK_HARNESS.md;
-native Debian 13 acceptance remains pending. Do not start P0-04/P0-05 yet.
+WSL lab approval. The owner approved the separate Debian VPS lab on 2026-10-16;
+native fixture and cleanup evidence passed and closes P0-03. Both environments are
+recorded in P0_03_NETWORK_HARNESS.md. Do not start P0-04/P0-05 yet.
 Detailed implementation decisions and runtime proof remain at their owning gates.
+
+The owner selected selective reuse from PR #2 on 2026-10-15 (option A).
+PR #1 remains the foundation; the [donor assessment](EXECUTION_STATUS.md#accepted-selective-reuse-from-pr-2)
+maps candidates to existing tasks. This does not start those tasks or waive the
+task prerequisites, dependency/license review or CR-0002 contracts.
