@@ -18,8 +18,16 @@ The user confirmed adding Routira to the pre-existing CodeScene Access GitHub
 App. The saved grant covers Routira plus the previously selected repository;
 other repository access was not changed. PR integration is enabled with the
 existing Minimal Safety Net profile. Individual findings go into Check Run details;
-always-comment and target-ref-only filtering are disabled. The next PR synchronize
-event validates delivery; enabling the setting is not a passed quality gate.
+always-comment and target-ref-only filtering are disabled.
+The first [PR review 7965631](https://codescene.io/projects/86145/delta/results/7965631)
+was delivered on commit `32a458d` as `CodeScene Code Health Review (main)`.
+The analysis completed but its quality gate **failed** with 15 findings of four
+types across five Python tools: `build_doc_graph.py`, `capture_setup_inventory.py`,
+`render_planning.py`, `verify_planning.py` and `verify_quality_proposals.py`.
+The findings concern complex/large methods and nested conditional blocks. The PR
+introduces these tools relative to the initial main; this is not evidence that the
+last documentation commit caused all findings. No finding was suppressed or gate
+relaxed. Tool refactoring is separate from service activation and product approval.
 Daily analysis is saved for **03:00 Asia/Omsk**. No paid plan was selected.
 The initial PR monitor will inspect actual results; repository
 creation/publication alone does not establish a baseline or successful integration.
@@ -64,7 +72,8 @@ CodeScene server. A CLI install does not create MCP access. No CodeScene tools a
 in this session. Do not install/configure the server until its exact version, required account
 permissions and source-analysis effects are reviewed. P0-04/D16 owns this optional addition.
 
-Remaining verification: first delivered PR check and actual implementation baseline.
+Remaining verification: actual implementation baseline and owner disposition of
+the tooling Code Health findings.
 Browser login does not sign the CLI in.
 Continue mandatory local checks.
 CLI startup update check can be disabled for deterministic help with

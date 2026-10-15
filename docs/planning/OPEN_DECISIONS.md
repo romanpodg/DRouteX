@@ -69,7 +69,7 @@ IPv6/QUIC/application enforcement.
 | D13 | WG/AWG/Xray kernel/client/engine versions and distribution inventory deferred | Post-MVP P5-01 | Version-specific lab evidence |
 | D14 | Routira license and relevant distribution notices remain open; engine redistribution later | P11-05 / later engine release | Owner review |
 | D15 | Separate master key/recovery, access-secret lifecycle and retention | P1-07 | Security/operator owner |
-| D16 | CodeScene analysis 7965503 succeeded; daily analysis/selected-repo PR App grant/PR integration saved; first PR delivery pending, product baseline later; MCP optional | External product P0-04 gate | User/maintainer |
+| D16 | CodeScene baseline/daily analysis/PR delivery verified; review 7965631 fails on 15 findings in five Python tools; product baseline later; MCP optional | Tooling Code Health follow-up; product P0-04 gate | User/maintainer |
 | D17 | Codecov root YAML validated; planning LCOV/OIDC run 38709252934 and processed 95.95% report verified; Rust/frontend coverage awaits real workspaces | External product P0-04 gate | User/maintainer; no product coverage report yet |
 | D18 | Measured DNS/TCP/proxy resource budgets; engine budgets later | P10-04 | Operator |
 | D19 | Select one first protected SOCKS5 or HTTP CONNECT outbound; no managed engine dependency; public explicit inbound is a separate decision | P0-05/P4-05 | Actual proxy/egress and credential transport test |

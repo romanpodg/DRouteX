@@ -17,6 +17,8 @@ shows **95.95%**, 308 covered lines of 321, six partial and seven missed. This i
 the three planning tools only. Codecov and coverage.py count partial branches
 differently; use the service report for Codecov's percentage. Main has no baseline
 report yet; view the review branch explicitly until the owner merges PR #1.
+The subsequent [run 38709858143](https://github.com/romanpodg/Routira/actions/runs/38709858143)
+also passed both OS checks and upload on commit `32a458d`.
 
 ## Active planning coverage
 

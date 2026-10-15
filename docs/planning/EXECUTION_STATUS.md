@@ -43,7 +43,10 @@ The user authorized configuring CodeScene and Codecov on 2026-10-15. GitHub CLI
 admin access and both browser sign-ins are verified. Codecov Routira is activated
 and its root YAML passed the official validator; CodeScene project 86145 exists.
 The user confirmed its saved PR App grant; PR integration is enabled with findings
-in Check Run details and awaits a real synchronize event. The planning workflow
+in Check Run details. Review 7965631 on `32a458d` was delivered and completed with a
+failed quality gate: 15 complexity/size/nesting findings in five Python tools.
+This verifies delivery, not code-health acceptance; no findings were suppressed.
+The planning workflow
 now measures its three Python tools and has a separate OIDC upload job with the
 `planning` flag. [Run 38709252934](https://github.com/romanpodg/Routira/actions/runs/38709252934)
 passed both OS checks and OIDC upload for `2aef0d5`. Codecov processed the report:
