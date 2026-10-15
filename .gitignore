@@ -1,2 +1,31 @@
-/target
+# Local setup and developer tools
+.setup/
+.tools/
+# Derived architecture graph; reproducible from source
+graphify-out/
+.graphify_*.json
+# Build, reports, credentials and editor state
+target/
+node_modules/
+dist/
+coverage/
+lcov.info
+*.profraw
+*.profdata
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+*.p12
+*.db
+*.db-shm
+*.db-wal
+.DS_Store
+# Backups made by instruction installers
+AGENTS.md.bak*
+.codex/*.bak*
+# Local agent state
 /.omc/
