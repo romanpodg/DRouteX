@@ -1,6 +1,6 @@
 # Codecov integration
 
-Status on 2026-10-15: **Repository activated; first remote upload pending.**
+Status on 2026-10-15: **Planning coverage upload verified.**
 The user authorized configuring both quality services for public
 [romanpodg/Routira](https://github.com/romanpodg/Routira). GitHub CLI has verified
 repository admin access. The user signed into Codecov; Routira is activated.
@@ -9,6 +9,14 @@ not changed. Root YAML passed the official `https://codecov.io/validate` endpoin
 with `Valid!`. No permanent upload token is stored in this repository.
 No Cargo/frontend workspace exists. Planning coverage is separate from product
 coverage; see [execution status](../planning/EXECUTION_STATUS.md).
+
+[Actions run 38709252934](https://github.com/romanpodg/Routira/actions/runs/38709252934)
+passed both OS jobs and the OIDC upload for commit `2aef0d5` on PR #1.
+The [Codecov commit report](https://app.codecov.io/gh/romanpodg/Routira/commit/2aef0d59729ecd6ea6a8b57e0beb801e30e5ca96)
+shows **95.95%**, 308 covered lines of 321, six partial and seven missed. This is
+the three planning tools only. Codecov and coverage.py count partial branches
+differently; use the service report for Codecov's percentage. Main has no baseline
+report yet; view the review branch explicitly until the owner merges PR #1.
 
 ## Active planning coverage
 
@@ -76,9 +84,9 @@ and patch reporting. No global 90% gate is imposed before meaningful baseline.
 Do not exclude tests/handwritten hard cases just to inflate coverage; generated-code exclusions
 need an explicit justified inventory.
 
-Remaining verification: run the OIDC upload on a real PR,
-inspect both reports/path mapping/changed lines, intentionally demonstrate upload failure,
-then enable required statuses. D17/P0-04 tracks each blocker.
+Remaining product verification in P0-04: generate backend/frontend reports, inspect
+their path mapping/changed lines, intentionally demonstrate upload failure, then
+review required statuses with the owner. D17 tracks the absent product workspaces.
 
 Validation boundary: validate active and proposed Actions with actionlint and run
 `tools/verify_quality_proposals.py`, including its negative authorization cases.

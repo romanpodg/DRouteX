@@ -42,10 +42,14 @@ by Git, because their exact bytes are checked by the planning validator.
 The user authorized configuring CodeScene and Codecov on 2026-10-15. GitHub CLI
 admin access and both browser sign-ins are verified. Codecov Routira is activated
 and its root YAML passed the official validator; CodeScene project 86145 exists.
-Its PR App grant awaits permission confirmation. The planning workflow
+The user confirmed its saved PR App grant; PR integration is enabled with findings
+in Check Run details and awaits a real synchronize event. The planning workflow
 now measures its three Python tools and has a separate OIDC upload job with the
-`planning` flag. First OIDC upload remains unverified. CodeScene review-branch
+`planning` flag. [Run 38709252934](https://github.com/romanpodg/Routira/actions/runs/38709252934)
+passed both OS checks and OIDC upload for `2aef0d5`. Codecov processed the report:
+95.95% for the three planning tools; main has no baseline report yet. CodeScene review-branch
 analysis 7965503 completed; Code Health needs attention and history is limited.
+Its daily analysis is scheduled for 03:00 Asia/Omsk.
 Product Codecov coverage still needs a real application workspace and report;
 installing an app alone cannot create that report. See
 [Codecov](../quality/CODECOV_INTEGRATION.md) and [CodeScene](../quality/CODESCENE_INTEGRATION.md).

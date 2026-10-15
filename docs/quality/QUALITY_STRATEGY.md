@@ -68,7 +68,7 @@ passed for commit 46b7e51; this is not product CI, coverage or P0-04 completion.
 | Feature combinations/MSRV/dependency resolution | Planned P0-02/P0-04; current crate candidates are not a verified lockfile |
 | Frontend type/lint/Vitest/browser coverage | Planned; no application package exists |
 | Real Linux DNS/proxy/namespaces/VPS | Platform-dependent; no product network acceptance performed; engine/tunnel tests deferred to G3 |
-| Codecov/CodeScene | Codecov repo activated/YAML validated; first OIDC upload pending. CodeScene analysis 7965503 completed; PR App grant pending. No product scores claimed |
+| Codecov/CodeScene | Codecov planning upload/report verified in run 38709252934. CodeScene analysis 7965503 completed; daily analysis/PR integration saved, first PR delivery pending. No product scores claimed |
 | Planning graph/schema/link/DAG checks | Evidence recorded in environment report after final verification |
 
 ## Coverage and code health

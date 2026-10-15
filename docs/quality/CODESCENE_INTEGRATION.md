@@ -14,8 +14,13 @@ review-branch analysis is [job 7965503](https://codescene.io/projects/86145/jobs
 It completed successfully: Python/PowerShell were detected; Code Health needs
 attention and there is insufficient commit history for a useful technical-debt trend.
 These are tooling/repository results, not application quality evidence.
-Adding Routira to the pre-existing CodeScene Access GitHub
-App for PR checks is prepared but requires action-time permission confirmation.
+The user confirmed adding Routira to the pre-existing CodeScene Access GitHub
+App. The saved grant covers Routira plus the previously selected repository;
+other repository access was not changed. PR integration is enabled with the
+existing Minimal Safety Net profile. Individual findings go into Check Run details;
+always-comment and target-ref-only filtering are disabled. The next PR synchronize
+event validates delivery; enabling the setting is not a passed quality gate.
+Daily analysis is saved for **03:00 Asia/Omsk**. No paid plan was selected.
 The initial PR monitor will inspect actual results; repository
 creation/publication alone does not establish a baseline or successful integration.
 
@@ -59,8 +64,8 @@ CodeScene server. A CLI install does not create MCP access. No CodeScene tools a
 in this session. Do not install/configure the server until its exact version, required account
 permissions and source-analysis effects are reviewed. P0-04/D16 owns this optional addition.
 
-External blockers: selected-repository GitHub App grant for PR checks, first verified
-PR run and actual implementation baseline. Browser login does not sign the CLI in.
+Remaining verification: first delivered PR check and actual implementation baseline.
+Browser login does not sign the CLI in.
 Continue mandatory local checks.
 CLI startup update check can be disabled for deterministic help with
 `$env:CS_DISABLE_VERSION_CHECK = '1'`; this does not bypass authentication or analysis.
