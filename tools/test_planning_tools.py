@@ -52,6 +52,8 @@ class RendererTests(TemporaryProject):
             renderer.render_section_mappings([('1', 'Unknown', 1)], {'requirements': {}}, list().append)
         with self.assertRaisesRegex(ValueError, 'list changed'):
             renderer.section_bullets(['### 1. Scope', '1. Obligation'], '1', [])
+        with self.assertRaises(StopIteration):
+            renderer.render_network_matrix(['### 22.3. Matrix'], [], list().append)
 
 
 class ValidatorTests(unittest.TestCase):

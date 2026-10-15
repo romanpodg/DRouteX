@@ -19,6 +19,12 @@ def check_step(step):
         assert 'token' not in step['with']
 
 
+def check_job(job):
+    assert job['timeout-minutes'] > 0
+    for step in job['steps']:
+        check_step(step)
+
+
 def check_workflow(flow):
     assert flow['permissions'] == {'contents':'read'}
     jobs = flow['jobs']
@@ -30,10 +36,7 @@ def check_workflow(flow):
     assert upload['permissions']['id-token'] == 'write'
     assert not any('run' in step for step in upload['steps']), 'Privileged upload job executes product scripts'
     for job in jobs.values():
-        assert job['timeout-minutes'] > 0
-        for step in job['steps']:
-            check_step(step)
-
+        check_job(job)
 
 
 def check_active_codecov(active_config):

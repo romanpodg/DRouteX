@@ -9,6 +9,20 @@ DESIGN_ADR = 'docs/architecture/adr/ADR-0017-profile-endpoint-dns-product-model.
 FENCE = chr(96) * 3
 
 
+def task_lines(task):
+    return [f"### {task['id']}: {task['title']}", '',
+            f"Status: **{task['status']}**. Delivery: **{task['delivery']}** (CR-0001). Complexity: **{task['complexity']}**. Specification: §§{','.join(map(str, task['spec']))}.", '',
+            '| Field | Deliverable / evidence |', '|---|---|',
+            f"| Goal and implementation scope | {task['scope']} |",
+            f"| Prerequisites | {', '.join(task['prerequisites']) or 'Explicit roadmap approval and registered product decisions'} |",
+            f"| Expected files/modules | {'; '.join(task['files'])} |",
+            f"| Acceptance criteria | {task['acceptance']} |",
+            f"| Tests | {task['tests']} |",
+            f"| Security considerations | {task['security']} |",
+            f"| Quality checks | {task['quality']} |",
+            f"| Definition of Done | {task['definition_of_done']} |", '']
+
+
 def render_backlog(plan):
     tasks = plan['tasks']
     text = ['# Implementation backlog', '',
@@ -22,36 +36,43 @@ def render_backlog(plan):
         members = [task for task in tasks if task['phase'] == phase]
         text += [f'## {phase}: {name} ({len(members)} tasks)', '']
         for task in members:
-            text += [f"### {task['id']}: {task['title']}", '',
-                     f"Status: **{task['status']}**. Delivery: **{task['delivery']}** (CR-0001). Complexity: **{task['complexity']}**. Specification: §§{','.join(map(str, task['spec']))}.", '',
-                     '| Field | Deliverable / evidence |', '|---|---|',
-                     f"| Goal and implementation scope | {task['scope']} |",
-                     f"| Prerequisites | {', '.join(task['prerequisites']) or 'Explicit roadmap approval and registered product decisions'} |",
-                     f"| Expected files/modules | {'; '.join(task['files'])} |",
-                     f"| Acceptance criteria | {task['acceptance']} |",
-                     f"| Tests | {task['tests']} |",
-                     f"| Security considerations | {task['security']} |",
-                     f"| Quality checks | {task['quality']} |",
-                     f"| Definition of Done | {task['definition_of_done']} |", '']
+            text += task_lines(task)
     (ROOT / 'docs/planning/IMPLEMENTATION_BACKLOG.md').write_text('\n'.join(text), encoding='utf-8')
+
+
+def child_requirement_tasks(section, requirements):
+    children = [value for key, value in requirements.items() if key.startswith(section + '.')]
+    if not children:
+        raise ValueError(f'Unmapped specification heading {section}')
+    return sorted({task for child in children for task in child['tasks']})
+
+
+def heading_mapping(section, title, requirements):
+    item = requirements.get(section)
+    if item is not None:
+        return item
+    return {'tasks': child_requirement_tasks(section, requirements),
+            'requirement': f'{title}: all mapped child obligations below',
+            'kind': 'Section rollup', 'scope': 'See child requirements'}
 
 
 def render_section_mappings(headings, mappings, add):
     for section, title, lineno in headings:
-        item = mappings['requirements'].get(section)
-        if item is None:
-            children = [v for k, v in mappings['requirements'].items() if k.startswith(section + '.')]
-            if not children:
-                raise ValueError(f'Unmapped specification heading {section}')
-            item = {'tasks': sorted({t for v in children for t in v['tasks']}),
-                    'requirement': f'{title}: all mapped child obligations below',
-                    'kind': 'Section rollup', 'scope': 'See child requirements'}
+        item = heading_mapping(section, title, mappings['requirements'])
         add({'id': 'R-' + section, 'section': section, 'line': lineno, 'title': title, **item})
 
 
+def section_start(spec_lines, pattern):
+    return next(i for i, line in enumerate(spec_lines) if re.match(pattern, line))
+
+
+def section_end(spec_lines, start, prefixes):
+    return next((i for i in range(start + 1, len(spec_lines)) if spec_lines[i].startswith(prefixes)), len(spec_lines))
+
+
 def section_bullets(spec_lines, section, ids):
-    start = next(i for i, line in enumerate(spec_lines) if re.match(rf'^### {re.escape(section)}\. ', line))
-    end = next((i for i in range(start + 1, len(spec_lines)) if spec_lines[i].startswith(('### ', '## '))), len(spec_lines))
+    start = section_start(spec_lines, rf'^### {re.escape(section)}\. ')
+    end = section_end(spec_lines, start, ('### ', '## '))
     bullets = [(i + 1, re.sub(r'^(?:\d+\. |\- \[ \] )', '', spec_lines[i]))
                for i in range(start + 1, end) if re.match(r'^(?:\d+\. |\- \[ \] )', spec_lines[i])]
     if len(bullets) != len(ids):
@@ -97,7 +118,7 @@ def network_scope(index):
 
 
 def render_network_matrix(spec_lines, trace, add):
-    start = next(i for i, line in enumerate(spec_lines) if line.startswith('### 22.3.'))
+    start = section_start(spec_lines, r'^### 22\.3\.')
     end = next(i for i in range(start + 1, len(spec_lines)) if spec_lines[i].startswith('### '))
     cases = [(i + 1, spec_lines[i]) for i in range(start, end) if spec_lines[i].startswith('|')][2:]
     trace += ['', '## Network limitation acceptance matrix', '',
@@ -165,9 +186,23 @@ def render_traceability(mappings, by_id):
     return trace_records
 
 
+def longest_prerequisite_chains(tasks):
+    by_id = {task['id']: task for task in tasks}
+    memo = {}
+
+    def chain(task_id):
+        if task_id not in memo:
+            prior = max((chain(p) for p in by_id[task_id]['prerequisites']), key=len, default=[])
+            memo[task_id] = prior + [task_id]
+        return memo[task_id]
+
+    mvp_longest = max((chain(t['id']) for t in tasks if t['delivery'] == 'MVP'), key=len)
+    longest = max((chain(t['id']) for t in tasks), key=len)
+    return mvp_longest, longest
+
+
 def render_dependencies(plan):
     tasks = plan['tasks']
-    by_id = {task['id']: task for task in tasks}
     dependency_doc = ['# Dependency map', '', f"Status: {plan['status']}. Edges are planned prerequisites, not implemented crate dependencies.", '',
                       '## Current release chain', '',
                       'P0 contracts/DNS-proxy lab/inventory → P1 Profiles/Endpoints/storage/secrets/snapshots → P2 catalogs/layered policy → P3 legacy + personal secure DNS and P4 separate gateway grants/origin/TCP/proxy → P4-08 real DNS/proxy slice → P6/P7 administration → P10/P11 security/recovery/install → P7-07/P11-06 MVP.', '',
@@ -185,16 +220,7 @@ def render_dependencies(plan):
                       '## Exact task dependencies', '', '| Task | Delivery | Prerequisites |', '|---|---|---|']
     for task in tasks:
         dependency_doc.append(f"| {task['id']} | {task['delivery']} | {', '.join(task['prerequisites']) or 'Roadmap approval'} |")
-    memo = {}
-
-    def chain(task_id):
-        if task_id not in memo:
-            prior = max((chain(p) for p in by_id[task_id]['prerequisites']), key=len, default=[])
-            memo[task_id] = prior + [task_id]
-        return memo[task_id]
-
-    mvp_longest = max((chain(t['id']) for t in tasks if t['delivery'] == 'MVP'), key=len)
-    longest = max((chain(t['id']) for t in tasks), key=len)
+    mvp_longest, longest = longest_prerequisite_chains(tasks)
     dependency_doc += ['', '## Computed longest MVP prerequisite chain', '', ' → '.join(mvp_longest), '',
                        '## Computed longest full-plan prerequisite chain', '', ' → '.join(longest), '',
                        'These count tasks, not elapsed time. Stable workstream numbering does not dictate execution order.', '',

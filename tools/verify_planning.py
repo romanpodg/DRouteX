@@ -55,7 +55,7 @@ def validate_tasks(tasks):
     return ids
 
 
-def self_test(tasks):
+def invalid_task_cases(tasks):
     invalid = []
     missing = copy.deepcopy(tasks); missing[0]['acceptance'] = ''; invalid.append(missing)
     unknown = copy.deepcopy(tasks); unknown[0]['prerequisites'] = ['MISSING']; invalid.append(unknown)
@@ -73,14 +73,19 @@ def self_test(tasks):
     reasons = ('Missing task evidence field', 'Unknown prerequisite', 'Dependency cycle',
                'Duplicate task ID', 'Later-release dependency',
                'Missing required secure-DNS gate', 'Missing required catalog gate')
-    for mutated, reason in zip(invalid, reasons):
+    return list(zip(invalid, reasons))
+
+
+def self_test(tasks):
+    cases = invalid_task_cases(tasks)
+    for mutated, reason in cases:
         try:
             validate_tasks(mutated)
         except AssertionError as error:
             assert reason in str(error), f'Wrong negative-test rejection: {error}'
             continue
         raise AssertionError('Negative validator self-test was incorrectly accepted')
-    return len(invalid)
+    return len(cases)
 
 
 def validate_release(tasks):
@@ -101,17 +106,19 @@ def validate_release(tasks):
     return counts, release
 
 
-def validate_traceability(plan, trace, ids):
-    by_id = {task['id']: task for task in plan['tasks']}
-    for item in trace['requirements']:
-        assert item['tasks'] and all(task in ids for task in item['tasks']), f"Unmapped requirement {item['id']}"
-        assert item['delivery'] == sorted({by_id[t]['delivery'] for t in item['tasks']}), 'Stale trace delivery'
-        assert (ROOT/item['source_file']).is_file(), 'Invalid trace source'
-    indexed = {item['id']: item for item in trace['requirements']}
-    assert len(indexed) == len(trace['requirements']) == 188, 'Unexpected trace inventory'
+def validate_requirement_mapping(item, by_id, ids):
+    assert item['tasks'] and all(task in ids for task in item['tasks']), f"Unmapped requirement {item['id']}"
+    assert item['delivery'] == sorted({by_id[t]['delivery'] for t in item['tasks']}), 'Stale trace delivery'
+    assert (ROOT/item['source_file']).is_file(), 'Invalid trace source'
+
+
+def validate_deferred_requirements(indexed):
     for number in range(7, 11):
         item = indexed[f'R-24.1-{number:02}']
         assert item['delivery'] == ['POST_MVP_PROTOCOLS'] and 'pending' in item['scope'], 'Original engine checklist must remain deferred, not passed as MVP'
+
+
+def validate_scope_amendments(plan, indexed):
     amendment = indexed['R-CR-0001']
     assert amendment['source_file'] == 'docs/architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md'
     assert amendment['kind'] == 'Accepted user instruction'
@@ -121,11 +128,26 @@ def validate_traceability(plan, trace, ids):
     assert plan['design_proposals'][0]['status'] == 'proposed'
 
 
-def validate_source_specs(trace):
+def validate_traceability(plan, trace, ids):
+    by_id = {task['id']: task for task in plan['tasks']}
+    for item in trace['requirements']:
+        validate_requirement_mapping(item, by_id, ids)
+    indexed = {item['id']: item for item in trace['requirements']}
+    assert len(indexed) == len(trace['requirements']) == 188, 'Unexpected trace inventory'
+    validate_deferred_requirements(indexed)
+    validate_scope_amendments(plan, indexed)
+
+
+def validate_source_hashes(trace):
     source = ROOT/'Routira_Project_Specification_EN.md'
     assert hashlib.sha256(source.read_bytes()).hexdigest() == trace['source_sha256'], 'English source changed'
     ru = ROOT/'Routira_Project_Specification_RU.md'
     assert hashlib.sha256(ru.read_bytes()).hexdigest() == '25fb27b433fc6b2e72ccf0392a731721be0505e562e539bb93cb8fb20debee46', 'Russian source changed'
+
+
+def validate_source_specs(trace):
+    validate_source_hashes(trace)
+    source = ROOT/'Routira_Project_Specification_EN.md'
     headings = re.findall(r'^###? (\d+(?:\.\d+)?)\. ', source.read_text(encoding='utf-8'), flags=re.M)
     mapped = {item['section'] for item in trace['requirements']}
     assert set(headings) <= mapped, 'A spec heading was not considered'
@@ -151,16 +173,20 @@ def validate_links():
     return link_count
 
 
+def validate_adr(adr):
+    content = adr.read_text(encoding='utf-8')
+    expected = 'Accepted' if adr.name.startswith('ADR-0016-') else 'Proposed'
+    assert f'Status: **{expected}**' in content
+    for section in ('Context','Decision','Alternatives','Reasons','Consequences','Risks','Validation approach'):
+        assert f'## {section}' in content, f'{adr.name}: {section}'
+
+
 def validate_adrs():
     adrs = list((ROOT/'docs/architecture/adr').glob('ADR-*.md'))
     assert len(adrs) == 17
     assert {p.name.split('-')[1] for p in adrs} == {f'{n:04}' for n in range(1,18)}
     for adr in adrs:
-        content = adr.read_text(encoding='utf-8')
-        expected = 'Accepted' if adr.name.startswith('ADR-0016-') else 'Proposed'
-        assert f'Status: **{expected}**' in content
-        for section in ('Context','Decision','Alternatives','Reasons','Consequences','Risks','Validation approach'):
-            assert f'## {section}' in content, f'{adr.name}: {section}'
+        validate_adr(adr)
     return adrs
 
 

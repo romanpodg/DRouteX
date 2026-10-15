@@ -24,14 +24,14 @@ def document_files():
     return files
 
 
-def add_markdown_links(file, key, file_ids, line, lineno, edge):
+def add_markdown_links(file, file_ids, line, lineno, edge):
     for target in re.findall(r'\]\(([^)]+)\)', line):
         target = target.strip('<> ').split('#')[0]
         if not target or re.match(r'^[a-zA-Z]+:', target):
             continue
         resolved = (file.parent/unquote(target)).resolve()
         if resolved in file_ids:
-            edge(key, file_ids[resolved], 'references', file, lineno)
+            edge(file_ids[file.resolve()], file_ids[resolved], 'references', file, lineno)
 
 
 def add_markdown(file, file_ids, node, edge):
@@ -48,7 +48,7 @@ def add_markdown(file, file_ids, node, edge):
             heading_id = key + '_heading_' + str(lineno)
             node(heading_id, heading[1], file, lineno, 'concept')
             edge(key, heading_id, 'contains', file, lineno)
-        add_markdown_links(file, key, file_ids, line, lineno, edge)
+        add_markdown_links(file, file_ids, line, lineno, edge)
 
 
 def add_tasks(file_ids, nodes, node, edge):
@@ -119,6 +119,19 @@ def explicit_planning_refresh(dropped, file_ids, requested):
     return planning_refresh
 
 
+def refresh_counts(dropped, duplicate_tasks, verified_refresh, planning_refresh):
+    return {'verified_duplicate_task_headings_removed': len(duplicate_tasks) if verified_refresh else 0,
+            'verified_relocated_headings': len(dropped) - len(duplicate_tasks) if verified_refresh else 0,
+            'explicit_planning_refresh_nodes': len(dropped) if planning_refresh else 0}
+
+
+def graph_summary(G, files, document_data, refresh):
+    return {'nodes': G.number_of_nodes(), 'edges': G.number_of_edges(), 'files': len(files),
+            'document_nodes': len(document_data['nodes']), 'document_edges': len(document_data['edges']),
+            **refresh, 'external_api_calls': 0, 'document_inference': 'none; explicit relationships only',
+            'runtime_implementation': 'absent'}
+
+
 def write_graph(G, files, document_data, file_ids):
     old = json.loads((OUT/'graph.json').read_text(encoding='utf-8'))
     dropped = [n for n in old['nodes'] if n['id'] not in G]
@@ -132,7 +145,8 @@ def write_graph(G, files, document_data, file_ids):
     from graphify.export import to_json
     if not to_json(G, {}, str(OUT/'graph.json'), force=verified_refresh or planning_refresh):
         raise RuntimeError('Graphify refused graph write')
-    summary = {'nodes':G.number_of_nodes(), 'edges':G.number_of_edges(), 'files':len(files), 'document_nodes':len(document_data['nodes']), 'document_edges':len(document_data['edges']), 'verified_duplicate_task_headings_removed':len(duplicate_tasks) if verified_refresh else 0, 'verified_relocated_headings':len(dropped)-len(duplicate_tasks) if verified_refresh else 0, 'explicit_planning_refresh_nodes':len(dropped) if planning_refresh else 0, 'external_api_calls':0, 'document_inference':'none; explicit relationships only', 'runtime_implementation':'absent'}
+    refresh = refresh_counts(dropped, duplicate_tasks, verified_refresh, planning_refresh)
+    summary = graph_summary(G, files, document_data, refresh)
     (OUT/'BASELINE_EVIDENCE.json').write_text(json.dumps(summary,indent=2), encoding='utf-8')
     print(json.dumps(summary))
 
