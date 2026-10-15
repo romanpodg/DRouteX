@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "yaml_files": 3,
+  "negative_authorization_cases": 2,
+  "service_side_validation": "not performed; automatic approval review rejected external transfer",
+  "workflow_execution": "blocked by missing workspaces and account setup"
+}

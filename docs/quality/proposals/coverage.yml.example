@@ -1,0 +1,90 @@
+# Proposed only; no Actions job is active in this planning session.
+# Activate after Cargo/frontend workspaces, lockfiles and account policies exist.
+name: Coverage
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: coverage-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust and coverage tool
+        run: |
+          rustup toolchain install 1.99.0 --profile minimal --component llvm-tools-preview
+          rustup default 1.99.0
+          cargo install cargo-llvm-cov --version 0.9.1 --locked
+      - name: Test and generate backend LCOV
+        run: cargo llvm-cov --workspace --locked --lcov --output-path lcov.info
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: backend-coverage
+          path: lcov.info
+          if-no-files-found: error
+          retention-days: 7
+  frontend:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24.16.0
+      - run: npm install --global pnpm@11.9.0
+      - name: Install locked frontend dependencies
+        run: pnpm --dir apps/routira-web install --frozen-lockfile
+      - name: Test and generate frontend LCOV
+        run: pnpm --dir apps/routira-web exec vitest run --coverage --coverage.provider=v8 --coverage.reporter=lcov
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: frontend-coverage
+          path: apps/routira-web/coverage/lcov.info
+          if-no-files-found: error
+          retention-days: 7
+  upload:
+    needs: [backend, frontend]
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      # Upload job runs no product/PR scripts and has separate OIDC permission.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: backend-coverage
+          path: reports/backend
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: frontend-coverage
+          path: reports/frontend
+      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          files: reports/backend/lcov.info
+          disable_search: true
+          flags: backend
+          use_oidc: true
+          fail_ci_if_error: true
+      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          files: reports/frontend/lcov.info
+          disable_search: true
+          flags: frontend
+          use_oidc: true
+          fail_ci_if_error: true

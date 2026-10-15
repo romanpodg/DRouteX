@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "scope_amendment": "CR-0001",
+  "design_proposal": "CR-0002",
+  "tasks": 88,
+  "deliveries": {
+    "MVP": 61,
+    "POST_MVP_PROTOCOLS": 11,
+    "POST_MVP_MULTI_NODE": 11,
+    "FUTURE": 5
+  },
+  "mvp_release_dependency_closure": 61,
+  "requirements": 188,
+  "source_headings": 149,
+  "local_links_checked": 119,
+  "adrs": 17,
+  "accepted_adrs": 1,
+  "negative_validator_cases": 7,
+  "source_specs_unchanged": true,
+  "application_code_absent": true
+}

@@ -1,0 +1,326 @@
+{
+  "date": "2026-10-15",
+  "timezone": "Asia/Omsk",
+  "rust_toolchain": "1.99.0",
+  "rustup": "1.29.1",
+  "host": "x86_64-pc-windows-msvc",
+  "components": [
+    "rustfmt",
+    "clippy",
+    "rust-analyzer",
+    "llvm-tools-preview"
+  ],
+  "cargo_tools": [
+    {
+      "tool": "nextest",
+      "version": "cargo-nextest-0.9.148",
+      "url": "https://github.com/nextest-rs/nextest/releases/download/cargo-nextest-0.9.148/cargo-nextest-0.9.148-x86_64-pc-windows-msvc.zip",
+      "sha256": "7a931b4a9123fe5e641dd0f2b73d897f64bcf77bb06f080db17cb434b7eac782",
+      "verification": "GitHub release asset digest",
+      "binary_sha256": "d9dd12a3d5dd67d5b8ca9315fa9f3c2384d1d47f4e324039ba634af36e2862d8"
+    },
+    {
+      "tool": "cov",
+      "version": "v0.9.1",
+      "url": "https://github.com/taiki-e/cargo-llvm-cov/releases/download/v0.9.1/cargo-llvm-cov-x86_64-pc-windows-msvc.zip",
+      "sha256": "656590cfa13bb7478595bbfdd3bc6bc075a4f7f3f0df5a439c1856cb03c5a4d2",
+      "verification": "GitHub release asset digest",
+      "binary_sha256": "a854b3d24f49535dc8b3d070035e0f9042b5cac25324e66cb06c639e4e04baeb"
+    },
+    {
+      "tool": "deny",
+      "version": "0.20.2",
+      "url": "https://github.com/EmbarkStudios/cargo-deny/releases/download/0.20.2/cargo-deny-0.20.2-x86_64-pc-windows-msvc.tar.gz",
+      "sha256": "975a22143262fd27476d19ee00c7af67978426e40e1dee94eed6bbade1cf87dc",
+      "verification": "GitHub release asset digest",
+      "binary_sha256": "f7292fab58c706638c999e64c4ba82e5128ae628130ba55e3266a768ee431fbf"
+    },
+    {
+      "tool": "audit",
+      "version": "cargo-audit/v0.22.2",
+      "url": "https://github.com/rustsec/rustsec/releases/download/cargo-audit/v0.22.2/cargo-audit-x86_64-pc-windows-msvc-v0.22.2.zip",
+      "sha256": "0a7316540862c13d954f648917ceacca593747baed6eec180fafa590be2710ab",
+      "verification": "GitHub release asset digest",
+      "binary_sha256": "0157f5ce1ce9fd4fb0a1f7c79af1229771d1f80b6c2613ddb0d9200a8ba73946"
+    }
+  ],
+  "actionlint": {
+    "version": "v1.7.12",
+    "url": "https://github.com/rhysd/actionlint/releases/download/v1.7.12/actionlint_1.7.12_windows_amd64.zip",
+    "sha256": "6e7241b51e6817ea6a047693d8e6fed13b31819c9a0dd6c5a726e1592d22f6e9"
+  },
+  "crate_candidates": [
+    {
+      "crate": "tokio",
+      "version": "1.53.3",
+      "rust_version": "1.71"
+    },
+    {
+      "crate": "hickory-server",
+      "version": "0.26.3",
+      "rust_version": "1.88"
+    },
+    {
+      "crate": "hickory-resolver",
+      "version": "0.26.3",
+      "rust_version": "1.88"
+    },
+    {
+      "crate": "axum",
+      "version": "0.8.9",
+      "rust_version": "1.80"
+    },
+    {
+      "crate": "rustls",
+      "version": "0.23.46",
+      "rust_version": "1.71"
+    },
+    {
+      "crate": "sqlx",
+      "version": "0.9.0",
+      "rust_version": "1.94.0"
+    },
+    {
+      "crate": "serde",
+      "version": "1.0.229",
+      "rust_version": "1.56"
+    },
+    {
+      "crate": "tracing",
+      "version": "0.1.44",
+      "rust_version": "1.65.0"
+    }
+  ],
+  "sdk": {
+    "version": "10.0.28000.2705",
+    "core_sha256": "a74ca8f9af98bd61925d9e2932ad98f746306123167b8f0bba99cd9ea9f03807",
+    "x64_sha256": "bf892c1048059984850a1ed79bb81c0243478c6d7472d637c90565ab5c836013",
+    "verification": "Both official NuGet catalog SHA512 hashes verified"
+  },
+  "codescene": {
+    "version": "1.0.53",
+    "build": "c46e3cba9e527cb84281355e7cd6d7d2ead627df",
+    "archive_sha256": "3d8f26d5ee09cddbd8ba42c916b0ccb3def27fe2227be0a18522362f0df97be6",
+    "verification": "Official HTTPS download, local hash recorded; version/help checked, no publisher checksum claimed",
+    "authentication": "not signed in"
+  },
+  "graphify": {
+    "package": "graphifyy",
+    "version": "0.9.54",
+    "scope": "existing isolated uv tool; project Codex skill installed",
+    "license": "Apache-2.0 with packaged MIT license and NOTICE retained",
+    "api_backend": "none enabled"
+  },
+  "ponytail": {
+    "version": "5.2.0",
+    "scope": "user Codex plugin",
+    "source_ref": "2961b52fc1fe6a5a87c7a959a79512e5c2f3ffe5",
+    "hook_trust": "not enabled by this session"
+  },
+  "skills": [
+    {
+      "name": "async-rust",
+      "scope": "project",
+      "path": ".agents/skills/async-rust/SKILL.md",
+      "files": 3,
+      "skill_sha256": "ebff0471d716922994d7d735f016b3cf8daeba47ceafa9a56a2f409cab644b10",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "idiomatic-rust",
+      "scope": "project",
+      "path": ".agents/skills/idiomatic-rust/SKILL.md",
+      "files": 4,
+      "skill_sha256": "86cec4eebfeb768589082b38eba7c188bb081f0c0f5aff7346026318cef76d93",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "ownership-not-clone",
+      "scope": "project",
+      "path": ".agents/skills/ownership-not-clone/SKILL.md",
+      "files": 4,
+      "skill_sha256": "f7baf3f87fd56bec17a1c536b0e3d878f2d467e764c5daf6652412683b164fa7",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "rust-api-design",
+      "scope": "project",
+      "path": ".agents/skills/rust-api-design/SKILL.md",
+      "files": 5,
+      "skill_sha256": "d8b3ddddd5ce50b6342be54f05cdd3ff05458095fd75814707de56492091ddfc",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "rust-code-review",
+      "scope": "project",
+      "path": ".agents/skills/rust-code-review/SKILL.md",
+      "files": 4,
+      "skill_sha256": "16417ddbb23350364539f2e80d6fd5c0a23eb8f5ea6bc1fa93669204912bf3a1",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "rust-concurrency",
+      "scope": "project",
+      "path": ".agents/skills/rust-concurrency/SKILL.md",
+      "files": 2,
+      "skill_sha256": "8c3e538055ec0b79596d2937832d25cc3eaf941555e1788a8f4faae99a075050",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "rust-errors",
+      "scope": "project",
+      "path": ".agents/skills/rust-errors/SKILL.md",
+      "files": 3,
+      "skill_sha256": "b3e03d4c9eae7116b075b650ad167468471e27940dada6d7ea0565dc2326ffb3",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "rust-observability",
+      "scope": "project",
+      "path": ".agents/skills/rust-observability/SKILL.md",
+      "files": 2,
+      "skill_sha256": "35445dffb5ebf67ecdc1af78ce0c16f87cf5b433ba7ba39fb9b1ea823e8f5c70",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "rust-performance",
+      "scope": "project",
+      "path": ".agents/skills/rust-performance/SKILL.md",
+      "files": 3,
+      "skill_sha256": "2a3a3ebad3295860a5a26bfd6d198a9b5bf968d19bf86557aec2404c6dce4476",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "rust-serde",
+      "scope": "project",
+      "path": ".agents/skills/rust-serde/SKILL.md",
+      "files": 2,
+      "skill_sha256": "6e68d72219f494c58ea96f1fbce2f683a8eb2270c8cbd8c6fa19402358c602cf",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "rust-supply-chain",
+      "scope": "project",
+      "path": ".agents/skills/rust-supply-chain/SKILL.md",
+      "files": 3,
+      "skill_sha256": "b738f4a5aff9c28571c61345bd46a0caeb09b63f8a86628d76701911788dad0c",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "rust-testing",
+      "scope": "project",
+      "path": ".agents/skills/rust-testing/SKILL.md",
+      "files": 4,
+      "skill_sha256": "46b5e885edbc8d8dc5c416562ebf011152978d555e7fd71697b5292d3134697f",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "setup-rust-ci",
+      "scope": "project",
+      "path": ".agents/skills/setup-rust-ci/SKILL.md",
+      "files": 3,
+      "skill_sha256": "83fb7dead9178839c8d0a1669de67a49d1ac7f6437a684c45f2f5f73df84d543",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "setup-rust-pre-commit",
+      "scope": "project",
+      "path": ".agents/skills/setup-rust-pre-commit/SKILL.md",
+      "files": 3,
+      "skill_sha256": "99c6f437ab567794566fac671ac023817765e9d89ce3276a69097f95927b3922",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "type-driven-design",
+      "scope": "project",
+      "path": ".agents/skills/type-driven-design/SKILL.md",
+      "files": 4,
+      "skill_sha256": "fa17c4a3dd2e1a030014ffa014ad51a66f24c08996c744069d47e7cee0688892",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    },
+    {
+      "name": "unsafe-rust",
+      "scope": "project",
+      "path": ".agents/skills/unsafe-rust/SKILL.md",
+      "files": 3,
+      "skill_sha256": "909edf78268f379dd148f069a55cbfaf9cfedb7d3ff080058f5d104cccb0e4a0",
+      "source": "https://github.com/rewrite-rs/skills",
+      "ref": "ae0fd62485d071437ae5e6c4036c986b0dd122a0",
+      "license": "BSD-3-Clause",
+      "all_resources_match_upstream": true
+    }
+  ],
+  "discovery": {
+    "method": "Codex app-server skills/list forceReload; no model turn",
+    "names": [
+      "async-rust",
+      "graphify",
+      "idiomatic-rust",
+      "ownership-not-clone",
+      "rust-api-design",
+      "rust-code-review",
+      "rust-concurrency",
+      "rust-errors",
+      "rust-observability",
+      "rust-performance",
+      "rust-serde",
+      "rust-supply-chain",
+      "rust-testing",
+      "setup-rust-ci",
+      "setup-rust-pre-commit",
+      "type-driven-design",
+      "unsafe-rust",
+      "ponytail:ponytail",
+      "ponytail:ponytail-audit",
+      "ponytail:ponytail-debt",
+      "ponytail:ponytail-review"
+    ],
+    "missing": [],
+    "errors": []
+  }
+}

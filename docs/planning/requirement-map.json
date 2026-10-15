@@ -1,0 +1,1266 @@
+{
+  "schema_version": 1,
+  "source": "Routira_Project_Specification_EN.md",
+  "source_sha256": "78ca71c61755152aa4e369d9b927a8aa73cc6afc8c11bc94c3ceb9c58dc275d9",
+  "requirements": {
+    "16": {
+      "tasks": [
+        "P0-02"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Target repo layout, not required empty crate scaffolding; instantiate cohesive crates only as needed"
+    },
+    "26": {
+      "tasks": [
+        "P11-04"
+      ],
+      "scope": "All phases",
+      "kind": "Proposed architecture",
+      "requirement": "Use consistent glossary; distinguish protocol/engine, DNS/traffic, entry/exit and fail-closed semantics"
+    },
+    "27": {
+      "tasks": [
+        "P0-02",
+        "P0-05"
+      ],
+      "scope": "All phases",
+      "kind": "Proposed architecture",
+      "requirement": "Revisit primary sources before pinning dependencies/engines and implementation; citations are not proof of compatibility"
+    },
+    "1.1": {
+      "tasks": [
+        "P0-01",
+        "P7-07",
+        "F-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Self-hosted DNS and route management for personal/home infrastructure; no commercial public VPN claim"
+    },
+    "1.2": {
+      "tasks": [
+        "P0-01",
+        "P7-07",
+        "F-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Self-hosted DNS and route management for personal/home infrastructure; no commercial public VPN claim"
+    },
+    "1.3": {
+      "tasks": [
+        "P0-01",
+        "P7-07",
+        "F-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Self-hosted DNS and route management for personal/home infrastructure; no commercial public VPN claim"
+    },
+    "1.4": {
+      "tasks": [
+        "P1-06",
+        "P2-06",
+        "P4-01",
+        "P5-08",
+        "P6-08"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Rust core, safe defaults, explain/capability-aware UX, no MITM, atomic changes, privacy and gradual complexity"
+    },
+    "1.5": {
+      "tasks": [
+        "P0-01",
+        "F-01",
+        "F-03",
+        "F-05"
+      ],
+      "scope": "Scope guard",
+      "kind": "Technical constraint",
+      "requirement": "No universal DNS access/QUIC/DPI guarantee, own cryptography, session migration or commercial tenancy"
+    },
+    "2.1": {
+      "tasks": [
+        "P2-04",
+        "P4-06",
+        "P5-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Selective domain action and exit selection; DIRECT relative to current decision point"
+    },
+    "2.2": {
+      "tasks": [
+        "P3-06",
+        "P7-02",
+        "P10-05"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "TV DNS-only supports restricted compatible TCP and visibly limited ECH/QUIC/nonstandard/application compatibility"
+    },
+    "2.3": {
+      "tasks": [
+        "P5-04",
+        "P5-05",
+        "F-02"
+      ],
+      "scope": "Post-MVP protocols",
+      "kind": "Explicit requirement",
+      "requirement": "WG/AWG tunnel and peer identity deferred by CR-0001; client split routing still requires actual support",
+      "scope_change": "CR-0001"
+    },
+    "2.4": {
+      "tasks": [
+        "P4-05",
+        "P7-04",
+        "P5-08"
+      ],
+      "scope": "MVP DNS/proxy; engines later",
+      "kind": "Explicit requirement",
+      "requirement": "Allocate DNS/TCP/admin/proxy endpoints in MVP; WG/AWG/Xray listeners and conflicts deferred",
+      "scope_change": "CR-0001"
+    },
+    "2.5": {
+      "tasks": [
+        "P9-03"
+      ],
+      "scope": "Post-MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Cross-node tunnel termination and explicit verified TUN/proxy bridge, not packet protocol conversion"
+    },
+    "2.6": {
+      "tasks": [
+        "P4-06",
+        "P9-02",
+        "F-03"
+      ],
+      "scope": "MVP + later",
+      "kind": "Technical constraint",
+      "requirement": "Allowed outbound failover with session/TTL limits; inbound switching requires supporting client"
+    },
+    "3.1": {
+      "tasks": [
+        "P3-04",
+        "P4-01",
+        "P11-04"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "Ordinary DNS does not route traffic; rewritten address needs authorized original-destination context"
+    },
+    "3.2": {
+      "tasks": [
+        "P4-03",
+        "P10-05",
+        "P7-03"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "ECH hidden inner SNI prevents reliable SNI-only dispatch; fail closed or use explicitly supported alternative"
+    },
+    "3.3": {
+      "tasks": [
+        "P3-05",
+        "P10-05",
+        "F-01"
+      ],
+      "scope": "MVP + future",
+      "kind": "Technical constraint",
+      "requirement": "QUIC/HTTP3 is UDP; TCP-only DNS gateway cannot promise interception or client QUIC disablement"
+    },
+    "3.4": {
+      "tasks": [
+        "P3-05"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "Handle HTTPS/SVCB ALPN/IP hints/ECH/alternative endpoints; no blanket record removal as universal fix"
+    },
+    "3.5": {
+      "tasks": [
+        "P3-05",
+        "P7-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Separate normal verifiable DNSSEC answers from local overrides; rewritten response cannot claim authentic signature"
+    },
+    "3.6": {
+      "tasks": [
+        "P10-05",
+        "P11-04",
+        "F-03"
+      ],
+      "scope": "MVP + future",
+      "kind": "Technical constraint",
+      "requirement": "Own DoH/DoT/hardcoded IP/cache bypass DNS; full endpoint control requires client/router cooperation"
+    },
+    "3.7": {
+      "tasks": [
+        "P2-02",
+        "P4-01",
+        "P6-03"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Shared public NAT IP cannot identify individual device or link DNS to later TCP authorization"
+    },
+    "3.8": {
+      "tasks": [
+        "P4-06",
+        "P10-05",
+        "P11-04",
+        "F-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Technical constraint",
+      "requirement": "CDN/shared IP, pinning, geo service checks, TTL/session lag and IPv6 policy limit route guarantees"
+    },
+    "4.1": {
+      "tasks": [
+        "P3-01",
+        "P3-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Restricted policy DNS caches/filters/forwards; ordinary origin-IP response leaves direct client path"
+    },
+    "4.2": {
+      "tasks": [
+        "P3-06",
+        "P4-01",
+        "P4-04",
+        "P10-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Compatible approved SmartDNS TCP identifies origin, preserves website certificate and accounts for caching/SVCB/IPv6"
+    },
+    "4.3": {
+      "tasks": [
+        "P4-05",
+        "P5-06",
+        "P9-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Authenticated/isolated explicit proxy supplies destination; UDP capability and public listener require separate verification"
+    },
+    "4.4": {
+      "tasks": [
+        "P5-04",
+        "P5-05",
+        "P10-01",
+        "F-02"
+      ],
+      "scope": "Post-MVP protocols",
+      "kind": "Proposed architecture",
+      "requirement": "Full/split tunnel and TUN/OS routing deferred by accepted CR-0001",
+      "scope_change": "CR-0001"
+    },
+    "4.5": {
+      "tasks": [
+        "P7-02",
+        "P11-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Capability matrix accurately distinguishes DNS-only, limited gateway, explicit proxy and full tunnel"
+    },
+    "5.1": {
+      "tasks": [
+        "P0-01",
+        "P1-06",
+        "P8-04"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "CP manages entities/publication, DP continues last-valid config without dashboard/database"
+    },
+    "5.2": {
+      "tasks": [
+        "P0-02",
+        "P5-02"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Logical Rust services may share a small process set while engines remain independent; avoid gratuitous microservices"
+    },
+    "5.3": {
+      "tasks": [
+        "P1-05",
+        "P5-08",
+        "P10-01"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "DNS/router use snapshots; independent engine restarts/failures; privileged operations isolated from HTTP"
+    },
+    "6.1": {
+      "tasks": [
+        "P3-04",
+        "P5-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Real ordinary DNS flow returns upstream origin; client-origin connection remains direct"
+    },
+    "6.2": {
+      "tasks": [
+        "P3-06",
+        "P4-01",
+        "P4-02",
+        "P4-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "SmartDNS redirect and TCP passthrough use coherent authorized route context and loop-free trusted origin resolution"
+    },
+    "6.3": {
+      "tasks": [
+        "P9-03"
+      ],
+      "scope": "Post-MVP",
+      "kind": "Explicit requirement",
+      "requirement": "AWG termination followed by real VLESS outbound requires verified separate engineering bridge"
+    },
+    "6.4": {
+      "tasks": [
+        "P2-04",
+        "P9-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Distinct DIRECT/BLOCK/PROXY_NODE/NODE_GROUP/OUTBOUND/UPSTREAM_DNS/LOCAL_DNS_OVERRIDE semantics"
+    },
+    "7.1": {
+      "tasks": [
+        "P1-01",
+        "P5-01"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Model inbound/outbound/engine/adapter distinctly; Xray is engine, VLESS+REALITY protocol/transport/security"
+    },
+    "7.2": {
+      "tasks": [
+        "P0-05",
+        "P5-08",
+        "F-01"
+      ],
+      "scope": "Post-MVP protocols/future",
+      "kind": "Proposed architecture",
+      "requirement": "Native DNS/TCP proxy first; WG/AWG and managed Xray/sing-box require independent later engine gates",
+      "scope_change": "CR-0001"
+    },
+    "7.3": {
+      "tasks": [
+        "P5-01",
+        "P8-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Version/transport-specific capabilities; unknown is unavailable; no universal support switch"
+    },
+    "7.4": {
+      "tasks": [
+        "P5-01",
+        "P5-07"
+      ],
+      "scope": "Post-MVP protocols",
+      "kind": "Proposed architecture",
+      "requirement": "General engine lifecycle/peer/export traits deferred; MVP needs a narrow typed TCP outbound connector",
+      "scope_change": "CR-0001"
+    },
+    "7.5": {
+      "tasks": [
+        "P0-05",
+        "P5-02",
+        "P10-04",
+        "P11-05"
+      ],
+      "scope": "MVP dependencies; engines later",
+      "kind": "Explicit requirement",
+      "requirement": "Verify/pin MVP dependencies and limits; external engine process supervision deferred until engines are introduced",
+      "scope_change": "CR-0001"
+    },
+    "7.6": {
+      "tasks": [
+        "P4-06",
+        "P9-02",
+        "F-03"
+      ],
+      "scope": "MVP + later",
+      "kind": "Technical constraint",
+      "requirement": "Outbound switch possible; inbound requires client; sessions interrupted and strict fail-open forbidden by default"
+    },
+    "8.1": {
+      "tasks": [
+        "P2-01",
+        "P2-02",
+        "P6-04",
+        "F-02",
+        "P2-07"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Normalized exact/wildcard/domain/profile exceptions; documented apex semantics; richer CIDR/protocol/group rules staged"
+    },
+    "8.2": {
+      "tasks": [
+        "P2-02",
+        "P2-03",
+        "P2-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Trusted identity/profile, canonical match, priority-specificity-stable tie, conflict/capability/failure handling and reasons"
+    },
+    "8.3": {
+      "tasks": [
+        "P1-02",
+        "P6-04"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Illustrative policy format becomes versioned validated schema; example is not working deployed config"
+    },
+    "8.4": {
+      "tasks": [
+        "P2-06",
+        "P6-06",
+        "P7-03"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Explain rule/action/exit/limits/revision predicts policy; separate actual network test proves connectivity"
+    },
+    "8.5": {
+      "tasks": [
+        "P1-05",
+        "P1-06",
+        "P6-05",
+        "P9-04"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Validate/simulate/compile/stage/activate/health/rollback; monotonic hash/version; no partial node state or restored-session promise"
+    },
+    "9.1": {
+      "tasks": [
+        "P3-01",
+        "P3-02",
+        "P3-03",
+        "P3-07"
+      ],
+      "scope": "MVP; personal DoH/DoT required in proposed CR-0002",
+      "kind": "Base requirement with proposed CR-0002 extension",
+      "requirement": "Restricted UDP/TCP forwarder; personal DoH/DoT endpoint transports required by proposed CR-0002, separately tested; local policy/cache/metrics"
+    },
+    "9.2": {
+      "tasks": [
+        "P0-02",
+        "P3-01"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Pin compatible Hickory server/resolver features with Tokio/rustls; custom first-party policy layer"
+    },
+    "9.3": {
+      "tasks": [
+        "P3-03",
+        "P1-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Name/type/class/upstream/mode/scope/validation cache distinction prevents profile leakage"
+    },
+    "9.4": {
+      "tasks": [
+        "P3-04",
+        "P3-05",
+        "P3-06",
+        "P4-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Safe compatible overrides, coherent IPv4/IPv6, signed-answer integrity, loop and pattern/conflict checks"
+    },
+    "9.5": {
+      "tasks": [
+        "P7-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "DNS listener/upstream/cache/local records/security/query/latency/health settings reflect real state"
+    },
+    "10.1": {
+      "tasks": [
+        "P4-02",
+        "P4-04",
+        "P4-06",
+        "P4-07"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Controlled TCP target, generation decision, passthrough, quotas/timeouts, SSRF/rebinding prevention and metrics"
+    },
+    "10.2": {
+      "tasks": [
+        "P4-01"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Ingress/service/profile/route authorize target independently from SNI; ambiguous/unknown fails closed"
+    },
+    "10.3": {
+      "tasks": [
+        "P4-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Policy-independent origin resolver avoids self-gateway loop; every re-resolution rechecks forbidden addresses"
+    },
+    "10.4": {
+      "tasks": [
+        "P4-05",
+        "P5-04",
+        "P9-03"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Supported local proxy/interface/route/protected-node dispatch selected through actual capability matrix"
+    },
+    "10.5": {
+      "tasks": [
+        "P4-04",
+        "P10-04",
+        "F-01"
+      ],
+      "scope": "MVP + future",
+      "kind": "Explicit requirement",
+      "requirement": "TCP first with backpressure/FD/allocation limits; UDP separate flow identity/timeout/amplification workstream"
+    },
+    "11.1": {
+      "tasks": [
+        "P6-01",
+        "P6-05",
+        "P6-07",
+        "P6-08"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "API/RBAC/config/registry/compiler/secrets/version/audit/migration/backup control responsibilities"
+    },
+    "11.2": {
+      "tasks": [
+        "P1-06",
+        "P8-01",
+        "P8-02",
+        "P8-03",
+        "P8-04"
+      ],
+      "scope": "MVP local snapshots; managed agent later",
+      "kind": "Explicit requirement",
+      "requirement": "Local DNS/proxy coordinator preserves last-known-good; enrollment, engine management and remote agent deferred",
+      "scope_change": "CR-0001"
+    },
+    "11.3": {
+      "tasks": [
+        "P8-01",
+        "P8-06"
+      ],
+      "scope": "Post-MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Install separately, verify controller, one-use token, pending approval, scan, baseline and healthcheck; no permanent admin SSH"
+    },
+    "11.4": {
+      "tasks": [
+        "P9-01",
+        "P9-02"
+      ],
+      "scope": "Post-MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Nodes/groups with pinned/healthy strategies; comparable latency/weights later; ping insufficient service proof"
+    },
+    "12.1": {
+      "tasks": [
+        "P7-01",
+        "P7-06",
+        "P9-01",
+        "F-04"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Responsive navigation covers overview/network/operations/system; API equivalent for every significant action"
+    },
+    "12.2": {
+      "tasks": [
+        "P7-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Fast actual component/traffic/latency/degraded/recent-state dashboard; missing engine metric unavailable rather than zero"
+    },
+    "12.3": {
+      "tasks": [
+        "P6-08",
+        "P7-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Filtered activity with trace/revision/outcome; DNS and connections distinct, correlated only with reliable evidence"
+    },
+    "12.4": {
+      "tasks": [
+        "P6-03",
+        "P7-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Device/profile/mode/onboarding/config/revoke/export with limitations and no unnecessary secret redisplay"
+    },
+    "12.5": {
+      "tasks": [
+        "P1-01",
+        "P6-03",
+        "P7-02"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Reusable Profile policy separated from named DNS Endpoint, resolver capability and network gateway grant; one active Profile per Endpoint initially"
+    },
+    "12.6": {
+      "tasks": [
+        "P6-04",
+        "P7-03"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Priority/scope/matches/target/failure/modes, prominent limitations, simulate/validate/draft/publish/diff"
+    },
+    "12.7": {
+      "tasks": [
+        "P9-01",
+        "P7-04",
+        "P7-05"
+      ],
+      "scope": "MVP local; remote later",
+      "kind": "Explicit requirement",
+      "requirement": "Actual node engine/interface/version/health details; external proxy has no fabricated agent/OS telemetry"
+    },
+    "12.8": {
+      "tasks": [
+        "P5-07",
+        "P5-08",
+        "P5-09"
+      ],
+      "scope": "Post-MVP protocols",
+      "kind": "Explicit requirement",
+      "requirement": "Engine listeners/version/capability/rotation/export UI deferred; DNS/proxy settings delivered in P7-04",
+      "scope_change": "CR-0001"
+    },
+    "12.9": {
+      "tasks": [
+        "P3-07",
+        "P7-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "DNS upstream/cache/listener/override/rate/privacy/optional TLS certificate management"
+    },
+    "12.10": {
+      "tasks": [
+        "P6-04",
+        "F-04",
+        "P2-07"
+      ],
+      "scope": "MVP manual; subscriptions later",
+      "kind": "Explicit requirement",
+      "requirement": "Versioned editable/import/export domain groups, approved updates, wildcard/CDN overlap analysis and no guaranteed lists"
+    },
+    "12.11": {
+      "tasks": [
+        "P6-06",
+        "P7-05",
+        "P9-05"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Policy Explain, DNS Test, Node Reachability and real Route Test with observed egress/reasons/revision"
+    },
+    "12.12": {
+      "tasks": [
+        "P6-05",
+        "P7-06",
+        "P9-04"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "History/diff/dry-run/approval/per-node actual states and explicit rollback"
+    },
+    "12.13": {
+      "tasks": [
+        "P6-01",
+        "P6-07",
+        "P6-08",
+        "P7-06"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Users/roles/MFA/private management/certs/tokens/session/retention/secrets/backup/restore/update controls"
+    },
+    "13.1": {
+      "tasks": [
+        "P7-01",
+        "P7-05"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Minimal light/dark design, honest status colors, technical monospace, reduced motion and functional mobile"
+    },
+    "13.2": {
+      "tasks": [
+        "P7-01",
+        "P7-02",
+        "P7-03",
+        "P7-06"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Accessible navigation/tables/wizard/badges/diffs/confirmed destructive actions and masked config viewer"
+    },
+    "13.3": {
+      "tasks": [
+        "P7-03",
+        "P7-06",
+        "P11-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Progressive disclosure never hides leak warnings; direct fallback requires separate explicit consent; terminology clear"
+    },
+    "13.4": {
+      "tasks": [
+        "P7-05",
+        "P7-06"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Configured/applied/healthy/tested/connected are separate states, not inferred from form save"
+    },
+    "14.1": {
+      "tasks": [
+        "P0-05",
+        "P7-02",
+        "P11-04",
+        "P5-09",
+        "F-02"
+      ],
+      "scope": "MVP DNS/proxy; tunnel clients later",
+      "kind": "Proposed architecture",
+      "requirement": "Personal secure DNS or legacy network DNS setup without VPN; router helpers/profile stacks and tunnel exports deferred",
+      "scope_change": "CR-0001"
+    },
+    "14.2": {
+      "tasks": [
+        "P1-01",
+        "P2-02",
+        "P6-03"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Secure resolver capability selects DNS endpoint policy; legacy and transparent gateway use separate network grants; no internet MAC/client-alias/shared-IP device identity"
+    },
+    "14.3": {
+      "tasks": [
+        "P7-02",
+        "P5-07",
+        "P5-09"
+      ],
+      "scope": "MVP DNS/proxy profiles; engine exports later",
+      "kind": "Explicit requirement",
+      "requirement": "Preserve multiple DNS/proxy profiles and protected access; native tunnel/engine URI/QR exports deferred",
+      "scope_change": "CR-0001"
+    },
+    "14.4": {
+      "tasks": [
+        "F-03"
+      ],
+      "scope": "Future",
+      "kind": "Deferred feature",
+      "requirement": "Custom client/split routing/leak diagnostics/protocol switching and opt-in telemetry are separate undertaking"
+    },
+    "15.1": {
+      "tasks": [
+        "P0-02",
+        "P0-05",
+        "P7-01"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Rust/React candidate stack requires pinned mutually compatible dependencies/features and upgrade tests"
+    },
+    "15.2": {
+      "tasks": [
+        "P0-01",
+        "P10-04"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Choose strong typing/memory safety; demonstrate performance by measurement, not language guarantees"
+    },
+    "15.3": {
+      "tasks": [
+        "P5-02",
+        "P5-08",
+        "F-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "First-party Rust manages proven external engines; do not reimplement cryptography; BoringTun only evaluated if justified"
+    },
+    "15.4": {
+      "tasks": [
+        "P10-02",
+        "P11-01",
+        "P10-01"
+      ],
+      "scope": "MVP no NET_ADMIN; helper later",
+      "kind": "Explicit requirement",
+      "requirement": "MVP services stay unprivileged and expose no OS routing actions; restricted helper mandatory before later tunnel/engine privileges",
+      "scope_change": "CR-0001"
+    },
+    "16.1": {
+      "tasks": [
+        "P0-04",
+        "P1-07",
+        "P10-01",
+        "P10-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Formatting/lints/errors/cancellation/logging/lockfiles/security and actual Linux integration on each applicable change"
+    },
+    "17.1": {
+      "tasks": [
+        "P1-01",
+        "P6-03",
+        "P9-01",
+        "P2-07"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Typed entities include managed node vs external proxy, engines/credentials, policies/revisions/audit and aggregated metrics"
+    },
+    "17.2": {
+      "tasks": [
+        "P1-02",
+        "P1-05",
+        "P5-07",
+        "P6-03"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Node/engine/binding/reference/credential/snapshot/secret/version/identity-evidence invariants preserved"
+    },
+    "17.3": {
+      "tasks": [
+        "P1-03",
+        "P6-07",
+        "F-05"
+      ],
+      "scope": "MVP + future",
+      "kind": "Explicit requirement",
+      "requirement": "SQLite WAL/migrations/backup/bounded writes; PostgreSQL only justified concurrency/HA; minimal aggregate history"
+    },
+    "18.1": {
+      "tasks": [
+        "P6-01",
+        "P6-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Versioned /api/v1 OpenAPI and common UI/API access; RBAC/CSRF/Origin on every mutation"
+    },
+    "18.2": {
+      "tasks": [
+        "P6-02",
+        "P6-05",
+        "P6-06",
+        "P6-07",
+        "P8-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Endpoint groups are future contracts; security/revocation/deployment/diagnostics/export/backup tests required"
+    },
+    "18.3": {
+      "tasks": [
+        "P2-06",
+        "P7-03"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Explain includes decision/profile/rule/node/version/warnings and false network_test_performed for simulation"
+    },
+    "18.4": {
+      "tasks": [
+        "P1-04",
+        "P6-08",
+        "P8-03"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Versioned actor/entity/node/correlation/outcome events never contain tokens/keys/passwords"
+    },
+    "19.1": {
+      "tasks": [
+        "P0-01",
+        "P10-02",
+        "P10-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Threat model covers amplification/open proxy/SSRF/admin/enrollment/supply chain/rebinding/leaks/fail-open"
+    },
+    "19.2": {
+      "tasks": [
+        "P1-05",
+        "P1-07",
+        "P3-01",
+        "P4-02",
+        "P6-01",
+        "P10-01",
+        "P10-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Baseline restrictions apply to enabled features: ACL/auth/address rechecks/limits/private TLS/MFA/RBAC/secrets/snapshots/verified updates. MVP denies privileged OS actions; custom helper required before later privileged tunnel features",
+      "scope_change": "CR-0001"
+    },
+    "19.3": {
+      "tasks": [
+        "P6-08",
+        "P7-05",
+        "P11-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Aggregate/minimal optional per-domain retention, separated admin audit, no HTTPS MITM or anonymity guarantee"
+    },
+    "19.4": {
+      "tasks": [
+        "P0-05",
+        "P11-05"
+      ],
+      "scope": "MVP",
+      "kind": "Open decision",
+      "requirement": "Exact engine/crate licenses and distribution conditions reviewed; Routira license remains unselected"
+    },
+    "20.1": {
+      "tasks": [
+        "P4-07",
+        "P6-06",
+        "P7-05",
+        "P8-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Actual bounded DNS/gateway/engine/node/security metrics with units and trustworthy identity/version"
+    },
+    "20.2": {
+      "tasks": [
+        "P6-06",
+        "P8-02",
+        "P9-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Process/transport/route/service health distinct; successful ping/handshake not service acceptance"
+    },
+    "20.3": {
+      "tasks": [
+        "P1-06",
+        "P2-04",
+        "P3-02",
+        "P5-07",
+        "P8-04"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "LKG on CP loss; retain invalid version; strict exit fail closed; allowed resolver fallback; expiry/unknown/IPv6 denial"
+    },
+    "20.4": {
+      "tasks": [
+        "P2-06",
+        "P6-06",
+        "P7-05"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Stable actionable reason codes for identity/DNSSEC/ECH/QUIC/nodes/engine/ports/egress/loops"
+    },
+    "20.5": {
+      "tasks": [
+        "P6-08",
+        "F-04"
+      ],
+      "scope": "MVP + future",
+      "kind": "Deferred feature",
+      "requirement": "In-app/log events suffice first; optional external notifications need explicit opt-in, severity and anti-spam"
+    },
+    "21.1": {
+      "tasks": [
+        "P11-01",
+        "P8-06",
+        "P9-05",
+        "F-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Single VPS first; controller/nodes then home/router topologies with explicit threat boundaries"
+    },
+    "21.2": {
+      "tasks": [
+        "P11-01",
+        "P11-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Native systemd primary; Compose optional constrained; no Docker requirement; deb/rpm later"
+    },
+    "21.3": {
+      "tasks": [
+        "P11-01",
+        "P5-10"
+      ],
+      "scope": "MVP DNS/proxy; tunnel preflight later",
+      "kind": "Explicit requirement",
+      "requirement": "MVP host/ports/IP/firewall/DNS/time/egress preflight; TUN/AWG/module checks deferred with the feature",
+      "scope_change": "CR-0001"
+    },
+    "21.4": {
+      "tasks": [
+        "P6-01",
+        "P7-02",
+        "P7-06",
+        "P11-01",
+        "P5-09"
+      ],
+      "scope": "MVP DNS/proxy; engine onboarding later",
+      "kind": "Proposed architecture",
+      "requirement": "MVP admin/MFA/DNS/proxy/profile/diagnostics/backup onboarding; node/engine/tunnel provisioning later",
+      "scope_change": "CR-0001"
+    },
+    "21.5": {
+      "tasks": [
+        "P5-08",
+        "P11-01"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "Protocol/TLS/listener endpoints allocated explicitly; same :443 combination not universally compatible"
+    },
+    "21.6": {
+      "tasks": [
+        "P6-07",
+        "P11-03",
+        "P5-08"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Encrypted backup/recovery before migrations; versioned staged health/rollback and client export compatibility"
+    },
+    "21.7": {
+      "tasks": [
+        "P10-04"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "Measure DNS QPS/flows/throughput/RTT/engine resources; no fixed tiny-VPS streaming capacity guarantee"
+    },
+    "22.1": {
+      "tasks": [
+        "P1-02",
+        "P2-02",
+        "P3-03",
+        "P10-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Unit/property coverage for matching/conflict/capability/schema/cache/auth/redaction/CIDR boundaries"
+    },
+    "22.2": {
+      "tasks": [
+        "P3-07",
+        "P5-08",
+        "P9-03",
+        "P10-06"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Real DNS/gateway/peer/Xray/inter-node/crash/LKG/storage integration per enabled feature"
+    },
+    "22.3": {
+      "tasks": [
+        "P10-05",
+        "P7-07"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "All 11 limitation cases become observable positive/negative acceptance evidence"
+    },
+    "22.4": {
+      "tasks": [
+        "P10-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Sustained/peak DNS/TCP/slow streams/memory/error/log cardinality/load and resource degradation evidence"
+    },
+    "22.5": {
+      "tasks": [
+        "P10-01",
+        "P10-02",
+        "P10-03",
+        "P10-05",
+        "P11-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Parser fuzz/SSRF/rebinding/unauthorized/loops/segmentation/RBAC/secrets/SBOM/license checks"
+    },
+    "22.6": {
+      "tasks": [
+        "P0-04",
+        "P11-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Backend/frontend/dependency/release CI; kernel tests on isolated trusted runners, never arbitrary PR root production"
+    },
+    "23.1": {
+      "tasks": [
+        "P0-01",
+        "P0-02",
+        "P1-05",
+        "P2-06",
+        "P6-01",
+        "P0-05"
+      ],
+      "scope": "Foundation",
+      "kind": "Explicit requirement",
+      "requirement": "Foundation contracts/security/test harness precede broad UI; no implementation during planning session"
+    },
+    "23.2": {
+      "tasks": [
+        "P3-06",
+        "P4-08",
+        "P7-07",
+        "P11-06",
+        "P5-10"
+      ],
+      "scope": "MVP amended by CR-0001",
+      "kind": "Explicit requirement",
+      "requirement": "User-approved DNS/proxy MVP supersedes original first-release WG/AWG/Xray ordering; those integrations remain explicit post-MVP work",
+      "scope_change": "CR-0001"
+    },
+    "23.3": {
+      "tasks": [
+        "P8-06",
+        "P9-05"
+      ],
+      "scope": "Post-MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Secure enrollment/sync, groups/outbounds/failover/path diagnostics and managed/external separation"
+    },
+    "23.4": {
+      "tasks": [
+        "F-01",
+        "F-02"
+      ],
+      "scope": "Future",
+      "kind": "Deferred feature",
+      "requirement": "Justified extra engines/UDP/TUN/complex policy/router integration require separate approved gates"
+    },
+    "23.5": {
+      "tasks": [
+        "F-03",
+        "F-04",
+        "F-05"
+      ],
+      "scope": "Future",
+      "kind": "Deferred feature",
+      "requirement": "Optional client/inbound switch/subscriptions/analytics/updates/HA/PostgreSQL only when justified"
+    },
+    "23.6": {
+      "tasks": [
+        "P0-01",
+        "P11-06",
+        "F-01"
+      ],
+      "scope": "All phases",
+      "kind": "Explicit requirement",
+      "requirement": "P0 correctness/security before protocol/UI priorities; avoid simultaneous architecture rewrite and new engine"
+    },
+    "24.1": {
+      "tasks": [
+        "P7-07",
+        "P10-07",
+        "P11-06",
+        "P5-10"
+      ],
+      "scope": "MVP checklist amended by CR-0001",
+      "kind": "Explicit requirement",
+      "requirement": "DNS/proxy/security/install/restore/status checklist applies now; original WG/AWG/Xray/isolation items deferred to P5-10",
+      "scope_change": "CR-0001"
+    },
+    "24.2": {
+      "tasks": [
+        "P0-01",
+        "P0-05",
+        "P11-05",
+        "P5-10"
+      ],
+      "scope": "MVP DNS/proxy; protocols later",
+      "kind": "Proposed architecture",
+      "requirement": "Retain Rust/React/SQLite/Hickory/TCP/Linux/fail-closed; three engine integrations are post-MVP under CR-0001; license open",
+      "scope_change": "CR-0001"
+    },
+    "25.1": {
+      "tasks": [
+        "P0-01",
+        "P0-05",
+        "P10-05",
+        "P11-05"
+      ],
+      "scope": "All phases",
+      "kind": "Risk",
+      "requirement": "SmartDNS expectations/ECH/SVCB/bridge/AWG/helper/ports/NAT/IPv6/license/updates/scope risks have owners and tests"
+    },
+    "25.2": {
+      "tasks": [
+        "P0-01",
+        "P0-05",
+        "P4-01",
+        "P10-04"
+      ],
+      "scope": "Before dependent tasks",
+      "kind": "Open decision",
+      "requirement": "User confirmed multi-admin roles; distro/public DNS/ports/IPv6/services/license/clients/failure defaults remain registered choices"
+    },
+    "25.3": {
+      "tasks": [
+        "P0-01"
+      ],
+      "scope": "Foundation",
+      "kind": "Proposed architecture",
+      "requirement": "Nine suggested ADR areas covered by 15 proposed ADRs with alternatives/reasons/risks/validation"
+    }
+  },
+  "scope_amendment": "CR-0001"
+}
