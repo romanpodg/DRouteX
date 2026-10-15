@@ -68,7 +68,7 @@ passed for commit 46b7e51; this is not product CI, coverage or P0-04 completion.
 | Feature combinations/MSRV/dependency resolution | Owner approved Rust 1.99.0/MSRV; no optional features or external dependencies in initial Cargo.lock |
 | Frontend type/lint/Vitest/browser coverage | Planned; no application package exists |
 | Real Linux DNS/proxy/namespaces/VPS | Platform-dependent; no product network acceptance performed; engine/tunnel tests deferred to G3 |
-| Codecov/CodeScene | On inspected head 023ce20, run 38756886961 and Codecov planning patch check passed. CodeScene review 7971972 failed one argument-count rule in auxiliary build_doc_graph.py (9.69), outside the owner's quality-improvement scope; no suppression/gate change. No product scores claimed |
+| Codecov/CodeScene | Implementation run 38760651619 on 7ac5f14 passed both Workspace/Planning OS jobs and Codecov upload. CodeScene review 7972404 failed one argument-count rule in auxiliary build_doc_graph.py (9.69), outside the owner's quality-improvement scope; no suppression/gate change. No product scores claimed |
 | Planning graph/schema/link/DAG checks | Evidence recorded in environment report after final verification |
 
 ## Coverage and code health
@@ -87,7 +87,11 @@ have owner/rationale. It is an additional review gate only after actual account 
 Each applicable task must satisfy spec and approved decisions, fmt/static analysis,
 relevant unit/integration/negative/failure tests, meaningful coverage, reviewed security,
 documented public contracts/architectural changes, no secrets and no unrelated changes.
-Configured Codecov report generation/upload and CodeScene regression review must succeed.
+Configured Codecov report generation/upload and applicable CodeScene review of
+application code/critical operational scripts must succeed. The owner excludes
+auxiliary planning/setup/graph tools, tests, fixtures and documentation as independent
+metric targets; record their score-only findings without cleanup or suppression.
+A failed repository-wide check is still reported as failed.
 When external integration is not configured, record it as unavailable; do not fabricate a pass.
 A required network behavior that was only mocked stays unverified and the task stays open.
 

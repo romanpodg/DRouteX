@@ -9,7 +9,7 @@ The EN/RU base specifications are preserved. MVP is DNS routing and authorized T
 proxying only; tunnels, managed protocol engines and privileged network execution
 are post-MVP. The user authorized beginning MVP roadmap work on 2026-10-15.
 The owner explicitly accepted P0-01/CR-0002 on 2026-10-15 and authorized work
-through P0-02 only. The minimal common/config/policy workspace is now being validated.
+through P0-02 only. P0-02 is completed with Windows/Linux CI and local supply-chain evidence.
 Stop after P0-02; later tasks retain their prerequisites and authorization gates.
 The user authorized initial GitHub commits/pushes, PR creation and activity monitoring
 on 2026-10-15. Repository: romanpodg/Routira; current review PR #1 and execution

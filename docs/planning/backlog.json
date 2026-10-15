@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01 and CR-0002 accepted on 2026-10-15; P0-02 in progress",
+  "status": "P0-01 and P0-02 completed on 2026-10-15; stopped at the authorized P0-02 boundary",
   "date": "2026-10-15",
   "phases": {
     "P0": "Foundation",
@@ -68,14 +68,17 @@
         "Cargo.toml",
         "Cargo.lock",
         "crates/routira-{common,config,policy}",
-        "docs/agents/rust.md"
+        "docs/agents/rust.md",
+        "deny.toml",
+        "LICENSE",
+        ".github/workflows/planning.yml"
       ],
       "acceptance": "Windows and Linux check succeed with pinned compatible dependencies; no placeholder engine crates",
-      "tests": "Build/check both hosts and supported default/no-default features",
+      "tests": "Windows/Linux fmt/check/Clippy/default/no-default tests passed in Actions run 38760651619 on 7ac5f14; local cargo-deny all checks and Rust failure-mutation tests passed; see EXECUTION_STATUS.md",
       "security": "Supply-chain inventory and no secrets in examples",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_progress",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -2619,5 +2622,16 @@
     "source": "Direct owner response accepting P0-01/CR-0002 and Debian 13 x86_64 assumptions",
     "document": "docs/planning/P0_01_FOUNDATION_REVIEW.md",
     "scope": "Foundation constraints and CR-0002 only; detailed cryptography, numeric limits and outbound transport retain their owning gates"
+  },
+  "workspace_decisions": {
+    "date": "2026-10-15",
+    "source": "Direct owner answers in this chat",
+    "rust_toolchain_msrv": "1.99.0",
+    "edition": "2024",
+    "external_dependencies": false,
+    "unsafe_code": "forbid",
+    "warnings": "deny",
+    "original_code_license": "Apache-2.0",
+    "ci_scope": "Limited read-only Windows/Linux workspace checks; full P0-04 remains planned"
   }
 }

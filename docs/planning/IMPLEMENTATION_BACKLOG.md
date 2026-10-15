@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01 and CR-0002 accepted on 2026-10-15; P0-02 in progress.**
+**P0-01 and P0-02 completed on 2026-10-15; stopped at the authorized P0-02 boundary.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -31,15 +31,15 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P0-02: Create minimal workspace and engineering posture
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§15,16,22.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§15,16,22.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Create only common/config/policy crates needed next; record edition 2024, MSRV, lint and unsafe posture |
 | Prerequisites | P0-01 |
-| Expected files/modules | Cargo.toml; Cargo.lock; crates/routira-{common,config,policy}; docs/agents/rust.md |
+| Expected files/modules | Cargo.toml; Cargo.lock; crates/routira-{common,config,policy}; docs/agents/rust.md; deny.toml; LICENSE; .github/workflows/planning.yml |
 | Acceptance criteria | Windows and Linux check succeed with pinned compatible dependencies; no placeholder engine crates |
-| Tests | Build/check both hosts and supported default/no-default features |
+| Tests | Windows/Linux fmt/check/Clippy/default/no-default tests passed in Actions run 38760651619 on 7ac5f14; local cargo-deny all checks and Rust failure-mutation tests passed; see EXECUTION_STATUS.md |
 | Security considerations | Supply-chain inventory and no secrets in examples |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
 | Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |

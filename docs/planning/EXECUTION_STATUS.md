@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-15. Current boundary: **P0-02 workspace validation**.
+Date: 2026-10-15. Current boundary: **P0-02 completed; stop before P0-03/P0-04/P0-05**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Review: [PR #1](https://github.com/romanpodg/Routira/pull/1), open against main.
 No merging, force-pushing, branch-protection change or later task implementation is authorized.
@@ -21,7 +21,7 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **1 completed (P0-01), 1 in_progress (P0-02), 86 planned**.
+Current backlog: **2 completed (P0-01/P0-02), 86 planned**; 2 of the 61 MVP tasks are complete.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
 not passed by a workspace bootstrap. No later task is started.
@@ -63,11 +63,24 @@ was needed: the existing quality-venv provides Python 3.12.13/PyYAML 6.0.3.
 
 The limited Workspace CI job runs format/check/Clippy/tests on Ubuntu and Windows
 with pinned Rust, read-only permissions and no credentials/upload/network privileges.
-Its actual remote results must be checked before closing P0-02. It does not complete
+For implementation commit `7ac5f14deb25bdb687b0aee2008e6fda11734be1`,
+[Actions run 38760651619](https://github.com/romanpodg/Routira/actions/runs/38760651619)
+passed both Workspace jobs, both Planning jobs and Codecov upload.
+This is Windows/Linux compile/test evidence, not Debian network compatibility. It does not complete
 P0-04's full product CI/coverage/dependency/failure-injection acceptance.
 Native Debian DNS/TLS/proxy/systemd acceptance remains P0-03 and later integration.
 
-## Earlier remote evidence and quality scope
+## Implementation check and earlier quality evidence
+
+[CodeScene review 7972404](https://codescene.io/projects/86145/delta/results/7972404)
+completed on implementation head 7ac5f14 with the same one auxiliary argument-count
+finding (9.69), and two other quality gates passed. No application-code finding is
+reported by that Check Run. The repository-wide check remains failed; no successful
+product Code Health score is claimed. This finding is outside the owner's selected
+quality-improvement scope, as recorded in AGENTS.md; it is not suppressed or treated
+as a P0-02 application defect.
+
+## Earlier remote evidence
 
 At the start, local HEAD and open PR #1 matched `023ce200ebf9b3e1b53bb0a1218576d8db092e46`.
 [Actions run 38756886961](https://github.com/romanpodg/Routira/actions/runs/38756886961)
@@ -84,8 +97,8 @@ and earlier report evidence. No product CodeScene/Codecov pass is inferred from 
 
 ## Stopping condition and continuation
 
-Close P0-02 only after reviewing the full diff and actual Windows/Linux build results,
-then stop. P0-03/P0-05 remain the next planned work; they are not started by this goal.
+P0-02 is closed after full-diff review, local checks and actual Windows/Linux build
+results. The bounded goal is complete; stop here. P0-03/P0-05 remain the next planned work; they are not started by this goal.
 No automatic merge, production deployment or unsolicited reviewer message is authorized.
 
 The user will manually reopen the chat after usage limits and requested no new

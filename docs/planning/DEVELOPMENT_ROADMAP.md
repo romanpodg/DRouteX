@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0-01/CR-0002 accepted on 2026-10-15; execution authorized through P0-02.**
+Status: **P0-01/CR-0002 accepted and P0-02 completed on 2026-10-15; stopped at P0-02.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -8,7 +8,7 @@ recorded in [EXECUTION_STATUS](EXECUTION_STATUS.md). The boundary is P0-02 works
 Primary source: [base specification](../../Routira_Project_Specification_EN.md), all 27 sections,
 with [accepted scope amendment ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 Base EN/RU specifications remain unchanged. A minimal common/config/policy workspace
-is being validated; runtime DNS/proxy services do not exist yet.
+passed Windows/Linux checks; runtime DNS/proxy services do not exist yet.
 The user authorized [Control D research](../research/CONTROLD_ANALYSIS.md) and plan
 adaptation. Accepted [CR-0002](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md)
 introduces reusable Profiles, DNS Endpoints, personal DoH/DoT, filter/service catalogs,

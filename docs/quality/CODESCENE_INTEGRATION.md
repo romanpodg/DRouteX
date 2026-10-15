@@ -94,3 +94,9 @@ Browser login does not sign the CLI in.
 Continue mandatory local checks.
 CLI startup update check can be disabled for deterministic help with
 `$env:CS_DISABLE_VERSION_CHECK = '1'`; this does not bypass authentication or analysis.
+
+P0-02 follow-up: [review 7972404](https://codescene.io/projects/86145/delta/results/7972404)
+on implementation commit `7ac5f14deb25bdb687b0aee2008e6fda11734be1` completed with
+the same one auxiliary argument-count finding (9.69). No application-code finding
+was reported in its Check Run details; the repository-wide gate is still failed.
+No score-only auxiliary cleanup, suppression or service configuration change was made.

@@ -4,7 +4,7 @@ Self-hosted SmartDNS, selective traffic routing and multi-protocol network manag
 The accepted MVP scope is **DNS routing and authorized TCP proxying on one Linux VPS**.
 Tunnels and managed WG/AWG/Xray engines follow after that release; see the
 [accepted scope amendment](docs/architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
-The owner accepted **P0-01 / CR-0002** on 2026-10-15. **P0-02** creates the minimal
+The owner accepted **P0-01 / CR-0002** on 2026-10-15. **P0-02 is completed** with the minimal
 Rust common/config/policy workspace; no DNS/gateway service runs yet.
 
 - [Development roadmap](docs/planning/DEVELOPMENT_ROADMAP.md)
