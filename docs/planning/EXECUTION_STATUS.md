@@ -64,6 +64,14 @@ Copilot review reported a reviewer quota limit, not a successful code review.
 At that observation no CodeScene/Codecov check or coverage report was present.
 Later commits must be checked against their own head SHA by the monitor.
 
+The CodeScene follow-up refactors only the five flagged Python tools. Fourteen
+regression tests preserve reviewed rendering output, negative task/workflow checks,
+resource integrity and graph shrink guards; the planning workflow runs them on
+both OS targets. Local tests, planning validators and actionlint passed. Local
+CodeScene review requires separate CLI credentials, so no local health score is
+claimed. No gate was relaxed and P0-02 remains unstarted; inspect the new head's
+GitHub check for the external remediation outcome.
+
 Monitor notifications are limited to meaningful check/review/head/state changes,
 completion, failures or required user action. Absent unchanged integrations do not
 cause repeated reminders. Inspect current PR head to avoid reporting obsolete runs.

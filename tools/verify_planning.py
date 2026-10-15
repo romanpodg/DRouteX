@@ -11,21 +11,23 @@ ROOT = Path(__file__).resolve().parents[1]
 DELIVERIES = {'MVP': 0, 'POST_MVP_PROTOCOLS': 1, 'POST_MVP_MULTI_NODE': 2, 'FUTURE': 3}
 
 
-def validate_tasks(tasks):
-    ids = {task['id'] for task in tasks}
-    assert len(ids) == len(tasks), 'Duplicate task ID'
+def validate_task_fields(task, ids):
     required = ('id','phase','title','goal','spec','scope','files','acceptance','tests','security','quality','complexity','status','definition_of_done','delivery','scope_change')
-    by_id = {task['id']:task for task in tasks}
-    for task in tasks:
-        assert all(task.get(k) for k in required), f"Missing task evidence field: {task['id']}"
-        assert task['complexity'] in {'S','M','L'}, 'Unknown complexity'
-        assert task['delivery'] in DELIVERIES, 'Unknown delivery'
-        assert task['scope_change'] == 'CR-0001', 'Missing scope amendment'
-        assert all(1 <= section <= 27 for section in task['spec']), 'Unknown spec section'
-        assert all(p in ids for p in task['prerequisites']), f"Unknown prerequisite: {task['id']}"
-    for task in tasks:
+    assert all(task.get(k) for k in required), f"Missing task evidence field: {task['id']}"
+    assert task['complexity'] in {'S','M','L'}, 'Unknown complexity'
+    assert task['delivery'] in DELIVERIES, 'Unknown delivery'
+    assert task['scope_change'] == 'CR-0001', 'Missing scope amendment'
+    assert all(1 <= section <= 27 for section in task['spec']), 'Unknown spec section'
+    assert all(p in ids for p in task['prerequisites']), f"Unknown prerequisite: {task['id']}"
+
+
+def validate_dependency_order(by_id):
+    for task in by_id.values():
         for prior in task['prerequisites']:
             assert DELIVERIES[by_id[prior]['delivery']] <= DELIVERIES[task['delivery']], f"Later-release dependency: {task['id']} -> {prior}"
+
+
+def validate_dependency_cycles(by_id):
     done, active = set(), set()
     def visit(task_id):
         assert task_id not in active, f'Dependency cycle at {task_id}'
@@ -36,8 +38,18 @@ def validate_tasks(tasks):
             visit(prior)
         active.remove(task_id)
         done.add(task_id)
-    for task_id in ids:
+    for task_id in by_id:
         visit(task_id)
+
+
+def validate_tasks(tasks):
+    ids = {task['id'] for task in tasks}
+    assert len(ids) == len(tasks), 'Duplicate task ID'
+    by_id = {task['id']: task for task in tasks}
+    for task in tasks:
+        validate_task_fields(task, ids)
+    validate_dependency_order(by_id)
+    validate_dependency_cycles(by_id)
     assert 'P3-07' in by_id['P4-08']['prerequisites'], 'Missing required secure-DNS gate'
     assert 'P2-07' in by_id['P2-05']['prerequisites'], 'Missing required catalog gate'
     return ids
@@ -71,11 +83,9 @@ def self_test(tasks):
     return len(invalid)
 
 
-def main():
-    plan = json.loads((ROOT/'docs/planning/backlog.json').read_text(encoding='utf-8'))
-    ids = validate_tasks(plan['tasks'])
-    by_id = {task['id']: task for task in plan['tasks']}
-    counts = {d: sum(t['delivery'] == d for t in plan['tasks']) for d in DELIVERIES}
+def validate_release(tasks):
+    by_id = {task['id']: task for task in tasks}
+    counts = {d: sum(t['delivery'] == d for t in tasks) for d in DELIVERIES}
     assert counts == {'MVP': 61, 'POST_MVP_PROTOCOLS': 11, 'POST_MVP_MULTI_NODE': 11, 'FUTURE': 5}, 'Unexpected delivery inventory'
     def ancestors(task_id):
         result = set()
@@ -84,11 +94,15 @@ def main():
             result.update(ancestors(prior))
         return result
     release = ancestors('P11-06') | {'P11-06'}
-    assert release == {t['id'] for t in plan['tasks'] if t['delivery'] == 'MVP'}, 'MVP release must cover all and only current tasks'
-    for task in plan['tasks']:
+    assert release == {t['id'] for t in tasks if t['delivery'] == 'MVP'}, 'MVP release must cover all and only current tasks'
+    for task in tasks:
         if task['delivery'] == 'POST_MVP_PROTOCOLS':
             assert 'P11-06' in ancestors(task['id']), 'Protocol expansion must follow MVP release'
-    trace = json.loads((ROOT/'docs/planning/traceability.json').read_text(encoding='utf-8'))
+    return counts, release
+
+
+def validate_traceability(plan, trace, ids):
+    by_id = {task['id']: task for task in plan['tasks']}
     for item in trace['requirements']:
         assert item['tasks'] and all(task in ids for task in item['tasks']), f"Unmapped requirement {item['id']}"
         assert item['delivery'] == sorted({by_id[t]['delivery'] for t in item['tasks']}), 'Stale trace delivery'
@@ -105,6 +119,9 @@ def main():
     assert proposal['kind'] == 'Proposed design', 'Research must not silently accept a design'
     assert proposal['source_file'] == 'docs/architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md'
     assert plan['design_proposals'][0]['status'] == 'proposed'
+
+
+def validate_source_specs(trace):
     source = ROOT/'Routira_Project_Specification_EN.md'
     assert hashlib.sha256(source.read_bytes()).hexdigest() == trace['source_sha256'], 'English source changed'
     ru = ROOT/'Routira_Project_Specification_RU.md'
@@ -113,6 +130,10 @@ def main():
     mapped = {item['section'] for item in trace['requirements']}
     assert set(headings) <= mapped, 'A spec heading was not considered'
     assert {str(i) for i in range(1,28)} <= mapped, 'A top-level spec section was omitted'
+    return headings
+
+
+def validate_links():
     docs = list((ROOT/'docs').rglob('*.md')) + [ROOT/'README.md', ROOT/'AGENTS.md']
     broken = []
     link_count = 0
@@ -127,6 +148,10 @@ def main():
             if not resolved.exists():
                 broken.append(f'{doc.relative_to(ROOT)} -> {target}')
     assert not broken, '\n'.join(broken)
+    return link_count
+
+
+def validate_adrs():
     adrs = list((ROOT/'docs/architecture/adr').glob('ADR-*.md'))
     assert len(adrs) == 17
     assert {p.name.split('-')[1] for p in adrs} == {f'{n:04}' for n in range(1,18)}
@@ -136,10 +161,26 @@ def main():
         assert f'Status: **{expected}**' in content
         for section in ('Context','Decision','Alternatives','Reasons','Consequences','Risks','Validation approach'):
             assert f'## {section}' in content, f'{adr.name}: {section}'
+    return adrs
+
+
+def validate_review_boundary():
     assert not (ROOT/'Cargo.toml').exists(), 'Unexpected application workspace'
     assert not (ROOT/'apps').exists() and not (ROOT/'crates').exists(), 'Unexpected production code'
     agents = (ROOT/'AGENTS.md').read_text(encoding='utf-8')
     assert 'mcp__node_repl__js' in agents and 'sky.list_apps()' in agents and 'browser-only' in agents
+
+
+def main():
+    plan = json.loads((ROOT/'docs/planning/backlog.json').read_text(encoding='utf-8'))
+    ids = validate_tasks(plan['tasks'])
+    counts, release = validate_release(plan['tasks'])
+    trace = json.loads((ROOT/'docs/planning/traceability.json').read_text(encoding='utf-8'))
+    validate_traceability(plan, trace, ids)
+    headings = validate_source_specs(trace)
+    link_count = validate_links()
+    adrs = validate_adrs()
+    validate_review_boundary()
     negatives = self_test(plan['tasks']) if '--self-test' in sys.argv else 0
     result = {'status':'passed','scope_amendment':'CR-0001','design_proposal':'CR-0002','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':1,'negative_validator_cases':negatives,'source_specs_unchanged':True,'application_code_absent':True}
     (ROOT/'docs/environment').mkdir(parents=True, exist_ok=True)

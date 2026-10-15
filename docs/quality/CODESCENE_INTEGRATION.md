@@ -28,6 +28,13 @@ The findings concern complex/large methods and nested conditional blocks. The PR
 introduces these tools relative to the initial main; this is not evidence that the
 last documentation commit caused all findings. No finding was suppressed or gate
 relaxed. Tool refactoring is separate from service activation and product approval.
+The follow-up remediation separates rendering, validation, inventory verification
+and document graph extraction into focused functions. Fourteen regression tests
+check unchanged generated planning output, CI authorization guards, resource/hash
+mismatches and graph refresh restrictions. They run in both planning CI OS jobs;
+Graphify stays optional for these tests. Existing quality gates remain unchanged.
+Local CLI review was attempted but requires separate CLI credentials; the GitHub
+check on each published commit remains the source of CodeScene result evidence.
 Daily analysis is saved for **03:00 Asia/Omsk**. No paid plan was selected.
 The initial PR monitor will inspect actual results; repository
 creation/publication alone does not establish a baseline or successful integration.
@@ -72,8 +79,8 @@ CodeScene server. A CLI install does not create MCP access. No CodeScene tools a
 in this session. Do not install/configure the server until its exact version, required account
 permissions and source-analysis effects are reviewed. P0-04/D16 owns this optional addition.
 
-Remaining verification: actual implementation baseline and owner disposition of
-the tooling Code Health findings.
+Remaining verification: the current-head remediation check, an actual implementation
+baseline and owner acceptance of the product contracts.
 Browser login does not sign the CLI in.
 Continue mandatory local checks.
 CLI startup update check can be disabled for deterministic help with
