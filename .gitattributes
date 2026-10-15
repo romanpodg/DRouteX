@@ -1,0 +1,4 @@
+* text=auto eol=lf
+# Preserve the authoritative specifications byte-for-byte for hash verification.
+Routira_Project_Specification_EN.md -text
+Routira_Project_Specification_RU.md -text
