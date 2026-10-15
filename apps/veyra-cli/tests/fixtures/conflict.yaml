@@ -1,0 +1,8 @@
+apiVersion: veyra.io/v1alpha1
+kind: PolicyBundle
+metadata: { name: conflict }
+spec:
+  profiles: [{ id: home }]
+  rules:
+    - { id: a, scope: default, match: { domains: [media.example] }, action: { type: block } }
+    - { id: b, scope: default, match: { domains: [media.example] }, action: { type: direct } }

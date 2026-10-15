@@ -1,0 +1,19 @@
+[package]
+name = "veyra-gateway"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+
+[dependencies]
+veyra-policy.workspace = true
+veyra-dns.workspace = true
+thiserror.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+
+[dev-dependencies]
+hickory-proto.workspace = true
+
+[lints]
+workspace = true

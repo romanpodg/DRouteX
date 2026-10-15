@@ -1,0 +1,7 @@
+apiVersion: veyra.io/v1alpha1
+kind: PolicyBundle
+metadata: { name: modes }
+spec:
+  profiles: [{ id: home }]
+  rules:
+    - { id: tunnel-only, scope: default, match: { domains: [x.example] }, action: { type: block }, modesAllowed: [tunnel] }

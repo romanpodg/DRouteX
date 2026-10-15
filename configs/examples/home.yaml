@@ -1,0 +1,68 @@
+# Example Veyra policy (spec §8.3). Validate: veyra validate configs/examples/home.yaml
+apiVersion: veyra.io/v1alpha1
+kind: PolicyBundle
+metadata:
+  name: home-default
+spec:
+  nodes:
+    - id: de-01
+      gateway: { ipv4: 203.0.113.10 }   # where DNS sends mode-B clients (§10.2)
+  profiles:
+    - id: home
+      defaultAction: direct
+  devices:
+    - id: tv
+      profile: home
+    - id: work-laptop
+      profile: home
+  rules:
+    - id: video-through-germany
+      enabled: true
+      scope: { profile: home }
+      match:
+        domains: ["suffix:media.example"]
+      action:
+        type: proxy_node
+        node: de-01
+        onFailure: block
+      modesAllowed: ["smartdns_tcp", "explicit_proxy", "tunnel"]
+    - id: media-login-direct            # exact beats suffix (§8.2.1)
+      enabled: true
+      scope: { profile: home }
+      match:
+        domains: ["login.media.example"]
+      action:
+        type: direct
+    - id: work-resolver
+      enabled: true
+      scope: { device: work-laptop }
+      match:
+        domains: ["suffix:corp.example"]
+      dns:
+        upstreamGroup: corp             # resolver choice, not egress (§6.4)
+      action:
+        type: direct
+    - id: block-ads
+      enabled: true
+      scope: default
+      match:
+        domains: ["suffix:ads.example"]
+      action:
+        type: block
+  admission:                            # who may use this DNS (§9.6); others are dropped
+    - { cidr: 127.0.0.0/8, profile: home }
+    - { cidr: "::1/128", profile: home }
+    - { cidr: 192.168.1.0/24, profile: home }
+    - { cidr: 192.168.1.50/32, device: tv }
+  dns:
+    listen: ["127.0.0.1:10053"]         # 5353 is mDNS; production on Linux: ["[::]:53"], which also takes IPv4
+    synthTtl: 60
+    upstreams:
+      - id: default
+        servers: ["1.1.1.1", "9.9.9.9"]
+      - id: corp
+        servers: ["10.0.0.53"]
+  gateway:                              # this data plane is de-01's gateway (§10)
+    node: de-01
+    tls: ["127.0.0.1:10443"]            # routed by SNI; production on Linux: ["[::]:443"]
+    http: ["127.0.0.1:10080"]           # routed by Host; production on Linux: ["[::]:80"]

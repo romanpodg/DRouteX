@@ -27,3 +27,5 @@ __pycache__/
 # Backups made by instruction installers
 AGENTS.md.bak*
 .codex/*.bak*
+# Local agent state
+/.omc/
