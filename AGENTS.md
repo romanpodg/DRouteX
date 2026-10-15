@@ -27,6 +27,43 @@ CR-0002/ADR-0017 and technical design choices remain Proposed pending P0-01 revi
 User communication is Russian; code and
 technical documentation are English.
 
+## Project collaboration and quality policy
+
+These rules apply only inside the Routira repository. Do not propagate them to
+global agent instructions or other projects.
+
+- Focus Code Health and coverage work on application code and critical build, CI
+  and deployment scripts. The owner explicitly selected this scope. Tests,
+  documentation, fixtures and auxiliary planning/setup tools are not independent
+  targets for quality scoring, coverage targets or metric-driven refactoring.
+  Fix concrete functional defects when relevant; do not improve every file merely
+  because an external service flags it. A score-only finding in excluded files
+  does not authorize a cleanup campaign.
+- Preserve behavior and security ahead of metrics. Do not split, rewrite or add
+  code/tests solely to raise CodeScene or Codecov numbers. Proceed with a quality
+  change only when its benefit and safety are supported by source inspection and
+  proportionate regression evidence. If that confidence is missing, explain the
+  uncertainty and ask the owner before proceeding. Never claim zero regression risk.
+  Run relevant tests to validate actual changes; do not start separate audits of
+  tests or documentation, or run unrelated checks for an instruction-only edit.
+- Before every commit/push, inspect the exact staged files and diff. Keep caches,
+  local SDKs/tools, generated graphs, temporary files, logs, reports, build output,
+  credentials and editor state out of GitHub unless a specific artifact is explicitly
+  intended for version control. Use scoped staging; .gitignore does not protect
+  already tracked files. Preserve unrelated work.
+- Ask the owner in chat about unclear requirements and consequential choices before
+  choosing an alternative or implementing dependent work. This includes architecture,
+  dependencies, security/access behavior, user experience, infrastructure/costs,
+  scope and changes to the development process. Explain the options and tradeoffs
+  briefly and offer a recommendation; do not silently treat it as accepted. Continue
+  independent authorized work while waiting and reuse decisions already given.
+- Use Control D as the primary reference for DNS-proxy and SmartDNS concepts,
+  onboarding, Profiles, DNS Endpoints and selective routing. Routira is inspired
+  by and intended to develop that concept further. Verify relevant vendor behavior,
+  distinguish documented facts from Routira proposals, and discuss meaningful
+  departures or extensions with the owner. Reference behavior never overrides
+  Routira's accepted scope, security boundaries or P0-01 approval gate.
+
 ## Windows native computer use routing (preserved user instructions)
 
 Native Windows UI interaction MUST use `mcp__node_repl__js` with
@@ -81,8 +118,9 @@ Bound async queues/concurrency; apply deadlines, cancellation-safe operations an
 graceful shutdown. Do not block Tokio or hold inappropriate locks across await.
 Avoid unsafe; justify and independently review any exception. Keep public APIs small.
 
-Run applicable fmt/check/clippy/test/deny checks in `docs/quality/QUALITY_STRATEGY.md`,
-including feature combinations and real Linux integration gates. Negative and failure
+For affected application code and critical operational scripts, run applicable
+fmt/check/clippy/test/deny checks in `docs/quality/QUALITY_STRATEGY.md`, including
+feature combinations and real Linux integration gates. Negative and failure
 tests are mandatory for risky logic. CodeScene/Codecov status is external and unverified
 until an actual run succeeds. Never invent coverage, CI, network or health results.
 
