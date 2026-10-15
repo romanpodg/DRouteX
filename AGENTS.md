@@ -10,6 +10,10 @@ proxying only; tunnels, managed protocol engines and privileged network executio
 are post-MVP. The user authorized beginning MVP roadmap work on 2026-10-15.
 Current task: P0-01 contract review; no application workspace exists. Follow task
 prerequisites: close P0-01 owner review before dependent implementation.
+The user authorized initial GitHub commits/pushes, PR creation and activity monitoring
+on 2026-10-15. Repository: romanpodg/Routira; current review PR #1 and execution
+boundary are recorded in `docs/planning/EXECUTION_STATUS.md`. This does not authorize
+merging, force-pushing, changing branch protections or starting P0-02 before review.
 Public remote access from changing IPs without VPN is required. The user accepted
 network/group access for legacy DNS and ordinary transparent TCP.
 The user authorized Control D research and plan adaptation; proposed CR-0002 in

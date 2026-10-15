@@ -2,6 +2,7 @@
 
 Date: 2026-10-15. Current boundary: **P0-01 review package; P0-02 is not authorized yet**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira), public.
+Review: [PR #1](https://github.com/romanpodg/Routira/pull/1), open against main.
 The user explicitly authorized the first commit/push, pull requests and PR activity
 monitoring. This does not accept technical ADRs or authorize merging a PR.
 
@@ -21,6 +22,9 @@ monitoring. This does not accept technical ADRs or authorize merging a PR.
 The persistent goal covers this bounded preparation/publication/monitoring setup.
 PR monitoring continues separately on a schedule in the same chat. A green planning
 check, external bot approval or PR creation cannot substitute for owner acceptance.
+The active monitor is monitor-routira-foundation-pr, scheduled every 15 minutes.
+It reports meaningful changes and stays quiet on unchanged state; it cannot merge
+or advance implementation beyond this gate.
 
 ## Evidence and external checks
 
@@ -39,6 +43,12 @@ CodeScene account/repository integration is user-managed and unverified until an
 actual result exists. Codecov likewise needs a real coverage-producing workspace,
 report and configured upload; installing its app alone cannot create a report.
 No coverage/Code Health score or required branch-protection status is invented.
+
+First remote evidence: [Actions run 38706557088](https://github.com/romanpodg/Routira/actions/runs/38706557088)
+passed on Ubuntu and Windows for commit 46b7e51 on 2026-10-15. The automatic
+Copilot review reported a reviewer quota limit, not a successful code review.
+At that observation no CodeScene/Codecov check or coverage report was present.
+Later commits must be checked against their own head SHA by the monitor.
 
 Monitor notifications are limited to meaningful check/review/head/state changes,
 completion, failures or required user action. Absent unchanged integrations do not

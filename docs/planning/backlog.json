@@ -2609,6 +2609,7 @@
     "url": "https://github.com/romanpodg/Routira",
     "default_branch": "main",
     "review_branch": "docs/review-dns-proxy-foundation",
-    "visibility": "public"
+    "visibility": "public",
+    "review_pr": "https://github.com/romanpodg/Routira/pull/1"
   }
 }

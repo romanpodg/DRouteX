@@ -52,8 +52,9 @@ tests under that revised plan; no product evidence is implied by planning checks
 Reviewed future CI file: [Rust quality workflow proposal](proposals/rust-quality.yml.example).
 It remains inactive until P0-04 verifies the actual feature matrix, license posture and first run.
 The separate [planning-only workflow](../../.github/workflows/planning.yml) now checks
-the existing document/contract tools on Ubuntu and Windows. Its first remote run
-must be observed on the PR; this is not product CI, coverage or P0-04 completion.
+the existing document/contract tools on Ubuntu and Windows. The
+[first remote run](https://github.com/romanpodg/Routira/actions/runs/38706557088)
+passed for commit 46b7e51; this is not product CI, coverage or P0-04 completion.
 
 ## Verification state now
 
