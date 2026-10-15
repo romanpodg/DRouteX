@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01 and P0-02 completed on 2026-10-15; stopped at the authorized P0-02 boundary.**
+**P0-01/P0-02 complete; P0-03 WSL fixtures passed, native Debian 13 acceptance in review.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -46,15 +46,15 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P0-03: Create isolated Linux network test harness
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§19,21,22.
+Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§19,21,22.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Disposable dual-stack client/DNS/gateway/origin/proxy fixtures, personal DoH/DoT endpoint names and test certificates, capture and reliable cleanup; no VPN/TUN |
 | Prerequisites | P0-01 |
-| Expected files/modules | tests/network; crates/routira-testkit; docs/quality/TESTING_STRATEGY.md |
+| Expected files/modules | tests/network; docs/planning/P0_03_NETWORK_HARNESS.md; docs/quality/TESTING_STRATEGY.md; .github/workflows/planning.yml |
 | Acceptance criteria | Real DNS and TCP/TLS/proxy fixture has separate clients/origins, dual-stack cases and reliable cleanup after failure |
-| Tests | Abort/cleanup plus real TLS DNS capability, two-endpoint same-NAT and mismatched DNS/proxy source fixtures |
+| Tests | Four portable boundary tests and real dual-stack WSL DNS/TLS/proxy/NAT/source-mismatch/capture probes passed; setup-failure/SIGTERM/SIGKILL cleanup passed; native Debian 13 remains pending; see P0_03_NETWORK_HARNESS.md |
 | Security considerations | Privileged fixture setup remains isolated from production services; no production credentials or untrusted PR root runner |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
 | Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |

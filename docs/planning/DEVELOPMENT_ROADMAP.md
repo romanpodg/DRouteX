@@ -1,10 +1,10 @@
 # Development roadmap
 
-Status: **P0-01/CR-0002 accepted and P0-02 completed on 2026-10-15; stopped at P0-02.**
+Status: **P0-01/P0-02 complete; P0-03 WSL fixtures passed, native Debian 13 review pending.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
-recorded in [EXECUTION_STATUS](EXECUTION_STATUS.md). The boundary is P0-02 workspace validation; later tasks and merging are not authorized.
+recorded in [EXECUTION_STATUS](EXECUTION_STATUS.md). The boundary is P0-03 fixtures; P0-04/P0-05 and merging are not authorized.
 Primary source: [base specification](../../Routira_Project_Specification_EN.md), all 27 sections,
 with [accepted scope amendment ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 Base EN/RU specifications remain unchanged. A minimal common/config/policy workspace
@@ -103,5 +103,7 @@ Public changing-IP, VPN-free DNS-only access with legacy/gateway network scope i
 CR-0002 adds personal DNS Profiles and opt-in observed network grants to the proposed
 model; it does not turn group-authorized TCP into individual device authorization.
 P0-01 foundation contracts and Debian 13 x86_64 assumptions are accepted. Continue
-only through P0-02; do not start P0-03/P0-05 without a subsequent execution instruction.
+only through P0-03, authorized by the subsequent next-step instruction and explicit
+WSL lab approval. WSL fixture evidence is recorded in P0_03_NETWORK_HARNESS.md;
+native Debian 13 acceptance remains pending. Do not start P0-04/P0-05 yet.
 Detailed implementation decisions and runtime proof remain at their owning gates.

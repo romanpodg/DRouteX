@@ -1,7 +1,11 @@
 # Development environment report
 
 Inspection/setup date: **2026-10-15**, user timezone Asia/Omsk.
-Planning session only. No Routira production functionality or Cargo/frontend workspace exists.
+Historical initial-setup snapshot below. P0-02 subsequently added the Rust workspace;
+P0-03 now has an owner-approved WSL network lab and real fixture evidence. No
+Routira production service/frontend exists. Current state is recorded in
+[execution status](../planning/EXECUTION_STATUS.md) and
+[network harness review](../planning/P0_03_NETWORK_HARNESS.md).
 Current scope revision: user accepted DNS/proxy MVP first (CR-0001/ADR-0016); tunnels,
 managed engines and custom privileged networking helper are post-MVP. Environment setup
 results below are unchanged by this planning-only revision.

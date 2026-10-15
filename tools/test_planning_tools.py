@@ -80,8 +80,12 @@ class ValidatorTests(unittest.TestCase):
         missing_evidence = copy.deepcopy(plan)
         missing_evidence['foundation_review']['source'] = ''
         later_work = copy.deepcopy(plan)
-        next(t for t in later_work['tasks'] if t['id'] == 'P0-03')['status'] = 'in_progress'
-        for case in (missing_acceptance, missing_evidence, later_work):
+        next(t for t in later_work['tasks'] if t['id'] == 'P0-04')['status'] = 'in_progress'
+        missing_lab = copy.deepcopy(plan)
+        missing_lab['network_lab_decision']['source'] = ''
+        premature_native = copy.deepcopy(plan)
+        next(t for t in premature_native['tasks'] if t['id'] == 'P0-03')['status'] = 'completed'
+        for case in (missing_acceptance, missing_evidence, later_work, missing_lab, premature_native):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
 

@@ -59,6 +59,8 @@ jobs:
         run: python -m coverage run --parallel-mode tools/verify_quality_proposals.py
       - name: Test planning output and rejection boundaries
         run: python -m coverage run --parallel-mode tools/test_planning_tools.py
+      - name: Check network fixture boundaries without privileges
+        run: python -m unittest discover -s tests/network -p 'test_*.py'
       - name: Reject stale generated planning files
         run: git diff --exit-code -- docs/planning docs/environment/planning-verification.json docs/environment/quality-proposal-verification.json
       - name: Generate planning coverage report

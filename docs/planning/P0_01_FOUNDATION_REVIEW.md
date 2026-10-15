@@ -169,7 +169,8 @@ D08 foundation semantics and Debian 13 x86_64 as the first native acceptance tar
 Acceptance covers secure endpoint credentials, opt-in observations, layered filtering,
 private-record isolation and runtime safety. The owner then approved Rust 1.99.0/MSRV,
 Edition 2024, no external dependencies and limited Windows/Linux CI for P0-02.
-P0-01 is completed. P0-03/P0-05 are not started. ADR-0017 is Accepted; other technical
+P0-01 is completed. Later P0-03 progress is recorded in EXECUTION_STATUS.md;
+P0-05 is not started. ADR-0017 is Accepted; other technical
 ADRs retain Proposed status for detailed mechanisms outside this foundation decision.
 No tunnel prerequisite has been added; the existing planning validator checks the
 61-task revised MVP dependency closure and preserved source specifications.
@@ -193,8 +194,9 @@ DNS response compatibility, exact protected outbound and the operator's actual l
 remain open at their owning gates (D03/D08/D09/D11/D15/D18/D19). Accepting the
 foundation does not choose these silently or claim runtime compatibility.
 
-The owner-authorized execution bound is P0-02, followed by its reviewable diff and
-validation evidence. It does not authorize PR merging or completion of later tasks.
+At foundation acceptance the owner-authorized bound was P0-02, followed by its
+reviewable diff and validation evidence. The subsequent P0-03 instruction and current
+bound are recorded in EXECUTION_STATUS.md. Neither instruction authorizes PR merging.
 Any later requested contract change must be recorded explicitly before dependent work.
 
 ## Verification for this review
@@ -206,7 +208,7 @@ invalid cases, including missing secure-DNS/catalog gates. Actual results are in
 [planning-verification.json](../environment/planning-verification.json), not inferred
 from the design. Original EN/RU source hashes must remain unchanged.
 Additional assertions require recorded owner acceptance, completed prerequisites,
-the P0-02 execution bound and exactly three workspace crates. Cargo workspace checks
+the current execution bound and exactly three workspace crates. Cargo workspace checks
 are tracked in EXECUTION_STATUS.md; native Linux network/recovery tests remain P0-03.
 The owner decision is not executable network evidence.
 CodeScene/Codecov remain unavailable as product evidence.

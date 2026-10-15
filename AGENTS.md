@@ -8,9 +8,12 @@ Read `Routira_Project_Specification_EN.md` with the accepted scope amendment
 The EN/RU base specifications are preserved. MVP is DNS routing and authorized TCP
 proxying only; tunnels, managed protocol engines and privileged network execution
 are post-MVP. The user authorized beginning MVP roadmap work on 2026-10-15.
-The owner explicitly accepted P0-01/CR-0002 on 2026-10-15 and authorized work
-through P0-02 only. P0-02 is completed with Windows/Linux CI and local supply-chain evidence.
-Stop after P0-02; later tasks retain their prerequisites and authorization gates.
+P0-01/CR-0002 and P0-02 are complete. On 2026-10-15 the owner authorized the next
+step, P0-03, and approved the existing WSL Ubuntu lab with Python stdlib/OpenSSL,
+isolated namespaces and lab iproute2/nftables/tcpdump. WSL fixture/cleanup checks
+passed; P0-03 remains in_review pending the accepted native Debian 13 target.
+Stop before P0-04/P0-05; later tasks retain their gates. No production-root or
+untrusted privileged PR runner is authorized.
 The user authorized initial GitHub commits/pushes, PR creation and activity monitoring
 on 2026-10-15. Repository: romanpodg/Routira; current review PR #1 and execution
 boundary are recorded in `docs/planning/EXECUTION_STATUS.md`. This does not authorize

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01 and P0-02 completed on 2026-10-15; stopped at the authorized P0-02 boundary",
+  "status": "P0-01/P0-02 complete; P0-03 WSL fixtures passed, native Debian 13 acceptance in review",
   "date": "2026-10-15",
   "phases": {
     "P0": "Foundation",
@@ -99,15 +99,16 @@
       "scope": "Disposable dual-stack client/DNS/gateway/origin/proxy fixtures, personal DoH/DoT endpoint names and test certificates, capture and reliable cleanup; no VPN/TUN",
       "files": [
         "tests/network",
-        "crates/routira-testkit",
-        "docs/quality/TESTING_STRATEGY.md"
+        "docs/planning/P0_03_NETWORK_HARNESS.md",
+        "docs/quality/TESTING_STRATEGY.md",
+        ".github/workflows/planning.yml"
       ],
       "acceptance": "Real DNS and TCP/TLS/proxy fixture has separate clients/origins, dual-stack cases and reliable cleanup after failure",
-      "tests": "Abort/cleanup plus real TLS DNS capability, two-endpoint same-NAT and mismatched DNS/proxy source fixtures",
+      "tests": "Four portable boundary tests and real dual-stack WSL DNS/TLS/proxy/NAT/source-mismatch/capture probes passed; setup-failure/SIGTERM/SIGKILL cleanup passed; native Debian 13 remains pending; see P0_03_NETWORK_HARNESS.md",
       "security": "Privileged fixture setup remains isolated from production services; no production credentials or untrusted PR root runner",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_review",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2596,9 +2597,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-15",
-    "source": "Direct owner acceptance of P0-01/CR-0002 and instruction to continue through P0-02 in this chat",
-    "scope": "Through P0-02 only; no merge, reminder or later task implementation",
-    "through_task": "P0-02"
+    "source": "Direct user instruction to take the next step, followed by explicit approval of the WSL lab variant in this chat",
+    "scope": "Through P0-03 fixtures only; native Debian 13 review remains; no merge, reminder, P0-04/P0-05 or production changes",
+    "through_task": "P0-03"
   },
   "design_proposals": [
     {
@@ -2633,5 +2634,17 @@
     "warnings": "deny",
     "original_code_license": "Apache-2.0",
     "ci_scope": "Limited read-only Windows/Linux workspace checks; full P0-04 remains planned"
+  },
+  "network_lab_decision": {
+    "date": "2026-10-15",
+    "source": "Direct owner approval in this chat",
+    "development_lab": "Existing WSL Ubuntu; Python stdlib/OpenSSL and isolated Linux namespaces",
+    "approved_packages": [
+      "iproute2",
+      "nftables",
+      "tcpdump"
+    ],
+    "native_acceptance_target": "Debian 13 x86_64; not yet supplied",
+    "privilege_scope": "Trusted manual lab setup/capture only; services/probes unprivileged; no privileged PR runner"
   }
 }

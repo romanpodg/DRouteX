@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0-01 and P0-02 completed on 2026-10-15; stopped at the authorized P0-02 boundary. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0-01/P0-02 complete; P0-03 WSL fixtures passed, native Debian 13 acceptance in review. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

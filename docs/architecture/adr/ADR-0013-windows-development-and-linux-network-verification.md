@@ -31,3 +31,8 @@ WSL lacks target AWG module; CI lacks privileges; remote WAN services change.
 ## Validation approach
 
 P0-03 harness cleanup; P4-08/P10 current real DNS/proxy gates and P11 install/restore. Later P5/P8/P9 validate engines, tunnels and multiple nodes.
+
+P0-03 evidence on 2026-10-15: the owner approved the existing WSL Ubuntu lab.
+[Real dual-stack DNS/TLS/proxy fixtures and failure cleanup](../../planning/P0_03_NETWORK_HARNESS.md)
+passed there. Native Debian 13/image/kernel/systemd acceptance remains pending;
+this result does not change the distinction between WSL and native Linux proof.

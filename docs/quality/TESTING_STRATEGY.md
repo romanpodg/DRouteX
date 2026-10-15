@@ -4,7 +4,10 @@ Status: Proposed. Base specification §22 plus accepted CR-0001 define applicabi
 DNS/proxy MVP and later engine/tunnel expansion have separate acceptance gates.
 Accepted [CR-0002](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md)
 adds mandatory personal DoH/DoT, layered catalogs/private records and separate
-legacy/gateway access grants to the revised MVP plan. No transport evidence exists yet.
+legacy/gateway access grants to the revised MVP plan. P0-03 now has real WSL
+fixture evidence; no Routira transport or native Debian acceptance is implied.
+See [the harness review](../planning/P0_03_NETWORK_HARNESS.md) and
+[manual lab command](../../tests/network/README.md).
 
 ## MVP layers and proof boundaries
 

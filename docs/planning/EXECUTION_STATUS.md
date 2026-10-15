@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-15. Current boundary: **P0-02 completed; stop before P0-03/P0-04/P0-05**.
+Date: 2026-10-15. Current boundary: **P0-03 in review; WSL fixtures passed, native Debian 13 pending**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Review: [PR #1](https://github.com/romanpodg/Routira/pull/1), open against main.
 No merging, force-pushing, branch-protection change or later task implementation is authorized.
@@ -21,15 +21,34 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **2 completed (P0-01/P0-02), 86 planned**; 2 of the 61 MVP tasks are complete.
+Current backlog: **2 completed (P0-01/P0-02), 1 in_review (P0-03), 85 planned**.
+Two of the 61 MVP tasks are complete; the WSL fixture pass does not close P0-03.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
-not passed by a workspace bootstrap. No later task is started.
+not passed by a workspace bootstrap. No task beyond P0-03 is started.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,
 188 requirement mappings, the 88-task DAG and installed tooling. The MVP contains
 61 tasks; tunnels/helper/multi-node remain later work.
+
+## P0-03 continuation and actual lab evidence
+
+The user asked for the next step and explicitly selected the existing WSL lab.
+The approved missing nftables/tcpdump packages and their distro dependencies were
+installed there. Windows networking, production hosts, Docker and cloud resources
+were not configured. The lab uses Python stdlib/OpenSSL, so no new application
+crate/dependency or empty routira-testkit was added.
+
+The [P0-03 review](P0_03_NETWORK_HARNESS.md) records 41 actual dual-stack protocol
+observations, four portable boundary tests, a bounded IPv4/IPv6 capture with source
+mismatch pairs, preserved origin certificate/observed egress, strict proxy outage,
+and normal/setup-failure/SIGTERM/SIGKILL cleanup. All passed in WSL; the tested host
+network state matched before/after. Keys/config use private tmpfs; local captures
+and reports stay untracked. The CI addition runs only unprivileged boundary tests.
+
+No native Debian 13 VM/VPS/image was supplied. P0-03 stays in_review for that proof;
+this is fixture readiness, not Routira networking/security or systemd acceptance.
 
 ## P0-02 implementation and local evidence
 
@@ -98,7 +117,9 @@ and earlier report evidence. No product CodeScene/Codecov pass is inferred from 
 ## Stopping condition and continuation
 
 P0-02 is closed after full-diff review, local checks and actual Windows/Linux build
-results. The bounded goal is complete; stop here. P0-03/P0-05 remain the next planned work; they are not started by this goal.
+results. The owner subsequently authorized P0-03 and the WSL lab variant. P0-03
+remains in_review for native Debian 13 evidence; P0-04/P0-05 are not started.
+Stop before their implementation or new infrastructure without the owner decision.
 No automatic merge, production deployment or unsolicited reviewer message is authorized.
 
 The user will manually reopen the chat after usage limits and requested no new
