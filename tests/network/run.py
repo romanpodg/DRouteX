@@ -269,8 +269,9 @@ def run_case(mode, artifacts):
                 '--directory', temporary, '--artifacts', str(artifacts),
                 '--parent-net', os.readlink('/proc/self/ns/net'),
                 '--parent-mount', os.readlink('/proc/self/ns/mnt')]
+        # Avoid prefetching later events before communicate() reads the file descriptor.
         process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                                   text=True, start_new_session=True)
+                                   bufsize=0, start_new_session=True)
         events, namespaces = [], []
         try:
             first = json.loads(wait_line(process))

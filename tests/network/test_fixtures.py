@@ -1,6 +1,9 @@
 """Portable protocol-boundary regression checks; no namespace privileges."""
 import struct
+import subprocess
+import sys
 import unittest
+from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -38,6 +41,22 @@ class LabBoundaryTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'missing outer namespace isolation'):
                 lab.inside(SimpleNamespace())
             command.assert_not_called()
+
+    @unittest.skipUnless(sys.platform == 'linux', 'Linux pipe/readiness semantics')
+    def test_setup_failure_keeps_batched_cleanup_event(self):
+        popen = subprocess.Popen
+        events = '{"event":"error"}\n{"event":"cleanup","remaining_namespaces":0}\n'
+
+        def batch_events(_args, **kwargs):
+            script = f'import sys; sys.stdout.write({events!r}); sys.exit(23)'
+            process = popen([sys.executable, '-c', script], **kwargs)
+            process.wait(timeout=5)
+            return process
+
+        with (patch.object(lab.subprocess, 'Popen', side_effect=batch_events),
+              patch.object(lab, 'remaining_processes', return_value=[])):
+            result = lab.run_case('setup-failure', Path('.'))
+        self.assertEqual(result['exit_code'], 23)
 
 
 if __name__ == '__main__':

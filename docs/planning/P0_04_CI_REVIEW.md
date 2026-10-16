@@ -113,3 +113,22 @@ At this acceptance snapshot PR #1 remains open until the authorized Code Review/
 owner acceptance of the roadmap task does not replace that review.
 Record subsequent review/check/merge evidence in PR #1 and the local automation
 state without treating this acceptance snapshot as a live PR-status report.
+
+## Post-acceptance Code Review and regression fix
+
+On 2026-10-16, separate built-in Codex CLI Code Review through the signed-in
+ChatGPT account reviewed PR head `aec8feacca72e8f09ad57c9d9279b2eed5a6c8e2`
+against base `c55a6b2e57ddb0342e85dc6a10170fadbc37090c` in read-only mode. It found
+one P2 functional defect in the fixture supervisor: a text readiness read could
+prefetch later events, which POSIX `communicate()` then skipped when reading the
+underlying descriptor. This could falsely fail setup-failure cleanup validation.
+
+A Linux regression batches error/cleanup events before the supervisor reads them;
+it failed against the old code. Keeping that subprocess pipe binary and unbuffered
+fixes the shared read path without a new reader thread or dependency. All five
+unprivileged Linux fixture tests then passed; Windows passed four with the
+Linux-specific test explicitly skipped. The full approved WSL lab rerun also
+passed 41 observations and all four cleanup modes with unchanged host networking.
+This is WSL evidence for the fix, not a new native Debian 13 run or product proof.
+Final fix review and current-head CI/merge results are recorded in PR #1; local
+review logs and raw lab artifacts remain untracked.
