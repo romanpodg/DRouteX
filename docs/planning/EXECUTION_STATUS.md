@@ -1,10 +1,14 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-16. Current boundary: **P0-04 in review; real fork test deferred; P0-03 complete**.
+Date: 2026-10-16. Current boundary: **P0-04 accepted with deferred evidence; stop before P0-05**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
-Review: [PR #1](https://github.com/romanpodg/Routira/pull/1), open against main.
-The owner authorized publication to PR #1 and P0-04. No merging, force-pushing,
-branch-protection change or P0-05/later implementation is authorized.
+Review: [PR #1](https://github.com/romanpodg/Routira/pull/1), against main; read its live
+review/merge state on GitHub. The following is the owner-acceptance handoff.
+The owner accepted P0-04 and authorized merging PR #1 after actual Codex Code
+Review and applicable current-head checks, with no unresolved serious defect.
+Minor deferrals must be recorded; unclear requirements/conditions require an owner
+question. Finish and merge the current implementation PR before the next one.
+Force-pushing, branch-protection changes and P0-05/later work remain unauthorized.
 
 ## Owner decisions and current progress
 
@@ -22,8 +26,9 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **3 completed (P0-01/P0-02/P0-03), 1 in_review (P0-04), 84 planned**.
-Three of the 61 MVP tasks are complete; native fixture evidence closes P0-03.
+Current backlog: **4 completed (P0-01/P0-02/P0-03/P0-04), 84 planned**.
+Four of the 61 MVP tasks are accepted; P0-04 closes by explicit owner acceptance
+with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
 not passed by a workspace bootstrap. No task beyond P0-04 is started.
@@ -41,7 +46,7 @@ when their existing roadmap tasks are authorized and prerequisites are complete.
 This accepts a reuse strategy, not the old Veyra specification, task completion,
 dependency selection, whole-branch merge or blanket cherry-pick. No donor code has
 been imported. P0-03 was in_review when this strategy was selected and is now
-complete after the native run below; P0-04 is authorized, P0-05 remains planned.
+complete after the native run below; P0-04 is now accepted, P0-05 remains planned.
 
 Reviewed references: PR #1 at
 `5628f2ae3306bf86b22283b19003008fd3246bd7`; [PR #2](https://github.com/romanpodg/Routira/pull/2)
@@ -95,8 +100,11 @@ The [CI review](P0_04_CI_REVIEW.md) records exact positive/negative runs, covera
 and security boundaries. All three intentional lint/test/upload failures were
 observed on a disposable same-repository branch, then that ref was removed.
 The private fork policy requires approval with no secrets/variables or write
-tokens. The owner deferred a real fork PR test; P0-04 remains in_review.
-P0-05 remains planned and no merge is authorized.
+tokens. On 2026-10-16 the owner accepted P0-04 after reviewing the disclosed
+limitations. The real fork PR test and Codecov comparison/web-report evidence
+remain deferred in [OPEN_DECISIONS](OPEN_DECISIONS.md#deferred-p0-04-evidence).
+PR #1 still needs actual Code Review and current-head checks before authorized
+merge. P0-05 remains planned.
 
 ## P0-03 continuation and actual lab evidence
 
@@ -199,9 +207,13 @@ is now complete after the owner-approved native Debian 13 run. On 2026-10-16 the
 owner authorized publishing those results and proceeding through P0-04 only.
 See [P0-04 review](P0_04_CI_REVIEW.md) for scope and actual check evidence.
 Stop before P0-05 or new infrastructure without the owner decision.
-No automatic merge, production deployment or unsolicited reviewer message is authorized.
+The owner now permits autonomous merge under the PR policy in [AGENTS.md](../../AGENTS.md).
+Actual Code Review and current-head validation remain pending at this acceptance
+snapshot until recorded in PR #1 and the local automation state;
+accepting P0-04 alone does not close the PR. Production deployment and unrelated
+reviewer messages remain unauthorized.
 
-The user will manually reopen the chat after usage limits and requested no new
-reminder. No reminder/automation was created for this goal. The previously configured
-monitor-routira-foundation-pr is separate; its scheduler state was not checked or
-changed in this continuation.
+The owner authorized the existing monitor-routira-foundation-pr heartbeat to run
+the bounded P0-04 review/fix/merge loop in the automation chat every 15 minutes,
+with routine successful-run alerts disabled. Pause it after PR #1 is merged or
+when further progress requires an owner decision. Do not start P0-05.

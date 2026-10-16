@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01/P0-02/P0-03 complete; P0-04 CI in review, real fork test deferred.**
+**P0-01/P0-02/P0-03/P0-04 accepted; P0-04 fork/report evidence deferred.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -61,7 +61,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P0-04: Activate evidence-based CI
 
-Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§16,22.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§16,22.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -72,7 +72,7 @@ Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 | Tests | Positive run and intentional lint/test/upload failure on disposable branch |
 | Security considerations | Read-only permissions and no pull_request_target execution of PR code |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
-| Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |
+| Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open unless explicitly accepted as deferred by the owner. P0-04 accepted on 2026-10-16 with real private-fork and Codecov comparison/web-report evidence deferred in OPEN_DECISIONS.md; those checks are not recorded as passed. PR #1 still requires Code Review/current-head checks before authorized merge. |
 
 ### P0-05: Inventory DNS/proxy dependencies and licensing
 

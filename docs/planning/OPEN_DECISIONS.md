@@ -70,7 +70,7 @@ IPv6/QUIC/application enforcement.
 | D14 | Owner selected Apache-2.0 for original Routira code on 2026-10-15; external dependency/distribution notices still require inventory; engine redistribution later | P11-05 / later engine release | Owner review |
 | D15 | Separate master key/recovery, access-secret lifecycle and retention | P1-07 | Security/operator owner |
 | D16 | CodeScene baseline/daily analysis/PR delivery verified; review 7980486 on e4f4143 fails auxiliary planning/graph/fixture score gates; no score-only cleanup, suppression or gate change; product baseline later, MCP optional | P0-04 review; auxiliary tools are outside the owner's independent metric scope | User/maintainer; see P0_04_CI_REVIEW.md for current evidence |
-| D17 | Separate planning/backend reports configured; P0-04 records actual upload/negative evidence and Rust baseline; frontend has no package yet; actual fork PR test deferred by owner | P0-04 remains in_review; frontend coverage at its owning gate | User/maintainer; see P0_04_CI_REVIEW.md |
+| D17 | Separate planning/backend reports configured; owner accepted P0-04 with real fork PR test and Codecov comparison/web-report evidence deferred; frontend has no package yet | Revisit conditions below; frontend coverage at its owning gate | User/maintainer; see P0_04_CI_REVIEW.md |
 | D18 | Measured DNS/TCP/proxy resource budgets; engine budgets later | P10-04 | Operator |
 | D19 | Select one first protected SOCKS5 or HTTP CONNECT outbound; no managed engine dependency; public explicit inbound is a separate decision | P0-05/P4-05 | Actual proxy/egress and credential transport test |
 | D20 | Accepted custom > service > filter > default ranks, explicit domain match modes and one active Profile per Endpoint; stacks/schedules deferred | P0-01/P2-01/P2-02 | CR-0002; golden/permutation/conflict tests |
@@ -79,6 +79,19 @@ IPv6/QUIC/application enforcement.
 
 The owner explicitly accepted the P0-01 foundation and CR-0002, then authorized
 P0-02. Other technical details and later task execution retain their own gates.
+
+## Deferred P0-04 evidence
+
+The owner accepted P0-04 on 2026-10-16 with these disclosed evidence gaps. They are
+not successful tests or permission to change access, spend money or run a fork.
+Record future minor review findings here (or at their owning backlog task) with
+impact, reason for deferral and a task/revisit condition before merging their PR.
+Serious defects cannot be deferred to permit merge; uncertain cases require the owner.
+
+| Item | Impact and reason for deferral | Revisit / owner |
+|---|---|---|
+| P0-04-FORK | Actual private-fork checks are unverified. Same-repository positive/negative runs and local permission checks exist; the owner explicitly declined the temporary fork and accepted P0-04 with this evidence pending. This does not permit privileged/untrusted fork execution. | Owner approval of a real private-fork test environment; required before claiming fork PR support has been exercised |
+| P0-04-CODECOV | Uploads and local Rust LCOV exist, but no main comparison baseline/web report is verified; the reported page returned 404. Owner accepted the limitation; successful check badges do not establish comparison coverage. | Recheck after PR #1 merges and main CI runs; maintainer must verify an actual service report before claiming service/patch coverage |
 
 ## Risk register
 

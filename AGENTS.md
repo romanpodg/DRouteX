@@ -18,12 +18,16 @@ fixture readiness, not Routira runtime or systemd acceptance.
 On 2026-10-16 the owner authorized publishing P0-03 to PR #1 and proceeding through
 P0-04 CI only. Private fork workflows require owner approval and receive no secrets
 or write tokens; the owner deferred a real fork PR test. Stop before P0-05;
-later tasks retain their gates. No production-root or
+on 2026-10-16 the owner accepted P0-04 with that test and unavailable Codecov
+comparison/web-report evidence explicitly deferred, not passed. Later tasks retain
+their gates. No production-root or
 untrusted privileged PR runner is authorized.
 The user authorized initial GitHub commits/pushes, PR creation and activity monitoring
 on 2026-10-15. Repository: romanpodg/Routira; current review PR #1 and execution
-boundary are recorded in `docs/planning/EXECUTION_STATUS.md`. This does not authorize
-merging, force-pushing, changing branch protections or starting P0-02 before review.
+boundary are recorded in `docs/planning/EXECUTION_STATUS.md`. On 2026-10-16 the
+owner also authorized autonomous merging after Code Review and checks under the
+PR policy below. Force-pushing, changing branch protections and P0-05/later work
+remain unauthorized.
 The owner selected option A for PR #2 on 2026-10-15: keep PR #1 as the foundation,
 reuse only reviewed components/test scenarios at their owning roadmap gates, and
 preserve CR-0002. See EXECUTION_STATUS.md for donor provenance and exclusions.
@@ -41,7 +45,9 @@ limits and outbound choices remain at their owning gates; other technical ADRs
 are not blanket-approved. Debian 13 x86_64 is the accepted first native test target.
 P0-02 uses owner-approved Rust 1.99.0/MSRV, Edition 2024, no external dependencies
 and a limited Windows/Linux workspace CI job. The owner selected Apache-2.0 for
-original Routira code; third-party licenses are preserved. No new reminder is authorized.
+original Routira code; third-party licenses are preserved. The owner authorized the
+existing P0-04 heartbeat in its automation chat, with routine successful-run alerts disabled;
+this does not authorize unrelated reminders or automations.
 User communication is Russian; code and
 technical documentation are English.
 
@@ -50,6 +56,23 @@ technical documentation are English.
 These rules apply only inside the Routira repository. Do not propagate them to
 global agent instructions or other projects.
 
+- "Close a PR" means merge its reviewed changes into main, as explicitly clarified
+  by the owner. The agent may merge an authorized PR after actual Codex Code Review
+  through the owner's linked ChatGPT account and applicable checks on the current
+  head. A self-review, requested review, reaction or quota error is not completed
+  Code Review. Never bypass required checks, approvals or branch protections.
+- Unresolved serious defects block merging. Assess severity, combined impact and
+  the number of remaining issues; no count makes a serious defect acceptable.
+  Minor issues may be deferred only when immediate intervention is unnecessary:
+  record the finding, impact, reason for deferral and owning task or revisit trigger
+  in the existing planning register, and link it from the PR evidence. Owner-approved
+  missing evidence stays explicitly unverified, never recorded as a passed test.
+- Finish and merge the current implementation PR before beginning the next PR.
+  Existing donor PR #2 remains reference-only under the accepted reuse strategy;
+  this rule does not authorize importing, merging or closing that donor PR.
+- Ask the owner immediately when a requirement, condition, severity/deferral decision
+  or other consequential choice is unclear; do not invent missing requirements.
+  Continue independent authorized work while awaiting the answer.
 - Focus Code Health and coverage work on application code and critical build, CI
   and deployment scripts. The owner explicitly selected this scope. Tests,
   documentation, fixtures and auxiliary planning/setup tools are not independent

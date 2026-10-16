@@ -1,9 +1,11 @@
 # P0-04 CI review
 
-Date: 2026-10-16. Status: **In review; real fork PR test deferred by owner**.
+Date: 2026-10-16. Status: **Accepted by owner with deferred fork/report evidence**.
 The owner authorized publishing P0-03 and implementing P0-04 in existing PR #1.
-P0-05, product features, privileged CI, merging and branch-protection changes remain
-outside this authorization. P0-03/selective-reuse documentation was published in
+After reviewing the disclosed evidence, the owner explicitly accepted P0-04 and
+authorized PR #1 merge after actual Codex Code Review/current-head checks with no
+unresolved serious defect. P0-05, product features, privileged CI and branch-protection
+changes remain outside this authorization. P0-03/selective-reuse documentation was published in
 commit `28eb7d8` before the CI change.
 
 ## Scope and approach
@@ -102,5 +104,12 @@ metric-improvement scope. No application or workflow finding is listed. The
 repository-wide check remains failed; no suppression or metric-driven rewrite
 was made, and no product Code Health pass is claimed.
 
-Source/configuration tests do not establish visible fork checks. P0-04 remains
-in review while the required actual fork PR evidence is deferred.
+Source/configuration tests do not establish visible fork checks. On 2026-10-16
+the owner accepted P0-04 despite the disclosed missing fork and service-report
+evidence. This is explicit acceptance with deferrals, not a passed fork test or
+verified Codecov comparison. The follow-ups and revisit conditions remain in
+[OPEN_DECISIONS](OPEN_DECISIONS.md#deferred-p0-04-evidence).
+At this acceptance snapshot PR #1 remains open until the authorized Code Review/check/fix/merge loop completes;
+owner acceptance of the roadmap task does not replace that review.
+Record subsequent review/check/merge evidence in PR #1 and the local automation
+state without treating this acceptance snapshot as a live PR-status report.

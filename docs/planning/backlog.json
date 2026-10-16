@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01/P0-02/P0-03 complete; P0-04 CI in review, real fork test deferred",
+  "status": "P0-01/P0-02/P0-03/P0-04 accepted; P0-04 fork/report evidence deferred",
   "date": "2026-10-16",
   "phases": {
     "P0": "Foundation",
@@ -137,8 +137,8 @@
       "security": "Read-only permissions and no pull_request_target execution of PR code",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_review",
-      "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
+      "status": "completed",
+      "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open unless explicitly accepted as deferred by the owner. P0-04 accepted on 2026-10-16 with real private-fork and Codecov comparison/web-report evidence deferred in OPEN_DECISIONS.md; those checks are not recorded as passed. PR #1 still requires Code Review/current-head checks before authorized merge.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
     },
