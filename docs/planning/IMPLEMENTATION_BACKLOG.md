@@ -108,7 +108,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P1-02: Validate external configuration boundaries
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,17,18.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,17,18.
 
 | Field | Deliverable / evidence |
 |---|---|

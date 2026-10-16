@@ -203,20 +203,21 @@ def validate_adrs():
 def validate_review_boundary(plan):
     assert plan['foundation_review']['status'] == 'accepted', 'Missing owner acceptance'
     assert plan['foundation_review']['source'], 'Missing owner decision evidence'
-    assert plan['execution_authorization']['through_task'] == 'P1-01', 'Unexpected execution boundary'
+    assert plan['execution_authorization']['through_task'] == 'P1-02', 'Unexpected execution boundary'
     assert plan['execution_authorization']['source'], 'Missing stage authorization'
     by_id = {task['id']: task for task in plan['tasks']}
     assert by_id['P0-01']['status'] == 'completed', 'Foundation gate is still open'
     assert by_id['P0-02']['status'] == 'completed', 'Workspace gate is still open'
     assert by_id['P0-05']['status'] == 'completed', 'Dependency qualification gate is still open'
-    assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02', 'P0-03', 'P0-04', 'P0-05', 'P1-01'}), 'Work exceeds P1-01'
+    assert by_id['P1-01']['status'] == 'completed', 'Domain identity gate is still open'
+    assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02', 'P0-03', 'P0-04', 'P0-05', 'P1-01', 'P1-02'}), 'Work exceeds P1-02'
     assert plan['network_lab_decision']['source'], 'Missing lab authorization'
     assert by_id['P0-03']['status'] == 'completed', 'Native Debian 13 fixture gate is not complete'
     native = plan['network_lab_decision'].get('native_acceptance', {})
     assert native.get('status') == 'passed' and native.get('source') and native.get('report_sha256'), 'Missing native Debian 13 evidence or authorization'
     assert (ROOT/'Cargo.toml').is_file() and (ROOT/'Cargo.lock').is_file(), 'Missing workspace'
     assert {p.name for p in (ROOT/'crates').iterdir()} == {'routira-common', 'routira-config', 'routira-policy'}, 'Unexpected crate inventory'
-    assert not (ROOT/'apps').exists(), 'Runtime/frontend is outside P1-01'
+    assert not (ROOT/'apps').exists(), 'Runtime/frontend is outside P1-02'
     agents = (ROOT/'AGENTS.md').read_text(encoding='utf-8')
     assert 'mcp__node_repl__js' in agents and 'sky.list_apps()' in agents and 'browser-only' in agents
 
@@ -232,7 +233,7 @@ def main():
     adrs = validate_adrs()
     validate_review_boundary(plan)
     negatives = self_test(plan['tasks']) if '--self-test' in sys.argv else 0
-    result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P1-01','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':3,'runtime_implementation_absent':True}
+    result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P1-02','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':3,'runtime_implementation_absent':True}
     (ROOT/'docs/environment').mkdir(parents=True, exist_ok=True)
     (ROOT/'docs/environment/planning-verification.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
     print(json.dumps(result))

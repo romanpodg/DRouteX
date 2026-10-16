@@ -149,3 +149,16 @@ has 5/8 covered Rust config lines (62.50%). The combined 437/443 figure includes
 auxiliary Python tooling and must not be presented as application coverage.
 The merge shows no covered-file diff; useful new-code PR comparison remains to be
 verified at the next relevant change. The owner-deferred real fork test is unchanged.
+
+## P1-02 exact-base/head comparison
+
+The [PR #5 report](https://app.codecov.io/gh/romanpodg/Routira/pull/5) processed
+backend/planning on head `a708e34b27a82fe5b4682b1761b34569144c94c7` against
+base `cd2a9c011e4950d80458cfaa72baddd1ac4243c2`: backend 837/894 (93.62%),
+new Rust 761/815 and a successful 93.37% backend patch check. The planning patch
+check is successful at 100%. Combined patch 766/820 includes five auxiliary
+Python lines; combined total 1271/1331 is not application coverage. This and
+P1-01 resolve the historical missing meaningful comparison above. Source/
+security/negative tests and independent review remain separate evidence;
+coverage is not runtime authentication or complete branch proof. Actual fork
+acceptance remains owner-deferred.

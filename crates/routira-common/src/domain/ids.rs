@@ -90,4 +90,8 @@ resource_ids! {
     SnapshotId,
     /// A snapshot publication/application attempt.
     DeploymentId,
+    /// Public reference to separately protected secret storage, never secret bytes.
+    SecretRefId,
+    /// An independently configured DNS upstream resource.
+    DnsUpstreamId,
 }

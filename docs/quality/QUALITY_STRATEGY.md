@@ -66,11 +66,11 @@ run evidence and the deferred fork test are recorded in the P0-04 review.
 | rustc/cargo/rustfmt/Clippy/rust-analyzer/LLVM tools | Installed; versions/components verified |
 | Edition 2024 native compile/link/assertion | Executed successfully with portable Windows SDK and existing MSVC |
 | nextest/llvm-cov/deny/audit | Installed; production and standalone qualification lockfiles audited; actual evidence in EXECUTION_STATUS.md |
-| fmt/check/clippy/test/deny/coverage on Routira | Three-crate workflow active; P1-01 Linux/Windows CI passed, including default/no-default and four compile-fail examples |
-| Feature combinations/MSRV/dependency resolution | Owner approved Rust 1.99.0/MSRV; P1-01 adds qualified uuid 1.28.0 std parse/format only, without RNG or optional application features |
+| fmt/check/clippy/test/deny/coverage on Routira | Three-crate workflow active; P1-02 head a708e34 passed all seven CI jobs, including 18 config tests, Linux/Windows default/no-default and four compile-fail examples; independent review defects fixed and re-reviewed |
+| Feature combinations/MSRV/dependency resolution | Owner-approved Rust 1.99.0/MSRV; uuid std parse/format plus five separately qualified config parser/path dependencies, with bounded strict input and no production networking adoption |
 | Frontend type/lint/Vitest/browser coverage | Planned; no application package exists |
 | Real Linux DNS/proxy/namespaces/VPS | P0-03 WSL and native Debian 13 dual-stack fixtures/pcap/four cleanup modes passed; product networking/systemd acceptance remains pending; engine/tunnel tests deferred to G3 |
-| Codecov/CodeScene | P1-01 implementation head 4d79b7a: CodeScene 7987296 passed all three gates; Codecov processed exact main comparison with 71/71 new Rust lines and successful backend patch check. Historical failed auxiliary score checks remain recorded without suppression; actual fork test remains deferred |
+| Codecov/CodeScene | P1-02 a708e34: Codecov exact-base/head backend 837/894, new Rust 761/815 and successful 93.37% backend patch check. CodeScene 7991872 failed new-code health on collision predicates/helper argument counts; two other gates passed. Source/tests and independent review inspected; explicit maintenance dispositions in OPEN_DECISIONS, no suppression/score-only rewrite; actual fork test deferred |
 | Planning graph/schema/link/DAG checks | Evidence recorded in environment report after final verification |
 
 ## Coverage and code health

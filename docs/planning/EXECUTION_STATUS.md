@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-16. Current stage: **P1-01 validated; PR #4 awaiting final evidence review/checks and merge**.
+Date: 2026-10-17. Current stage: **P1-02 validated; PR #5 final evidence/head checks and merge pending**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -11,7 +11,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P1-01 is the current stage; technical choices retain their owning gates.
+P1-02 is the current stage; technical choices retain their owning gates.
 Force-pushing and branch-protection changes remain unauthorized.
 
 The repository is now public. With explicit owner approval the existing Codecov
@@ -58,8 +58,31 @@ all seven jobs of [run 38911280732](https://github.com/romanpodg/Routira/actions
 and all three CodeScene gates (review 7987296). Codecov processed both reports and
 the exact-head/base comparison: new Rust 71/71, backend 76/79 (96.20%), backend
 patch check 100%. The aggregate patch includes five auxiliary Python lines; it is
-not a product total. Final evidence edits need inspection/review and current-head
-CI before ordinary merge; no next implementation PR has started.
+not a product total. Final evidence head `0a09f3a38afafe91ad4031fb7657091210d8cd67`
+also passed independent review, all seven jobs of run 38912299627, all three
+CodeScene gates and the exact-base/head Codecov comparison. PR #4 merged normally
+at `cd2a9c011e4950d80458cfaa72baddd1ac4243c2`; all seven main jobs in run
+38912831307 passed. Local review and merge records are in
+`.setup/p1-01/autopilot-completed.json`.
+
+P1-02 is on `config/validate-external-boundaries` from that verified merge. The owner
+approved the five parser/path dependencies, strict three-format input profile,
+1 MiB/depth 32/10,000-entry limits and safe diagnostics. Qualification passed before
+config-crate adoption. Local full/default and no-default tests, Clippy, all-target
+check, root dependency audit and LCOV passed. The [config review](P1_02_CONFIG_REVIEW.md)
+and [wire contract](../../api/schemas/README.md) distinguish import validation from
+live admission, policy compilation and dataset/secret/runtime gates. PR #5 initial
+head passed all seven CI jobs, but independent review found three strictness/path
+defects. Each was reproduced and fixed with regression tests. Both published
+heads passed all seven CI jobs. Follow-up review exposed a related
+tagged-enum sequence path; map-only field adapters now reject it. All 18 config
+tests and local checks pass. Head `a708e34b27a82fe5b4682b1761b34569144c94c7`
+passed independent read-only re-review without confirmed defects and all seven
+jobs of run 38956580440. Codecov backend is 837/894, new Rust 761/815, backend patch
+check successful at 93.37%. CodeScene 7991872 remains failed on the recorded
+maintenance signals; no suppression or score-only rewrite. Final evidence head
+requires its own review/checks before ordinary merge.
+No P1-03 implementation exists yet.
 
 ## Owner decisions and current progress
 
@@ -77,13 +100,13 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **6 validated/completed (P0-01 through P0-05 and P1-01), 82 planned**.
-Six of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
+Current backlog: **7 validated/completed (P0-01 through P0-05 and P1-01/P1-02), 81 planned**.
+Seven of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
-not passed by a workspace bootstrap. PR #4 remains the only open implementation PR
-until its reviewed/checked head merges; task status does not bypass that gate.
+not passed by a workspace bootstrap. PR #4 is merged. P1-02 must complete its own
+review/checks and merge before any next implementation PR; task status cannot bypass that gate.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,

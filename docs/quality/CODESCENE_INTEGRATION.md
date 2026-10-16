@@ -118,3 +118,16 @@ on implementation commit `7ac5f14deb25bdb687b0aee2008e6fda11734be1` completed wi
 the same one auxiliary argument-count finding (9.69). No application-code finding
 was reported in its Check Run details; the repository-wide gate is still failed.
 No score-only auxiliary cleanup, suppression or service configuration change was made.
+
+## P1-02 application boundary evidence
+
+[Review 7991872](https://codescene.io/projects/86145/delta/results/7991872) on
+`a708e34b27a82fe5b4682b1761b34569144c94c7` failed new-code health: binding.rs
+collision predicates 8.41, access.rs/rules.rs explicit helper arguments 9.69,
+and a test helper 9.69 outside the independent metric scope. Two other gates
+passed. This includes application code, so the source and wildcard/dual-stack/
+scope/order tests were inspected; independent re-review found no confirmed
+functional defect after four separate strictness/path fixes. No score-only
+rewrite, suppression or service threshold change was made. Finding, impact,
+rationale and revisit triggers are recorded in OPEN_DECISIONS P1-02-CS and the
+[P1-02 review](../planning/P1_02_CONFIG_REVIEW.md). The check remains failed.

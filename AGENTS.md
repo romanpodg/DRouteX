@@ -23,10 +23,15 @@ comparison/web-report evidence explicitly deferred, not passed. PR #1 was review
 fixed and merged as c43c2be0d40248f81bb01be9964ba56925b368f5. The owner then
 authorized continuing the plan. P0-05/PR #3 completed qualification and merged as
 a77ed5adce184ffe3214452af0b1e6d83db2cd92 after two independent Code Reviews and
-seven successful final-head/main CI jobs. P1-01 is validated in PR #4 and awaits
-final evidence review/checks and merge before the next implementation PR. Its
-implementation passed independent Code Review, all seven CI jobs, CodeScene and
-an actual Codecov backend patch comparison (71/71 new Rust lines). The owner
+seven successful final-head/main CI jobs. P1-01/PR #4 merged at
+cd2a9c011e4950d80458cfaa72baddd1ac4243c2 after independent implementation/final-evidence
+Code Reviews, all seven final-head/main CI jobs, CodeScene and an actual Codecov
+backend patch comparison (71/71 new Rust lines). P1-02 is the current task; its
+configuration implementation passed independent re-review and all seven Linux/Windows
+CI jobs on a708e34; final evidence/checks and normal PR #5 merge remain gated. The owner
+approved the strict JSON/YAML/TOML profile and qualified Serde 1.0.229, serde_json
+1.0.154, toml 1.1.8+spec-1.1.0, serde-saphyr 2.0.0 and serde_path_to_error 0.1.20
+for the config boundary. See D24/D25 and the P1-02 review for exact limits/evidence. The owner
 selected UUIDv4 public resource IDs and qualification of uuid 1.28.0; its official
 archive/license/checksum, Windows vector tests and cargo-deny passed. Production
 use is limited to the std parse/format profile for domain identities; generators,

@@ -1,4 +1,14 @@
-//! Configuration validation against accepted policy contracts; no wire format yet.
+//! Bounded configuration import and validation against accepted policy contracts.
+
+mod schema;
+pub use schema::{
+    CheckedConfiguration, ConfigError, ConfigErrorCode, Configuration, CredentialMetadata,
+    CredentialState, CustomRule, DnsAccess, DnsAction, DnsEndpoint, DomainMatch, FilterSelection,
+    GatewayGrant, InputFormat, LegacyGrant, Listener, ListenerTransport, MAX_DEPTH,
+    MAX_INPUT_BYTES, MAX_RESOURCE_ENTRIES, MatchMode, NetworkGroup, OutboundKind, PortRange,
+    PrivateRecord, Profile, ProxyOutbound, RecordData, ReferenceCatalog, RuleAction, ServiceRule,
+    TrafficAction, parse_configuration,
+};
 
 use std::fmt;
 
