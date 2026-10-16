@@ -192,7 +192,7 @@
       "security": "Secrets distinct from serializable public fields",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2597,9 +2597,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-16",
-    "source": "Owner instructed continuation after P0-04 acceptance and PR #1 merge; selected HTTPS CONNECT and approved isolated qualification of the proposed dependency set in this chat",
-    "scope": "Continue the accepted DNS/proxy MVP roadmap; current stage P0-05 dependency qualification. Technical decisions retain their owning gates. Autonomous reviewed merge policy applies. No force-push, branch-protection change or privileged PR runner.",
-    "through_task": "P0-05"
+    "source": "Owner authorized continued DNS/proxy MVP work after PR #3 merge and selected UUIDv4 plus qualification of uuid 1.28.0 in this chat",
+    "scope": "Current stage P1-01 domain identities/states. Technical decisions retain owning gates; finish reviewed current PR before the next. No deployment, force-push, branch-protection change or privileged PR runner.",
+    "through_task": "P1-01"
   },
   "design_proposals": [
     {
@@ -2613,11 +2613,11 @@
   "repository": {
     "url": "https://github.com/romanpodg/Routira",
     "default_branch": "main",
-    "review_branch": "foundation/review-dns-proxy-dependencies",
+    "review_branch": "domain/stable-resource-identities",
     "visibility": "public",
-    "review_pr": "https://github.com/romanpodg/Routira/pull/3",
-    "previous_pr": "https://github.com/romanpodg/Routira/pull/1",
-    "previous_merge": "c43c2be0d40248f81bb01be9964ba56925b368f5"
+    "review_pr": "https://github.com/romanpodg/Routira/pull/4",
+    "previous_pr": "https://github.com/romanpodg/Routira/pull/3",
+    "previous_merge": "a77ed5adce184ffe3214452af0b1e6d83db2cd92"
   },
   "foundation_review": {
     "status": "accepted",
@@ -2671,5 +2671,15 @@
     "crypto_provider": "AWS-LC",
     "license_policy": "Owner approved Apache-2.0, MIT, ISC, BSD-3-Clause and Unicode-3.0 for third-party dependencies; preserve texts/notices; all other licenses require a decision",
     "evidence": "docs/operations/DEPENDENCIES.md"
+  },
+  "domain_identity_decision": {
+    "date": "2026-10-16",
+    "source": "Direct owner selection in this chat",
+    "public_ids": "UUIDv4",
+    "uuid_candidate": "1.28.0",
+    "profile": "std parse/format; no random ID/token generator",
+    "qualification": "Official SHA256/notices verified; Windows probes/audit and implementation Windows/Linux CI, independent Code Review, CodeScene and Codecov patch passed; PR merge still gated on final current head",
+    "actual_capability_verification": "P3-07; domain metadata is not authentication",
+    "secret_lifecycle": "P1-07; no format/entropy/clock/erasure/at-rest decision made"
   }
 }

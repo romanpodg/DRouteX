@@ -1,11 +1,22 @@
 # CodeScene integration
 
-Current P0-04 evidence (2026-10-16):
+Current P1-01 evidence (2026-10-16):
+[review 7987296](https://codescene.io/projects/86145/delta/results/7987296) on
+implementation head `4d79b7a95f094851bd2b73c4c924a85c7231de44` passed all three
+quality gates for PR #4 against main `a77ed5adce184ffe3214452af0b1e6d83db2cd92`.
+The application domain changes are in scope. Expected-document-change suggestions
+are historical cochange observations, not confirmed functional defects. No gate,
+suppression, access or analysis setting was changed to obtain this pass. Detailed
+review/test limits are in the [domain review](../planning/P1_01_DOMAIN_REVIEW.md).
+
+Historical P0-04 evidence:
 [review 7980486](https://codescene.io/projects/86145/delta/results/7980486) on
 `e4f4143` failed score/complexity gates in the planning validator, auxiliary graph
 tool and two network fixtures. These are outside the owner's independent metric
 targets. No suppression, gate change or score-only rewrite was made. The overall
-check remains failed; see the [CI review](../planning/P0_04_CI_REVIEW.md).
+check for that historical commit remains failed; see the [CI review](../planning/P0_04_CI_REVIEW.md).
+
+## Initial setup record
 
 Status on 2026-10-15: portable native CLI **1.0.53**, build
 c46e3cba9e527cb84281355e7cd6d7d2ead627df, installed in .tools/codescene.

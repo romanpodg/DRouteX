@@ -65,12 +65,12 @@ run evidence and the deferred fork test are recorded in the P0-04 review.
 |---|---|
 | rustc/cargo/rustfmt/Clippy/rust-analyzer/LLVM tools | Installed; versions/components verified |
 | Edition 2024 native compile/link/assertion | Executed successfully with portable Windows SDK and existing MSVC |
-| nextest/llvm-cov/deny/audit | Installed; P0-02 check evidence recorded in EXECUTION_STATUS.md; no external dependency is added |
-| fmt/check/clippy/test/deny/coverage on Routira | Three-crate foundation workflow active; exact P0-04 evidence and limitations in the CI review |
-| Feature combinations/MSRV/dependency resolution | Owner approved Rust 1.99.0/MSRV; no optional features or external dependencies in initial Cargo.lock |
+| nextest/llvm-cov/deny/audit | Installed; production and standalone qualification lockfiles audited; actual evidence in EXECUTION_STATUS.md |
+| fmt/check/clippy/test/deny/coverage on Routira | Three-crate workflow active; P1-01 Linux/Windows CI passed, including default/no-default and four compile-fail examples |
+| Feature combinations/MSRV/dependency resolution | Owner approved Rust 1.99.0/MSRV; P1-01 adds qualified uuid 1.28.0 std parse/format only, without RNG or optional application features |
 | Frontend type/lint/Vitest/browser coverage | Planned; no application package exists |
 | Real Linux DNS/proxy/namespaces/VPS | P0-03 WSL and native Debian 13 dual-stack fixtures/pcap/four cleanup modes passed; product networking/systemd acceptance remains pending; engine/tunnel tests deferred to G3 |
-| Codecov/CodeScene | Current P0-04 results are recorded in the CI review. CodeScene review 7980486 on e4f4143 failed auxiliary planning/graph/fixture score gates, outside the owner's independent metric-improvement scope; no suppression/gate change. No product Code Health pass claimed |
+| Codecov/CodeScene | P1-01 implementation head 4d79b7a: CodeScene 7987296 passed all three gates; Codecov processed exact main comparison with 71/71 new Rust lines and successful backend patch check. Historical failed auxiliary score checks remain recorded without suppression; actual fork test remains deferred |
 | Planning graph/schema/link/DAG checks | Evidence recorded in environment report after final verification |
 
 ## Coverage and code health

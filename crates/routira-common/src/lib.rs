@@ -1,4 +1,17 @@
-//! Shared policy vocabulary. Resolver credentials and gateway identity are separate concerns.
+//! Shared resource identities and policy vocabulary, without network-admission authority.
+
+mod domain;
+
+pub use domain::{
+    AdministrativeState, AmbiguousLegacyAssignment, DeploymentId, DeviceId, DnsBindingError,
+    DnsEndpointAssignment, DnsProfileBinding, EmptyResolverCapability, EndpointId, FilterListId,
+    FilterListRevisionId, GatewayNetworkGrantId, GatewayNetworkIdentity, InvalidResourceId,
+    LegacyDnsAssignment, LegacyNetworkGrantId, ListenerId, NetworkGroupId, OutboundAvailability,
+    PrivateDnsRecordId, ProfileId, ProxyOutboundId, ProxyOutboundKind, ResolverCapabilityMaterial,
+    ResolverCredentialId, ResolverCredentialMetadata, ResolverCredentialState, RevisionState,
+    RuleId, ServiceGroupId, ServiceGroupRevisionId, SnapshotId, SnapshotState,
+    unique_legacy_assignment,
+};
 
 /// A policy layer; user priority applies within a layer, never across layers.
 ///

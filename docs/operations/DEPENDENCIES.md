@@ -140,3 +140,12 @@ complete third-party texts/copyrights and native bundled notices, then verify th
 release archive contains them. This task does not distribute dependency binaries.
 Managed-engine versions/licenses/packaging remain explicitly deferred in the
 [engine matrix](../architecture/ENGINE_MATRIX.md).
+
+## Subsequent P1-01 identity dependency
+
+After P0-05 completion the owner separately selected UUIDv4 resource IDs and
+qualification of uuid 1.28.0. The [domain review](../planning/P1_01_DOMAIN_REVIEW.md)
+and [UUID inventory](UUID_INVENTORY.csv) record that std parse/format-only adoption.
+The 107-artifact inventory above remains the P0-05 network qualification snapshot;
+it is not the production UUID target tree or a release notice bundle. The network
+candidate stack remains outside production crates.

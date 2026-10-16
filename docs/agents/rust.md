@@ -1,7 +1,7 @@
-# Rust workspace posture (P0-02)
+# Rust workspace posture (P0-02 foundation, P1-01 domain model)
 
 Owner-approved on 2026-10-15: Rust toolchain/MSRV **1.99.0**, Edition **2024**,
-resolver 3, no third-party dependencies and a minimal common/config/policy workspace.
+resolver 3, initially no third-party dependencies and a minimal common/config/policy workspace.
 The toolchain is pinned in rust-toolchain.toml; package metadata requires Rust 1.99.
 MSRV is the oldest compiler verified here, not a claim about older compilers.
 
@@ -12,13 +12,18 @@ is introduced. There are no optional/default features; default, no-default and
 all-features checks currently address the same code.
 
 Dependency direction is config → policy → common (config also uses common's types).
-Common defines RuleLayer; pure policy owns the accepted layer order; config rejects
+Common defines RuleLayer and P1-01 resource identity/state types; pure policy owns the accepted layer order; config rejects
 missing/duplicate/reordered/extra layers with a typed error. This is a useful
 foundation contract, not rule matching, config parsing or a running resolver.
-P1/P2 retain their full model/schema/normalization/compiler acceptance criteria.
+P1-01's [domain review](../planning/P1_01_DOMAIN_REVIEW.md) separates model evidence
+from later verifier/crypto/schema/runtime acceptance. P1/P2 retain those owning gates.
 
 Cargo.lock is tracked. Internal path dependencies have exact workspace versions;
-there are no registry/git dependencies, build scripts or executable packages.
+the production registry dependency is owner-approved uuid 1.28.0, std parse/format
+only. It introduces no Windows/Linux runtime dependency beyond uuid itself.
+The all-target lock records 19 registry artifacts; exact provenance is in
+[UUID_INVENTORY](../operations/UUID_INVENTORY.csv). No ID/token RNG feature,
+project build script or executable package is added.
 All packages have publish=false. The owner selected Apache-2.0 for original Routira
 code during P0-02. LICENSE contains the official text; package metadata inherits it.
 P0-05 owner approval expanded deny.toml for third-party dependencies to Apache-2.0,

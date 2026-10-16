@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-16. Current stage: **P0-05 qualification complete; PR #3 final validation**.
+Date: 2026-10-16. Current stage: **P1-01 validated; PR #4 awaiting final evidence review/checks and merge**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -11,7 +11,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P0-05 is the current stage; technical choices retain their owning gates.
+P1-01 is the current stage; technical choices retain their owning gates.
 Force-pushing and branch-protection changes remain unauthorized.
 
 The repository is now public. With explicit owner approval the existing Codecov
@@ -20,8 +20,8 @@ attempt 2 of [run 38865306388](https://github.com/romanpodg/Routira/actions/runs
 passed; Codecov processed both backend/planning reports for the exact merge commit.
 The [service report](https://app.codecov.io/github/romanpodg/routira/commit/c43c2be0d40248f81bb01be9964ba56925b368f5)
 shows Rust config coverage of 5/8 lines (62.50%); aggregate 437/443 includes auxiliary
-Python tooling and is not application coverage. A meaningful new-code PR comparison
-and the actual fork test remain unverified.
+Python tooling and is not application coverage. P1-01 subsequently verified a
+meaningful new-code PR comparison below; the actual fork test remains unverified.
 
 For P0-05 the owner selected **HTTP CONNECT over TLS** and approved isolated
 compatibility/transitive-license qualification of Tokio 1.53.3, Hickory-Proto
@@ -39,7 +39,27 @@ CodeScene's only failed gate is a test-method size score outside the owner's
 independent metric scope; the check remains failed and its disposition is in
 [OPEN_DECISIONS](OPEN_DECISIONS.md#p0-05-review-dispositions). No production networking
 dependency, runtime, certificate provisioning or dataset was adopted. Final
-documentation evidence still receives current-head validation before PR merge.
+documentation evidence subsequently passed its independent review and all seven
+current-head jobs. PR #3 merged normally at
+`a77ed5adce184ffe3214452af0b1e6d83db2cd92`; all seven main jobs also passed.
+
+The owner then selected UUIDv4 public resource IDs and qualification of uuid 1.28.0.
+Its official archive/checksum/license, two Windows probe tests and cargo-deny passed.
+P1-01 uses only std parsing/formatting, with no generator, crypto, API or listener.
+The [domain review](P1_01_DOMAIN_REVIEW.md) records 17 distinct ID types, separate
+confidential material/public metadata, scoped DNS associations and independent
+gateway identity data. Seven integration and four compile-fail tests, fmt/check/
+Clippy/rustdoc and no-default checks passed locally. New executable domain code
+has 72/72 instrumented lines covered; full workspace is 77/80. This is local data,
+not runtime authentication proof. [PR #4](https://github.com/romanpodg/Routira/pull/4)
+implementation head `4d79b7a95f094851bd2b73c4c924a85c7231de44` passed independent
+read-only built-in Code Review against main `a77ed5adce184ffe3214452af0b1e6d83db2cd92`,
+all seven jobs of [run 38911280732](https://github.com/romanpodg/Routira/actions/runs/38911280732)
+and all three CodeScene gates (review 7987296). Codecov processed both reports and
+the exact-head/base comparison: new Rust 71/71, backend 76/79 (96.20%), backend
+patch check 100%. The aggregate patch includes five auxiliary Python lines; it is
+not a product total. Final evidence edits need inspection/review and current-head
+CI before ordinary merge; no next implementation PR has started.
 
 ## Owner decisions and current progress
 
@@ -57,12 +77,13 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **5 completed (P0-01 through P0-05), 83 planned**.
-Five of the 61 MVP tasks are complete; P0-04 closes by explicit owner acceptance
+Current backlog: **6 validated/completed (P0-01 through P0-05 and P1-01), 82 planned**.
+Six of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
-not passed by a workspace bootstrap. P0-05 is the only additional started task.
+not passed by a workspace bootstrap. PR #4 remains the only open implementation PR
+until its reviewed/checked head merges; task status does not bypass that gate.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,
@@ -132,10 +153,10 @@ and security boundaries. All three intentional lint/test/upload failures were
 observed on a disposable same-repository branch, then that ref was removed.
 The private fork policy requires approval with no secrets/variables or write
 tokens. On 2026-10-16 the owner accepted P0-04 after reviewing the disclosed
-limitations. The real fork PR test and Codecov comparison/web-report evidence
-remain deferred in [OPEN_DECISIONS](OPEN_DECISIONS.md#deferred-p0-04-evidence).
+limitations. The real fork PR test remains deferred; the Codecov comparison/web-report
+gap is now resolved in [OPEN_DECISIONS](OPEN_DECISIONS.md#deferred-p0-04-evidence).
 PR #1 subsequently passed actual Code Review after the fixture fix and merged;
-the service-report gap is now partly closed by the processed main report above.
+the service-report gap is closed by the processed main and P1-01 reports above.
 
 ## P0-03 continuation and actual lab evidence
 

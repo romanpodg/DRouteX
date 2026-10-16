@@ -10,6 +10,7 @@ publish = false
 license = "Apache-2.0"
 
 [workspace.dependencies]
+uuid = "=1.28.0"
 routira-common = { path = "crates/routira-common", version = "=0.1.0" }
 routira-policy = { path = "crates/routira-policy", version = "=0.1.0" }
 

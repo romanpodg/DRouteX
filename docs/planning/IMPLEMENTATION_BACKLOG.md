@@ -93,7 +93,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P1-01: Define stable domain identities and states
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,14.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,14.
 
 | Field | Deliverable / evidence |
 |---|---|
