@@ -52,7 +52,9 @@ jobs:
           cargo deny fetch
           cargo deny --locked --offline check
       - name: Test and generate Rust coverage
-        run: cargo llvm-cov --workspace --locked --lcov --output-path coverage/backend.lcov
+        run: |
+          mkdir -p coverage
+          cargo llvm-cov --workspace --locked --lcov --output-path coverage/backend.lcov
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: backend-coverage
