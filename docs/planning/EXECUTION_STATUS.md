@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-16. Current stage: **P0-05 dependency qualification in review**.
+Date: 2026-10-16. Current stage: **P0-05 qualification complete; PR #3 final validation**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -26,8 +26,20 @@ and the actual fork test remain unverified.
 For P0-05 the owner selected **HTTP CONNECT over TLS** and approved isolated
 compatibility/transitive-license qualification of Tokio 1.53.3, Hickory-Proto
 0.26.3, Rustls 0.23.46 and Tokio-Rustls 0.26.6 using AWS-LC. Production workspace
-adoption and new license allowances are not implied. See the
+adoption is not implied. The owner separately approved the dependency license
+allowlist recorded in D14. See the
 [dependency review](../operations/DEPENDENCIES.md).
+
+[PR #3](https://github.com/romanpodg/Routira/pull/3) qualifies that inventory.
+On head `1ed74f933fdbfc5cf3265a4a4c82648fd1278234`, all seven Actions jobs passed,
+including Linux DNS/TLS tests and both locked dependency checks. Independent Codex
+Code Review completed without a confirmed defect after an earlier quota-interrupted
+attempt. Windows tests/Clippy and the fresh 41-observation WSL lab also passed.
+CodeScene's only failed gate is a test-method size score outside the owner's
+independent metric scope; the check remains failed and its disposition is in
+[OPEN_DECISIONS](OPEN_DECISIONS.md#p0-05-review-dispositions). No production networking
+dependency, runtime, certificate provisioning or dataset was adopted. Final
+documentation evidence still receives current-head validation before PR merge.
 
 ## Owner decisions and current progress
 
@@ -45,8 +57,8 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **4 completed (P0-01/P0-02/P0-03/P0-04), 1 in review, 83 planned**.
-Four of the 61 MVP tasks are accepted; P0-04 closes by explicit owner acceptance
+Current backlog: **5 completed (P0-01 through P0-05), 83 planned**.
+Five of the 61 MVP tasks are complete; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
@@ -65,7 +77,7 @@ when their existing roadmap tasks are authorized and prerequisites are complete.
 This accepts a reuse strategy, not the old Veyra specification, task completion,
 dependency selection, whole-branch merge or blanket cherry-pick. No donor code has
 been imported. P0-03 was in_review when this strategy was selected and is now
-complete after the native run below; P0-04 is accepted and P0-05 is in progress.
+complete after the native run below; P0-04 is accepted and P0-05 qualification is complete.
 
 Reviewed references: PR #1 at
 `5628f2ae3306bf86b22283b19003008fd3246bd7`; [PR #2](https://github.com/romanpodg/Routira/pull/2)
@@ -225,7 +237,7 @@ results. The owner subsequently authorized P0-03 and the WSL lab variant. P0-03
 is now complete after the owner-approved native Debian 13 run. On 2026-10-16 the
 owner authorized publishing those results and proceeding through P0-04 only.
 See [P0-04 review](P0_04_CI_REVIEW.md) for scope and actual check evidence.
-The owner subsequently authorized continuation; P0-05 is now in progress.
+The owner subsequently authorized continuation; P0-05 qualification is now complete.
 New infrastructure still requires its own owner decision.
 The owner now permits autonomous merge under the PR policy in [AGENTS.md](../../AGENTS.md).
 Actual Code Review and current-head validation subsequently passed after the

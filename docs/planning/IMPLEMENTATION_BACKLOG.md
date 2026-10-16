@@ -76,7 +76,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P0-05: Inventory DNS/proxy dependencies and licensing
 
-Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§7,19,25.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§7,19,25.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -87,7 +87,7 @@ Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 | Tests | Verify actual DNS/TLS/proxy dependency versions and reproduce a protected reference proxy handshake |
 | Security considerations | Checksums/signatures and controlled update source |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
-| Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |
+| Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. P0-05 qualification evidence: docs/operations/DEPENDENCIES.md; 107 pinned registry artifacts, Windows/Linux qualification and independent Code Review completed, fresh reference lab passed; production adoption and runtime gates remain separate. |
 
 ## P1: Domain and configuration (7 tasks)
 

@@ -93,6 +93,14 @@ Serious defects cannot be deferred to permit merge; uncertain cases require the 
 | P0-04-FORK | Actual private-fork checks are unverified. Same-repository positive/negative runs and local permission checks exist; the owner explicitly declined the temporary fork and accepted P0-04 with this evidence pending. This does not permit privileged/untrusted fork execution. | Owner approval of a real private-fork test environment; required before claiming fork PR support has been exercised |
 | P0-04-CODECOV | Partly resolved on 2026-10-16: the public repository was still deactivated in Codecov; owner approved activation preserving OIDC/access/plan. Both reports for main c43c2be are now processed and the web report was verified. Rust config is 5/8 lines; combined tooling coverage is not application coverage. A meaningful new-code PR comparison is still unverified. | Verify service-side comparison on the next PR with covered application changes; do not infer patch coverage from the foundation merge's empty covered diff |
 
+## P0-05 review dispositions
+
+| Item | Finding, impact and rationale | Owning task / revisit trigger |
+|---|---|---|
+| P0-05-CS | CodeScene 7981306 flags Large Method in the bounded CONNECT qualification test, score 9.60; its other two gates passed. No concrete functional defect was identified by the independent review. Tests are outside the owner's independent metric scope; keep the readable end-to-end assertion together rather than refactor solely for a score. The repository-wide check is failed, not suppressed or reported as passed. | Revisit if a concrete test-maintenance or functional defect justifies a change; no independent metric cleanup task |
+| P0-05-NOTICES | Four unused-target packages have SPDX metadata but no top-level license text in their package archive: jni, jni-macros, jni-sys-macros and r-efi. They are not built for the tested Windows/Linux targets, so this does not block the current qualification. Metadata/policy approval alone does not establish redistribution notices. | P11-05 or before adding the affected targets/features: obtain exact upstream texts/attribution, preserve them and verify the actual shipped target inventory |
+| P0-05-SYN | All-target lockfile contains syn 2.0.119 for Android JNI macros and 3.0.9 for current macros; no competing syn versions appear in the tested Windows/Linux target trees. Retain required versions rather than force an incompatible dependency change. | Recheck at production adoption, target/feature changes or the next dependency update; no suppression |
+
 ## Risk register
 
 | Risk | Impact | Mitigation |

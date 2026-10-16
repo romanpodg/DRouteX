@@ -165,8 +165,8 @@
       "security": "Checksums/signatures and controlled update source",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_review",
-      "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
+      "status": "completed",
+      "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. P0-05 qualification evidence: docs/operations/DEPENDENCIES.md; 107 pinned registry artifacts, Windows/Linux qualification and independent Code Review completed, fresh reference lab passed; production adoption and runtime gates remain separate.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
       "design_change": "CR-0002"
@@ -2615,7 +2615,7 @@
     "default_branch": "main",
     "review_branch": "foundation/review-dns-proxy-dependencies",
     "visibility": "public",
-    "review_pr": null,
+    "review_pr": "https://github.com/romanpodg/Routira/pull/3",
     "previous_pr": "https://github.com/romanpodg/Routira/pull/1",
     "previous_merge": "c43c2be0d40248f81bb01be9964ba56925b368f5"
   },
@@ -2659,7 +2659,7 @@
   },
   "dependency_qualification": {
     "date": "2026-10-16",
-    "status": "in_review",
+    "status": "qualified",
     "source": "Direct owner approval for isolated compatibility and transitive-license checks, not production dependency adoption",
     "transport": "HTTP CONNECT over TLS",
     "candidates": {
@@ -2669,6 +2669,7 @@
       "tokio-rustls": "0.26.6"
     },
     "crypto_provider": "AWS-LC",
-    "license_policy": "Owner approved Apache-2.0, MIT, ISC, BSD-3-Clause and Unicode-3.0 for third-party dependencies; preserve texts/notices; all other licenses require a decision"
+    "license_policy": "Owner approved Apache-2.0, MIT, ISC, BSD-3-Clause and Unicode-3.0 for third-party dependencies; preserve texts/notices; all other licenses require a decision",
+    "evidence": "docs/operations/DEPENDENCIES.md"
   }
 }

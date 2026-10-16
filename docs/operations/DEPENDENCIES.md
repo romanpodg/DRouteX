@@ -1,6 +1,6 @@
 # P0-05 DNS/proxy dependency inventory
 
-Date: 2026-10-16. Status: **qualification in progress; no production adoption**.
+Date: 2026-10-16. Status: **P0-05 qualification complete; no production adoption**.
 The owner selected HTTP CONNECT over TLS and approved this exact candidate set for
 isolated compatibility and transitive-license checks. Original Routira code remains
 Apache-2.0. The owner separately approved Apache-2.0, MIT, ISC, BSD-3-Clause and
@@ -84,10 +84,27 @@ hostname/untrusted CA rejection. The TLS server is a bounded loopback test peer,
 not a production outbound connector or independent interoperability reference.
 Sandboxed socket/native compiler access failed; running the same authorized local
 test outside that restriction passed. The tracked package also passed Clippy with
-warnings denied. Linux qualification is pending CI. Each of the three tests was
+warnings denied. Linux qualification passed in CI. Each of the three tests was
 observed failing with an intentionally corrupted expectation, then restored; no
 mutation is present in tracked source. The final tracked-source run used its own
 build directory to avoid reusing the exploratory package's mutation-test cache.
+
+[Actions run 38867986135](https://github.com/romanpodg/Routira/actions/runs/38867986135)
+passed all seven jobs on `1ed74f933fdbfc5cf3265a4a4c82648fd1278234`, including
+Linux qualification (3 tests, fmt/Clippy), both platform workspace/planning jobs,
+both locked dependency inventories and OIDC uploads. The exact head's Codecov report
+is processed; Rust config remains 5/8 instrumented lines, not aggregate tool coverage.
+The independent read-only built-in Codex Code Review completed on 2026-10-16 with
+no confirmed defect. Its sandbox prevented repeating every test/advisory command;
+the actual local and CI results above provide that execution evidence. An earlier
+review was interrupted by account limits and is not counted as completed.
+
+[CodeScene 7981306](https://codescene.io/projects/86145/delta/results/7981306)
+failed only the new test's Large Method score (9.60); two other gates passed.
+Tests are outside the owner's independent metric-improvement scope. No functional
+defect was identified, suppression added or score-only refactor performed; the
+repository-wide check remains failed. The disposition and target-only notice gaps
+are recorded in [OPEN_DECISIONS](../planning/OPEN_DECISIONS.md#p0-05-review-dispositions).
 
 Existing OpenSSL **3.5.5** in the approved Ubuntu WSL lab generated disposable CA
 and proxy identities. No root trust store, deployment certificate, ACME account or
