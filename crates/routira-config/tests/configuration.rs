@@ -461,3 +461,108 @@ fn aggregate_resource_limit_includes_nested_revision_selections() {
     .unwrap_err();
     assert_eq!(error.code(), Code::ResourceLimit);
 }
+
+#[test]
+fn empty_action_variants_reject_unknown_fields_in_every_format() {
+    for path in [
+        "/outbounds/0/transport",
+        "/profiles/1/defaultDnsAction",
+        "/profiles/1/defaultTrafficAction",
+        "/profiles/0/customRules/0/action/action",
+    ] {
+        let mut value = fixture();
+        value.pointer_mut(path).unwrap()["unexpected"] = json!("ERROR_SECRET_CANARY");
+        let input = serde_json::to_vec(&value).unwrap();
+        for format in [InputFormat::Json, InputFormat::Yaml] {
+            let error = parse_configuration(&input, format, &catalog()).unwrap_err();
+            assert_eq!(error.code(), Code::InvalidShape, "{path}, {format:?}");
+            assert!(!format!("{error:?}").contains("ERROR_SECRET_CANARY"));
+        }
+    }
+    for extra in [
+        "defaultDnsAction = {kind='block', unexpected='ERROR_SECRET_CANARY'}\ndefaultTrafficAction = {kind='deny'}",
+        "defaultDnsAction = {kind='block'}\ndefaultTrafficAction = {kind='deny', unexpected='ERROR_SECRET_CANARY'}",
+    ] {
+        let input = format!(
+            "schemaVersion=1\n[[profiles]]\nid='{}'\nname='draft'\n{extra}",
+            id(1)
+        );
+        let error =
+            parse_configuration(input.as_bytes(), InputFormat::Toml, &catalog()).unwrap_err();
+        assert_eq!(error.code(), Code::InvalidShape);
+        assert!(!format!("{error:?}").contains("ERROR_SECRET_CANARY"));
+    }
+}
+
+#[test]
+fn positional_arrays_cannot_replace_root_or_nested_schema_objects() {
+    for format in [InputFormat::Json, InputFormat::Yaml] {
+        assert_eq!(
+            parse_configuration(b"[1]", format, &catalog())
+                .unwrap_err()
+                .code(),
+            Code::InvalidShape
+        );
+        for (path, fields) in [
+            (
+                "/profiles/0",
+                vec![
+                    "id",
+                    "name",
+                    "defaultDnsAction",
+                    "defaultTrafficAction",
+                    "customRules",
+                    "serviceRules",
+                    "filterLists",
+                ],
+            ),
+            ("/profiles/0/customRules/0/matcher", vec!["mode", "value"]),
+            ("/gatewayGrants/0/ports/0", vec!["from", "to"]),
+            (
+                "/privateRecords/0",
+                vec!["id", "profile", "name", "ttl", "record"],
+            ),
+        ] {
+            let mut value = fixture();
+            let object = value.pointer_mut(path).unwrap();
+            *object = fields
+                .into_iter()
+                .map(|field| object[field].take())
+                .collect();
+            let error =
+                parse_configuration(&serde_json::to_vec(&value).unwrap(), format, &catalog())
+                    .unwrap_err();
+            assert_eq!(error.code(), Code::InvalidShape, "{path}, {format:?}");
+        }
+    }
+    let input = format!(
+        "schemaVersion=1\n[[profiles]]\nid='{}'\nname='draft'\ndefaultDnsAction={{kind='block'}}\ndefaultTrafficAction={{kind='deny'}}\n[[profiles.customRules]]\nid='{}'\nenabled=true\npriority=0\nmatcher={{mode='exact',value='example.com'}}\nports=[[443,443]]\naction={{plane='traffic',action={{kind='deny'}}}}",
+        id(1),
+        id(2)
+    );
+    assert_eq!(
+        parse_configuration(input.as_bytes(), InputFormat::Toml, &catalog())
+            .unwrap_err()
+            .code(),
+        Code::InvalidShape
+    );
+}
+
+#[test]
+fn semantic_rule_errors_identify_the_nested_action_payload() {
+    let mut value = fixture();
+    value["profiles"][0]["customRules"][0]["action"]["action"] =
+        json!({"kind":"resolve","upstream":id(999)});
+    reject(
+        &value,
+        Code::UnknownReference,
+        "$.profiles[0].customRules[0].action.action.upstream",
+    );
+    let mut value = fixture();
+    value["profiles"][0]["serviceRules"][0]["action"]["action"]["outbound"] = json!(id(999));
+    reject(
+        &value,
+        Code::UnknownReference,
+        "$.profiles[0].serviceRules[0].action.action.outbound",
+    );
+}

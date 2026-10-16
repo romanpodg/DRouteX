@@ -2615,7 +2615,7 @@
     "default_branch": "main",
     "review_branch": "config/validate-external-boundaries",
     "visibility": "public",
-    "review_pr": null,
+    "review_pr": "https://github.com/romanpodg/Routira/pull/5",
     "previous_pr": "https://github.com/romanpodg/Routira/pull/4",
     "previous_merge": "cd2a9c011e4950d80458cfaa72baddd1ac4243c2"
   },
@@ -2705,6 +2705,6 @@
       "serde-saphyr": "2.0.0",
       "serde_path_to_error": "0.1.20"
     },
-    "qualification": "Isolated 38-artifact audit and eight Windows probes/Clippy passed before config adoption; production 51-artifact archive/notice checks, cargo-deny and 14 Windows config tests passed; Linux and independent review pending"
+    "qualification": "Isolated 38-artifact audit/eight Windows probes passed before adoption; production 51-artifact inventory/audit passed. PR #5 initial seven CI jobs passed. Three independent review defects reproduced/fixed; 17 config tests and local checks pass; corrected-head re-review/CI pending."
   }
 }

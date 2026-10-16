@@ -2,7 +2,6 @@ use super::{
     ConfigError, ConfigErrorCode, Configuration, ReferenceCatalog, error::safe_path, validation,
     value::BoundedValue,
 };
-use serde::de::IntoDeserializer;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum InputFormat {
@@ -35,7 +34,7 @@ pub fn parse_configuration(
     let input = std::str::from_utf8(input)
         .map_err(|_| ConfigError::at(ConfigErrorCode::InvalidUtf8, "$".to_owned()))?;
     let value = parse_value(input, format)?;
-    let document: Configuration = serde_path_to_error::deserialize(value.0.into_deserializer())
+    let document: Configuration = serde_path_to_error::deserialize(value)
         .map_err(|error| ConfigError::at(ConfigErrorCode::InvalidShape, safe_path(error.path())))?;
     validation::validate(&document, catalog)?;
     Ok(CheckedConfiguration(document))

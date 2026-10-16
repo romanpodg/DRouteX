@@ -1,6 +1,6 @@
 # P1-02 configuration boundary review
 
-Date: 2026-10-17. Status: **implemented locally; independent review and CI pending**.
+Date: 2026-10-17. Status: **PR #5 under review; initial findings fixed, re-review/CI pending**.
 Authority: accepted [CR-0002](../architecture/DNS_PRODUCT_MODEL.md),
 [P0-01 contracts](P0_01_FOUNDATION_REVIEW.md), owner answers recorded in D24/D25
 of [OPEN_DECISIONS](OPEN_DECISIONS.md). PR #4 merged first at
@@ -54,7 +54,7 @@ authorization remain at their explicit P2/P3/P4 gates. No listener is opened her
 ## Actual validation
 
 Windows Rust 1.99.0: fmt, workspace/all-target check, no-default tests, full tests,
-warning-free all-feature Clippy and locked offline cargo-deny passed. Fourteen new
+warning-free all-feature Clippy and locked offline cargo-deny passed. Seventeen new
 configuration integration tests cover independent JSON/YAML/TOML payloads and a
 complete synthetic JSON fixture, valid/invalid size and depth boundaries, aggregate
 resource limits, unknown/duplicate input, error-canary redaction, separate scoped
@@ -64,10 +64,39 @@ A valid empty draft was first observed failing before implementation. A later
 diagnostic-path assertion exposed Serde's tagged-enum path limitation; the test
 now explicitly expects the safe enclosing container, with no raw-message parsing.
 
-Local LCOV and raw logs remain ignored under `.setup/p1-02/`. Current coverage is
-recorded there per source file; service-side patch coverage and CodeScene have not
-run for this uncommitted change. Linux CI, current-head independent Code Review
-and final merge evidence remain required. No native socket/runtime, systemd,
+Local LCOV and raw logs remain ignored under `.setup/p1-02/`. After review fixes,
+the new schema has 741/795 covered executable lines and the workspace 817/874.
+These local numbers are distinct from service-side coverage.
+
+[PR #5](https://github.com/romanpodg/Routira/pull/5) initial head
+`edbcb8fa1cdf1badbf7c6263646fc46215e3474d` passed all seven jobs of
+[run 38954296579](https://github.com/romanpodg/Routira/actions/runs/38954296579),
+including Linux/Windows workspace, fresh locked dependency checks and coverage.
+The completed independent read-only built-in Code Review against verified base
+`cd2a9c011e4950d80458cfaa72baddd1ac4243c2` identified three defects:
+
+- Serde's internally tagged unit variants ignored unknown fields. Empty struct
+  variants now enforce rejection without changing the wire representation.
+- The intermediate Value deserializer accepted positional arrays as structs.
+  The recursive boundary now requires objects for structs and reuses Serde's
+  map/sequence adapters, without a second schema-field whitelist or new dependency.
+- Semantic rule errors omitted the inner action payload segment. They now report
+  the actual `action.action.upstream` or `action.action.outbound` field.
+
+Each of the three new regression tests failed before its fix; all 17 config tests
+and full workspace/default/no-default/Clippy/rustdoc checks passed afterward.
+Initial review log: `.setup/p1-02/codex-review.log` (exit 0 with findings, not approval).
+The reviewer ran fmt and an existing test binary; read-only restrictions prevented
+rebuilding/Clippy. The separate local/CI runs above provide execution evidence.
+The corrected head still needs independent re-review and fresh current-head CI.
+
+[CodeScene 7991651](https://codescene.io/projects/86145/delta/results/7991651)
+failed its new-code gate and passed two other gates. Complex collision predicates
+in binding.rs scored 8.41; explicit helper argument counts in access.rs/rules.rs
+and the test helper scored 9.69. Source/edge-case tests were inspected. No concrete
+functional defect follows from these scores; no suppression or score-only rewrite
+was made. The separate findings above were fixed. Maintenance dispositions are in
+the existing register. Final merge evidence remains required. No native socket/runtime, systemd,
 credential-verification or product interoperability success is claimed.
 
 The diagnostic precision disposition is recorded in

@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-17. Current stage: **P1-02 implemented locally; independent review and Linux CI pending; no PR yet**.
+Date: 2026-10-17. Current stage: **P1-02 / PR #5 under review; initial findings fixed; re-review and current-head CI pending**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -71,8 +71,10 @@ approved the five parser/path dependencies, strict three-format input profile,
 config-crate adoption. Local full/default and no-default tests, Clippy, all-target
 check, root dependency audit and LCOV passed. The [config review](P1_02_CONFIG_REVIEW.md)
 and [wire contract](../../api/schemas/README.md) distinguish import validation from
-live admission, policy compilation and dataset/secret/runtime gates. Independent
-review and Linux CI are pending; no P1-02 PR or P1-03 implementation exists yet.
+live admission, policy compilation and dataset/secret/runtime gates. PR #5 initial head passed all seven CI jobs, but independent review found three
+strictness/path defects. Each was reproduced and fixed with regression tests;
+17 config tests and local checks pass. Corrected-head re-review and CI are pending.
+No P1-03 implementation exists yet.
 
 ## Owner decisions and current progress
 

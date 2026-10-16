@@ -220,7 +220,7 @@ pub struct ProxyOutbound {
     deny_unknown_fields
 )]
 pub enum OutboundKind {
-    VpsDirect,
+    VpsDirect {},
     HttpConnectTls {
         host: String,
         port: u16,
@@ -237,7 +237,7 @@ pub enum DnsAction {
         #[serde(deserialize_with = "resource_id")]
         upstream: DnsUpstreamId,
     },
-    Block,
+    Block {},
     Gateway {
         #[serde(deserialize_with = "resource_id")]
         outbound: ProxyOutboundId,
@@ -247,7 +247,7 @@ pub enum DnsAction {
 #[derive(Debug, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum TrafficAction {
-    Deny,
+    Deny {},
     Outbound {
         #[serde(deserialize_with = "resource_id")]
         outbound: ProxyOutboundId,

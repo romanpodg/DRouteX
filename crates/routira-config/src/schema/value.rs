@@ -1,4 +1,6 @@
-use serde::de::{self, Deserialize, DeserializeSeed, MapAccess, SeqAccess, Visitor};
+use serde::de::{
+    self, Deserialize, DeserializeSeed, IntoDeserializer, MapAccess, SeqAccess, Visitor,
+};
 use serde_json::{Map, Number, Value};
 use std::fmt;
 
@@ -8,6 +10,96 @@ pub(super) struct BoundedValue(pub Value);
 impl<'de> Deserialize<'de> for BoundedValue {
     fn deserialize<D: de::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
         Seed(0).deserialize(deserializer).map(Self)
+    }
+}
+
+impl<'de> IntoDeserializer<'de, de::value::Error> for BoundedValue {
+    type Deserializer = Self;
+
+    fn into_deserializer(self) -> Self {
+        self
+    }
+}
+
+// Value's default struct deserializer accepts positional arrays; this boundary
+// requires objects recursively while reusing Serde's map/sequence adapters.
+impl<'de> de::Deserializer<'de> for BoundedValue {
+    type Error = de::value::Error;
+
+    fn deserialize_any<V: Visitor<'de>>(self, visitor: V) -> Result<V::Value, Self::Error> {
+        match self.0 {
+            Value::Null => visitor.visit_unit(),
+            Value::Bool(value) => visitor.visit_bool(value),
+            Value::String(value) => visitor.visit_string(value),
+            Value::Number(value) => {
+                if let Some(value) = value.as_i64() {
+                    visitor.visit_i64(value)
+                } else if let Some(value) = value.as_u64() {
+                    visitor.visit_u64(value)
+                } else {
+                    visitor.visit_f64(
+                        value
+                            .as_f64()
+                            .ok_or_else(|| de::Error::custom("invalid number"))?,
+                    )
+                }
+            }
+            Value::Array(values) => {
+                de::value::SeqDeserializer::new(values.into_iter().map(BoundedValue))
+                    .deserialize_any(visitor)
+            }
+            Value::Object(values) => de::value::MapDeserializer::new(
+                values
+                    .into_iter()
+                    .map(|(key, value)| (key, BoundedValue(value))),
+            )
+            .deserialize_any(visitor),
+        }
+    }
+
+    fn deserialize_struct<V: Visitor<'de>>(
+        self,
+        _name: &'static str,
+        _fields: &'static [&'static str],
+        visitor: V,
+    ) -> Result<V::Value, Self::Error> {
+        if !self.0.is_object() {
+            return Err(de::Error::custom("expected configuration object"));
+        }
+        self.deserialize_any(visitor)
+    }
+
+    fn deserialize_option<V: Visitor<'de>>(self, visitor: V) -> Result<V::Value, Self::Error> {
+        if self.0.is_null() {
+            visitor.visit_none()
+        } else {
+            visitor.visit_some(self)
+        }
+    }
+
+    fn deserialize_newtype_struct<V: Visitor<'de>>(
+        self,
+        _name: &'static str,
+        visitor: V,
+    ) -> Result<V::Value, Self::Error> {
+        visitor.visit_newtype_struct(self)
+    }
+
+    fn deserialize_enum<V: Visitor<'de>>(
+        self,
+        _name: &'static str,
+        _variants: &'static [&'static str],
+        visitor: V,
+    ) -> Result<V::Value, Self::Error> {
+        match self.0 {
+            Value::String(value) => visitor.visit_enum(value.into_deserializer()),
+            _ => Err(de::Error::custom("expected configuration enum name")),
+        }
+    }
+
+    serde::forward_to_deserialize_any! {
+        bool i8 i16 i32 i64 u8 u16 u32 u64 f32 f64 char str string bytes byte_buf
+        unit unit_struct seq tuple tuple_struct map identifier ignored_any
     }
 }
 

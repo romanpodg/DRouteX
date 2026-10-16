@@ -95,9 +95,10 @@ fn rule_action(
     catalog: &ReferenceCatalog,
     path: &str,
 ) -> Result<(), ConfigError> {
+    let path = format!("{path}.action");
     match action {
-        RuleAction::Dns(action) => dns_action(action, tables, catalog, path),
-        RuleAction::Traffic(action) => traffic_action(action, tables, path),
+        RuleAction::Dns(action) => dns_action(action, tables, catalog, &path),
+        RuleAction::Traffic(action) => traffic_action(action, tables, &path),
     }
 }
 
@@ -118,7 +119,7 @@ fn dns_action(
             Code::UnknownReference,
             &format!("{path}.outbound"),
         ),
-        DnsAction::Block => Ok(()),
+        DnsAction::Block {} => Ok(()),
     }
 }
 
@@ -133,6 +134,6 @@ fn traffic_action(
             Code::UnknownReference,
             &format!("{path}.outbound"),
         ),
-        TrafficAction::Deny => Ok(()),
+        TrafficAction::Deny {} => Ok(()),
     }
 }
