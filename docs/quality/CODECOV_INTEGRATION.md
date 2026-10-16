@@ -1,15 +1,31 @@
 # Codecov integration
 
-Status on 2026-10-16: **Planning/backend uploads verified; P0-04 in review.**
+Status on 2026-10-16: **Main reports and meaningful P1-01 application comparison verified.**
 The user authorized configuring both quality services for
 [romanpodg/Routira](https://github.com/romanpodg/Routira). GitHub CLI has verified
 repository admin access. The user signed into Codecov; Routira is activated.
 The pre-existing Codecov GitHub App covers this repository; its permissions were
 not changed. Root YAML passed the official `https://codecov.io/validate` endpoint
 with `Valid!`. No permanent upload token is stored in this repository.
-GitHub reports this repository as private; its visibility was not changed.
-The minimal P0-02 Cargo workspace exists; no frontend workspace exists. Planning coverage is separate from application
+The owner made the repository public and approved activating the existing Codecov
+project without changing OIDC, tokens, access or plan. The common/config/policy
+workspace exists; no frontend workspace exists. Planning coverage is separate from application
 coverage; see [execution status](../planning/EXECUTION_STATUS.md).
+
+On [PR #4](https://app.codecov.io/gh/romanpodg/Routira/pull/4), exact implementation
+head `4d79b7a95f094851bd2b73c4c924a85c7231de44` is processed against main base
+`a77ed5adce184ffe3214452af0b1e6d83db2cd92`. All seven jobs of
+[run 38911280732](https://github.com/romanpodg/Routira/actions/runs/38911280732)
+passed. New Rust application lines are 71/71 covered; the backend patch check
+passed at 100% and backend totals are 76/79 (96.20%). The aggregate patch 76/76
+also counts five auxiliary Python lines, and aggregate 509/515 is not application
+coverage. Both flags processed. Linux/service instrumentation counts one identity
+line fewer than the local Windows 72/72 report; neither count is substituted for
+the other. Coverage does not establish actual capability verification or network
+admission. This resolves the P0-04 Codecov comparison deferral; the actual fork
+test remains owner-deferred.
+
+## Historical bootstrap evidence
 
 [Actions run 38709252934](https://github.com/romanpodg/Routira/actions/runs/38709252934)
 passed both OS jobs and the OIDC upload for commit `2aef0d5` on PR #1.
@@ -28,7 +44,7 @@ for Rust 1.99.0. Ubuntu generates `coverage/backend.lcov`, retained for seven da
 and the isolated upload job submits it with the `backend` flag. Its path scope is
 the three crate source directories. Project/patch statuses are informational with
 carryforward disabled; the existing critical-code test requirements still apply.
-Local coverage is 62.50% of eight instrumented source lines. See the
+The initial local baseline was 62.50% of eight instrumented source lines. See the
 [P0-04 review](../planning/P0_04_CI_REVIEW.md) for actual service/run evidence;
 local percentage and a successful upload are distinct observations.
 
@@ -38,10 +54,11 @@ downloaded Rust LCOV has the expected crate source path and five of eight lines
 covered. The missing-report upload probe failed as intended in
 [run 38860049899](https://github.com/romanpodg/Routira/actions/runs/38860049899).
 GitHub's backend/planning patch checks succeeded with the explicit message
-"No report found to compare against"; main still lacks a baseline. The signed-in
+"No report found to compare against"; main then lacked a baseline. The signed-in
 commit page returned 404 and repository search remained empty after Resync, so
-the new service-rendered percentages/lines remain unverified. No repository
-visibility, application grant or billing setting was changed.
+the new service-rendered percentages/lines were unverified at that snapshot.
+The later owner-approved activation and processed reports are recorded above.
+No application grant or billing setting was changed.
 
 The [planning workflow](../../.github/workflows/planning.yml) runs the existing
 renderer, contract validator and quality-configuration validator under coverage.py
@@ -61,7 +78,7 @@ coverage informational and disables carryforward so old reports cannot fill gaps
 Local checks reject widened test-job permissions, an unconditional fork upload,
 repository scripts in the upload job and unpinned actions. Repository configuration
 alone does not verify Codecov account access, OIDC acceptance, upload or PR statuses.
-The current baseline branch has no application code; a missing base report on PR #1
+The initial PR #1 baseline branch had no application code; a missing base report on PR #1
 must not be reported as a successful coverage comparison.
 
 The inspected current release is [codecov-action v7.1.1](https://github.com/codecov/codecov-action/releases/tag/v7.1.1).

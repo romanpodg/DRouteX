@@ -192,7 +192,7 @@
       "security": "Secrets distinct from serializable public fields",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_review",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2615,7 +2615,7 @@
     "default_branch": "main",
     "review_branch": "domain/stable-resource-identities",
     "visibility": "public",
-    "review_pr": null,
+    "review_pr": "https://github.com/romanpodg/Routira/pull/4",
     "previous_pr": "https://github.com/romanpodg/Routira/pull/3",
     "previous_merge": "a77ed5adce184ffe3214452af0b1e6d83db2cd92"
   },
@@ -2678,7 +2678,7 @@
     "public_ids": "UUIDv4",
     "uuid_candidate": "1.28.0",
     "profile": "std parse/format; no random ID/token generator",
-    "qualification": "Official SHA256/license verified; 2 Windows tests and cargo-deny passed",
+    "qualification": "Official SHA256/notices verified; Windows probes/audit and implementation Windows/Linux CI, independent Code Review, CodeScene and Codecov patch passed; PR merge still gated on final current head",
     "actual_capability_verification": "P3-07; domain metadata is not authentication",
     "secret_lifecycle": "P1-07; no format/entropy/clock/erasure/at-rest decision made"
   }

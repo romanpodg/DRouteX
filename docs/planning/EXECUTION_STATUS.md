@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-16. Current stage: **P1-01 domain identity model in review**.
+Date: 2026-10-16. Current stage: **P1-01 validated; PR #4 awaiting final evidence review/checks and merge**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -20,8 +20,8 @@ attempt 2 of [run 38865306388](https://github.com/romanpodg/Routira/actions/runs
 passed; Codecov processed both backend/planning reports for the exact merge commit.
 The [service report](https://app.codecov.io/github/romanpodg/routira/commit/c43c2be0d40248f81bb01be9964ba56925b368f5)
 shows Rust config coverage of 5/8 lines (62.50%); aggregate 437/443 includes auxiliary
-Python tooling and is not application coverage. A meaningful new-code PR comparison
-and the actual fork test remain unverified.
+Python tooling and is not application coverage. P1-01 subsequently verified a
+meaningful new-code PR comparison below; the actual fork test remains unverified.
 
 For P0-05 the owner selected **HTTP CONNECT over TLS** and approved isolated
 compatibility/transitive-license qualification of Tokio 1.53.3, Hickory-Proto
@@ -51,8 +51,15 @@ confidential material/public metadata, scoped DNS associations and independent
 gateway identity data. Seven integration and four compile-fail tests, fmt/check/
 Clippy/rustdoc and no-default checks passed locally. New executable domain code
 has 72/72 instrumented lines covered; full workspace is 77/80. This is local data,
-not service-side coverage or runtime authentication proof. Linux CI, actual Code
-Review and current-head external results remain pending.
+not runtime authentication proof. [PR #4](https://github.com/romanpodg/Routira/pull/4)
+implementation head `4d79b7a95f094851bd2b73c4c924a85c7231de44` passed independent
+read-only built-in Code Review against main `a77ed5adce184ffe3214452af0b1e6d83db2cd92`,
+all seven jobs of [run 38911280732](https://github.com/romanpodg/Routira/actions/runs/38911280732)
+and all three CodeScene gates (review 7987296). Codecov processed both reports and
+the exact-head/base comparison: new Rust 71/71, backend 76/79 (96.20%), backend
+patch check 100%. The aggregate patch includes five auxiliary Python lines; it is
+not a product total. Final evidence edits need inspection/review and current-head
+CI before ordinary merge; no next implementation PR has started.
 
 ## Owner decisions and current progress
 
@@ -70,12 +77,13 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **5 completed (P0-01 through P0-05), 1 in review, 82 planned**.
-Five of the 61 MVP tasks are complete; P0-04 closes by explicit owner acceptance
+Current backlog: **6 validated/completed (P0-01 through P0-05 and P1-01), 82 planned**.
+Six of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
-not passed by a workspace bootstrap. P1-01 is the only open implementation task.
+not passed by a workspace bootstrap. PR #4 remains the only open implementation PR
+until its reviewed/checked head merges; task status does not bypass that gate.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,
@@ -145,10 +153,10 @@ and security boundaries. All three intentional lint/test/upload failures were
 observed on a disposable same-repository branch, then that ref was removed.
 The private fork policy requires approval with no secrets/variables or write
 tokens. On 2026-10-16 the owner accepted P0-04 after reviewing the disclosed
-limitations. The real fork PR test and Codecov comparison/web-report evidence
-remain deferred in [OPEN_DECISIONS](OPEN_DECISIONS.md#deferred-p0-04-evidence).
+limitations. The real fork PR test remains deferred; the Codecov comparison/web-report
+gap is now resolved in [OPEN_DECISIONS](OPEN_DECISIONS.md#deferred-p0-04-evidence).
 PR #1 subsequently passed actual Code Review after the fixture fix and merged;
-the service-report gap is now partly closed by the processed main report above.
+the service-report gap is closed by the processed main and P1-01 reports above.
 
 ## P0-03 continuation and actual lab evidence
 

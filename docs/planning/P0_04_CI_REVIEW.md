@@ -145,4 +145,18 @@ successfully uploaded both reports; the exact merge commit's
 [service report](https://app.codecov.io/github/romanpodg/routira/commit/c43c2be0d40248f81bb01be9964ba56925b368f5)
 is complete. Rust config remains 5/8 instrumented lines (62.50%); the combined
 437/443 includes auxiliary scripts. A meaningful new-code PR comparison and the
-owner-deferred actual fork run remain unverified. P0-05 is now authorized/in progress.
+owner-deferred actual fork run remained unverified at that snapshot.
+
+## Meaningful application comparison verified at P1-01
+
+After P0-05/PR #3 merged, [PR #4](https://github.com/romanpodg/Routira/pull/4)
+added domain application code. On implementation head
+`4d79b7a95f094851bd2b73c4c924a85c7231de44`, all seven Actions jobs passed and
+Codecov processed both flags against exact main base
+`a77ed5adce184ffe3214452af0b1e6d83db2cd92`. The
+[service comparison](https://app.codecov.io/gh/romanpodg/Routira/pull/4) and backend
+patch check report 100% of new Rust lines covered (71/71); backend totals are
+76/79 (96.20%). Combined patch 76/76 includes five auxiliary Python lines.
+This resolves the Codecov comparison deferral; it does not resolve the actual
+owner-deferred fork test. Detailed instrumentation limits are in the
+[domain review](P1_01_DOMAIN_REVIEW.md).

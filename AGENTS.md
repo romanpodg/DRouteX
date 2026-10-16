@@ -23,7 +23,10 @@ comparison/web-report evidence explicitly deferred, not passed. PR #1 was review
 fixed and merged as c43c2be0d40248f81bb01be9964ba56925b368f5. The owner then
 authorized continuing the plan. P0-05/PR #3 completed qualification and merged as
 a77ed5adce184ffe3214452af0b1e6d83db2cd92 after two independent Code Reviews and
-seven successful final-head/main CI jobs. P1-01 is the current task. The owner
+seven successful final-head/main CI jobs. P1-01 is validated in PR #4 and awaits
+final evidence review/checks and merge before the next implementation PR. Its
+implementation passed independent Code Review, all seven CI jobs, CodeScene and
+an actual Codecov backend patch comparison (71/71 new Rust lines). The owner
 selected UUIDv4 public resource IDs and qualification of uuid 1.28.0; its official
 archive/license/checksum, Windows vector tests and cargo-deny passed. Production
 use is limited to the std parse/format profile for domain identities; generators,

@@ -1,6 +1,6 @@
 # P1-01 domain identity and state review
 
-Date: 2026-10-16. Status: **in review**. Authority: accepted
+Date: 2026-10-16. Status: **validated; PR merge gates apply**. Authority: accepted
 [CR-0002](../architecture/DNS_PRODUCT_MODEL.md) and
 [P0-01 contracts](P0_01_FOUNDATION_REVIEW.md). This task defines pure domain data,
 not a running resolver, credential verifier, gateway or storage schema.
@@ -76,5 +76,34 @@ bearer has no new hardware identity. Real unknown/revoked capability lookup,
 timed expiry, source observations and network denial must still pass P3-07/P4-01.
 Neither the redaction wrapper nor metadata association authorizes listener exposure.
 No storage at rest, API serialization, production capability parsing or systemd/
-native Debian runtime acceptance is claimed. Linux CI, coverage and independent
-Code Review are pending before this task can complete.
+native Debian runtime acceptance is claimed.
+
+## Independent review and service evidence
+
+[PR #4](https://github.com/romanpodg/Routira/pull/4) implementation head
+`4d79b7a95f094851bd2b73c4c924a85c7231de44` was independently reviewed against
+`a77ed5adce184ffe3214452af0b1e6d83db2cd92` with the built-in Codex review through
+the signed-in ChatGPT account, read-only sandbox and approval policy never.
+The completed review found no confirmed defect. Its read-only environment could
+not execute Rust compilation/tests or Python tests needing PyYAML; this limitation
+does not stand in for test success. Separate Windows evidence above and all seven
+jobs of [CI run 38911280732](https://github.com/romanpodg/Routira/actions/runs/38911280732)
+passed, including Linux/Windows workspace tests, Linux dependency qualification,
+both locked audits, coverage generation and OIDC uploads. Raw logs stay local.
+
+[CodeScene review 7987296](https://codescene.io/projects/86145/delta/results/7987296)
+passed all three quality gates. Its expected-document-change suggestions identify
+historical cochanges, not functional defects or additional implementation scope.
+[Codecov's processed comparison](https://app.codecov.io/gh/romanpodg/Routira/pull/4)
+uses the exact base/head above. All 71 service-counted new Rust lines are covered
+(identity 37/37, IDs 20/20, secret material 14/14); the backend patch check passed
+at 100%. Backend totals are 76/79 (96.20%), including the existing config 5/8.
+Linux/service and Windows instrumentation count one identity line differently;
+the earlier local 72/72 and 77/80 are not substituted for service numbers.
+The aggregate patch 76/76 also includes five auxiliary planning lines and must not
+be described as 76 new application lines. Both planning/backend uploads processed.
+
+No review defect or minor implementation deferral was identified. Actual resolver
+authentication/network denial remains at the gates above, and the real fork test
+remains owner-deferred. Final evidence edits require inspection/review and successful
+current-head checks before the authorized ordinary merge.
