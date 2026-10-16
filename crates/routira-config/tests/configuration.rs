@@ -566,3 +566,49 @@ fn semantic_rule_errors_identify_the_nested_action_payload() {
         "$.profiles[0].serviceRules[0].action.action.outbound",
     );
 }
+
+#[test]
+fn tagged_enums_require_objects_even_when_serde_accepts_sequences() {
+    for (path, positional) in [
+        ("/profiles/0/defaultDnsAction", json!(["resolve", id(90)])),
+        ("/profiles/1/defaultDnsAction", json!(["block"])),
+        ("/profiles/1/defaultTrafficAction", json!(["deny"])),
+        ("/outbounds/0/transport", json!(["vps_direct"])),
+        (
+            "/outbounds/1/transport",
+            json!([
+                "http_connect_tls",
+                "proxy.example.com",
+                443,
+                "proxy.example.com",
+                id(99)
+            ]),
+        ),
+        ("/endpoints/0/access/0", json!(["doh", id(32), [id(20)]])),
+        ("/privateRecords/0/record", json!(["a", "192.168.1.5"])),
+        ("/profiles/0/customRules/0/action/action", json!(["block"])),
+        (
+            "/profiles/0/customRules/1/action/action",
+            json!(["outbound", id(71)]),
+        ),
+    ] {
+        let mut value = fixture();
+        *value.pointer_mut(path).unwrap() = positional;
+        for format in [InputFormat::Json, InputFormat::Yaml] {
+            let error =
+                parse_configuration(&serde_json::to_vec(&value).unwrap(), format, &catalog())
+                    .unwrap_err();
+            assert_eq!(error.code(), Code::InvalidShape, "{path}, {format:?}");
+        }
+    }
+    let input = format!(
+        "schemaVersion=1\n[[profiles]]\nid='{}'\nname='draft'\ndefaultDnsAction=['block']\ndefaultTrafficAction=['deny']",
+        id(1)
+    );
+    assert_eq!(
+        parse_configuration(input.as_bytes(), InputFormat::Toml, &catalog())
+            .unwrap_err()
+            .code(),
+        Code::InvalidShape
+    );
+}

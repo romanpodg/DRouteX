@@ -54,7 +54,7 @@ authorization remain at their explicit P2/P3/P4 gates. No listener is opened her
 ## Actual validation
 
 Windows Rust 1.99.0: fmt, workspace/all-target check, no-default tests, full tests,
-warning-free all-feature Clippy and locked offline cargo-deny passed. Seventeen new
+warning-free all-feature Clippy and locked offline cargo-deny passed. Eighteen new
 configuration integration tests cover independent JSON/YAML/TOML payloads and a
 complete synthetic JSON fixture, valid/invalid size and depth boundaries, aggregate
 resource limits, unknown/duplicate input, error-canary redaction, separate scoped
@@ -65,7 +65,7 @@ diagnostic-path assertion exposed Serde's tagged-enum path limitation; the test
 now explicitly expects the safe enclosing container, with no raw-message parsing.
 
 Local LCOV and raw logs remain ignored under `.setup/p1-02/`. After review fixes,
-the new schema has 741/795 covered executable lines and the workspace 817/874.
+the new schema has 761/815 covered executable lines and the workspace 837/894.
 These local numbers are distinct from service-side coverage.
 
 [PR #5](https://github.com/romanpodg/Routira/pull/5) initial head
@@ -83,12 +83,25 @@ The completed independent read-only built-in Code Review against verified base
 - Semantic rule errors omitted the inner action payload segment. They now report
   the actual `action.action.upstream` or `action.action.outbound` field.
 
-Each of the three new regression tests failed before its fix; all 17 config tests
+Each of the three new regression tests failed before its fix; all config tests
 and full workspace/default/no-default/Clippy/rustdoc checks passed afterward.
 Initial review log: `.setup/p1-02/codex-review.log` (exit 0 with findings, not approval).
 The reviewer ran fmt and an existing test binary; read-only restrictions prevented
 rebuilding/Clippy. The separate local/CI runs above provide execution evidence.
-The corrected head still needs independent re-review and fresh current-head CI.
+The first corrected head `3a57a1a7c551521a60a70b0732406fa362dcc974` passed
+all seven jobs of [run 38955541778](https://github.com/romanpodg/Routira/actions/runs/38955541778).
+Codecov processed both flags and the exact base/head comparison: backend 817/874,
+Rust patch 741/795 with a successful backend patch check (93.20% displayed).
+Aggregate patch 746/800 includes five auxiliary Python lines and is not product
+coverage. CodeScene 7991752 repeated the maintenance signals below.
+
+Its independent follow-up review found the analogous tagged-enum sequence path:
+Serde uses `deserialize_any`, bypassing struct-only shape checks. Map-only visitors
+now guard every tagged action/transport/record field, each DNS access item and the
+nested rule action payload. The fourth regression failed before this correction;
+all 18 configuration tests and full local checks pass afterward. Follow-up review
+log: `.setup/p1-02/codex-review-fixes.log` (exit 0 with a finding).
+This latest corrected head still requires independent re-review and fresh CI.
 
 [CodeScene 7991651](https://codescene.io/projects/86145/delta/results/7991651)
 failed its new-code gate and passed two other gates. Complex collision predicates

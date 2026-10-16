@@ -2705,6 +2705,6 @@
       "serde-saphyr": "2.0.0",
       "serde_path_to_error": "0.1.20"
     },
-    "qualification": "Isolated 38-artifact audit/eight Windows probes passed before adoption; production 51-artifact inventory/audit passed. PR #5 initial seven CI jobs passed. Three independent review defects reproduced/fixed; 17 config tests and local checks pass; corrected-head re-review/CI pending."
+    "qualification": "Isolated 38-artifact audit/eight Windows probes passed before adoption; production 51-artifact inventory/audit passed. PR #5 initial and first-fixed heads passed seven CI jobs. Independent review defects, including tagged enum sequences, reproduced/fixed; 18 config tests/local checks pass; latest-head re-review/CI pending."
   }
 }

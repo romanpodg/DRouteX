@@ -53,7 +53,9 @@ pub struct Profile {
     #[serde(deserialize_with = "resource_id")]
     pub id: ProfileId,
     pub name: String,
+    #[serde(deserialize_with = "super::value::object")]
     pub default_dns_action: DnsAction,
+    #[serde(deserialize_with = "super::value::object")]
     pub default_traffic_action: TrafficAction,
     #[serde(default)]
     pub custom_rules: Vec<CustomRule>,
@@ -74,6 +76,7 @@ pub struct DnsEndpoint {
     pub profile: ProfileId,
     #[serde(default, deserialize_with = "optional_id")]
     pub device: Option<DeviceId>,
+    #[serde(deserialize_with = "super::value::objects")]
     pub access: Vec<DnsAccess>,
 }
 
@@ -209,6 +212,7 @@ pub struct ProxyOutbound {
     pub id: ProxyOutboundId,
     pub name: String,
     pub enabled: bool,
+    #[serde(deserialize_with = "super::value::object")]
     pub transport: OutboundKind,
 }
 
@@ -262,8 +266,8 @@ pub enum TrafficAction {
     deny_unknown_fields
 )]
 pub enum RuleAction {
-    Dns(DnsAction),
-    Traffic(TrafficAction),
+    Dns(#[serde(deserialize_with = "super::value::object")] DnsAction),
+    Traffic(#[serde(deserialize_with = "super::value::object")] TrafficAction),
 }
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Deserialize)]
@@ -333,6 +337,7 @@ pub struct PrivateRecord {
     pub profile: ProfileId,
     pub name: String,
     pub ttl: u32,
+    #[serde(deserialize_with = "super::value::object")]
     pub record: RecordData,
 }
 

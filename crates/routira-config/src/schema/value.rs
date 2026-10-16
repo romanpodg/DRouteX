@@ -2,7 +2,43 @@ use serde::de::{
     self, Deserialize, DeserializeSeed, IntoDeserializer, MapAccess, SeqAccess, Visitor,
 };
 use serde_json::{Map, Number, Value};
-use std::fmt;
+use std::{fmt, marker::PhantomData};
+
+// Internally tagged enums use deserialize_any and accept positional arrays too.
+pub(super) fn object<'de, D: de::Deserializer<'de>, T: Deserialize<'de>>(
+    deserializer: D,
+) -> Result<T, D::Error> {
+    deserializer.deserialize_map(ObjectVisitor(PhantomData))
+}
+
+struct ObjectVisitor<T>(PhantomData<T>);
+
+impl<'de, T: Deserialize<'de>> Visitor<'de> for ObjectVisitor<T> {
+    type Value = T;
+
+    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str("a configuration object")
+    }
+
+    fn visit_map<A: MapAccess<'de>>(self, mapping: A) -> Result<T, A::Error> {
+        T::deserialize(de::value::MapAccessDeserializer::new(mapping))
+    }
+}
+
+struct Object<T>(T);
+
+impl<'de, T: Deserialize<'de>> Deserialize<'de> for Object<T> {
+    fn deserialize<D: de::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        object(deserializer).map(Self)
+    }
+}
+
+pub(super) fn objects<'de, D: de::Deserializer<'de>, T: Deserialize<'de>>(
+    deserializer: D,
+) -> Result<Vec<T>, D::Error> {
+    Vec::<Object<T>>::deserialize(deserializer)
+        .map(|objects| objects.into_iter().map(|object| object.0).collect())
+}
 
 /// Bounded intermediate input, never exported or logged.
 pub(super) struct BoundedValue(pub Value);

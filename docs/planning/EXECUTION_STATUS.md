@@ -71,9 +71,12 @@ approved the five parser/path dependencies, strict three-format input profile,
 config-crate adoption. Local full/default and no-default tests, Clippy, all-target
 check, root dependency audit and LCOV passed. The [config review](P1_02_CONFIG_REVIEW.md)
 and [wire contract](../../api/schemas/README.md) distinguish import validation from
-live admission, policy compilation and dataset/secret/runtime gates. PR #5 initial head passed all seven CI jobs, but independent review found three
-strictness/path defects. Each was reproduced and fixed with regression tests;
-17 config tests and local checks pass. Corrected-head re-review and CI are pending.
+live admission, policy compilation and dataset/secret/runtime gates. PR #5 initial
+head passed all seven CI jobs, but independent review found three strictness/path
+defects. Each was reproduced and fixed with regression tests. Both published
+heads passed all seven CI jobs. Follow-up review exposed a related
+tagged-enum sequence path; map-only field adapters now reject it. All 18 config
+tests and local checks pass. Latest corrected-head re-review and CI are pending.
 No P1-03 implementation exists yet.
 
 ## Owner decisions and current progress
