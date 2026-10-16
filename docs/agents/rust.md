@@ -36,8 +36,9 @@ cargo test --workspace --no-default-features --locked
 cargo deny --locked check
 ```
 
-The limited Workspace CI job runs the format/check/Clippy/test commands on Windows
-and Linux with read-only permissions, no secrets, upload or privileged network setup.
-The cargo-deny result is local P0-02 evidence. This job does not complete
-P0-04's supply-chain/coverage/failure-injection gates. Debian 13 native networking,
-systemd, DNS/TLS and proxy behavior require the separate P0-03 lab.
+The Workspace CI job runs format/check/Clippy/tests on Windows and Linux with
+read-only permissions and no secrets or privileged network setup. P0-04 adds an
+Ubuntu cargo-deny/LLVM coverage job and a separate trusted OIDC upload job; exact
+versions, actual runs and deferred evidence are in the
+[CI review](../planning/P0_04_CI_REVIEW.md). Native Debian 13 fixture acceptance
+passed in P0-03; product networking and systemd acceptance remain at later gates.

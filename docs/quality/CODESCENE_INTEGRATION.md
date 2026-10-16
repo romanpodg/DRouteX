@@ -1,5 +1,12 @@
 # CodeScene integration
 
+Current P0-04 evidence (2026-10-16):
+[review 7980486](https://codescene.io/projects/86145/delta/results/7980486) on
+`e4f4143` failed score/complexity gates in the planning validator, auxiliary graph
+tool and two network fixtures. These are outside the owner's independent metric
+targets. No suppression, gate change or score-only rewrite was made. The overall
+check remains failed; see the [CI review](../planning/P0_04_CI_REVIEW.md).
+
 Status on 2026-10-15: portable native CLI **1.0.53**, build
 c46e3cba9e527cb84281355e7cd6d7d2ead627df, installed in .tools/codescene.
 Version/help/auth status were executed. CLI OAuth is not signed in; browser analysis

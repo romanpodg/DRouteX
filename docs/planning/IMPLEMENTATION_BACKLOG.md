@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01/P0-02/P0-03 complete; P0-04 CI in progress.**
+**P0-01/P0-02/P0-03 complete; P0-04 CI in review, real fork test deferred.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -61,7 +61,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P0-04: Activate evidence-based CI
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§16,22.
+Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§16,22.
 
 | Field | Deliverable / evidence |
 |---|---|

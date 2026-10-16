@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-16. Current boundary: **P0-04 authorized and in progress; P0-03 complete**.
+Date: 2026-10-16. Current boundary: **P0-04 in review; real fork test deferred; P0-03 complete**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Review: [PR #1](https://github.com/romanpodg/Routira/pull/1), open against main.
 The owner authorized publication to PR #1 and P0-04. No merging, force-pushing,
@@ -22,7 +22,7 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **3 completed (P0-01/P0-02/P0-03), 1 in_progress (P0-04), 84 planned**.
+Current backlog: **3 completed (P0-01/P0-02/P0-03), 1 in_review (P0-04), 84 planned**.
 Three of the 61 MVP tasks are complete; native fixture evidence closes P0-03.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
@@ -86,6 +86,17 @@ outbound. The donor tree/manifests declare no license; establish contribution
 permission/license and preserve attribution before copying its code or fixtures.
 Every actual port needs a focused diff review and tests against current contracts;
 donor tests do not establish native Debian or product acceptance.
+
+## P0-04 CI evidence
+
+The existing workflow now includes locked cargo-deny checks and separate Rust
+LCOV/OIDC upload, retaining the Windows/Linux workspace and planning matrix.
+The [CI review](P0_04_CI_REVIEW.md) records exact positive/negative runs, coverage
+and security boundaries. All three intentional lint/test/upload failures were
+observed on a disposable same-repository branch, then that ref was removed.
+The private fork policy requires approval with no secrets/variables or write
+tokens. The owner deferred a real fork PR test; P0-04 remains in_review.
+P0-05 remains planned and no merge is authorized.
 
 ## P0-03 continuation and actual lab evidence
 

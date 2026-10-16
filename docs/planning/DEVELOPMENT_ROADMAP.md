@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0-01/P0-02/P0-03 complete; WSL and native Debian 13 fixtures passed.**
+Status: **P0-01/P0-02/P0-03 complete; P0-04 CI in review, real fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
