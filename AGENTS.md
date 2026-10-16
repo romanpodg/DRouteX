@@ -21,7 +21,14 @@ or write tokens; the owner deferred a real fork PR test.
 on 2026-10-16 the owner accepted P0-04 with that test and unavailable Codecov
 comparison/web-report evidence explicitly deferred, not passed. PR #1 was reviewed,
 fixed and merged as c43c2be0d40248f81bb01be9964ba56925b368f5. The owner then
-authorized continuing the plan; P0-05 is the current task. The owner selected HTTP
+authorized continuing the plan. P0-05/PR #3 completed qualification and merged as
+a77ed5adce184ffe3214452af0b1e6d83db2cd92 after two independent Code Reviews and
+seven successful final-head/main CI jobs. P1-01 is the current task. The owner
+selected UUIDv4 public resource IDs and qualification of uuid 1.28.0; its official
+archive/license/checksum, Windows vector tests and cargo-deny passed. Production
+use is limited to the std parse/format profile for domain identities; generators,
+token verification, crypto/lifetime/size policy and actual network admission retain
+P1-07/P3-07/P4-01 gates. The owner selected HTTP
 CONNECT over TLS as the first protected outbound and approved isolated compatibility
 and transitive-license qualification of Tokio 1.53.3, Hickory-Proto 0.26.3,
 Rustls 0.23.46 and Tokio-Rustls 0.26.6 with AWS-LC. This is not production adoption

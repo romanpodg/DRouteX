@@ -76,6 +76,7 @@ IPv6/QUIC/application enforcement.
 | D20 | Accepted custom > service > filter > default ranks, explicit domain match modes and one active Profile per Endpoint; stacks/schedules deferred | P0-01/P2-01/P2-02 | CR-0002; golden/permutation/conflict tests |
 | D21 | Personal DoH/DoT token/hostname provisioning, TLS certificate lifecycle and optional IP restriction/learning bootstrap; possession is not hardware proof | P0-01/P3-07/P6-03 | CR-0002; redaction/rotation/revocation/roaming tests |
 | D22 | Bounded local catalog formats, source/license/hash evidence and isolated private DNS records; remote feeds/DDNS/router helper deferred | P0-05/P2-07/P3-04 | CR-0002; real import/update rollback and scope-isolation tests |
+| D23 | Owner selected UUIDv4 public resource IDs and qualification of uuid 1.28.0 on 2026-10-16. Domain newtypes use std parse/format only and expose no uuid dependency types. Public credential-record IDs and resolver secret material remain separate; domain association is not token verification or gateway authority. ID/token generators, wire/entropy/size/clock policy and secret lifecycle remain at their owning gates. | P1-01 / P1-07/P3-07/resource creation APIs | P1_01_DOMAIN_REVIEW.md; Windows probe/audit passed, implementation Linux CI/review pending |
 
 The owner explicitly accepted the P0-01 foundation and CR-0002, then authorized
 P0-02. Other technical details and later task execution retain their own gates.

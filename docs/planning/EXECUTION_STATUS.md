@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-16. Current stage: **P0-05 qualification complete; PR #3 final validation**.
+Date: 2026-10-16. Current stage: **P1-01 domain identity model in review**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -11,7 +11,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P0-05 is the current stage; technical choices retain their owning gates.
+P1-01 is the current stage; technical choices retain their owning gates.
 Force-pushing and branch-protection changes remain unauthorized.
 
 The repository is now public. With explicit owner approval the existing Codecov
@@ -39,7 +39,20 @@ CodeScene's only failed gate is a test-method size score outside the owner's
 independent metric scope; the check remains failed and its disposition is in
 [OPEN_DECISIONS](OPEN_DECISIONS.md#p0-05-review-dispositions). No production networking
 dependency, runtime, certificate provisioning or dataset was adopted. Final
-documentation evidence still receives current-head validation before PR merge.
+documentation evidence subsequently passed its independent review and all seven
+current-head jobs. PR #3 merged normally at
+`a77ed5adce184ffe3214452af0b1e6d83db2cd92`; all seven main jobs also passed.
+
+The owner then selected UUIDv4 public resource IDs and qualification of uuid 1.28.0.
+Its official archive/checksum/license, two Windows probe tests and cargo-deny passed.
+P1-01 uses only std parsing/formatting, with no generator, crypto, API or listener.
+The [domain review](P1_01_DOMAIN_REVIEW.md) records 17 distinct ID types, separate
+confidential material/public metadata, scoped DNS associations and independent
+gateway identity data. Seven integration and four compile-fail tests, fmt/check/
+Clippy/rustdoc and no-default checks passed locally. New executable domain code
+has 72/72 instrumented lines covered; full workspace is 77/80. This is local data,
+not service-side coverage or runtime authentication proof. Linux CI, actual Code
+Review and current-head external results remain pending.
 
 ## Owner decisions and current progress
 
@@ -57,12 +70,12 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **5 completed (P0-01 through P0-05), 83 planned**.
+Current backlog: **5 completed (P0-01 through P0-05), 1 in review, 82 planned**.
 Five of the 61 MVP tasks are complete; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
-not passed by a workspace bootstrap. P0-05 is the only additional started task.
+not passed by a workspace bootstrap. P1-01 is the only open implementation task.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,

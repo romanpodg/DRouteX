@@ -7,9 +7,9 @@ The user's bounded execution goal and repository publication/PR-monitoring steps
 recorded in [EXECUTION_STATUS](EXECUTION_STATUS.md). The owner accepted P0-04 on
 2026-10-16 and permits PR #1 merge after Code Review/current-head checks with no
 unresolved serious defects. PR #1 subsequently merged after those checks. The owner
-authorized continuing the plan; P0-05 dependency qualification is complete and its PR
-is undergoing final validation. Production adoption and further technical choices
-retain their owning gates.
+authorized continuing the plan; P0-05 completed and PR #3 merged after reviews and
+all seven head/main CI jobs. P1-01 is in review with owner-selected UUIDv4 and
+qualified uuid 1.28.0. Further technical choices retain their owning gates.
 Primary source: [base specification](../../Routira_Project_Specification_EN.md), all 27 sections,
 with [accepted scope amendment ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 Base EN/RU specifications remain unchanged. A minimal common/config/policy workspace
