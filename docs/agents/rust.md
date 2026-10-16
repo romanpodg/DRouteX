@@ -21,8 +21,12 @@ Cargo.lock is tracked. Internal path dependencies have exact workspace versions;
 there are no registry/git dependencies, build scripts or executable packages.
 All packages have publish=false. The owner selected Apache-2.0 for original Routira
 code during P0-02. LICENSE contains the official text; package metadata inherits it.
-deny.toml currently allows only that approved license. P0-05 must review external
-dependency licenses before expanding the list; P0-04 owns the full CI policy.
+P0-05 owner approval expanded deny.toml for third-party dependencies to Apache-2.0,
+MIT, ISC, BSD-3-Clause and Unicode-3.0, preserving their texts/notices. Original
+Routira code remains Apache-2.0. The standalone tests/dependencies package qualifies
+the proposed network stack; it is not a production workspace dependency. Exact
+versions, audit decisions and test limits are in
+[DEPENDENCIES](../operations/DEPENDENCIES.md). P0-04 owns the full CI policy.
 
 On Windows, dot-source `. ./tools/activate.ps1` before Cargo commands. Run:
 

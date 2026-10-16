@@ -132,3 +132,17 @@ passed 41 observations and all four cleanup modes with unchanged host networking
 This is WSL evidence for the fix, not a new native Debian 13 run or product proof.
 Final fix review and current-head CI/merge results are recorded in PR #1; local
 review logs and raw lab artifacts remain untracked.
+
+## Verified merge and subsequent public Codecov activation
+
+The independent fix review found no further confirmed defect. All six final-head
+Actions jobs passed and PR #1 merged normally at
+`c43c2be0d40248f81bb01be9964ba56925b368f5`; all six main jobs passed too.
+On owner-authorized continuation, the public repository was found still deactivated
+in Codecov. Explicitly approved activation preserved OIDC, tokens, access and plan.
+Attempt 2 of [run 38865306388](https://github.com/romanpodg/Routira/actions/runs/38865306388)
+successfully uploaded both reports; the exact merge commit's
+[service report](https://app.codecov.io/github/romanpodg/routira/commit/c43c2be0d40248f81bb01be9964ba56925b368f5)
+is complete. Rust config remains 5/8 instrumented lines (62.50%); the combined
+437/443 includes auxiliary scripts. A meaningful new-code PR comparison and the
+owner-deferred actual fork run remain unverified. P0-05 is now authorized/in progress.

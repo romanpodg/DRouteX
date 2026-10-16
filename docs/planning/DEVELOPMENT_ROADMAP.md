@@ -1,12 +1,15 @@
 # Development roadmap
 
-Status: **P0-01/P0-02/P0-03/P0-04 accepted; P0-04 fork/report evidence deferred.**
+Status: **P0-01 through P0-05 complete; actual fork and meaningful product patch evidence deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
 recorded in [EXECUTION_STATUS](EXECUTION_STATUS.md). The owner accepted P0-04 on
 2026-10-16 and permits PR #1 merge after Code Review/current-head checks with no
-unresolved serious defects. P0-05 remains unauthorized.
+unresolved serious defects. PR #1 subsequently merged after those checks. The owner
+authorized continuing the plan; P0-05 dependency qualification is complete and its PR
+is undergoing final validation. Production adoption and further technical choices
+retain their owning gates.
 Primary source: [base specification](../../Routira_Project_Specification_EN.md), all 27 sections,
 with [accepted scope amendment ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 Base EN/RU specifications remain unchanged. A minimal common/config/policy workspace
@@ -110,7 +113,10 @@ WSL lab approval. The owner approved the separate Debian VPS lab on 2026-10-16;
 native fixture and cleanup evidence passed and closes P0-03. Both environments are
 recorded in P0_03_NETWORK_HARNESS.md. The owner subsequently accepted P0-04 with
 explicitly deferred fork/report evidence; see [CI review](P0_04_CI_REVIEW.md).
-PR #1 still needs Code Review/current-head checks before merge. Do not start P0-05.
+PR #1 passed Code Review after its fixture fix and merged. The owner then authorized
+continuation; P0-05 qualified the selected HTTP CONNECT over TLS dependency stack,
+including actual Windows/Linux tests, supply-chain checks and independent Code Review.
+Other technical choices retain their gates.
 Detailed implementation decisions and runtime proof remain at their owning gates.
 
 The owner selected selective reuse from PR #2 on 2026-10-15 (option A).

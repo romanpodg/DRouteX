@@ -1,0 +1,24 @@
+[package]
+name = "routira-dependency-qualification"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.99"
+license = "Apache-2.0"
+publish = false
+
+[workspace]
+resolver = "3"
+
+[dependencies]
+tokio = { version = "=1.53.3", features = ["rt-multi-thread", "macros", "net", "io-util", "time"] }
+hickory-proto = "=0.26.3"
+rustls = "=0.23.46"
+tokio-rustls = "=0.26.6"
+
+[[test]]
+name = "qualification"
+path = "qualification.rs"
+
+[lints.rust]
+unsafe_code = "forbid"
+warnings = "deny"

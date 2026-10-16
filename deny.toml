@@ -1,4 +1,4 @@
-# The owner selected Apache-2.0 for Routira on 2026-10-15.
-# Review external dependency licenses in P0-05 before expanding this list.
+# Original Routira code: Apache-2.0. Owner-approved dependency licenses, 2026-10-16.
+# Preserve third-party license texts/notices; other licenses need an owner decision.
 [licenses]
-allow = ["Apache-2.0"]
+allow = ["Apache-2.0", "MIT", "ISC", "BSD-3-Clause", "Unicode-3.0"]

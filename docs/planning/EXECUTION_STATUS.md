@@ -1,14 +1,45 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-16. Current boundary: **P0-04 accepted with deferred evidence; stop before P0-05**.
+Date: 2026-10-16. Current stage: **P0-05 qualification complete; PR #3 final validation**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
-Review: [PR #1](https://github.com/romanpodg/Routira/pull/1), against main; read its live
-review/merge state on GitHub. The following is the owner-acceptance handoff.
+Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
+2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
+review found a fixture stdout buffering defect; the fix and its regression test
+passed a follow-up review. All six final-head and main Actions jobs passed.
 The owner accepted P0-04 and authorized merging PR #1 after actual Codex Code
 Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
-Force-pushing, branch-protection changes and P0-05/later work remain unauthorized.
+The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
+P0-05 is the current stage; technical choices retain their owning gates.
+Force-pushing and branch-protection changes remain unauthorized.
+
+The repository is now public. With explicit owner approval the existing Codecov
+project was activated without changing OIDC, tokens, access or plan. Re-upload
+attempt 2 of [run 38865306388](https://github.com/romanpodg/Routira/actions/runs/38865306388)
+passed; Codecov processed both backend/planning reports for the exact merge commit.
+The [service report](https://app.codecov.io/github/romanpodg/routira/commit/c43c2be0d40248f81bb01be9964ba56925b368f5)
+shows Rust config coverage of 5/8 lines (62.50%); aggregate 437/443 includes auxiliary
+Python tooling and is not application coverage. A meaningful new-code PR comparison
+and the actual fork test remain unverified.
+
+For P0-05 the owner selected **HTTP CONNECT over TLS** and approved isolated
+compatibility/transitive-license qualification of Tokio 1.53.3, Hickory-Proto
+0.26.3, Rustls 0.23.46 and Tokio-Rustls 0.26.6 using AWS-LC. Production workspace
+adoption is not implied. The owner separately approved the dependency license
+allowlist recorded in D14. See the
+[dependency review](../operations/DEPENDENCIES.md).
+
+[PR #3](https://github.com/romanpodg/Routira/pull/3) qualifies that inventory.
+On head `1ed74f933fdbfc5cf3265a4a4c82648fd1278234`, all seven Actions jobs passed,
+including Linux DNS/TLS tests and both locked dependency checks. Independent Codex
+Code Review completed without a confirmed defect after an earlier quota-interrupted
+attempt. Windows tests/Clippy and the fresh 41-observation WSL lab also passed.
+CodeScene's only failed gate is a test-method size score outside the owner's
+independent metric scope; the check remains failed and its disposition is in
+[OPEN_DECISIONS](OPEN_DECISIONS.md#p0-05-review-dispositions). No production networking
+dependency, runtime, certificate provisioning or dataset was adopted. Final
+documentation evidence still receives current-head validation before PR merge.
 
 ## Owner decisions and current progress
 
@@ -26,12 +57,12 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **4 completed (P0-01/P0-02/P0-03/P0-04), 84 planned**.
-Four of the 61 MVP tasks are accepted; P0-04 closes by explicit owner acceptance
+Current backlog: **5 completed (P0-01 through P0-05), 83 planned**.
+Five of the 61 MVP tasks are complete; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
-not passed by a workspace bootstrap. No task beyond P0-04 is started.
+not passed by a workspace bootstrap. P0-05 is the only additional started task.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,
@@ -46,7 +77,7 @@ when their existing roadmap tasks are authorized and prerequisites are complete.
 This accepts a reuse strategy, not the old Veyra specification, task completion,
 dependency selection, whole-branch merge or blanket cherry-pick. No donor code has
 been imported. P0-03 was in_review when this strategy was selected and is now
-complete after the native run below; P0-04 is now accepted, P0-05 remains planned.
+complete after the native run below; P0-04 is accepted and P0-05 qualification is complete.
 
 Reviewed references: PR #1 at
 `5628f2ae3306bf86b22283b19003008fd3246bd7`; [PR #2](https://github.com/romanpodg/Routira/pull/2)
@@ -103,8 +134,8 @@ The private fork policy requires approval with no secrets/variables or write
 tokens. On 2026-10-16 the owner accepted P0-04 after reviewing the disclosed
 limitations. The real fork PR test and Codecov comparison/web-report evidence
 remain deferred in [OPEN_DECISIONS](OPEN_DECISIONS.md#deferred-p0-04-evidence).
-PR #1 still needs actual Code Review and current-head checks before authorized
-merge. P0-05 remains planned.
+PR #1 subsequently passed actual Code Review after the fixture fix and merged;
+the service-report gap is now partly closed by the processed main report above.
 
 ## P0-03 continuation and actual lab evidence
 
@@ -206,14 +237,16 @@ results. The owner subsequently authorized P0-03 and the WSL lab variant. P0-03
 is now complete after the owner-approved native Debian 13 run. On 2026-10-16 the
 owner authorized publishing those results and proceeding through P0-04 only.
 See [P0-04 review](P0_04_CI_REVIEW.md) for scope and actual check evidence.
-Stop before P0-05 or new infrastructure without the owner decision.
+The owner subsequently authorized continuation; P0-05 qualification is now complete.
+New infrastructure still requires its own owner decision.
 The owner now permits autonomous merge under the PR policy in [AGENTS.md](../../AGENTS.md).
-Actual Code Review and current-head validation remain pending at this acceptance
-snapshot until recorded in PR #1 and the local automation state;
-accepting P0-04 alone does not close the PR. Production deployment and unrelated
+Actual Code Review and current-head validation subsequently passed after the
+fixture buffering fix, and PR #1 merged. Production deployment and unrelated
 reviewer messages remain unauthorized.
 
 The owner authorized the existing monitor-routira-foundation-pr heartbeat to run
 the bounded P0-04 review/fix/merge loop in the automation chat every 15 minutes,
-with routine successful-run alerts disabled. Pause it after PR #1 is merged or
-when further progress requires an owner decision. Do not start P0-05.
+with routine successful-run alerts disabled. It was paused after PR #1 merged.
+Reuse that heartbeat for authorized roadmap continuation; preserve its cadence and
+notification policy. It must not repeat the completed PR #1 loop or send routine
+unchanged-state updates. Await owner answers for consequential unresolved choices.

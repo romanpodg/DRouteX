@@ -67,12 +67,12 @@ IPv6/QUIC/application enforcement.
 | D11 | Snapshot canonical format/auth/epoch and rotation policy | P1-05 | Security owner; replay/crash tests |
 | D12 | TUN-to-Xray bridge and privileged routing design deferred | Post-MVP P5/P9 | Real-engine spike before claiming support |
 | D13 | WG/AWG/Xray kernel/client/engine versions and distribution inventory deferred | Post-MVP P5-01 | Version-specific lab evidence |
-| D14 | Owner selected Apache-2.0 for original Routira code on 2026-10-15; external dependency/distribution notices still require inventory; engine redistribution later | P11-05 / later engine release | Owner review |
+| D14 | Owner selected Apache-2.0 for original Routira code; on 2026-10-16 approved Apache-2.0/MIT/ISC/BSD-3-Clause/Unicode-3.0 for dependencies with preserved texts/notices. P0-05 pins the qualification inventory; actual shipped-target notices must be verified at release; engine redistribution later | P0-05/P11-05 / later engine release | Owner decisions; DEPENDENCIES.md and lockfile |
 | D15 | Separate master key/recovery, access-secret lifecycle and retention | P1-07 | Security/operator owner |
 | D16 | CodeScene baseline/daily analysis/PR delivery verified; review 7980486 on e4f4143 fails auxiliary planning/graph/fixture score gates; no score-only cleanup, suppression or gate change; product baseline later, MCP optional | P0-04 review; auxiliary tools are outside the owner's independent metric scope | User/maintainer; see P0_04_CI_REVIEW.md for current evidence |
 | D17 | Separate planning/backend reports configured; owner accepted P0-04 with real fork PR test and Codecov comparison/web-report evidence deferred; frontend has no package yet | Revisit conditions below; frontend coverage at its owning gate | User/maintainer; see P0_04_CI_REVIEW.md |
 | D18 | Measured DNS/TCP/proxy resource budgets; engine budgets later | P10-04 | Operator |
-| D19 | Select one first protected SOCKS5 or HTTP CONNECT outbound; no managed engine dependency; public explicit inbound is a separate decision | P0-05/P4-05 | Actual proxy/egress and credential transport test |
+| D19 | Owner selected HTTP CONNECT over TLS on 2026-10-16; verify proxy certificate/hostname, protect credentials, send checked numeric destination; no managed engine dependency; public explicit inbound remains a separate decision | P0-05/P4-05 | Isolated dependency qualification approved; actual runtime proxy/egress proof stays P4-05/P4-08 |
 | D20 | Accepted custom > service > filter > default ranks, explicit domain match modes and one active Profile per Endpoint; stacks/schedules deferred | P0-01/P2-01/P2-02 | CR-0002; golden/permutation/conflict tests |
 | D21 | Personal DoH/DoT token/hostname provisioning, TLS certificate lifecycle and optional IP restriction/learning bootstrap; possession is not hardware proof | P0-01/P3-07/P6-03 | CR-0002; redaction/rotation/revocation/roaming tests |
 | D22 | Bounded local catalog formats, source/license/hash evidence and isolated private DNS records; remote feeds/DDNS/router helper deferred | P0-05/P2-07/P3-04 | CR-0002; real import/update rollback and scope-isolation tests |
@@ -91,7 +91,15 @@ Serious defects cannot be deferred to permit merge; uncertain cases require the 
 | Item | Impact and reason for deferral | Revisit / owner |
 |---|---|---|
 | P0-04-FORK | Actual private-fork checks are unverified. Same-repository positive/negative runs and local permission checks exist; the owner explicitly declined the temporary fork and accepted P0-04 with this evidence pending. This does not permit privileged/untrusted fork execution. | Owner approval of a real private-fork test environment; required before claiming fork PR support has been exercised |
-| P0-04-CODECOV | Uploads and local Rust LCOV exist, but no main comparison baseline/web report is verified; the reported page returned 404. Owner accepted the limitation; successful check badges do not establish comparison coverage. | Recheck after PR #1 merges and main CI runs; maintainer must verify an actual service report before claiming service/patch coverage |
+| P0-04-CODECOV | Partly resolved on 2026-10-16: the public repository was still deactivated in Codecov; owner approved activation preserving OIDC/access/plan. Both reports for main c43c2be are now processed and the web report was verified. Rust config is 5/8 lines; combined tooling coverage is not application coverage. A meaningful new-code PR comparison is still unverified. | Verify service-side comparison on the next PR with covered application changes; do not infer patch coverage from the foundation merge's empty covered diff |
+
+## P0-05 review dispositions
+
+| Item | Finding, impact and rationale | Owning task / revisit trigger |
+|---|---|---|
+| P0-05-CS | CodeScene 7981306 flags Large Method in the bounded CONNECT qualification test, score 9.60; its other two gates passed. No concrete functional defect was identified by the independent review. Tests are outside the owner's independent metric scope; keep the readable end-to-end assertion together rather than refactor solely for a score. The repository-wide check is failed, not suppressed or reported as passed. | Revisit if a concrete test-maintenance or functional defect justifies a change; no independent metric cleanup task |
+| P0-05-NOTICES | Four unused-target packages have SPDX metadata but no top-level license text in their package archive: jni, jni-macros, jni-sys-macros and r-efi. They are not built for the tested Windows/Linux targets, so this does not block the current qualification. Metadata/policy approval alone does not establish redistribution notices. | P11-05 or before adding the affected targets/features: obtain exact upstream texts/attribution, preserve them and verify the actual shipped target inventory |
+| P0-05-SYN | All-target lockfile contains syn 2.0.119 for Android JNI macros and 3.0.9 for current macros; no competing syn versions appear in the tested Windows/Linux target trees. Retain required versions rather than force an incompatible dependency change. | Recheck at production adoption, target/feature changes or the next dependency update; no suppression |
 
 ## Risk register
 

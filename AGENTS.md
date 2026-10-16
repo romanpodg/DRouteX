@@ -17,17 +17,27 @@ and four cleanup modes passed there with unchanged host networking. This proves
 fixture readiness, not Routira runtime or systemd acceptance.
 On 2026-10-16 the owner authorized publishing P0-03 to PR #1 and proceeding through
 P0-04 CI only. Private fork workflows require owner approval and receive no secrets
-or write tokens; the owner deferred a real fork PR test. Stop before P0-05;
+or write tokens; the owner deferred a real fork PR test.
 on 2026-10-16 the owner accepted P0-04 with that test and unavailable Codecov
-comparison/web-report evidence explicitly deferred, not passed. Later tasks retain
-their gates. No production-root or
+comparison/web-report evidence explicitly deferred, not passed. PR #1 was reviewed,
+fixed and merged as c43c2be0d40248f81bb01be9964ba56925b368f5. The owner then
+authorized continuing the plan; P0-05 is the current task. The owner selected HTTP
+CONNECT over TLS as the first protected outbound and approved isolated compatibility
+and transitive-license qualification of Tokio 1.53.3, Hickory-Proto 0.26.3,
+Rustls 0.23.46 and Tokio-Rustls 0.26.6 with AWS-LC. This is not production adoption
+or approval of new license exceptions. The owner separately approved Apache-2.0,
+MIT, ISC, BSD-3-Clause and Unicode-3.0 for third-party dependencies, preserving
+their license texts/notices; original Routira code remains Apache-2.0.
+The repository is public. The existing
+Codecov repository was activated with owner approval, preserving OIDC and access;
+the exact main commit now has processed backend/planning reports. Later technical
+choices retain their gates. No production-root or
 untrusted privileged PR runner is authorized.
 The user authorized initial GitHub commits/pushes, PR creation and activity monitoring
-on 2026-10-15. Repository: romanpodg/Routira; current review PR #1 and execution
+on 2026-10-15. Repository: romanpodg/Routira; current task and execution
 boundary are recorded in `docs/planning/EXECUTION_STATUS.md`. On 2026-10-16 the
 owner also authorized autonomous merging after Code Review and checks under the
-PR policy below. Force-pushing, changing branch protections and P0-05/later work
-remain unauthorized.
+PR policy below. Force-pushing and changing branch protections remain unauthorized.
 The owner selected option A for PR #2 on 2026-10-15: keep PR #1 as the foundation,
 reuse only reviewed components/test scenarios at their owning roadmap gates, and
 preserve CR-0002. See EXECUTION_STATUS.md for donor provenance and exclusions.
