@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-17. Current stage: **P1-02 / PR #5 under review; initial findings fixed; re-review and current-head CI pending**.
+Date: 2026-10-17. Current stage: **P1-02 validated; PR #5 final evidence/head checks and merge pending**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -76,7 +76,12 @@ head passed all seven CI jobs, but independent review found three strictness/pat
 defects. Each was reproduced and fixed with regression tests. Both published
 heads passed all seven CI jobs. Follow-up review exposed a related
 tagged-enum sequence path; map-only field adapters now reject it. All 18 config
-tests and local checks pass. Latest corrected-head re-review and CI are pending.
+tests and local checks pass. Head `a708e34b27a82fe5b4682b1761b34569144c94c7`
+passed independent read-only re-review without confirmed defects and all seven
+jobs of run 38956580440. Codecov backend is 837/894, new Rust 761/815, backend patch
+check successful at 93.37%. CodeScene 7991872 remains failed on the recorded
+maintenance signals; no suppression or score-only rewrite. Final evidence head
+requires its own review/checks before ordinary merge.
 No P1-03 implementation exists yet.
 
 ## Owner decisions and current progress
@@ -95,8 +100,8 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **6 completed (P0-01 through P0-05 and P1-01), 1 in progress (P1-02), 81 planned**.
-Six of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
+Current backlog: **7 validated/completed (P0-01 through P0-05 and P1-01/P1-02), 81 planned**.
+Seven of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are

@@ -27,7 +27,8 @@ seven successful final-head/main CI jobs. P1-01/PR #4 merged at
 cd2a9c011e4950d80458cfaa72baddd1ac4243c2 after independent implementation/final-evidence
 Code Reviews, all seven final-head/main CI jobs, CodeScene and an actual Codecov
 backend patch comparison (71/71 new Rust lines). P1-02 is the current task; its
-configuration implementation still requires independent review and Linux CI. The owner
+configuration implementation passed independent re-review and all seven Linux/Windows
+CI jobs on a708e34; final evidence/checks and normal PR #5 merge remain gated. The owner
 approved the strict JSON/YAML/TOML profile and qualified Serde 1.0.229, serde_json
 1.0.154, toml 1.1.8+spec-1.1.0, serde-saphyr 2.0.0 and serde_path_to_error 0.1.20
 for the config boundary. See D24/D25 and the P1-02 review for exact limits/evidence. The owner

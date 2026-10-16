@@ -221,7 +221,7 @@
       "security": "Bound parser complexity; no secret echo in errors",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_progress",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2705,6 +2705,6 @@
       "serde-saphyr": "2.0.0",
       "serde_path_to_error": "0.1.20"
     },
-    "qualification": "Isolated 38-artifact audit/eight Windows probes passed before adoption; production 51-artifact inventory/audit passed. PR #5 initial and first-fixed heads passed seven CI jobs. Independent review defects, including tagged enum sequences, reproduced/fixed; 18 config tests/local checks pass; latest-head re-review/CI pending."
+    "qualification": "Isolated 38-artifact audit/eight Windows probes passed before adoption; production 51-artifact inventory/audit and 18 config tests passed. PR #5 a708e34 passed independent read-only re-review after four fixes, all seven CI jobs and exact-base/head Codecov backend patch (761/815). CodeScene failed maintenance gate remains recorded; final evidence/head review/checks and ordinary merge still apply."
   }
 }

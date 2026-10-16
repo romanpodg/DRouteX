@@ -1,6 +1,6 @@
 # P1-02 configuration boundary review
 
-Date: 2026-10-17. Status: **PR #5 under review; initial findings fixed, re-review/CI pending**.
+Date: 2026-10-17. Status: **validated; PR #5 final-head review/checks and merge gates apply**.
 Authority: accepted [CR-0002](../architecture/DNS_PRODUCT_MODEL.md),
 [P0-01 contracts](P0_01_FOUNDATION_REVIEW.md), owner answers recorded in D24/D25
 of [OPEN_DECISIONS](OPEN_DECISIONS.md). PR #4 merged first at
@@ -101,7 +101,23 @@ now guard every tagged action/transport/record field, each DNS access item and t
 nested rule action payload. The fourth regression failed before this correction;
 all 18 configuration tests and full local checks pass afterward. Follow-up review
 log: `.setup/p1-02/codex-review-fixes.log` (exit 0 with a finding).
-This latest corrected head still requires independent re-review and fresh CI.
+Implementation head `a708e34b27a82fe5b4682b1761b34569144c94c7` subsequently passed
+full independent built-in Code Review against the same verified base with no
+confirmed defect. Log: `.setup/p1-02/codex-review-tagged.log`, exit 0. The reviewer
+ran fmt/diff checks and 27 tests from existing binaries; read-only build-lock
+restrictions prevented fresh Cargo compilation/Clippy in that review. Separate
+local checks and all seven jobs of
+[run 38956580440](https://github.com/romanpodg/Routira/actions/runs/38956580440)
+passed, including default/no-default Linux/Windows and fresh dependency auditing.
+No review finding remains unresolved or is deferred.
+
+Codecov processed backend/planning reports for that exact head and comparison
+with base `cd2a9c011e4950d80458cfaa72baddd1ac4243c2`: backend 837/894 (93.62%),
+new Rust 761/815, successful backend patch check (93.37% displayed) and successful
+100% planning patch check. Aggregate patch 766/820 includes five auxiliary Python
+lines; aggregate total 1271/1331 likewise is not application coverage.
+The [PR report](https://app.codecov.io/gh/romanpodg/Routira/pull/5) is real service
+evidence, distinct from local LCOV. The actual fork test remains owner-deferred.
 
 [CodeScene 7991651](https://codescene.io/projects/86145/delta/results/7991651)
 failed its new-code gate and passed two other gates. Complex collision predicates
@@ -111,6 +127,13 @@ functional defect follows from these scores; no suppression or score-only rewrit
 was made. The separate findings above were fixed. Maintenance dispositions are in
 the existing register. Final merge evidence remains required. No native socket/runtime, systemd,
 credential-verification or product interoperability success is claimed.
+
+[CodeScene 7991872](https://codescene.io/projects/86145/delta/results/7991872)
+on `a708e34` repeated the same failed new-code gate and two passed gates, without
+new functional findings. The check remains failed, not waived by an invented pass.
+The independent functional review and explicit maintenance dispositions support
+retaining these conditions/parameters. Normal merge still requires the final
+documentation head's applicable checks and review; no protection is bypassed.
 
 The diagnostic precision disposition is recorded in
 [OPEN_DECISIONS](OPEN_DECISIONS.md#p1-02-review-dispositions). P1-03 has not started;
