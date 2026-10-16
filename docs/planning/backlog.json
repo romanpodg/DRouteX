@@ -165,7 +165,7 @@
       "security": "Checksums/signatures and controlled update source",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_review",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2597,9 +2597,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-16",
-    "source": "Direct owner approval to publish P0-03 to PR #1 and proceed through P0-04 in this chat",
-    "scope": "P0-04 CI only; real fork PR test deferred by owner; no P0-05, merge, force-push, branch-protection change or privileged PR runner",
-    "through_task": "P0-04"
+    "source": "Owner instructed continuation after P0-04 acceptance and PR #1 merge; selected HTTPS CONNECT and approved isolated qualification of the proposed dependency set in this chat",
+    "scope": "Continue the accepted DNS/proxy MVP roadmap; current stage P0-05 dependency qualification. Technical decisions retain their owning gates. Autonomous reviewed merge policy applies. No force-push, branch-protection change or privileged PR runner.",
+    "through_task": "P0-05"
   },
   "design_proposals": [
     {
@@ -2613,9 +2613,11 @@
   "repository": {
     "url": "https://github.com/romanpodg/Routira",
     "default_branch": "main",
-    "review_branch": "docs/review-dns-proxy-foundation",
-    "visibility": "private",
-    "review_pr": "https://github.com/romanpodg/Routira/pull/1"
+    "review_branch": "foundation/review-dns-proxy-dependencies",
+    "visibility": "public",
+    "review_pr": null,
+    "previous_pr": "https://github.com/romanpodg/Routira/pull/1",
+    "previous_merge": "c43c2be0d40248f81bb01be9964ba56925b368f5"
   },
   "foundation_review": {
     "status": "accepted",
@@ -2654,5 +2656,19 @@
       "report_sha256": "79166809c50bf6adc4b2f4f70b2e67ed247e34cbd10e38bbc0e8146bfd146fa9",
       "capture_sha256": "cd1ada9a8cb692572efd6dbb1cfb70bc7b8a32c9e0c735130f3d7cf572d85696"
     }
+  },
+  "dependency_qualification": {
+    "date": "2026-10-16",
+    "status": "in_review",
+    "source": "Direct owner approval for isolated compatibility and transitive-license checks, not production dependency adoption",
+    "transport": "HTTP CONNECT over TLS",
+    "candidates": {
+      "tokio": "1.53.3",
+      "hickory-proto": "0.26.3",
+      "rustls": "0.23.46",
+      "tokio-rustls": "0.26.6"
+    },
+    "crypto_provider": "AWS-LC",
+    "license_policy": "Owner approved Apache-2.0, MIT, ISC, BSD-3-Clause and Unicode-3.0 for third-party dependencies; preserve texts/notices; all other licenses require a decision"
   }
 }

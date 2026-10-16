@@ -76,7 +76,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P0-05: Inventory DNS/proxy dependencies and licensing
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§7,19,25.
+Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§7,19,25.
 
 | Field | Deliverable / evidence |
 |---|---|

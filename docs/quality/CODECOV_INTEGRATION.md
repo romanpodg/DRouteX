@@ -119,3 +119,16 @@ upload must be recorded separately before claiming this integration works.
 The local run generated LCOV successfully with 97% combined line/branch coverage
 for the scoped planning tools (coverage.py rounded display); this is not a Codecov
 result or application coverage.
+
+## Verified public-repository activation, 2026-10-16
+
+The owner made the repository public; Codecov still reported `activated: false`.
+With explicit owner approval the existing project was activated, preserving the
+OIDC workflow, credentials, access and plan. Upload attempt 2 of
+[Actions run 38865306388](https://github.com/romanpodg/Routira/actions/runs/38865306388)
+passed. The [actual main report](https://app.codecov.io/github/romanpodg/routira/commit/c43c2be0d40248f81bb01be9964ba56925b368f5)
+is complete with two uploads labeled backend and planning. The exact merge commit
+has 5/8 covered Rust config lines (62.50%). The combined 437/443 figure includes
+auxiliary Python tooling and must not be presented as application coverage.
+The merge shows no covered-file diff; useful new-code PR comparison remains to be
+verified at the next relevant change. The owner-deferred real fork test is unchanged.
