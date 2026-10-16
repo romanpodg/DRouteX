@@ -149,3 +149,13 @@ and [UUID inventory](UUID_INVENTORY.csv) record that std parse/format-only adopt
 The 107-artifact inventory above remains the P0-05 network qualification snapshot;
 it is not the production UUID target tree or a release notice bundle. The network
 candidate stack remains outside production crates.
+
+## Subsequent P1-02 configuration dependencies
+
+The owner separately approved parser/path qualification and the strict input
+profile. The [configuration review](../planning/P1_02_CONFIG_REVIEW.md) records
+compatibility, feature limits and adoption in routira-config only. The
+[config inventory](CONFIG_INVENTORY.csv) covers all 51 current production-lock
+registry archives and notice hashes; it supersedes neither historical snapshot
+nor the release requirement to include complete target-specific notices. Raw
+parser errors are never exported; all three tested parsers can echo input values.

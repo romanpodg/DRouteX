@@ -221,7 +221,7 @@
       "security": "Bound parser complexity; no secret echo in errors",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2597,9 +2597,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-16",
-    "source": "Owner authorized continued DNS/proxy MVP work after PR #3 merge and selected UUIDv4 plus qualification of uuid 1.28.0 in this chat",
-    "scope": "Current stage P1-01 domain identities/states. Technical decisions retain owning gates; finish reviewed current PR before the next. No deployment, force-push, branch-protection change or privileged PR runner.",
-    "through_task": "P1-01"
+    "source": "Owner authorized continued MVP work after PR #4 merge and approved parser qualification, strict input limits/profile, and conditional path-adapter adoption in this chat",
+    "scope": "Current P1-02 external configuration boundary. Preserve technical decision gates and finish reviewed current PR before the next; no deployment, protection bypass or privileged runner.",
+    "through_task": "P1-02"
   },
   "design_proposals": [
     {
@@ -2613,11 +2613,11 @@
   "repository": {
     "url": "https://github.com/romanpodg/Routira",
     "default_branch": "main",
-    "review_branch": "domain/stable-resource-identities",
+    "review_branch": "config/validate-external-boundaries",
     "visibility": "public",
-    "review_pr": "https://github.com/romanpodg/Routira/pull/4",
-    "previous_pr": "https://github.com/romanpodg/Routira/pull/3",
-    "previous_merge": "a77ed5adce184ffe3214452af0b1e6d83db2cd92"
+    "review_pr": null,
+    "previous_pr": "https://github.com/romanpodg/Routira/pull/4",
+    "previous_merge": "cd2a9c011e4950d80458cfaa72baddd1ac4243c2"
   },
   "foundation_review": {
     "status": "accepted",
@@ -2678,8 +2678,33 @@
     "public_ids": "UUIDv4",
     "uuid_candidate": "1.28.0",
     "profile": "std parse/format; no random ID/token generator",
-    "qualification": "Official SHA256/notices verified; Windows probes/audit and implementation Windows/Linux CI, independent Code Review, CodeScene and Codecov patch passed; PR merge still gated on final current head",
+    "qualification": "PR #4 merged at cd2a9c011e4950d80458cfaa72baddd1ac4243c2 after independent implementation/final-evidence reviews, seven successful final-head/main jobs, CodeScene and exact-base/head Codecov backend patch",
     "actual_capability_verification": "P3-07; domain metadata is not authentication",
     "secret_lifecycle": "P1-07; no format/entropy/clock/erasure/at-rest decision made"
+  },
+  "configuration_input_decision": {
+    "date": "2026-10-16",
+    "source": "Direct owner answers in this chat",
+    "max_input_bytes": 1048576,
+    "max_depth": 32,
+    "max_resource_and_rule_entries": 10000,
+    "formats": [
+      "JSON",
+      "YAML",
+      "TOML"
+    ],
+    "unknown_fields": "reject",
+    "duplicate_keys": "reject",
+    "yaml": "strict booleans; no aliases, anchors, merge keys, include or substitution",
+    "errors": "stable code, known field path, numeric position; no raw diagnostic/value/source chain",
+    "large_datasets": "separate bounded versioned import at P2-07",
+    "candidates": {
+      "serde": "1.0.229",
+      "serde_json": "1.0.154",
+      "toml": "1.1.8+spec-1.1.0",
+      "serde-saphyr": "2.0.0",
+      "serde_path_to_error": "0.1.20"
+    },
+    "qualification": "Isolated 38-artifact audit and eight Windows probes/Clippy passed before config adoption; production 51-artifact archive/notice checks, cargo-deny and 14 Windows config tests passed; Linux and independent review pending"
   }
 }

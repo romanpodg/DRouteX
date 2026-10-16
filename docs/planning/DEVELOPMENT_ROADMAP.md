@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0-01 through P0-05 complete; P1-01 validated for PR merge; actual fork test deferred.**
+Status: **P0-01 through P0-05 and P1-01 complete; P1-02 in progress; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -10,7 +10,10 @@ unresolved serious defects. PR #1 subsequently merged after those checks. The ow
 authorized continuing the plan; P0-05 completed and PR #3 merged after reviews and
 all seven head/main CI jobs. P1-01 has owner-selected UUIDv4 and qualified uuid
 1.28.0; implementation review, all seven CI jobs, CodeScene and meaningful Codecov
-patch comparison passed. PR #4 must merge before the next implementation PR.
+patch comparison passed. PR #4 merged at `cd2a9c011e4950d80458cfaa72baddd1ac4243c2`
+after final evidence review and all seven final-head/main jobs. P1-02 now implements
+the owner-approved bounded JSON/YAML/TOML configuration boundary; its review and
+Linux CI remain pending. See [P1-02 evidence](P1_02_CONFIG_REVIEW.md).
 Further technical choices retain their owning gates.
 Primary source: [base specification](../../Routira_Project_Specification_EN.md), all 27 sections,
 with [accepted scope amendment ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).

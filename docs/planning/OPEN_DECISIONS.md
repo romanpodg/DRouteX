@@ -77,6 +77,8 @@ IPv6/QUIC/application enforcement.
 | D21 | Personal DoH/DoT token/hostname provisioning, TLS certificate lifecycle and optional IP restriction/learning bootstrap; possession is not hardware proof | P0-01/P3-07/P6-03 | CR-0002; redaction/rotation/revocation/roaming tests |
 | D22 | Bounded local catalog formats, source/license/hash evidence and isolated private DNS records; remote feeds/DDNS/router helper deferred | P0-05/P2-07/P3-04 | CR-0002; real import/update rollback and scope-isolation tests |
 | D23 | Owner selected UUIDv4 public resource IDs and qualification of uuid 1.28.0 on 2026-10-16. Domain newtypes use std parse/format only and expose no uuid dependency types. Public credential-record IDs and resolver secret material remain separate; domain association is not token verification or gateway authority. ID/token generators, wire/entropy/size/clock policy and secret lifecycle remain at their owning gates. | P1-01 / P1-07/P3-07/resource creation APIs | P1_01_DOMAIN_REVIEW.md; Windows qualification/audit, implementation Linux/Windows CI and independent Code Review passed |
+| D24 | Owner accepted one UTF-8 JSON/YAML/TOML document, 1 MiB, collection depth 32, aggregate 10,000 resources/rules, unknown/duplicate rejection and strict YAML without expansion/include/substitution. Errors expose only stable code, known path and available numeric location. Large dataset payload budgets stay P2-07. | P1-02 | Direct owner answer on 2026-10-16; P1_02_CONFIG_REVIEW.md and api/schemas/README.md |
+| D25 | Owner approved qualification of Serde 1.0.229, serde_json 1.0.154, toml 1.1.8+spec-1.1.0 and serde-saphyr 2.0.0, then serde_path_to_error 0.1.20 qualification/adoption if successful. Windows isolated probes/audit passed before config-only adoption; production audit passed. No raw diagnostics or new license exceptions. | P1-02 | Official archive/notices, CONFIG_INVENTORY.csv; Linux and independent review remain pending |
 
 The owner explicitly accepted the P0-01 foundation and CR-0002, then authorized
 P0-02. Other technical details and later task execution retain their own gates.
@@ -101,6 +103,12 @@ Serious defects cannot be deferred to permit merge; uncertain cases require the 
 | P0-05-CS | CodeScene 7981306 flags Large Method in the bounded CONNECT qualification test, score 9.60; its other two gates passed. No concrete functional defect was identified by the independent review. Tests are outside the owner's independent metric scope; keep the readable end-to-end assertion together rather than refactor solely for a score. The repository-wide check is failed, not suppressed or reported as passed. | Revisit if a concrete test-maintenance or functional defect justifies a change; no independent metric cleanup task |
 | P0-05-NOTICES | Four unused-target packages have SPDX metadata but no top-level license text in their package archive: jni, jni-macros, jni-sys-macros and r-efi. They are not built for the tested Windows/Linux targets, so this does not block the current qualification. Metadata/policy approval alone does not establish redistribution notices. | P11-05 or before adding the affected targets/features: obtain exact upstream texts/attribution, preserve them and verify the actual shipped target inventory |
 | P0-05-SYN | All-target lockfile contains syn 2.0.119 for Android JNI macros and 3.0.9 for current macros; no competing syn versions appear in the tested Windows/Linux target trees. Retain required versions rather than force an incompatible dependency change. | Recheck at production adoption, target/feature changes or the next dependency update; no suppression |
+
+## P1-02 review dispositions
+
+| Item | Finding, impact and rationale | Owning task / revisit trigger |
+|---|---|---|
+| P1-02-PATH | Serde buffering of internally tagged enums can stop a type-error path at the enclosing known object, e.g. `outbounds[1].transport`, instead of its leaf. Rejection and redaction are unchanged; raw parser text would expose input values. Retain the safe container path. Numeric source positions are available for syntax failures, not every DTO/semantic failure. This is diagnostic precision only, not a validation bypass. | P6-02 when API/UI needs leaf-level source mapping; preserve the no-raw-message boundary. See P1_02_CONFIG_REVIEW.md and configuration integration tests |
 
 ## Risk register
 

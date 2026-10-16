@@ -4,13 +4,13 @@ mod domain;
 
 pub use domain::{
     AdministrativeState, AmbiguousLegacyAssignment, DeploymentId, DeviceId, DnsBindingError,
-    DnsEndpointAssignment, DnsProfileBinding, EmptyResolverCapability, EndpointId, FilterListId,
-    FilterListRevisionId, GatewayNetworkGrantId, GatewayNetworkIdentity, InvalidResourceId,
-    LegacyDnsAssignment, LegacyNetworkGrantId, ListenerId, NetworkGroupId, OutboundAvailability,
-    PrivateDnsRecordId, ProfileId, ProxyOutboundId, ProxyOutboundKind, ResolverCapabilityMaterial,
-    ResolverCredentialId, ResolverCredentialMetadata, ResolverCredentialState, RevisionState,
-    RuleId, ServiceGroupId, ServiceGroupRevisionId, SnapshotId, SnapshotState,
-    unique_legacy_assignment,
+    DnsEndpointAssignment, DnsProfileBinding, DnsUpstreamId, EmptyResolverCapability, EndpointId,
+    FilterListId, FilterListRevisionId, GatewayNetworkGrantId, GatewayNetworkIdentity,
+    InvalidResourceId, LegacyDnsAssignment, LegacyNetworkGrantId, ListenerId, NetworkGroupId,
+    OutboundAvailability, PrivateDnsRecordId, ProfileId, ProxyOutboundId, ProxyOutboundKind,
+    ResolverCapabilityMaterial, ResolverCredentialId, ResolverCredentialMetadata,
+    ResolverCredentialState, RevisionState, RuleId, SecretRefId, ServiceGroupId,
+    ServiceGroupRevisionId, SnapshotId, SnapshotState, unique_legacy_assignment,
 };
 
 /// A policy layer; user priority applies within a layer, never across layers.

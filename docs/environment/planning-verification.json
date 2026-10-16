@@ -2,7 +2,7 @@
   "status": "passed",
   "scope_amendment": "CR-0001",
   "accepted_design": "CR-0002",
-  "execution_boundary": "P1-01",
+  "execution_boundary": "P1-02",
   "tasks": 88,
   "deliveries": {
     "MVP": 61,
@@ -13,7 +13,7 @@
   "mvp_release_dependency_closure": 61,
   "requirements": 188,
   "source_headings": 149,
-  "local_links_checked": 170,
+  "local_links_checked": 181,
   "adrs": 17,
   "accepted_adrs": 2,
   "negative_validator_cases": 9,
