@@ -1,9 +1,10 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-16. Current boundary: **P0-03 complete; WSL and native Debian 13 fixtures passed**.
+Date: 2026-10-16. Current boundary: **P0-04 authorized and in progress; P0-03 complete**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Review: [PR #1](https://github.com/romanpodg/Routira/pull/1), open against main.
-No merging, force-pushing, branch-protection change or later task implementation is authorized.
+The owner authorized publication to PR #1 and P0-04. No merging, force-pushing,
+branch-protection change or P0-05/later implementation is authorized.
 
 ## Owner decisions and current progress
 
@@ -21,11 +22,11 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **3 completed (P0-01/P0-02/P0-03), 85 planned**.
+Current backlog: **3 completed (P0-01/P0-02/P0-03), 1 in_progress (P0-04), 84 planned**.
 Three of the 61 MVP tasks are complete; native fixture evidence closes P0-03.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
-not passed by a workspace bootstrap. No task beyond P0-03 is started.
+not passed by a workspace bootstrap. No task beyond P0-04 is started.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,
@@ -40,7 +41,7 @@ when their existing roadmap tasks are authorized and prerequisites are complete.
 This accepts a reuse strategy, not the old Veyra specification, task completion,
 dependency selection, whole-branch merge or blanket cherry-pick. No donor code has
 been imported. P0-03 was in_review when this strategy was selected and is now
-complete after the native run below; P0-04/P0-05 remain planned.
+complete after the native run below; P0-04 is authorized, P0-05 remains planned.
 
 Reviewed references: PR #1 at
 `5628f2ae3306bf86b22283b19003008fd3246bd7`; [PR #2](https://github.com/romanpodg/Routira/pull/2)
@@ -183,8 +184,10 @@ and earlier report evidence. No product CodeScene/Codecov pass is inferred from 
 
 P0-02 is closed after full-diff review, local checks and actual Windows/Linux build
 results. The owner subsequently authorized P0-03 and the WSL lab variant. P0-03
-is now complete after the owner-approved native Debian 13 run; P0-04/P0-05 are not started.
-Stop before their implementation or new infrastructure without the owner decision.
+is now complete after the owner-approved native Debian 13 run. On 2026-10-16 the
+owner authorized publishing those results and proceeding through P0-04 only.
+See [P0-04 review](P0_04_CI_REVIEW.md) for scope and actual check evidence.
+Stop before P0-05 or new infrastructure without the owner decision.
 No automatic merge, production deployment or unsolicited reviewer message is authorized.
 
 The user will manually reopen the chat after usage limits and requested no new

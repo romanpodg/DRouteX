@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01/P0-02/P0-03 complete; WSL and native Debian 13 fixtures passed",
+  "status": "P0-01/P0-02/P0-03 complete; P0-04 CI in progress",
   "date": "2026-10-16",
   "phases": {
     "P0": "Foundation",
@@ -137,7 +137,7 @@
       "security": "Read-only permissions and no pull_request_target execution of PR code",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -2596,10 +2596,10 @@
   ],
   "scope_amendment": "CR-0001",
   "execution_authorization": {
-    "date": "2026-10-15",
-    "source": "Direct user instruction to take the next step, followed by explicit approval of the WSL lab variant in this chat",
-    "scope": "Through P0-03 fixtures only; native Debian VPS run separately approved on 2026-10-16 and passed; no merge, reminder, P0-04/P0-05 or production changes",
-    "through_task": "P0-03"
+    "date": "2026-10-16",
+    "source": "Direct owner approval to publish P0-03 to PR #1 and proceed through P0-04 in this chat",
+    "scope": "P0-04 CI only; real fork PR test deferred by owner; no P0-05, merge, force-push, branch-protection change or privileged PR runner",
+    "through_task": "P0-04"
   },
   "design_proposals": [
     {
@@ -2614,7 +2614,7 @@
     "url": "https://github.com/romanpodg/Routira",
     "default_branch": "main",
     "review_branch": "docs/review-dns-proxy-foundation",
-    "visibility": "public",
+    "visibility": "private",
     "review_pr": "https://github.com/romanpodg/Routira/pull/1"
   },
   "foundation_review": {

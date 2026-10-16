@@ -15,7 +15,10 @@ passed. On 2026-10-16 the owner supplied a dedicated Debian 13 KVM VPS and appro
 tcpdump/libpcap installation and the isolated P0-03 run. All 41 protocol observations
 and four cleanup modes passed there with unchanged host networking. This proves
 fixture readiness, not Routira runtime or systemd acceptance.
-Stop before P0-04/P0-05; later tasks retain their gates. No production-root or
+On 2026-10-16 the owner authorized publishing P0-03 to PR #1 and proceeding through
+P0-04 CI only. Private fork workflows require owner approval and receive no secrets
+or write tokens; the owner deferred a real fork PR test. Stop before P0-05;
+later tasks retain their gates. No production-root or
 untrusted privileged PR runner is authorized.
 The user authorized initial GitHub commits/pushes, PR creation and activity monitoring
 on 2026-10-15. Repository: romanpodg/Routira; current review PR #1 and execution

@@ -1,4 +1,4 @@
-# Only planning tools exist today; product coverage is added separately in P0-04.
+# Keep application coverage separate from the historical planning report.
 coverage:
   status:
     project:
@@ -7,10 +7,18 @@ coverage:
         flags: [planning]
         target: auto
         informational: true
+      backend:
+        flags: [backend]
+        target: auto
+        informational: true
     patch:
       default: false
       planning:
         flags: [planning]
+        target: auto
+        informational: true
+      backend:
+        flags: [backend]
         target: auto
         informational: true
 flags:
@@ -19,4 +27,10 @@ flags:
       - tools/render_planning.py
       - tools/verify_planning.py
       - tools/verify_quality_proposals.py
+    carryforward: false
+  backend:
+    paths:
+      - crates/routira-common/src/
+      - crates/routira-config/src/
+      - crates/routira-policy/src/
     carryforward: false

@@ -81,7 +81,7 @@ class ValidatorTests(unittest.TestCase):
         missing_evidence = copy.deepcopy(plan)
         missing_evidence['foundation_review']['source'] = ''
         later_work = copy.deepcopy(plan)
-        next(t for t in later_work['tasks'] if t['id'] == 'P0-04')['status'] = 'in_progress'
+        next(t for t in later_work['tasks'] if t['id'] == 'P0-05')['status'] = 'in_progress'
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
         missing_native = copy.deepcopy(plan)
@@ -104,6 +104,14 @@ class ValidatorTests(unittest.TestCase):
                 quality.check_workflow(case)
         with self.assertRaisesRegex(AssertionError, 'Unsafe workflow accepted'):
             quality.reject_unsafe_workflow(flow)
+
+    def test_ci_rejects_write_tokens_and_private_runners(self):
+        flow = quality.read_yaml(ROOT / '.github/workflows/planning.yml')
+        for field, value in [('permissions', {'contents': 'write'}), ('runs-on', 'self-hosted')]:
+            bad = copy.deepcopy(flow)
+            bad['jobs']['backend'][field] = value
+            with self.subTest(field=field), self.assertRaises(AssertionError):
+                quality.check_workflow(bad)
 
     def test_codecov_step_guards_remain_required(self):
         flow = quality.read_yaml(ROOT / '.github/workflows/planning.yml')

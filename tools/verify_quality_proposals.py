@@ -27,10 +27,12 @@ def check_job(job):
 
 def check_workflow(flow):
     assert flow['permissions'] == {'contents':'read'}
+    assert 'pull_request_target' not in str(flow.get('on', flow.get(True)))
     jobs = flow['jobs']
     for name, job in jobs.items():
         if name != 'upload':
-            assert 'id-token' not in job.get('permissions', {})
+            assert job.get('permissions', {'contents':'read'}) == {'contents':'read'}, 'Test job widens permissions'
+        assert 'self-hosted' not in str(job['runs-on']), 'Untrusted job uses a private runner'
     upload = jobs['upload']
     assert 'head.repo.full_name == github.repository' in upload['if']
     assert upload['permissions']['id-token'] == 'write'
@@ -45,7 +47,10 @@ def check_active_codecov(active_config):
         assert statuses['default'] is False
         assert statuses['planning']['flags'] == ['planning']
         assert statuses['planning']['informational'] is True
+        assert statuses['backend']['flags'] == ['backend']
+        assert statuses['backend']['informational'] is True
     assert active_config['flags']['planning']['carryforward'] is False
+    assert active_config['flags']['backend']['carryforward'] is False
 
 
 def check_proposed_quality(quality):

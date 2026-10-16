@@ -4,7 +4,8 @@ Status: **P0-01/P0-02/P0-03 complete; WSL and native Debian 13 fixtures passed.*
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
-recorded in [EXECUTION_STATUS](EXECUTION_STATUS.md). The boundary is P0-03 fixtures; P0-04/P0-05 and merging are not authorized.
+recorded in [EXECUTION_STATUS](EXECUTION_STATUS.md). The owner authorized P0-04 on
+2026-10-16; P0-05 and merging are not authorized.
 Primary source: [base specification](../../Routira_Project_Specification_EN.md), all 27 sections,
 with [accepted scope amendment ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 Base EN/RU specifications remain unchanged. A minimal common/config/policy workspace
@@ -106,7 +107,8 @@ P0-01 foundation contracts and Debian 13 x86_64 assumptions are accepted. Contin
 only through P0-03, authorized by the subsequent next-step instruction and explicit
 WSL lab approval. The owner approved the separate Debian VPS lab on 2026-10-16;
 native fixture and cleanup evidence passed and closes P0-03. Both environments are
-recorded in P0_03_NETWORK_HARNESS.md. Do not start P0-04/P0-05 yet.
+recorded in P0_03_NETWORK_HARNESS.md. The owner subsequently authorized P0-04;
+see [CI review](P0_04_CI_REVIEW.md). Do not start P0-05 yet.
 Detailed implementation decisions and runtime proof remain at their owning gates.
 
 The owner selected selective reuse from PR #2 on 2026-10-15 (option A).
