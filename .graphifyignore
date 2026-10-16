@@ -1,0 +1,9 @@
+.git/
+.setup/
+.tools/
+.agents/
+.codex/
+graphify-out/
+target/
+node_modules/
+coverage/

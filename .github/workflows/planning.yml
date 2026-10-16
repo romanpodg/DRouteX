@@ -1,0 +1,140 @@
+name: Foundation checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: planning-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  workspace:
+    name: Workspace / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned workspace toolchain
+        run: rustup toolchain install 1.99.0 --profile minimal --component rustfmt,clippy
+      - run: cargo fmt --all -- --check
+      - run: cargo check --workspace --all-targets --locked
+      - run: cargo check --workspace --all-targets --no-default-features --locked
+      - run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
+      - run: cargo test --workspace --locked
+      - run: cargo test --workspace --no-default-features --locked
+  backend:
+    name: Rust dependencies and coverage
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install pinned Rust and check tools
+        run: |
+          rustup toolchain install 1.99.0 --profile minimal --component llvm-tools-preview
+          cargo install cargo-deny --version 0.20.2 --locked
+          cargo install cargo-llvm-cov --version 0.9.1 --locked
+      - name: Fetch current advisory data and check locked dependencies
+        run: |
+          cargo deny fetch
+          cargo deny --locked --offline check
+      - name: Test and generate Rust coverage
+        run: |
+          mkdir -p coverage
+          cargo llvm-cov --workspace --locked --lcov --output-path coverage/backend.lcov
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: backend-coverage
+          path: coverage/backend.lcov
+          if-no-files-found: error
+          retention-days: 7
+  verify:
+    name: Planning / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Install planning check tools
+        run: python -m pip install coverage==7.16.2 PyYAML==6.0.3
+      - name: Render planning documents
+        run: python -m coverage run --parallel-mode tools/render_planning.py
+      - name: Verify contracts, source preservation and negative cases
+        run: python -m coverage run --parallel-mode tools/verify_planning.py --self-test
+      - name: Verify coverage configuration and upload isolation
+        run: python -m coverage run --parallel-mode tools/verify_quality_proposals.py
+      - name: Test planning output and rejection boundaries
+        run: python -m coverage run --parallel-mode tools/test_planning_tools.py
+      - name: Check network fixture boundaries without privileges
+        run: python -m unittest discover -s tests/network -p 'test_*.py'
+      - name: Reject stale generated planning files
+        run: git diff --exit-code -- docs/planning docs/environment/planning-verification.json docs/environment/quality-proposal-verification.json
+      - name: Generate planning coverage report
+        run: |
+          python -m coverage combine
+          python -m coverage report
+          python -m coverage lcov -o coverage/planning.lcov
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        if: matrix.os == 'ubuntu-24.04'
+        with:
+          name: planning-coverage
+          path: coverage/planning.lcov
+          if-no-files-found: error
+          retention-days: 7
+  upload:
+    name: Codecov / planning and backend
+    needs: [verify, backend]
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      # This job runs no repository scripts and receives only the coverage artifact.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: planning-coverage
+          path: coverage
+      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          files: coverage/planning.lcov
+          disable_search: true
+          flags: planning
+          use_oidc: true
+          fail_ci_if_error: true
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: backend-coverage
+          path: coverage
+      - uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
+        with:
+          files: coverage/backend.lcov
+          disable_search: true
+          flags: backend
+          use_oidc: true
+          fail_ci_if_error: true

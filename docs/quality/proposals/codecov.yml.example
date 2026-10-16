@@ -1,0 +1,36 @@
+# Proposed only. Promote to root codecov.yml in P0-04 after real baseline validation.
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        informational: true
+      backend:
+        flags: [backend]
+        target: auto
+        informational: true
+      frontend:
+        flags: [frontend]
+        target: auto
+        informational: true
+    patch:
+      default:
+        target: auto
+        informational: true
+      critical-policy-parsing:
+        flags: [backend]
+        paths:
+          - crates/routira-policy/
+          - crates/routira-config/
+          - crates/routira-gateway/src/tls_metadata*
+          - crates/routira-gateway/src/origin*
+        target: 90%
+        threshold: 0%
+        informational: false
+flags:
+  backend:
+    paths: [crates/, apps/routira-server/, apps/routira-agent/]
+    carryforward: false
+  frontend:
+    paths: [apps/routira-web/]
+    carryforward: false

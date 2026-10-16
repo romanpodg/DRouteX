@@ -1,0 +1,3770 @@
+{
+  "source_sha256": "78ca71c61755152aa4e369d9b927a8aa73cc6afc8c11bc94c3ceb9c58dc275d9",
+  "scope_amendment": "CR-0001",
+  "requirements": [
+    {
+      "id": "R-1",
+      "section": "1",
+      "line": 44,
+      "title": "Concept and Goals",
+      "tasks": [
+        "F-01",
+        "F-03",
+        "F-05",
+        "P0-01",
+        "P1-06",
+        "P2-06",
+        "P4-01",
+        "P5-08",
+        "P6-08",
+        "P7-07"
+      ],
+      "requirement": "Concept and Goals: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-1.1",
+      "section": "1.1",
+      "line": 46,
+      "title": "What Is Routira?",
+      "tasks": [
+        "P0-01",
+        "P7-07",
+        "F-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Self-hosted DNS and route management for personal/home infrastructure; no commercial public VPN claim",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-1.2",
+      "section": "1.2",
+      "line": 60,
+      "title": "Product Positioning",
+      "tasks": [
+        "P0-01",
+        "P7-07",
+        "F-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Self-hosted DNS and route management for personal/home infrastructure; no commercial public VPN claim",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-1.3",
+      "section": "1.3",
+      "line": 66,
+      "title": "Target Audience",
+      "tasks": [
+        "P0-01",
+        "P7-07",
+        "F-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Self-hosted DNS and route management for personal/home infrastructure; no commercial public VPN claim",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-1.4",
+      "section": "1.4",
+      "line": 76,
+      "title": "Product Principles",
+      "tasks": [
+        "P1-06",
+        "P2-06",
+        "P4-01",
+        "P5-08",
+        "P6-08"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Rust core, safe defaults, explain/capability-aware UX, no MITM, atomic changes, privacy and gradual complexity",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-1.5",
+      "section": "1.5",
+      "line": 89,
+      "title": "Non-Goals of the First Version",
+      "tasks": [
+        "P0-01",
+        "F-01",
+        "F-03",
+        "F-05"
+      ],
+      "scope": "Scope guard",
+      "kind": "Technical constraint",
+      "requirement": "No universal DNS access/QUIC/DPI guarantee, own cryptography, session migration or commercial tenancy",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-2",
+      "section": "2",
+      "line": 101,
+      "title": "Primary Use Cases",
+      "tasks": [
+        "F-02",
+        "F-03",
+        "P10-05",
+        "P2-04",
+        "P3-06",
+        "P4-05",
+        "P4-06",
+        "P5-04",
+        "P5-05",
+        "P5-08",
+        "P7-02",
+        "P7-04",
+        "P9-02",
+        "P9-03"
+      ],
+      "requirement": "Primary Use Cases: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-2.1",
+      "section": "2.1",
+      "line": 103,
+      "title": "Selective Proxying for Specific Domains",
+      "tasks": [
+        "P2-04",
+        "P4-06",
+        "P5-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Selective domain action and exit selection; DIRECT relative to current decision point",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-2.2",
+      "section": "2.2",
+      "line": 117,
+      "title": "Television with DNS-Only Configuration",
+      "tasks": [
+        "P3-06",
+        "P7-02",
+        "P10-05"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "TV DNS-only supports restricted compatible TCP and visibly limited ECH/QUIC/nonstandard/application compatibility",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-2.3",
+      "section": "2.3",
+      "line": 125,
+      "title": "Computer Using a Full Tunnel",
+      "tasks": [
+        "P5-04",
+        "P5-05",
+        "F-02"
+      ],
+      "scope": "Post-MVP protocols",
+      "kind": "Explicit requirement",
+      "requirement": "WG/AWG tunnel and peer identity deferred by CR-0001; client split routing still requires actual support",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "FUTURE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-2.4",
+      "section": "2.4",
+      "line": 132,
+      "title": "Multiple Protocols on One Node",
+      "tasks": [
+        "P4-05",
+        "P7-04",
+        "P5-08"
+      ],
+      "scope": "MVP DNS/proxy; engines later",
+      "kind": "Explicit requirement",
+      "requirement": "Allocate DNS/TCP/admin/proxy endpoints in MVP; WG/AWG/Xray listeners and conflicts deferred",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-2.5",
+      "section": "2.5",
+      "line": 144,
+      "title": "Inter-Server Routing",
+      "tasks": [
+        "P9-03"
+      ],
+      "scope": "Post-MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Cross-node tunnel termination and explicit verified TUN/proxy bridge, not packet protocol conversion",
+      "delivery": [
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-2.6",
+      "section": "2.6",
+      "line": 150,
+      "title": "Failover",
+      "tasks": [
+        "P4-06",
+        "P9-02",
+        "F-03"
+      ],
+      "scope": "MVP + later",
+      "kind": "Technical constraint",
+      "requirement": "Allowed outbound failover with session/TTL limits; inbound switching requires supporting client",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-3",
+      "section": "3",
+      "line": 156,
+      "title": "Fundamental Technical Limitations",
+      "tasks": [
+        "F-01",
+        "F-02",
+        "F-03",
+        "P10-05",
+        "P11-04",
+        "P2-02",
+        "P3-04",
+        "P3-05",
+        "P4-01",
+        "P4-03",
+        "P4-06",
+        "P6-03",
+        "P7-03",
+        "P7-04"
+      ],
+      "requirement": "Fundamental Technical Limitations: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-3.1",
+      "section": "3.1",
+      "line": 160,
+      "title": "DNS Is Not a VPN",
+      "tasks": [
+        "P3-04",
+        "P4-01",
+        "P11-04"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "Ordinary DNS does not route traffic; rewritten address needs authorized original-destination context",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-3.2",
+      "section": "3.2",
+      "line": 166,
+      "title": "SNI and Encrypted Client Hello Limitations",
+      "tasks": [
+        "P4-03",
+        "P10-05",
+        "P7-03"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "ECH hidden inner SNI prevents reliable SNI-only dispatch; fail closed or use explicitly supported alternative",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-3.3",
+      "section": "3.3",
+      "line": 172,
+      "title": "HTTP/3 and QUIC",
+      "tasks": [
+        "P3-05",
+        "P10-05",
+        "F-01"
+      ],
+      "scope": "MVP + future",
+      "kind": "Technical constraint",
+      "requirement": "QUIC/HTTP3 is UDP; TCP-only DNS gateway cannot promise interception or client QUIC disablement",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-3.4",
+      "section": "3.4",
+      "line": 176,
+      "title": "HTTPS/SVCB DNS Records",
+      "tasks": [
+        "P3-05"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "Handle HTTPS/SVCB ALPN/IP hints/ECH/alternative endpoints; no blanket record removal as universal fix",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-3.5",
+      "section": "3.5",
+      "line": 180,
+      "title": "DNSSEC",
+      "tasks": [
+        "P3-05",
+        "P7-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Separate normal verifiable DNSSEC answers from local overrides; rewritten response cannot claim authentic signature",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-3.6",
+      "section": "3.6",
+      "line": 184,
+      "title": "Applications Can Bypass DNS",
+      "tasks": [
+        "P10-05",
+        "P11-04",
+        "F-03"
+      ],
+      "scope": "MVP + future",
+      "kind": "Technical constraint",
+      "requirement": "Own DoH/DoT/hardcoded IP/cache bypass DNS; full endpoint control requires client/router cooperation",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-3.7",
+      "section": "3.7",
+      "line": 188,
+      "title": "Identification Behind NAT",
+      "tasks": [
+        "P2-02",
+        "P4-01",
+        "P6-03"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Shared public NAT IP cannot identify individual device or link DNS to later TCP authorization",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-3.8",
+      "section": "3.8",
+      "line": 192,
+      "title": "Other Limitations",
+      "tasks": [
+        "P4-06",
+        "P10-05",
+        "P11-04",
+        "F-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Technical constraint",
+      "requirement": "CDN/shared IP, pinning, geo service checks, TTL/session lag and IPv6 policy limit route guarantees",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-4",
+      "section": "4",
+      "line": 203,
+      "title": "Operating Modes",
+      "tasks": [
+        "F-02",
+        "P10-01",
+        "P10-05",
+        "P11-04",
+        "P3-01",
+        "P3-04",
+        "P3-06",
+        "P4-01",
+        "P4-04",
+        "P4-05",
+        "P5-04",
+        "P5-05",
+        "P5-06",
+        "P7-02",
+        "P9-01"
+      ],
+      "requirement": "Operating Modes: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-4.1",
+      "section": "4.1",
+      "line": 205,
+      "title": "Mode A \u2014 DNS Resolver / Policy DNS",
+      "tasks": [
+        "P3-01",
+        "P3-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Restricted policy DNS caches/filters/forwards; ordinary origin-IP response leaves direct client path",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-4.2",
+      "section": "4.2",
+      "line": 213,
+      "title": "Mode B \u2014 SmartDNS + TCP Passthrough",
+      "tasks": [
+        "P3-06",
+        "P4-01",
+        "P4-04",
+        "P10-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Compatible approved SmartDNS TCP identifies origin, preserves website certificate and accounts for caching/SVCB/IPv6",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-4.3",
+      "section": "4.3",
+      "line": 228,
+      "title": "Mode C \u2014 Explicit Proxy",
+      "tasks": [
+        "P4-05",
+        "P5-06",
+        "P9-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Authenticated/isolated explicit proxy supplies destination; UDP capability and public listener require separate verification",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-4.4",
+      "section": "4.4",
+      "line": 237,
+      "title": "Mode D \u2014 Full Tunnel",
+      "tasks": [
+        "P5-04",
+        "P5-05",
+        "P10-01",
+        "F-02"
+      ],
+      "scope": "Post-MVP protocols",
+      "kind": "Proposed architecture",
+      "requirement": "Full/split tunnel and TUN/OS routing deferred by accepted CR-0001",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "FUTURE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-4.5",
+      "section": "4.5",
+      "line": 245,
+      "title": "Comparison Matrix",
+      "tasks": [
+        "P7-02",
+        "P11-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Capability matrix accurately distinguishes DNS-only, limited gateway, explicit proxy and full tunnel",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-5",
+      "section": "5",
+      "line": 259,
+      "title": "High-Level Architecture",
+      "tasks": [
+        "P0-01",
+        "P0-02",
+        "P1-05",
+        "P1-06",
+        "P10-01",
+        "P5-02",
+        "P5-08",
+        "P8-04"
+      ],
+      "requirement": "High-Level Architecture: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-5.1",
+      "section": "5.1",
+      "line": 261,
+      "title": "Control Plane and Data Plane Separation",
+      "tasks": [
+        "P0-01",
+        "P1-06",
+        "P8-04"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "CP manages entities/publication, DP continues last-valid config without dashboard/database",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-5.2",
+      "section": "5.2",
+      "line": 312,
+      "title": "Recommended Services",
+      "tasks": [
+        "P0-02",
+        "P5-02"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Logical Rust services may share a small process set while engines remain independent; avoid gratuitous microservices",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-5.3",
+      "section": "5.3",
+      "line": 327,
+      "title": "Component Independence",
+      "tasks": [
+        "P1-05",
+        "P5-08",
+        "P10-01"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "DNS/router use snapshots; independent engine restarts/failures; privileged operations isolated from HTTP",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-6",
+      "section": "6",
+      "line": 337,
+      "title": "Network Flows: DNS, SmartDNS, Tunnels",
+      "tasks": [
+        "P2-04",
+        "P3-04",
+        "P3-06",
+        "P4-01",
+        "P4-02",
+        "P4-04",
+        "P5-04",
+        "P9-02",
+        "P9-03"
+      ],
+      "requirement": "Network Flows: DNS, SmartDNS, Tunnels: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-6.1",
+      "section": "6.1",
+      "line": 339,
+      "title": "Ordinary DNS Resolution (DIRECT)",
+      "tasks": [
+        "P3-04",
+        "P5-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Real ordinary DNS flow returns upstream origin; client-origin connection remains direct",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-6.2",
+      "section": "6.2",
+      "line": 356,
+      "title": "Compatible SmartDNS \u2192 TLS Passthrough",
+      "tasks": [
+        "P3-06",
+        "P4-01",
+        "P4-02",
+        "P4-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "SmartDNS redirect and TCP passthrough use coherent authorized route context and loop-free trusted origin resolution",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-6.3",
+      "section": "6.3",
+      "line": 376,
+      "title": "Full Tunnel and Egress Through Another Server",
+      "tasks": [
+        "P9-03"
+      ],
+      "scope": "Post-MVP",
+      "kind": "Explicit requirement",
+      "requirement": "AWG termination followed by real VLESS outbound requires verified separate engineering bridge",
+      "delivery": [
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-6.4",
+      "section": "6.4",
+      "line": 388,
+      "title": "Route Classes",
+      "tasks": [
+        "P2-04",
+        "P9-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Distinct DIRECT/BLOCK/PROXY_NODE/NODE_GROUP/OUTBOUND/UPSTREAM_DNS/LOCAL_DNS_OVERRIDE semantics",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-7",
+      "section": "7",
+      "line": 400,
+      "title": "Multi-Protocol Infrastructure",
+      "tasks": [
+        "F-01",
+        "F-03",
+        "P0-05",
+        "P1-01",
+        "P10-04",
+        "P11-05",
+        "P4-06",
+        "P5-01",
+        "P5-02",
+        "P5-07",
+        "P5-08",
+        "P8-02",
+        "P9-02"
+      ],
+      "requirement": "Multi-Protocol Infrastructure: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-7.1",
+      "section": "7.1",
+      "line": 402,
+      "title": "Inbound and Outbound",
+      "tasks": [
+        "P1-01",
+        "P5-01"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Model inbound/outbound/engine/adapter distinctly; Xray is engine, VLESS+REALITY protocol/transport/security",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-7.2",
+      "section": "7.2",
+      "line": 411,
+      "title": "Recommended Integration Matrix",
+      "tasks": [
+        "P0-05",
+        "P5-08",
+        "F-01"
+      ],
+      "scope": "Post-MVP protocols/future",
+      "kind": "Proposed architecture",
+      "requirement": "Native DNS/TCP proxy first; WG/AWG and managed Xray/sing-box require independent later engine gates",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-7.3",
+      "section": "7.3",
+      "line": 429,
+      "title": "Capability Model",
+      "tasks": [
+        "P5-01",
+        "P8-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Version/transport-specific capabilities; unknown is unavailable; no universal support switch",
+      "delivery": [
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-7.4",
+      "section": "7.4",
+      "line": 451,
+      "title": "Adapter Interface (Pseudo-Rust)",
+      "tasks": [
+        "P5-01",
+        "P5-07"
+      ],
+      "scope": "Post-MVP protocols",
+      "kind": "Proposed architecture",
+      "requirement": "General engine lifecycle/peer/export traits deferred; MVP needs a narrow typed TCP outbound connector",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-7.5",
+      "section": "7.5",
+      "line": 469,
+      "title": "Process Management",
+      "tasks": [
+        "P0-05",
+        "P5-02",
+        "P10-04",
+        "P11-05"
+      ],
+      "scope": "MVP dependencies; engines later",
+      "kind": "Explicit requirement",
+      "requirement": "Verify/pin MVP dependencies and limits; external engine process supervision deferred until engines are introduced",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-7.6",
+      "section": "7.6",
+      "line": 479,
+      "title": "Automatic Protocol Selection",
+      "tasks": [
+        "P4-06",
+        "P9-02",
+        "F-03"
+      ],
+      "scope": "MVP + later",
+      "kind": "Technical constraint",
+      "requirement": "Outbound switch possible; inbound requires client; sessions interrupted and strict fail-open forbidden by default",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-8",
+      "section": "8",
+      "line": 491,
+      "title": "Policy Engine and Rule System",
+      "tasks": [
+        "F-02",
+        "P1-02",
+        "P1-05",
+        "P1-06",
+        "P2-01",
+        "P2-02",
+        "P2-03",
+        "P2-04",
+        "P2-06",
+        "P2-07",
+        "P6-04",
+        "P6-05",
+        "P6-06",
+        "P7-03",
+        "P9-04"
+      ],
+      "requirement": "Policy Engine and Rule System: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-8.1",
+      "section": "8.1",
+      "line": 493,
+      "title": "General Requirements",
+      "tasks": [
+        "P2-01",
+        "P2-02",
+        "P6-04",
+        "F-02",
+        "P2-07"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Normalized exact/wildcard/domain/profile exceptions; documented apex semantics; richer CIDR/protocol/group rules staged",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-8.2",
+      "section": "8.2",
+      "line": 509,
+      "title": "Decision Procedure",
+      "tasks": [
+        "P2-02",
+        "P2-03",
+        "P2-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Trusted identity/profile, canonical match, priority-specificity-stable tie, conflict/capability/failure handling and reasons",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-8.3",
+      "section": "8.3",
+      "line": 522,
+      "title": "Illustrative User YAML",
+      "tasks": [
+        "P1-02",
+        "P6-04"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Illustrative policy format becomes versioned validated schema; example is not working deployed config",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-8.4",
+      "section": "8.4",
+      "line": 553,
+      "title": "Rule Tester / Explain",
+      "tasks": [
+        "P2-06",
+        "P6-06",
+        "P7-03"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Explain rule/action/exit/limits/revision predicts policy; separate actual network test proves connectivity",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-8.5",
+      "section": "8.5",
+      "line": 559,
+      "title": "Compilation and Application",
+      "tasks": [
+        "P1-05",
+        "P1-06",
+        "P6-05",
+        "P9-04"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Validate/simulate/compile/stage/activate/health/rollback; monotonic hash/version; no partial node state or restored-session promise",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-9",
+      "section": "9",
+      "line": 581,
+      "title": "DNS Engine",
+      "tasks": [
+        "P0-02",
+        "P1-05",
+        "P3-01",
+        "P3-02",
+        "P3-03",
+        "P3-04",
+        "P3-05",
+        "P3-06",
+        "P3-07",
+        "P4-02",
+        "P7-04"
+      ],
+      "requirement": "DNS Engine: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-9.1",
+      "section": "9.1",
+      "line": 583,
+      "title": "Responsibilities",
+      "tasks": [
+        "P3-01",
+        "P3-02",
+        "P3-03",
+        "P3-07"
+      ],
+      "scope": "MVP; personal DoH/DoT required in accepted CR-0002",
+      "kind": "Base requirement with accepted CR-0002 extension",
+      "requirement": "Restricted UDP/TCP forwarder; personal DoH/DoT endpoint transports required by accepted CR-0002, separately tested; local policy/cache/metrics",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-9.2",
+      "section": "9.2",
+      "line": 594,
+      "title": "Rust Approach",
+      "tasks": [
+        "P0-02",
+        "P3-01"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Pin compatible Hickory server/resolver features with Tokio/rustls; custom first-party policy layer",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-9.3",
+      "section": "9.3",
+      "line": 598,
+      "title": "Caching",
+      "tasks": [
+        "P3-03",
+        "P1-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Name/type/class/upstream/mode/scope/validation cache distinction prevents profile leakage",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-9.4",
+      "section": "9.4",
+      "line": 602,
+      "title": "Safe DNS Overrides",
+      "tasks": [
+        "P3-04",
+        "P3-05",
+        "P3-06",
+        "P4-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Safe compatible overrides, coherent IPv4/IPv6, signed-answer integrity, loop and pattern/conflict checks",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-9.5",
+      "section": "9.5",
+      "line": 611,
+      "title": "DNS Dashboard",
+      "tasks": [
+        "P7-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "DNS listener/upstream/cache/local records/security/query/latency/health settings reflect real state",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-10",
+      "section": "10",
+      "line": 617,
+      "title": "Proxy Gateway and Routing",
+      "tasks": [
+        "F-01",
+        "P10-04",
+        "P4-01",
+        "P4-02",
+        "P4-04",
+        "P4-05",
+        "P4-06",
+        "P4-07",
+        "P5-04",
+        "P9-03"
+      ],
+      "requirement": "Proxy Gateway and Routing: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-10.1",
+      "section": "10.1",
+      "line": 619,
+      "title": "Gateway Responsibilities",
+      "tasks": [
+        "P4-02",
+        "P4-04",
+        "P4-06",
+        "P4-07"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Controlled TCP target, generation decision, passthrough, quotas/timeouts, SSRF/rebinding prevention and metrics",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-10.2",
+      "section": "10.2",
+      "line": 630,
+      "title": "Destination Binding",
+      "tasks": [
+        "P4-01"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Ingress/service/profile/route authorize target independently from SNI; ambiguous/unknown fails closed",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-10.3",
+      "section": "10.3",
+      "line": 640,
+      "title": "Outbound DNS",
+      "tasks": [
+        "P4-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Policy-independent origin resolver avoids self-gateway loop; every re-resolution rechecks forbidden addresses",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-10.4",
+      "section": "10.4",
+      "line": 644,
+      "title": "Routing to Engines",
+      "tasks": [
+        "P4-05",
+        "P5-04",
+        "P9-03"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Supported local proxy/interface/route/protected-node dispatch selected through actual capability matrix",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-10.5",
+      "section": "10.5",
+      "line": 655,
+      "title": "TCP/UDP and Scaling",
+      "tasks": [
+        "P4-04",
+        "P10-04",
+        "F-01"
+      ],
+      "scope": "MVP + future",
+      "kind": "Explicit requirement",
+      "requirement": "TCP first with backpressure/FD/allocation limits; UDP separate flow identity/timeout/amplification workstream",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-11",
+      "section": "11",
+      "line": 661,
+      "title": "Control Plane, Node Agent, and Synchronization",
+      "tasks": [
+        "P1-06",
+        "P6-01",
+        "P6-05",
+        "P6-07",
+        "P6-08",
+        "P8-01",
+        "P8-02",
+        "P8-03",
+        "P8-04",
+        "P8-06",
+        "P9-01",
+        "P9-02"
+      ],
+      "requirement": "Control Plane, Node Agent, and Synchronization: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-11.1",
+      "section": "11.1",
+      "line": 663,
+      "title": "Control Plane",
+      "tasks": [
+        "P6-01",
+        "P6-05",
+        "P6-07",
+        "P6-08"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "API/RBAC/config/registry/compiler/secrets/version/audit/migration/backup control responsibilities",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-11.2",
+      "section": "11.2",
+      "line": 676,
+      "title": "Node Agent",
+      "tasks": [
+        "P1-06",
+        "P8-01",
+        "P8-02",
+        "P8-03",
+        "P8-04"
+      ],
+      "scope": "MVP local snapshots; managed agent later",
+      "kind": "Explicit requirement",
+      "requirement": "Local DNS/proxy coordinator preserves last-known-good; enrollment, engine management and remote agent deferred",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-11.3",
+      "section": "11.3",
+      "line": 689,
+      "title": "Node Onboarding",
+      "tasks": [
+        "P8-01",
+        "P8-06"
+      ],
+      "scope": "Post-MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Install separately, verify controller, one-use token, pending approval, scan, baseline and healthcheck; no permanent admin SSH",
+      "delivery": [
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-11.4",
+      "section": "11.4",
+      "line": 695,
+      "title": "Nodes and Groups",
+      "tasks": [
+        "P9-01",
+        "P9-02"
+      ],
+      "scope": "Post-MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Nodes/groups with pinned/healthy strategies; comparable latency/weights later; ping insufficient service proof",
+      "delivery": [
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12",
+      "section": "12",
+      "line": 706,
+      "title": "Routira Web Dashboard",
+      "tasks": [
+        "F-04",
+        "P1-01",
+        "P2-07",
+        "P3-07",
+        "P5-07",
+        "P5-08",
+        "P5-09",
+        "P6-01",
+        "P6-03",
+        "P6-04",
+        "P6-05",
+        "P6-06",
+        "P6-07",
+        "P6-08",
+        "P7-01",
+        "P7-02",
+        "P7-03",
+        "P7-04",
+        "P7-05",
+        "P7-06",
+        "P9-01",
+        "P9-04",
+        "P9-05"
+      ],
+      "requirement": "Routira Web Dashboard: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.1",
+      "section": "12.1",
+      "line": 710,
+      "title": "Navigation",
+      "tasks": [
+        "P7-01",
+        "P7-06",
+        "P9-01",
+        "F-04"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Responsive navigation covers overview/network/operations/system; API equivalent for every significant action",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.2",
+      "section": "12.2",
+      "line": 741,
+      "title": "Dashboard",
+      "tasks": [
+        "P7-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Fast actual component/traffic/latency/degraded/recent-state dashboard; missing engine metric unavailable rather than zero",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.3",
+      "section": "12.3",
+      "line": 755,
+      "title": "Activity / DNS Queries / Connections",
+      "tasks": [
+        "P6-08",
+        "P7-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Filtered activity with trace/revision/outcome; DNS and connections distinct, correlated only with reliable evidence",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.4",
+      "section": "12.4",
+      "line": 759,
+      "title": "Devices",
+      "tasks": [
+        "P6-03",
+        "P7-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Device/profile/mode/onboarding/config/revoke/export with limitations and no unnecessary secret redisplay",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.5",
+      "section": "12.5",
+      "line": 768,
+      "title": "Profiles",
+      "tasks": [
+        "P1-01",
+        "P6-03",
+        "P7-02"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Reusable Profile policy separated from named DNS Endpoint, resolver capability and network gateway grant; one active Profile per Endpoint initially",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.6",
+      "section": "12.6",
+      "line": 772,
+      "title": "Routing Rules",
+      "tasks": [
+        "P6-04",
+        "P7-03"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Priority/scope/matches/target/failure/modes, prominent limitations, simulate/validate/draft/publish/diff",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.7",
+      "section": "12.7",
+      "line": 794,
+      "title": "Proxy Nodes",
+      "tasks": [
+        "P9-01",
+        "P7-04",
+        "P7-05"
+      ],
+      "scope": "MVP local; remote later",
+      "kind": "Explicit requirement",
+      "requirement": "Actual node engine/interface/version/health details; external proxy has no fabricated agent/OS telemetry",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.8",
+      "section": "12.8",
+      "line": 809,
+      "title": "Protocols",
+      "tasks": [
+        "P5-07",
+        "P5-08",
+        "P5-09"
+      ],
+      "scope": "Post-MVP protocols",
+      "kind": "Explicit requirement",
+      "requirement": "Engine listeners/version/capability/rotation/export UI deferred; DNS/proxy settings delivered in P7-04",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.9",
+      "section": "12.9",
+      "line": 820,
+      "title": "DNS",
+      "tasks": [
+        "P3-07",
+        "P7-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "DNS upstream/cache/listener/override/rate/privacy/optional TLS certificate management",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.10",
+      "section": "12.10",
+      "line": 824,
+      "title": "Service Groups",
+      "tasks": [
+        "P6-04",
+        "F-04",
+        "P2-07"
+      ],
+      "scope": "MVP manual; subscriptions later",
+      "kind": "Explicit requirement",
+      "requirement": "Versioned editable/import/export domain groups, approved updates, wildcard/CDN overlap analysis and no guaranteed lists",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.11",
+      "section": "12.11",
+      "line": 828,
+      "title": "Diagnostics",
+      "tasks": [
+        "P6-06",
+        "P7-05",
+        "P9-05"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Policy Explain, DNS Test, Node Reachability and real Route Test with observed egress/reasons/revision",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.12",
+      "section": "12.12",
+      "line": 839,
+      "title": "Deployments / Config Versions",
+      "tasks": [
+        "P6-05",
+        "P7-06",
+        "P9-04"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "History/diff/dry-run/approval/per-node actual states and explicit rollback",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-12.13",
+      "section": "12.13",
+      "line": 843,
+      "title": "Security / Settings / Backups",
+      "tasks": [
+        "P6-01",
+        "P6-07",
+        "P6-08",
+        "P7-06"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Users/roles/MFA/private management/certs/tokens/session/retention/secrets/backup/restore/update controls",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-13",
+      "section": "13",
+      "line": 855,
+      "title": "Design System and UX Principles",
+      "tasks": [
+        "P11-04",
+        "P7-01",
+        "P7-02",
+        "P7-03",
+        "P7-05",
+        "P7-06"
+      ],
+      "requirement": "Design System and UX Principles: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-13.1",
+      "section": "13.1",
+      "line": 857,
+      "title": "Visual Style",
+      "tasks": [
+        "P7-01",
+        "P7-05"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Minimal light/dark design, honest status colors, technical monospace, reduced motion and functional mobile",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-13.2",
+      "section": "13.2",
+      "line": 869,
+      "title": "Components",
+      "tasks": [
+        "P7-01",
+        "P7-02",
+        "P7-03",
+        "P7-06"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Accessible navigation/tables/wizard/badges/diffs/confirmed destructive actions and masked config viewer",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-13.3",
+      "section": "13.3",
+      "line": 881,
+      "title": "UX Approach",
+      "tasks": [
+        "P7-03",
+        "P7-06",
+        "P11-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Progressive disclosure never hides leak warnings; direct fallback requires separate explicit consent; terminology clear",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-13.4",
+      "section": "13.4",
+      "line": 889,
+      "title": "Statuses",
+      "tasks": [
+        "P7-05",
+        "P7-06"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Configured/applied/healthy/tested/connected are separate states, not inferred from form save",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-14",
+      "section": "14",
+      "line": 895,
+      "title": "Device Onboarding and Profiles",
+      "tasks": [
+        "F-02",
+        "F-03",
+        "P0-05",
+        "P1-01",
+        "P11-04",
+        "P2-02",
+        "P5-07",
+        "P5-09",
+        "P6-03",
+        "P7-02"
+      ],
+      "requirement": "Device Onboarding and Profiles: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-14.1",
+      "section": "14.1",
+      "line": 897,
+      "title": "Supported Client Types",
+      "tasks": [
+        "P0-05",
+        "P7-02",
+        "P11-04",
+        "P5-09",
+        "F-02"
+      ],
+      "scope": "MVP DNS/proxy; tunnel clients later",
+      "kind": "Proposed architecture",
+      "requirement": "Personal secure DNS or legacy network DNS setup without VPN; router helpers/profile stacks and tunnel exports deferred",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-14.2",
+      "section": "14.2",
+      "line": 909,
+      "title": "Profile Binding",
+      "tasks": [
+        "P1-01",
+        "P2-02",
+        "P6-03"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Secure resolver capability selects DNS endpoint policy; legacy and transparent gateway use separate network grants; no internet MAC/client-alias/shared-IP device identity",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-14.3",
+      "section": "14.3",
+      "line": 921,
+      "title": "Connection Profile",
+      "tasks": [
+        "P7-02",
+        "P5-07",
+        "P5-09"
+      ],
+      "scope": "MVP DNS/proxy profiles; engine exports later",
+      "kind": "Explicit requirement",
+      "requirement": "Preserve multiple DNS/proxy profiles and protected access; native tunnel/engine URI/QR exports deferred",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-14.4",
+      "section": "14.4",
+      "line": 932,
+      "title": "Future Routira Client",
+      "tasks": [
+        "F-03"
+      ],
+      "scope": "Future",
+      "kind": "Deferred feature",
+      "requirement": "Custom client/split routing/leak diagnostics/protocol switching and opt-in telemetry are separate undertaking",
+      "delivery": [
+        "FUTURE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-15",
+      "section": "15",
+      "line": 946,
+      "title": "Rust Technology Stack",
+      "tasks": [
+        "F-01",
+        "P0-01",
+        "P0-02",
+        "P0-05",
+        "P10-01",
+        "P10-02",
+        "P10-04",
+        "P11-01",
+        "P5-02",
+        "P5-08",
+        "P7-01"
+      ],
+      "requirement": "Rust Technology Stack: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-15.1",
+      "section": "15.1",
+      "line": 948,
+      "title": "Proposed Dependencies",
+      "tasks": [
+        "P0-02",
+        "P0-05",
+        "P7-01"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Rust/React candidate stack requires pinned mutually compatible dependencies/features and upgrade tests",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-15.2",
+      "section": "15.2",
+      "line": 970,
+      "title": "Why Rust?",
+      "tasks": [
+        "P0-01",
+        "P10-04"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Choose strong typing/memory safety; demonstrate performance by measurement, not language guarantees",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-15.3",
+      "section": "15.3",
+      "line": 980,
+      "title": "Boundary Between Rust and Third-Party Implementations",
+      "tasks": [
+        "P5-02",
+        "P5-08",
+        "F-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "First-party Rust manages proven external engines; do not reimplement cryptography; BoringTun only evaluated if justified",
+      "delivery": [
+        "FUTURE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-15.4",
+      "section": "15.4",
+      "line": 986,
+      "title": "Privileged Operations",
+      "tasks": [
+        "P10-02",
+        "P11-01",
+        "P10-01"
+      ],
+      "scope": "MVP no NET_ADMIN; helper later",
+      "kind": "Explicit requirement",
+      "requirement": "MVP services stay unprivileged and expose no OS routing actions; restricted helper mandatory before later tunnel/engine privileges",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-16",
+      "section": "16",
+      "line": 992,
+      "title": "Recommended Repository Structure",
+      "tasks": [
+        "P0-02"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Target repo layout, not required empty crate scaffolding; instantiate cohesive crates only as needed",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-16.1",
+      "section": "16.1",
+      "line": 1048,
+      "title": "Basic Engineering Rules",
+      "tasks": [
+        "P0-04",
+        "P1-07",
+        "P10-01",
+        "P10-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Formatting/lints/errors/cancellation/logging/lockfiles/security and actual Linux integration on each applicable change",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-17",
+      "section": "17",
+      "line": 1061,
+      "title": "Domain Model and Data Schema",
+      "tasks": [
+        "F-05",
+        "P1-01",
+        "P1-02",
+        "P1-03",
+        "P1-05",
+        "P2-07",
+        "P5-07",
+        "P6-03",
+        "P6-07",
+        "P9-01"
+      ],
+      "requirement": "Domain Model and Data Schema: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-17.1",
+      "section": "17.1",
+      "line": 1063,
+      "title": "Core Entities",
+      "tasks": [
+        "P1-01",
+        "P6-03",
+        "P9-01",
+        "P2-07"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Typed entities include managed node vs external proxy, engines/credentials, policies/revisions/audit and aggregated metrics",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-17.2",
+      "section": "17.2",
+      "line": 1086,
+      "title": "Invariants",
+      "tasks": [
+        "P1-02",
+        "P1-05",
+        "P5-07",
+        "P6-03"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Node/engine/binding/reference/credential/snapshot/secret/version/identity-evidence invariants preserved",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-17.3",
+      "section": "17.3",
+      "line": 1097,
+      "title": "Storage",
+      "tasks": [
+        "P1-03",
+        "P6-07",
+        "F-05"
+      ],
+      "scope": "MVP + future",
+      "kind": "Explicit requirement",
+      "requirement": "SQLite WAL/migrations/backup/bounded writes; PostgreSQL only justified concurrency/HA; minimal aggregate history",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-18",
+      "section": "18",
+      "line": 1107,
+      "title": "API and Internal Contracts",
+      "tasks": [
+        "P1-04",
+        "P2-06",
+        "P6-01",
+        "P6-02",
+        "P6-05",
+        "P6-06",
+        "P6-07",
+        "P6-08",
+        "P7-03",
+        "P8-01",
+        "P8-03"
+      ],
+      "requirement": "API and Internal Contracts: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-18.1",
+      "section": "18.1",
+      "line": 1109,
+      "title": "Versioning",
+      "tasks": [
+        "P6-01",
+        "P6-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Versioned /api/v1 OpenAPI and common UI/API access; RBAC/CSRF/Origin on every mutation",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-18.2",
+      "section": "18.2",
+      "line": 1113,
+      "title": "Example Endpoint Groups",
+      "tasks": [
+        "P6-02",
+        "P6-05",
+        "P6-06",
+        "P6-07",
+        "P8-01"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Endpoint groups are future contracts; security/revocation/deployment/diagnostics/export/backup tests required",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-18.3",
+      "section": "18.3",
+      "line": 1153,
+      "title": "Example Policy Explain Response",
+      "tasks": [
+        "P2-06",
+        "P7-03"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Explain includes decision/profile/rule/node/version/warnings and false network_test_performed for simulation",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-18.4",
+      "section": "18.4",
+      "line": 1171,
+      "title": "Internal Events",
+      "tasks": [
+        "P1-04",
+        "P6-08",
+        "P8-03"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Versioned actor/entity/node/correlation/outcome events never contain tokens/keys/passwords",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19",
+      "section": "19",
+      "line": 1179,
+      "title": "Security and Privacy",
+      "tasks": [
+        "P0-01",
+        "P0-05",
+        "P1-05",
+        "P1-07",
+        "P10-01",
+        "P10-02",
+        "P10-05",
+        "P11-04",
+        "P11-05",
+        "P3-01",
+        "P4-02",
+        "P6-01",
+        "P6-08",
+        "P7-05"
+      ],
+      "requirement": "Security and Privacy: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.1",
+      "section": "19.1",
+      "line": 1181,
+      "title": "Threat Model",
+      "tasks": [
+        "P0-01",
+        "P10-02",
+        "P10-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Threat model covers amplification/open proxy/SSRF/admin/enrollment/supply chain/rebinding/leaks/fail-open",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2",
+      "section": "19.2",
+      "line": 1194,
+      "title": "Baseline Restrictions",
+      "tasks": [
+        "P1-05",
+        "P1-07",
+        "P3-01",
+        "P4-02",
+        "P6-01",
+        "P10-01",
+        "P10-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Baseline restrictions apply to enabled features: ACL/auth/address rechecks/limits/private TLS/MFA/RBAC/secrets/snapshots/verified updates. MVP denies privileged OS actions; custom helper required before later privileged tunnel features",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.3",
+      "section": "19.3",
+      "line": 1209,
+      "title": "Privacy",
+      "tasks": [
+        "P6-08",
+        "P7-05",
+        "P11-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Aggregate/minimal optional per-domain retention, separated admin audit, no HTTPS MITM or anonymity guarantee",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.4",
+      "section": "19.4",
+      "line": 1218,
+      "title": "Component Licensing",
+      "tasks": [
+        "P0-05",
+        "P11-05"
+      ],
+      "scope": "MVP",
+      "kind": "Open decision",
+      "requirement": "Exact engine/crate licenses and distribution conditions reviewed; Routira license remains unselected",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-20",
+      "section": "20",
+      "line": 1228,
+      "title": "Monitoring, Diagnostics, and Resilience",
+      "tasks": [
+        "F-04",
+        "P1-06",
+        "P2-04",
+        "P2-06",
+        "P3-02",
+        "P4-07",
+        "P5-07",
+        "P6-06",
+        "P6-08",
+        "P7-05",
+        "P8-02",
+        "P8-04",
+        "P9-02"
+      ],
+      "requirement": "Monitoring, Diagnostics, and Resilience: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-20.1",
+      "section": "20.1",
+      "line": 1230,
+      "title": "Metrics",
+      "tasks": [
+        "P4-07",
+        "P6-06",
+        "P7-05",
+        "P8-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Actual bounded DNS/gateway/engine/node/security metrics with units and trustworthy identity/version",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-20.2",
+      "section": "20.2",
+      "line": 1242,
+      "title": "Health-Check Levels",
+      "tasks": [
+        "P6-06",
+        "P8-02",
+        "P9-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Process/transport/route/service health distinct; successful ping/handshake not service acceptance",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-20.3",
+      "section": "20.3",
+      "line": 1249,
+      "title": "Failure Policies",
+      "tasks": [
+        "P1-06",
+        "P2-04",
+        "P3-02",
+        "P5-07",
+        "P8-04"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "LKG on CP loss; retain invalid version; strict exit fail closed; allowed resolver fallback; expiry/unknown/IPv6 denial",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-20.4",
+      "section": "20.4",
+      "line": 1261,
+      "title": "Diagnostic Reason Codes",
+      "tasks": [
+        "P2-06",
+        "P6-06",
+        "P7-05"
+      ],
+      "scope": "MVP",
+      "kind": "Proposed architecture",
+      "requirement": "Stable actionable reason codes for identity/DNSSEC/ECH/QUIC/nodes/engine/ports/egress/loops",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-20.5",
+      "section": "20.5",
+      "line": 1265,
+      "title": "Notifications",
+      "tasks": [
+        "P6-08",
+        "F-04"
+      ],
+      "scope": "MVP + future",
+      "kind": "Deferred feature",
+      "requirement": "In-app/log events suffice first; optional external notifications need explicit opt-in, severity and anti-spam",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-21",
+      "section": "21",
+      "line": 1271,
+      "title": "Deployment and Operations",
+      "tasks": [
+        "F-02",
+        "P10-04",
+        "P11-01",
+        "P11-02",
+        "P11-03",
+        "P5-08",
+        "P5-09",
+        "P5-10",
+        "P6-01",
+        "P6-07",
+        "P7-02",
+        "P7-06",
+        "P8-06",
+        "P9-05"
+      ],
+      "requirement": "Deployment and Operations: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-21.1",
+      "section": "21.1",
+      "line": 1273,
+      "title": "Hosting Models",
+      "tasks": [
+        "P11-01",
+        "P8-06",
+        "P9-05",
+        "F-02"
+      ],
+      "scope": "MVP + later",
+      "kind": "Proposed architecture",
+      "requirement": "Single VPS first; controller/nodes then home/router topologies with explicit threat boundaries",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-21.2",
+      "section": "21.2",
+      "line": 1281,
+      "title": "Installation Formats",
+      "tasks": [
+        "P11-01",
+        "P11-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Native systemd primary; Compose optional constrained; no Docker requirement; deb/rpm later",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-21.3",
+      "section": "21.3",
+      "line": 1289,
+      "title": "Installer Preflight Checks",
+      "tasks": [
+        "P11-01",
+        "P5-10"
+      ],
+      "scope": "MVP DNS/proxy; tunnel preflight later",
+      "kind": "Explicit requirement",
+      "requirement": "MVP host/ports/IP/firewall/DNS/time/egress preflight; TUN/AWG/module checks deferred with the feature",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-21.4",
+      "section": "21.4",
+      "line": 1300,
+      "title": "Initial Setup Wizard",
+      "tasks": [
+        "P6-01",
+        "P7-02",
+        "P7-06",
+        "P11-01",
+        "P5-09"
+      ],
+      "scope": "MVP DNS/proxy; engine onboarding later",
+      "kind": "Proposed architecture",
+      "requirement": "MVP admin/MFA/DNS/proxy/profile/diagnostics/backup onboarding; node/engine/tunnel provisioning later",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-21.5",
+      "section": "21.5",
+      "line": 1312,
+      "title": "Port Model (Example, Not a Universal Template)",
+      "tasks": [
+        "P5-08",
+        "P11-01"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "Protocol/TLS/listener endpoints allocated explicitly; same :443 combination not universally compatible",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-21.6",
+      "section": "21.6",
+      "line": 1327,
+      "title": "Backups and Updates",
+      "tasks": [
+        "P6-07",
+        "P11-03",
+        "P5-08"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Encrypted backup/recovery before migrations; versioned staged health/rollback and client export compatibility",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-21.7",
+      "section": "21.7",
+      "line": 1336,
+      "title": "Initial Resource Requirements",
+      "tasks": [
+        "P10-04"
+      ],
+      "scope": "MVP",
+      "kind": "Technical constraint",
+      "requirement": "Measure DNS QPS/flows/throughput/RTT/engine resources; no fixed tiny-VPS streaming capacity guarantee",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22",
+      "section": "22",
+      "line": 1341,
+      "title": "Testing and Quality Criteria",
+      "tasks": [
+        "P0-04",
+        "P1-02",
+        "P10-01",
+        "P10-02",
+        "P10-03",
+        "P10-04",
+        "P10-05",
+        "P10-06",
+        "P11-05",
+        "P2-02",
+        "P3-03",
+        "P3-07",
+        "P5-08",
+        "P7-07",
+        "P9-03"
+      ],
+      "requirement": "Testing and Quality Criteria: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.1",
+      "section": "22.1",
+      "line": 1343,
+      "title": "Unit Tests",
+      "tasks": [
+        "P1-02",
+        "P2-02",
+        "P3-03",
+        "P10-02"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Unit/property coverage for matching/conflict/capability/schema/cache/auth/redaction/CIDR boundaries",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.2",
+      "section": "22.2",
+      "line": 1352,
+      "title": "Integration Tests",
+      "tasks": [
+        "P3-07",
+        "P5-08",
+        "P9-03",
+        "P10-06"
+      ],
+      "scope": "MVP + later",
+      "kind": "Explicit requirement",
+      "requirement": "Real DNS/gateway/peer/Xray/inter-node/crash/LKG/storage integration per enabled feature",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3",
+      "section": "22.3",
+      "line": 1362,
+      "title": "Network Limitation Test Matrix",
+      "tasks": [
+        "P10-05",
+        "P7-07"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "All 11 limitation cases become observable positive/negative acceptance evidence",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.4",
+      "section": "22.4",
+      "line": 1380,
+      "title": "Load Testing",
+      "tasks": [
+        "P10-04"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Sustained/peak DNS/TCP/slow streams/memory/error/log cardinality/load and resource degradation evidence",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.5",
+      "section": "22.5",
+      "line": 1389,
+      "title": "Security Testing",
+      "tasks": [
+        "P10-01",
+        "P10-02",
+        "P10-03",
+        "P10-05",
+        "P11-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Parser fuzz/SSRF/rebinding/unauthorized/loops/segmentation/RBAC/secrets/SBOM/license checks",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.6",
+      "section": "22.6",
+      "line": 1399,
+      "title": "CI/CD",
+      "tasks": [
+        "P0-04",
+        "P11-05"
+      ],
+      "scope": "MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Backend/frontend/dependency/release CI; kernel tests on isolated trusted runners, never arbitrary PR root production",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-23",
+      "section": "23",
+      "line": 1405,
+      "title": "Development Phases and MVP Scope",
+      "tasks": [
+        "F-01",
+        "F-02",
+        "F-03",
+        "F-04",
+        "F-05",
+        "P0-01",
+        "P0-02",
+        "P0-05",
+        "P1-05",
+        "P11-06",
+        "P2-06",
+        "P3-06",
+        "P4-08",
+        "P5-10",
+        "P6-01",
+        "P7-07",
+        "P8-06",
+        "P9-05"
+      ],
+      "requirement": "Development Phases and MVP Scope: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "FUTURE",
+        "MVP",
+        "POST_MVP_MULTI_NODE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-23.1",
+      "section": "23.1",
+      "line": 1407,
+      "title": "Phase 0 \u2014 Foundation",
+      "tasks": [
+        "P0-01",
+        "P0-02",
+        "P1-05",
+        "P2-06",
+        "P6-01",
+        "P0-05"
+      ],
+      "scope": "Foundation",
+      "kind": "Explicit requirement",
+      "requirement": "Foundation contracts/security/test harness precede broad UI; no implementation during planning session",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-23.2",
+      "section": "23.2",
+      "line": 1420,
+      "title": "Phase 1 \u2014 Single-Node MVP",
+      "tasks": [
+        "P3-06",
+        "P4-08",
+        "P7-07",
+        "P11-06",
+        "P5-10"
+      ],
+      "scope": "MVP amended by CR-0001",
+      "kind": "Explicit requirement",
+      "requirement": "User-approved DNS/proxy MVP supersedes original first-release WG/AWG/Xray ordering; those integrations remain explicit post-MVP work",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-23.3",
+      "section": "23.3",
+      "line": 1435,
+      "title": "Phase 2 \u2014 Multi-Node",
+      "tasks": [
+        "P8-06",
+        "P9-05"
+      ],
+      "scope": "Post-MVP",
+      "kind": "Explicit requirement",
+      "requirement": "Secure enrollment/sync, groups/outbounds/failover/path diagnostics and managed/external separation",
+      "delivery": [
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-23.4",
+      "section": "23.4",
+      "line": 1444,
+      "title": "Phase 3 \u2014 Advanced Networking",
+      "tasks": [
+        "F-01",
+        "F-02"
+      ],
+      "scope": "Future",
+      "kind": "Deferred feature",
+      "requirement": "Justified extra engines/UDP/TUN/complex policy/router integration require separate approved gates",
+      "delivery": [
+        "FUTURE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-23.5",
+      "section": "23.5",
+      "line": 1452,
+      "title": "Phase 4 \u2014 Client and Mature Platform",
+      "tasks": [
+        "F-03",
+        "F-04",
+        "F-05"
+      ],
+      "scope": "Future",
+      "kind": "Deferred feature",
+      "requirement": "Optional client/inbound switch/subscriptions/analytics/updates/HA/PostgreSQL only when justified",
+      "delivery": [
+        "FUTURE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-23.6",
+      "section": "23.6",
+      "line": 1460,
+      "title": "Working Priorities",
+      "tasks": [
+        "P0-01",
+        "P11-06",
+        "F-01"
+      ],
+      "scope": "All phases",
+      "kind": "Explicit requirement",
+      "requirement": "P0 correctness/security before protocol/UI priorities; avoid simultaneous architecture rewrite and new engine",
+      "delivery": [
+        "FUTURE",
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24",
+      "section": "24",
+      "line": 1471,
+      "title": "Definition of Done and Product Decisions",
+      "tasks": [
+        "P0-01",
+        "P0-05",
+        "P10-07",
+        "P11-05",
+        "P11-06",
+        "P5-10",
+        "P7-07"
+      ],
+      "requirement": "Definition of Done and Product Decisions: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1",
+      "section": "24.1",
+      "line": 1473,
+      "title": "Definition of Done for the Single-Node MVP",
+      "tasks": [
+        "P7-07",
+        "P10-07",
+        "P11-06",
+        "P5-10"
+      ],
+      "scope": "MVP checklist amended by CR-0001",
+      "kind": "Explicit requirement",
+      "requirement": "DNS/proxy/security/install/restore/status checklist applies now; original WG/AWG/Xray/isolation items deferred to P5-10",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.2",
+      "section": "24.2",
+      "line": 1490,
+      "title": "Preliminary Product Decisions",
+      "tasks": [
+        "P0-01",
+        "P0-05",
+        "P11-05",
+        "P5-10"
+      ],
+      "scope": "MVP DNS/proxy; protocols later",
+      "kind": "Proposed architecture",
+      "requirement": "Retain Rust/React/SQLite/Hickory/TCP/Linux/fail-closed; three engine integrations are post-MVP under CR-0001; license open",
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-25",
+      "section": "25",
+      "line": 1509,
+      "title": "Risks, Trade-offs, and Open Questions",
+      "tasks": [
+        "P0-01",
+        "P0-05",
+        "P10-04",
+        "P10-05",
+        "P11-05",
+        "P4-01"
+      ],
+      "requirement": "Risks, Trade-offs, and Open Questions: all mapped child obligations below",
+      "kind": "Section rollup",
+      "scope": "See child requirements",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-25.1",
+      "section": "25.1",
+      "line": 1511,
+      "title": "Major Technical Risks",
+      "tasks": [
+        "P0-01",
+        "P0-05",
+        "P10-05",
+        "P11-05"
+      ],
+      "scope": "All phases",
+      "kind": "Risk",
+      "requirement": "SmartDNS expectations/ECH/SVCB/bridge/AWG/helper/ports/NAT/IPv6/license/updates/scope risks have owners and tests",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-25.2",
+      "section": "25.2",
+      "line": 1524,
+      "title": "Proposed Open Questions Before Implementation",
+      "tasks": [
+        "P0-01",
+        "P0-05",
+        "P4-01",
+        "P10-04"
+      ],
+      "scope": "Before dependent tasks",
+      "kind": "Open decision",
+      "requirement": "User confirmed multi-admin roles; distro/public DNS/ports/IPv6/services/license/clients/failure defaults remain registered choices",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-25.3",
+      "section": "25.3",
+      "line": 1537,
+      "title": "Architectural ADRs to Write First",
+      "tasks": [
+        "P0-01"
+      ],
+      "scope": "Foundation",
+      "kind": "Proposed architecture",
+      "requirement": "Nine suggested ADR areas covered by 15 proposed ADRs with alternatives/reasons/risks/validation",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-26",
+      "section": "26",
+      "line": 1551,
+      "title": "Glossary",
+      "tasks": [
+        "P11-04"
+      ],
+      "scope": "All phases",
+      "kind": "Proposed architecture",
+      "requirement": "Use consistent glossary; distinguish protocol/engine, DNS/traffic, entry/exit and fail-closed semantics",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-27",
+      "section": "27",
+      "line": 1579,
+      "title": "Sources and Technical References",
+      "tasks": [
+        "P0-02",
+        "P0-05"
+      ],
+      "scope": "All phases",
+      "kind": "Proposed architecture",
+      "requirement": "Revisit primary sources before pinning dependencies/engines and implementation; citations are not proof of compatibility",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-01",
+      "section": "19.2",
+      "line": 1196,
+      "title": "By default, DNS listens only on trusted addresses/networks; public DNS requires explicit configuration and access restrictions.",
+      "requirement": "By default, DNS listens only on trusted addresses/networks; public DNS requires explicit configuration and access restrictions.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P3-01",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-02",
+      "section": "19.2",
+      "line": 1197,
+      "title": "Explicit proxies require authentication or equally reliable network isolation.",
+      "requirement": "Explicit proxies require authentication or equally reliable network isolation.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P4-01",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-03",
+      "section": "19.2",
+      "line": 1198,
+      "title": "The Gateway does not accept arbitrary destinations without service/route authorization checks.",
+      "requirement": "The Gateway does not accept arbitrary destinations without service/route authorization checks.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P4-01",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-04",
+      "section": "19.2",
+      "line": 1199,
+      "title": "Deny loopback, private, link-local, multicast, metadata, and the system's own endpoints (unless a narrowly limited administrative override applies).",
+      "requirement": "Deny loopback, private, link-local, multicast, metadata, and the system's own endpoints (unless a narrowly limited administrative override applies).",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P4-02",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-05",
+      "section": "19.2",
+      "line": 1200,
+      "title": "Verify destinations **after every DNS resolution**, not only by the domain string.",
+      "requirement": "Verify destinations **after every DNS resolution**, not only by the domain string.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P4-02",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-06",
+      "section": "19.2",
+      "line": 1201,
+      "title": "Enforce rate limits, timeouts, per-client quotas, and circuit breakers.",
+      "requirement": "Enforce rate limits, timeouts, per-client quotas, and circuit breakers.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P10-04",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-07",
+      "section": "19.2",
+      "line": 1202,
+      "title": "The administrative dashboard must not be internet-exposed without authentication, TLS, and protective controls; prefer a private management network.",
+      "requirement": "The administrative dashboard must not be internet-exposed without authentication, TLS, and protective controls; prefer a private management network.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P6-01",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-08",
+      "section": "19.2",
+      "line": 1203,
+      "title": "MFA, RBAC, auditing, secure session cookies, and CSRF/Origin protection.",
+      "requirement": "MFA, RBAC, auditing, secure session cookies, and CSRF/Origin protection.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P6-01",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-09",
+      "section": "19.2",
+      "line": 1204,
+      "title": "Encrypt secrets at rest using a sound key-management scheme; do not store an encryption key alongside encrypted data without considering the threat model.",
+      "requirement": "Encrypt secrets at rest using a sound key-management scheme; do not store an encryption key alongside encrypted data without considering the threat model.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P1-07",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-10",
+      "section": "19.2",
+      "line": 1205,
+      "title": "Root/system capabilities belong only to a privileged helper with a restricted API.",
+      "requirement": "Root/system capabilities belong only to a privileged helper with a restricted API.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP denies OS network actions; custom helper before privileged G3 features",
+      "tasks": [
+        "P10-02",
+        "P11-01",
+        "P10-01"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-11",
+      "section": "19.2",
+      "line": 1206,
+      "title": "Configuration snapshots are signed/authenticated and checked for rollback and sequence violations.",
+      "requirement": "Configuration snapshots are signed/authenticated and checked for rollback and sequence violations.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P1-05",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-19.2-12",
+      "section": "19.2",
+      "line": 1207,
+      "title": "Obtain updates from verified sources, with pinned versions/checksums/signatures where available.",
+      "requirement": "Obtain updates from verified sources, with pinned versions/checksums/signatures where available.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P11-05",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-01",
+      "section": "24.1",
+      "line": 1475,
+      "title": "Users can install Routira on a supported Linux VPS using the documentation.",
+      "requirement": "Users can install Routira on a supported Linux VPS using the documentation.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P11-01",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-02",
+      "section": "24.1",
+      "line": 1476,
+      "title": "DNS/proxy do not become open public resolvers/proxies by default.",
+      "requirement": "DNS/proxy do not become open public resolvers/proxies by default.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P3-01",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-03",
+      "section": "24.1",
+      "line": 1477,
+      "title": "The UI lets users add a DNS profile, device, and rule and test the rule.",
+      "requirement": "The UI lets users add a DNS profile, device, and rule and test the rule.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P7-02",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-04",
+      "section": "24.1",
+      "line": 1478,
+      "title": "DIRECT and BLOCK DNS policies work and produce explainable reasons.",
+      "requirement": "DIRECT and BLOCK DNS policies work and produce explainable reasons.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P3-04",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-05",
+      "section": "24.1",
+      "line": 1479,
+      "title": "The TCP SmartDNS proxy transparently communicates ECH/QUIC/IPv6 limitations.",
+      "requirement": "The TCP SmartDNS proxy transparently communicates ECH/QUIC/IPv6 limitations.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P7-03",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-06",
+      "section": "24.1",
+      "line": 1480,
+      "title": "Configuration versions are validated, applied atomically, and rolled back.",
+      "requirement": "Configuration versions are validated, applied atomically, and rolled back.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P1-06",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-07",
+      "section": "24.1",
+      "line": 1481,
+      "title": "WireGuard inbound is managed via a Rust adapter and tested.",
+      "requirement": "WireGuard inbound is managed via a Rust adapter and tested.",
+      "kind": "Explicit base requirement",
+      "scope": "Post-MVP protocols under CR-0001; original checkbox pending",
+      "tasks": [
+        "P5-04",
+        "P5-10"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-08",
+      "section": "24.1",
+      "line": 1482,
+      "title": "AmneziaWG inbound is managed via a Rust adapter and tested with pinned client/engine versions.",
+      "requirement": "AmneziaWG inbound is managed via a Rust adapter and tested with pinned client/engine versions.",
+      "kind": "Explicit base requirement",
+      "scope": "Post-MVP protocols under CR-0001; original checkbox pending",
+      "tasks": [
+        "P5-05",
+        "P5-10"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-09",
+      "section": "24.1",
+      "line": 1483,
+      "title": "Xray/VLESS+REALITY inbound is managed via a Rust adapter and tested.",
+      "requirement": "Xray/VLESS+REALITY inbound is managed via a Rust adapter and tested.",
+      "kind": "Explicit base requirement",
+      "scope": "Post-MVP protocols under CR-0001; original checkbox pending",
+      "tasks": [
+        "P5-06",
+        "P5-10"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-10",
+      "section": "24.1",
+      "line": 1484,
+      "title": "A normal Xray crash does not stop DNS or WG.",
+      "requirement": "A normal Xray crash does not stop DNS or WG.",
+      "kind": "Explicit base requirement",
+      "scope": "Post-MVP protocols under CR-0001; original checkbox pending",
+      "tasks": [
+        "P5-08",
+        "P5-10"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-11",
+      "section": "24.1",
+      "line": 1485,
+      "title": "Secrets are hidden in APIs/logs/exports.",
+      "requirement": "Secrets are hidden in APIs/logs/exports.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P1-07",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-12",
+      "section": "24.1",
+      "line": 1486,
+      "title": "Backup and documented restore have been verified in practice.",
+      "requirement": "Backup and documented restore have been verified in practice.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P11-03",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-13",
+      "section": "24.1",
+      "line": 1487,
+      "title": "Tests cover NAT, IPv6, DNSSEC override, ECH, node failures, SSRF, and DNS loops.",
+      "requirement": "Tests cover NAT, IPv6, DNSSEC override, ECH, node failures, SSRF, and DNS loops.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P10-05",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-24.1-14",
+      "section": "24.1",
+      "line": 1488,
+      "title": "The UI distinguishes `configured`, `applied`, `healthy`, and `tested`.",
+      "requirement": "The UI distinguishes `configured`, `applied`, `healthy`, and `tested`.",
+      "kind": "Explicit base requirement",
+      "scope": "MVP",
+      "tasks": [
+        "P7-05",
+        "P7-07",
+        "P10-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3-01",
+      "section": "22.3",
+      "line": 1368,
+      "title": "Ordinary TCP/TLS with visible SNI \u2192 Gateway works for authorized domain",
+      "requirement": "Ordinary TCP/TLS with visible SNI \u2192 Gateway works for authorized domain",
+      "kind": "Explicit base requirement",
+      "scope": "MVP supported DNS/proxy boundary; DNS-only endpoint limits explicit",
+      "tasks": [
+        "P10-05",
+        "P7-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3-02",
+      "section": "22.3",
+      "line": 1369,
+      "title": "ECH / unavailable original hostname \u2192 Predictable failure or supported alternative path; **never** incorrect routing",
+      "requirement": "ECH / unavailable original hostname \u2192 Predictable failure or supported alternative path; **never** incorrect routing",
+      "kind": "Explicit base requirement",
+      "scope": "MVP supported DNS/proxy boundary; DNS-only endpoint limits explicit",
+      "tasks": [
+        "P10-05",
+        "P7-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3-03",
+      "section": "22.3",
+      "line": 1370,
+      "title": "HTTP/3/QUIC in DNS-only mode \u2192 Explicitly `unsupported/limited`, with no false guarantees",
+      "requirement": "HTTP/3/QUIC in DNS-only mode \u2192 Explicitly `unsupported/limited`, with no false guarantees",
+      "kind": "Explicit base requirement",
+      "scope": "MVP supported DNS/proxy boundary; DNS-only endpoint limits explicit",
+      "tasks": [
+        "P10-05",
+        "P7-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3-04",
+      "section": "22.3",
+      "line": 1371,
+      "title": "Signed DNS RRset + local override \u2192 Modified response is not claimed to have valid DNSSEC",
+      "requirement": "Signed DNS RRset + local override \u2192 Modified response is not claimed to have valid DNSSEC",
+      "kind": "Explicit base requirement",
+      "scope": "MVP supported DNS/proxy boundary; DNS-only endpoint limits explicit",
+      "tasks": [
+        "P10-05",
+        "P7-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3-05",
+      "section": "22.3",
+      "line": 1372,
+      "title": "IPv6 when an IPv4 proxy policy applies \u2192 No bypass of strict policy",
+      "requirement": "IPv6 when an IPv4 proxy policy applies \u2192 No bypass of strict policy",
+      "kind": "Explicit base requirement",
+      "scope": "MVP supported DNS/proxy boundary; DNS-only endpoint limits explicit",
+      "tasks": [
+        "P10-05",
+        "P7-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3-06",
+      "section": "22.3",
+      "line": 1373,
+      "title": "Multiple clients behind NAT \u2192 No false per-client authorization",
+      "requirement": "Multiple clients behind NAT \u2192 No false per-client authorization",
+      "kind": "Explicit base requirement",
+      "scope": "MVP supported DNS/proxy boundary; DNS-only endpoint limits explicit",
+      "tasks": [
+        "P10-05",
+        "P7-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3-07",
+      "section": "22.3",
+      "line": 1374,
+      "title": "Origin DNS resolves to private IP \u2192 Block or enforce additional policy",
+      "requirement": "Origin DNS resolves to private IP \u2192 Block or enforce additional policy",
+      "kind": "Explicit base requirement",
+      "scope": "MVP supported DNS/proxy boundary; DNS-only endpoint limits explicit",
+      "tasks": [
+        "P10-05",
+        "P7-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3-08",
+      "section": "22.3",
+      "line": 1375,
+      "title": "Policy update fails \u2192 Retain previous working version",
+      "requirement": "Policy update fails \u2192 Retain previous working version",
+      "kind": "Explicit base requirement",
+      "scope": "MVP supported DNS/proxy boundary; DNS-only endpoint limits explicit",
+      "tasks": [
+        "P10-05",
+        "P7-07"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3-09",
+      "section": "22.3",
+      "line": 1376,
+      "title": "Node outage \u2192 Apply precisely the selected fail-closed/fallback behavior",
+      "requirement": "Node outage \u2192 Apply precisely the selected fail-closed/fallback behavior",
+      "kind": "Explicit base requirement",
+      "scope": "MVP proxy/component failure; remote node outage at G4",
+      "tasks": [
+        "P4-06",
+        "P10-06",
+        "P9-02"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_MULTI_NODE"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3-10",
+      "section": "22.3",
+      "line": 1377,
+      "title": "Split-tunnel client \u2192 Clearly distinguish client-side DIRECT from server-side DIRECT",
+      "requirement": "Split-tunnel client \u2192 Clearly distinguish client-side DIRECT from server-side DIRECT",
+      "kind": "Explicit base requirement",
+      "scope": "Post-MVP split-tunnel clients under CR-0001",
+      "tasks": [
+        "P5-04",
+        "P5-10",
+        "F-02"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "FUTURE",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-22.3-11",
+      "section": "22.3",
+      "line": 1378,
+      "title": "Revoked credentials \u2192 New connections are no longer accepted after confirmed revocation deployment",
+      "requirement": "Revoked credentials \u2192 New connections are no longer accepted after confirmed revocation deployment",
+      "kind": "Explicit base requirement",
+      "scope": "MVP DNS/proxy access revocation; peer credential tests at G3",
+      "tasks": [
+        "P6-03",
+        "P4-08",
+        "P5-07",
+        "P5-10"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ],
+      "source_file": "Routira_Project_Specification_EN.md"
+    },
+    {
+      "id": "R-CR-0001",
+      "section": "scope-change",
+      "line": 1,
+      "source_file": "docs/architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md",
+      "title": "DNS/proxy MVP before tunnels",
+      "requirement": "Release DNS/proxy MVP without VPNs, managed engines, TUN or a custom privileged networking helper; retain real later protocol acceptance",
+      "kind": "Accepted user instruction",
+      "scope": "Overrides first-release ordering in \u00a7\u00a723.2/24.1/24.2; no implementation approval",
+      "tasks": [
+        "P4-08",
+        "P7-07",
+        "P11-06",
+        "P5-10"
+      ],
+      "scope_change": "CR-0001",
+      "delivery": [
+        "MVP",
+        "POST_MVP_PROTOCOLS"
+      ]
+    },
+    {
+      "id": "R-CR-0002",
+      "section": "design-proposal",
+      "line": 1,
+      "source_file": "docs/architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md",
+      "title": "Profile and endpoint DNS product model",
+      "requirement": "Separate Profiles, DNS Endpoints, resolver capabilities, filter/service revisions, private records and gateway grants; personal DoH/DoT in revised MVP",
+      "kind": "Accepted user instruction",
+      "scope": "Owner accepted P0-01/CR-0002 on 2026-10-15; dependent implementation tests remain",
+      "tasks": [
+        "P1-01",
+        "P2-07",
+        "P2-02",
+        "P3-07",
+        "P4-01",
+        "P6-03",
+        "P7-02",
+        "P7-04"
+      ],
+      "scope_change": "CR-0002",
+      "delivery": [
+        "MVP"
+      ]
+    }
+  ]
+}

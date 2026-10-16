@@ -1,0 +1,36 @@
+# Keep application coverage separate from the historical planning report.
+coverage:
+  status:
+    project:
+      default: false
+      planning:
+        flags: [planning]
+        target: auto
+        informational: true
+      backend:
+        flags: [backend]
+        target: auto
+        informational: true
+    patch:
+      default: false
+      planning:
+        flags: [planning]
+        target: auto
+        informational: true
+      backend:
+        flags: [backend]
+        target: auto
+        informational: true
+flags:
+  planning:
+    paths:
+      - tools/render_planning.py
+      - tools/verify_planning.py
+      - tools/verify_quality_proposals.py
+    carryforward: false
+  backend:
+    paths:
+      - crates/routira-common/src/
+      - crates/routira-config/src/
+      - crates/routira-policy/src/
+    carryforward: false

@@ -1,0 +1,7 @@
+{
+  "status": "passed",
+  "yaml_files": 5,
+  "negative_authorization_cases": 6,
+  "service_side_validation": "not performed by this local validator",
+  "workflow_execution": "local configuration checks only; remote runs recorded in integration documentation"
+}

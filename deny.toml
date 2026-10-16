@@ -1,0 +1,4 @@
+# The owner selected Apache-2.0 for Routira on 2026-10-15.
+# Review external dependency licenses in P0-05 before expanding this list.
+[licenses]
+allow = ["Apache-2.0"]
