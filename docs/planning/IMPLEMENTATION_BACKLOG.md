@@ -123,7 +123,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P1-03: Implement SQLite persistence and migrations
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,21,22.
+Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,21,22.
 
 | Field | Deliverable / evidence |
 |---|---|

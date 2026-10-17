@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-17. Current stage: **P1-03 SQLite implementation in draft PR #6; implementation Linux/review pending**.
+Date: 2026-10-17. Current stage: **P1-03 SQLite in draft PR #6; implementation/fix/coverage reviews and CI passed, final evidence/merge pending**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -105,6 +105,17 @@ review remain pending. The owner accepted one writer, queue 64, busy 1s, respons
 explicit overload/uncertain commit-time timeout, and metadata/SecretRefId links
 only until P1-07. See [P1-03 evidence](P1_03_STORAGE_REVIEW.md); no plaintext verifier,
 token generation/verification, live admission or deployment is authorized here.
+
+P1-03 implementation review found an acknowledged-write loss after SQLite automatic
+rollback. The writer now drains pending rollback and checks zero transaction depth
+before acknowledgment, then closes an inconsistent connection without retry. The
+fix passed independent re-review and actual Linux reopen regressions. Head
+`20c7a3fea34126fc4d449de358bdf72bd08d88d8` also fixes an omitted storage path in the
+Codecov backend flag and guards coverage against missing workspace crates.
+Its independent review and all nine jobs of run 39049354119 passed. Actual service
+storage patch is 638/680 (93.82%), backend 1475/1574; both patch checks succeeded.
+CodeScene 7998950 stays failed with maintenance dispositions in OPEN_DECISIONS.
+P1-03 is in_review until final evidence review/checks and normal PR #6 merge.
 
 ## Owner decisions and current progress
 

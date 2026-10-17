@@ -1,6 +1,6 @@
 # P1-03 SQLite persistence review
 
-Date: 2026-10-17. Status: **dependency qualification/review passed; storage implementation Linux and independent review pending**.
+Date: 2026-10-17. Status: **implementation and coverage correction reviewed; final evidence review/merge pending**.
 Base: verified PR #5 merge `57ce7973228d1c2153601b58f82c08c9cd9302fa`.
 Authority: accepted CR-0002, task P1-03, direct owner answers in D14/D26/D27 of
 [OPEN_DECISIONS](OPEN_DECISIONS.md). ADR-0007 remains Proposed; later PostgreSQL,
@@ -164,3 +164,29 @@ paths with workspace members and a missing-crate regression was observed failing
 before correction. Exact-head processed service data and re-review of this
 configuration correction are still required; no storage coverage pass is inferred
 from the old service report or the local LCOV alone.
+
+## Coverage correction and merge evidence
+
+Coverage correction head `20c7a3fea34126fc4d449de358bdf72bd08d88d8` passed
+independent read-only review against the verified base without confirmed defects
+(`.setup/p1-03/codex-review-coverage-fix.log`, exit 0). The reviewer could check
+formatting/source fingerprints; Cargo tests/Clippy could not acquire build locks
+in its read-only sandbox. All nine jobs of
+[run 39049354119](https://github.com/romanpodg/Routira/actions/runs/39049354119)
+passed separately on that exact head, including actual Windows/Linux execution.
+
+Codecov processed both reports and the exact base/head comparison. The service
+now includes all six storage source files: storage patch 638/680 (93.82%), backend
+1475/1574 (93.71%). The backend patch check succeeded at 93.82%; planning patch
+check succeeded at 100%. Combined 647/689 patch includes nine auxiliary Python
+lines and is not application coverage. Raw LCOV and service instrumented-line
+counts differ; neither is substituted for the other. Reports and comparison are
+retained locally as `codecov-coverage-fix-commit.json`/`-compare.json` in `.setup/p1-03`.
+
+[CodeScene 7998950](https://codescene.io/projects/86145/delta/results/7998950)
+remains failed on new-code health and the migration complexity critical rule;
+one other gate passed. Source inspection and independent review found no remaining
+concrete defect from those maintenance signals. Their impact, rationale and revisit
+triggers are recorded in [P1-03 dispositions](OPEN_DECISIONS.md#p1-03-review-dispositions).
+No suppression, threshold change or score-only source rewrite was made. Final
+evidence changes still require independent review and CI before normal merge.
