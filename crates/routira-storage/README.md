@@ -4,6 +4,22 @@ The crate stores immutable `ConfigurationRevisionId` revisions and catalog ident
 SHA-256 records. It does not select an active revision, publish policy, authenticate
 a token or admit DNS/TCP traffic. Policy/packet crates do not depend on this crate.
 
+Configuration saves require a `DraftRevision` from the trusted Control Plane,
+separate from the imported document: matching revision ID, expected previous
+revision, typed `UserId`/`CorrelationId` and UTC Unix milliseconds. The library
+does not authenticate these claims; API RBAC remains P6. Parent links determine
+order when wall-clock time moves backwards. A single global draft head advances
+with the immutable source document, indexes and provenance in one transaction.
+Concurrent/stale edits return `Conflict`, with no automatic merge or retry.
+`draft_head` is a control-plane draft pointer, never live publication/authority.
+
+Migration 3 preserves pre-existing records as `LegacyUnknown`; it neither invents
+their authors/timestamps nor chooses one as a draft head. The first new audited
+revision starts a chain with expected parent None. Recorded audit metadata never
+copies document contents. There is no public unaudited configuration-save overload.
+Catalog hash claims remain separate from the source draft chain and actual dataset
+import/approval provenance (P2-07); no broader activity-audit product is claimed.
+
 `ConfigurationWrite::parse` reuses the bounded JSON/YAML/TOML input boundary and
 takes ownership of the original document plus checked types. A save transaction
 preserves the complete document and indexes Profile/Endpoint assignments, public

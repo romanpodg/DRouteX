@@ -26,6 +26,13 @@ pub(crate) fn migrations() -> Migrator {
             include_str!("../../../migrations/0002_credential_verifier_refs.sql").into_sql_str(),
             false,
         ),
+        Migration::new(
+            3,
+            Cow::Borrowed("draft revision provenance"),
+            MigrationType::Simple,
+            include_str!("../../../migrations/0003_draft_provenance.sql").into_sql_str(),
+            false,
+        ),
     ])
 }
 

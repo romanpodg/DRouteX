@@ -1,6 +1,6 @@
 # P1-03 SQLite persistence review
 
-Date: 2026-10-17. Status: **final review found initialization cancellation defect; owner-approved correction under validation**.
+Date: 2026-10-17. Status: **complete; PR #6 merged normally after startup-fix review and checks**.
 Base: verified PR #5 merge `57ce7973228d1c2153601b58f82c08c9cd9302fa`.
 Authority: accepted CR-0002, task P1-03, direct owner answers in D14/D26/D27/D28 of
 [OPEN_DECISIONS](OPEN_DECISIONS.md). ADR-0007 remains Proposed; later PostgreSQL,
@@ -216,3 +216,27 @@ Linux CI and independent re-review remain required.
 SQLx's direct migrator entry performs the same migration/history checks while
 avoiding its generic Acquire future's Send limitation in a spawned task; no vendor
 source or feature changed. Red/green/build logs stay under `.setup/p1-03`.
+
+## Final correction and merge
+
+Head `6f3eea1ba22e9f46a538c617b169a2785a6d3124` passed independent read-only/never
+review against the verified base with no confirmed defect (exit 0,
+`.setup/p1-03/codex-review-startup-fix.log`). The reviewer ran the existing seven-test
+Windows binary, formatting and vendor fingerprints; fresh Cargo/Clippy were blocked
+by the review sandbox and Linux was not independently repeated. The separate actual
+[CI run 39052537622](https://github.com/romanpodg/Routira/actions/runs/39052537622)
+passed all nine jobs: Linux default/no-default 42 workspace tests (15 storage),
+Windows 34 (seven storage), four compile-fail examples, static checks and audit.
+Codecov processed both exact-head reports/comparison: storage patch 658/700 (94%),
+backend 1495/1594; both backend/planning patch checks passed. CodeScene 7999240
+remained failed on the recorded maintenance signals, including the new excluded
+test-method size; no suppression. A rollout-recording error after the completed
+review result is retained in its local log, not treated as missing Code Review.
+
+[PR #6](https://github.com/romanpodg/Routira/pull/6) merged normally at
+`65c076d6bb00eb7615cc7e697f3f4caeed9e9d7f`; its tree equals the reviewed head.
+All nine main jobs of run 39053065629 passed; Codecov processed both exact-merge
+reports. Full merge, review and service records are in
+`.setup/p1-03/autopilot-completed.json`. Physical OS ENOSPC, power-loss, encrypted
+restore and native Debian product/systemd acceptance remain unverified, with their
+existing gates unchanged. P1-04 follows only after this verified merge.

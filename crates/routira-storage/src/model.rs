@@ -4,7 +4,8 @@ use routira_common::{
     ServiceGroupRevisionId,
 };
 use routira_config::{
-    CheckedConfiguration, InputFormat, MAX_RESOURCE_ENTRIES, ReferenceCatalog, parse_configuration,
+    CheckedConfiguration, InputFormat, MAX_RESOURCE_ENTRIES, ReferenceCatalog, RevisionProvenance,
+    parse_configuration,
 };
 use std::{collections::BTreeSet, fmt};
 
@@ -70,12 +71,22 @@ impl fmt::Debug for ConfigurationWrite {
 }
 
 pub struct StoredConfiguration {
+    pub(crate) id: ConfigurationRevisionId,
+    pub(crate) provenance: RevisionProvenance,
     pub(crate) format: InputFormat,
     pub(crate) input: Vec<u8>,
     pub(crate) links: Vec<CredentialVerifierLink>,
 }
 
 impl StoredConfiguration {
+    pub fn id(&self) -> ConfigurationRevisionId {
+        self.id
+    }
+
+    pub fn provenance(&self) -> RevisionProvenance {
+        self.provenance
+    }
+
     /// Revalidate stored bytes against current trusted references before using them.
     /// This still does not compile policy or authenticate a runtime credential.
     pub fn check(&self, catalog: &ReferenceCatalog) -> Result<CheckedConfiguration, StorageError> {

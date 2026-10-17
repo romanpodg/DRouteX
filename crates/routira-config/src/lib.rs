@@ -1,6 +1,8 @@
 //! Bounded configuration import and validation against accepted policy contracts.
 
+mod revisions;
 mod schema;
+pub use revisions::{DraftRevision, InvalidRevisionMetadata, RevisionProvenance};
 pub use schema::{
     CheckedConfiguration, ConfigError, ConfigErrorCode, Configuration, CredentialMetadata,
     CredentialState, CustomRule, DnsAccess, DnsAction, DnsEndpoint, DomainMatch, FilterSelection,

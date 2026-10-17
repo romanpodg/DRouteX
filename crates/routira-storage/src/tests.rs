@@ -1,5 +1,5 @@
 use super::*;
-use routira_config::{InputFormat, ReferenceCatalog};
+use routira_config::{InputFormat, ReferenceCatalog, RevisionProvenance};
 use std::{error::Error, future::Future, str::FromStr};
 
 fn typed<T: FromStr>(number: usize) -> T
@@ -46,6 +46,97 @@ fn empty_write(number: usize) -> ConfigurationWrite {
 
 const FIXTURE: &[u8] = include_bytes!("../../routira-config/tests/fixtures/configuration-v1.json");
 
+fn revision(number: usize, parent: Option<usize>) -> DraftRevision {
+    DraftRevision::from_unix_millis(
+        typed(number),
+        parent.map(typed),
+        typed(700),
+        1234,
+        typed(800),
+    )
+    .unwrap()
+}
+
+async fn memory_storage() -> Storage {
+    use sqlx::ConnectOptions;
+    let mut connection = sqlx::sqlite::SqliteConnectOptions::new()
+        .in_memory(true)
+        .disable_statement_logging()
+        .connect()
+        .await
+        .unwrap();
+    migrations::migrations()
+        .run_direct(None, &mut connection, false)
+        .await
+        .unwrap();
+    let (sender, receiver) = mpsc::channel(QUEUE_CAPACITY);
+    let lock = File::open(concat!(env!("CARGO_MANIFEST_DIR"), "/Cargo.toml")).unwrap();
+    Storage {
+        repository: Repository { sender },
+        task: Some(tokio::spawn(writer(connection, receiver, lock))),
+    }
+}
+
+#[test]
+fn concurrent_drafts_have_one_winner_and_preserve_recorded_provenance() {
+    run(async {
+        let storage = memory_storage().await;
+        let first = storage.repository();
+        let second = first.clone();
+        assert_eq!(first.draft_head().await.unwrap(), None);
+        first
+            .save_configuration(empty_write(500), revision(500, None))
+            .await
+            .unwrap();
+        let a_repository = first.clone();
+        let a = tokio::spawn(async move {
+            a_repository
+                .save_configuration(empty_write(501), revision(501, Some(500)))
+                .await
+        });
+        let b = tokio::spawn(async move {
+            second
+                .save_configuration(empty_write(502), revision(502, Some(500)))
+                .await
+        });
+        let (a, b) = (a.await.unwrap(), b.await.unwrap());
+        let winner = match (a, b) {
+            (Ok(()), Err(error)) if error.code() == StorageErrorCode::Conflict => 501,
+            (Err(error), Ok(())) if error.code() == StorageErrorCode::Conflict => 502,
+            other => panic!("concurrent edits did not produce one conflict: {other:?}"),
+        };
+        assert_eq!(first.draft_head().await.unwrap(), Some(typed(winner)));
+        let stored = first
+            .load_configuration(typed(winner))
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(stored.id(), typed(winner));
+        assert_eq!(
+            stored.provenance(),
+            RevisionProvenance::Recorded(revision(winner, Some(500)))
+        );
+        let loser = if winner == 501 { 502 } else { 501 };
+        assert!(
+            first
+                .load_configuration(typed(loser))
+                .await
+                .unwrap()
+                .is_none()
+        );
+        assert_eq!(
+            first
+                .save_configuration(empty_write(503), revision(504, Some(winner)))
+                .await
+                .unwrap_err()
+                .code(),
+            StorageErrorCode::InvalidProvenance
+        );
+        assert_eq!(first.draft_head().await.unwrap(), Some(typed(winner)));
+        storage.close().await.unwrap();
+    });
+}
+
 #[test]
 fn opening_finishes_initialization_after_caller_timeout_or_cancellation() {
     for cancel in [false, true] {
@@ -89,7 +180,7 @@ fn automatic_rollback_closes_writer_before_a_following_write_is_acknowledged() {
             .await
             .unwrap();
         migrations::migrations().run(&mut connection).await.unwrap();
-        database::save(&mut connection, empty_write(500))
+        database::save(&mut connection, empty_write(500), revision(500, None))
             .await
             .unwrap();
         sqlx::query("PRAGMA max_page_count=1")
@@ -113,7 +204,7 @@ fn automatic_rollback_closes_writer_before_a_following_write_is_acknowledged() {
         let repository = Repository { sender };
         assert_eq!(
             repository
-                .save_configuration(write)
+                .save_configuration(write, revision(501, Some(500)))
                 .await
                 .unwrap_err()
                 .code(),
@@ -125,7 +216,7 @@ fn automatic_rollback_closes_writer_before_a_following_write_is_acknowledged() {
         );
         assert_eq!(
             repository
-                .save_configuration(empty_write(502))
+                .save_configuration(empty_write(502), revision(502, Some(500)))
                 .await
                 .unwrap_err()
                 .code(),
@@ -205,6 +296,7 @@ fn queue_overflow_is_immediate_and_never_retried() {
                     deadline: Instant::now() + RESPONSE_TIMEOUT,
                     operation: Operation::Save {
                         write: Box::new(empty_write(500)),
+                        revision: revision(500, None),
                         reply,
                     },
                 })

@@ -2,14 +2,19 @@ use crate::{
     CatalogRevision, ConfigurationWrite, CredentialVerifierLink, StorageError, StorageErrorCode,
     StoredConfiguration, error::database,
 };
-use routira_common::{ConfigurationRevisionId, ResolverCredentialId, SecretRefId};
-use routira_config::{CredentialState, InputFormat, MAX_RESOURCE_ENTRIES};
+use routira_common::{
+    ConfigurationRevisionId, CorrelationId, ResolverCredentialId, SecretRefId, UserId,
+};
+use routira_config::{
+    CredentialState, DraftRevision, InputFormat, MAX_RESOURCE_ENTRIES, RevisionProvenance,
+};
 use sqlx::{Connection, Row, SqliteConnection};
 use std::collections::{BTreeMap, BTreeSet};
 
 pub(crate) async fn save(
     connection: &mut SqliteConnection,
     write: ConfigurationWrite,
+    metadata: DraftRevision,
 ) -> Result<(), StorageError> {
     let ConfigurationWrite {
         id,
@@ -18,6 +23,9 @@ pub(crate) async fn save(
         checked,
         links,
     } = write;
+    if metadata.id() != id {
+        return Err(StorageError::new(StorageErrorCode::InvalidProvenance));
+    }
     let document = checked.document();
     let links: BTreeMap<_, _> = links
         .into_iter()
@@ -25,6 +33,9 @@ pub(crate) async fn save(
         .collect();
     let mut transaction = connection.begin().await.map_err(database)?;
     let db = &mut *transaction;
+    if draft_head(db).await? != metadata.parent() {
+        return Err(StorageError::new(StorageErrorCode::Conflict));
+    }
     let revision = id.as_bytes().as_slice();
     let format = match format {
         InputFormat::Json => 0_i64,
@@ -115,6 +126,30 @@ pub(crate) async fn save(
         .await
         .map_err(database)?;
     }
+    let parent = metadata.parent();
+    sqlx::query("INSERT INTO configuration_provenance (revision,parent,author,unix_millis,correlation) VALUES (?,?,?,?,?)")
+        .bind(revision).bind(parent.as_ref().map(|id| id.as_bytes().as_slice()))
+        .bind(metadata.author().as_bytes().as_slice()).bind(metadata.unix_millis())
+        .bind(metadata.correlation().as_bytes().as_slice())
+        .execute(&mut *db).await.map_err(database)?;
+    if let Some(parent) = parent {
+        let updated =
+            sqlx::query("UPDATE draft_head SET revision=? WHERE singleton=1 AND revision=?")
+                .bind(revision)
+                .bind(parent.as_bytes().as_slice())
+                .execute(&mut *db)
+                .await
+                .map_err(database)?;
+        if updated.rows_affected() != 1 {
+            return Err(StorageError::new(StorageErrorCode::Conflict));
+        }
+    } else {
+        sqlx::query("INSERT INTO draft_head (singleton,revision) VALUES (1,?)")
+            .bind(revision)
+            .execute(&mut *db)
+            .await
+            .map_err(database)?;
+    }
     transaction.commit().await.map_err(database)
 }
 
@@ -152,12 +187,62 @@ pub(crate) async fn load(
             reference,
         });
     }
+    let provenance = provenance(&mut transaction, id).await?;
     transaction.commit().await.map_err(database)?;
     Ok(Some(StoredConfiguration {
+        id,
+        provenance,
         format,
         input,
         links,
     }))
+}
+
+pub(crate) async fn draft_head(
+    connection: &mut SqliteConnection,
+) -> Result<Option<ConfigurationRevisionId>, StorageError> {
+    let row = sqlx::query("SELECT CASE WHEN length(revision)=16 THEN revision END AS id FROM draft_head WHERE singleton=1")
+        .fetch_optional(&mut *connection).await.map_err(database)?;
+    let Some(row) = row else {
+        return Ok(None);
+    };
+    let id = ConfigurationRevisionId::from_bytes(id_bytes(&row, "id")?)
+        .map_err(|_| StorageError::new(StorageErrorCode::CorruptData))?;
+    if !matches!(
+        provenance(connection, id).await?,
+        RevisionProvenance::Recorded(_)
+    ) {
+        return Err(StorageError::new(StorageErrorCode::CorruptData));
+    }
+    Ok(Some(id))
+}
+
+async fn provenance(
+    connection: &mut SqliteConnection,
+    id: ConfigurationRevisionId,
+) -> Result<RevisionProvenance, StorageError> {
+    let row = sqlx::query("SELECT CASE WHEN length(parent)=16 THEN parent END AS parent, length(parent) AS parent_length, CASE WHEN length(author)=16 THEN author END AS author, unix_millis, CASE WHEN length(correlation)=16 THEN correlation END AS correlation FROM configuration_provenance WHERE revision=?")
+        .bind(id.as_bytes().as_slice()).fetch_optional(connection).await.map_err(database)?;
+    let Some(row) = row else {
+        return Ok(RevisionProvenance::LegacyUnknown);
+    };
+    let parent_length: Option<i64> = row.try_get("parent_length").map_err(database)?;
+    let parent = match parent_length {
+        None => None,
+        Some(16) => Some(
+            ConfigurationRevisionId::from_bytes(id_bytes(&row, "parent")?)
+                .map_err(|_| StorageError::new(StorageErrorCode::CorruptData))?,
+        ),
+        _ => return Err(StorageError::new(StorageErrorCode::CorruptData)),
+    };
+    let author = UserId::from_bytes(id_bytes(&row, "author")?)
+        .map_err(|_| StorageError::new(StorageErrorCode::CorruptData))?;
+    let correlation = CorrelationId::from_bytes(id_bytes(&row, "correlation")?)
+        .map_err(|_| StorageError::new(StorageErrorCode::CorruptData))?;
+    let millis = row.try_get("unix_millis").map_err(database)?;
+    DraftRevision::from_unix_millis(id, parent, author, millis, correlation)
+        .map(RevisionProvenance::Recorded)
+        .map_err(|_| StorageError::new(StorageErrorCode::CorruptData))
 }
 
 fn id_bytes(row: &sqlx::sqlite::SqliteRow, column: &str) -> Result<[u8; 16], StorageError> {

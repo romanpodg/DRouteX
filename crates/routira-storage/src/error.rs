@@ -6,6 +6,7 @@ use std::{error::Error, fmt};
 pub enum StorageErrorCode {
     InvalidConfiguration,
     InvalidCredentialLink,
+    InvalidProvenance,
     QueueFull,
     DeadlineOutcomeUnknown,
     Busy,
