@@ -58,9 +58,9 @@ private 0700 parent and a service-owned 0600 regular file with one hardlink. Val
 the opened handle, bound reads, and reject paths within the caller-declared existing
 database/backup roots. Those trusted roots must accurately describe storage.
 The loader is synchronous; async services must call it from blocking work.
-The effective service UID comes from bounded trusted `/proc/self/status` fields;
-proc inode ownership can change for non-dumpable processes. Malicious same-UID
-mutation and a compromised OS/procfs are outside this boundary.
+The effective service UID comes from trusted Linux process-directory ownership;
+the kernel preserves it for this directory even when the process is non-dumpable.
+Malicious same-UID mutation and a compromised OS/procfs are outside this boundary.
 Windows protected-file loading fails unsupported; portable in-memory parsing and
 crypto tests are available. A Windows provider requires separate ACL acceptance.
 

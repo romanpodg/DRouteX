@@ -42,7 +42,7 @@ packaged NASM objects for Windows development (Linux source build). No productio
 crypto adoption before successful qualification. Head203c76f passed actual Windows/Linux
 qualification, all11 CI jobs and independent read-only/never review. Envelope/keyring/
 persistence/export profile D33 is owner-accepted; implementation proceeds in draft PR8,
-P1-07 implementation incomplete. Snapshot/publication P1-05/06,
+P1-07 final exact-head review/CI/merge pending. Snapshot/publication P1-05/06,
 verification P3-07 and RBAC P6 remain gated; see D26-D33 and task reviews.
 The owner
 approved the strict JSON/YAML/TOML profile and qualified Serde 1.0.229, serde_json

@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 owner-approved implementation in progress; real fork test deferred.**
+**P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 implementation in review; real fork test deferred.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -183,7 +183,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specificati
 
 ### P1-07: Implement secret references and key lifecycle
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,19,21.
+Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,19,21.
 
 | Field | Deliverable / evidence |
 |---|---|

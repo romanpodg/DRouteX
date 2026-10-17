@@ -1,6 +1,6 @@
 # P1-07 secret references and external key lifecycle review
 
-Date: 2026-10-18. Status: **isolated qualification passed; owner-approved implementation in progress**.
+Date: 2026-10-18. Status: **isolated qualification passed; implementation in review; final exact-head checks pending**.
 Base: verified P1-04/PR #7 merge `644348cfe53a4b76f8a921cf3e4886b2486e0cb8`.
 P1-05 requires both P1-04 and P1-07; P1-07 is the next dependency-ready task.
 
@@ -144,20 +144,29 @@ fully covered; the Linux keyfile source is61/63. This is execution evidence, not
 a proof of cryptographic safety or runtime authorization. CodeScene7999861 failed
 maintenance gates; the source-based dispositions below remain failed, not suppressed.
 
-## Non-dumpable service identity correction
+## Proc ownership investigation
 
-Additional source inspection found that `/proc/self` inode ownership is not a
-reliable service UID: Linux changes it to root for a non-dumpable process. That
-would refuse a correctly provisioned unprivileged keyring. The loader now reads
-the effective UID from a bounded trusted `/proc/self/status` record, validates all
-four numeric fields and rejects missing/duplicate/malformed records. Ownership,
-mode, link, root-refusal and exclusion rules are unchanged; no FFI/dependency was added.
-See the primary [proc ownership](https://man7.org/linux/man-pages/man5/proc_pid.5.html)
-and [UID field order](https://man7.org/linux/man-pages/man5/proc_pid_status.5.html).
+A proposed UID change in83600f2 used `/proc/self/status` because proc files may
+become root-owned for non-dumpable processes. That head passed all11 jobs of
+run39061713818 and an independent read-only/never review with no confirmed defects
+(session `01a14b4b-3629-7ae2-8712-c6e791e4cb62`, local
+`.setup/p1-07/codex-review-uid-fix.log` / `.exit`). These are historical results.
 
-The UID field-selection regression was observed failing with the wrong real-UID
-field, then passed with the effective field. Eight security tests/two compile-fail
-examples and workspace Clippy passed on Windows. Logs:
-`.setup/p1-07/uid-regression-red.log`, `uid-fix-tests.log`, `uid-fix-clippy.log`.
-Actual changed-head Linux CI and independent re-review remain required; the
-earlier b4732c6 results do not certify this correction.
+A subsequent actual unprivileged WSL probe disproved the supposed defect in the
+original directory-stat approach: with dumpable0 and effective UID65534, the
+process directory stayed owned by65534 while status/stat files became owned by0.
+Linux v6.12 `task_dump_owner` explicitly preserves effective ownership for
+world-readable/executable process directories. See the
+[primary kernel source](https://github.com/torvalds/linux/blob/v6.12/fs/proc/base.c#L1782-L1790).
+The speculative status parser and its field-selection test are removed; the
+original simpler UID lookup remains, with a corrected explanatory comment.
+Published history is retained through ordinary commits.
+
+The first probe's assertion that directory ownership would change failed; it is
+not passed evidence. The follow-up probe succeeded and records the distinction in
+`.setup/p1-07/uid-nondumpable-wsl-detail.log`. WSL also reported an unavailable
+systemd user session for nobody; the isolated Python process still ran as UID65534.
+No service/runtime/systemd acceptance is inferred from this OS diagnostic.
+
+Final exact-head CI, independent final evidence review and merge verification
+remain required. No known serious defect is deferred by the maintenance records.
