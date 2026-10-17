@@ -112,3 +112,8 @@ platforms explicitly refuse opening until their permission model is reviewed.
 Windows compile/queue/error tests and SQLx qualification do not establish ACL safety.
 Physical ENOSPC, power loss, encrypted exports/restore and native Debian product
 runtime/systemd checks remain unverified at their owning gates.
+
+The first implementation head `4aad827` failed Linux all-target compilation because
+the Linux test module omitted the `ConnectOptions` trait import used by four calls.
+The shared missing import is fixed; actual Linux execution and implementation review
+must complete on the resulting head. Windows checks do not substitute for that result.

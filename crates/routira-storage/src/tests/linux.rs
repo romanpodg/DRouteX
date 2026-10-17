@@ -1,6 +1,6 @@
 use super::*;
 use sqlx::{
-    Connection, SqlSafeStr,
+    ConnectOptions, Connection, SqlSafeStr,
     migrate::{Migration, MigrationType, Migrator},
     sqlite::SqliteConnectOptions,
 };
