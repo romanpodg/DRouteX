@@ -132,6 +132,17 @@ class ValidatorTests(unittest.TestCase):
         with self.assertRaises(AssertionError):
             quality.check_step(bad)
 
+    def test_backend_coverage_cannot_omit_a_workspace_crate(self):
+        config = quality.read_yaml(ROOT / 'codecov.yml')
+        quality.check_active_codecov(config)
+        for path in ('crates/routira-common/src/', 'crates/routira-config/src/',
+                     'crates/routira-policy/src/', 'crates/routira-storage/src/'):
+            bad = copy.deepcopy(config)
+            bad['flags']['backend']['paths'] = [
+                entry for entry in bad['flags']['backend']['paths'] if entry != path]
+            with self.subTest(path=path), self.assertRaises(AssertionError):
+                quality.check_active_codecov(bad)
+
 
 class InventoryTests(TemporaryProject):
     def setUp(self):

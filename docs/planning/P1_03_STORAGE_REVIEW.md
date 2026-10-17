@@ -143,3 +143,24 @@ Linux SQLITE_FULL test now also requires closing the damaged writer, explicit
 reopen and persistence of a subsequent successful write across another reopen.
 Windows six storage tests and workspace Clippy passed after the correction;
 new exact-head Linux CI and independent re-review are required before merge.
+
+Head `1d588a2c2d4ed417483bb5d88f40ba76e5fb9337` subsequently passed independent
+read-only re-review without a confirmed defect (log
+`.setup/p1-03/codex-review-rollback-fix.log`, exit 0) and all nine jobs of
+[run 38991989823](https://github.com/romanpodg/Routira/actions/runs/38991989823).
+Actual Linux default/no-default runs passed 40 workspace tests (13 storage),
+including writer shutdown and durable writes after explicit reopen, plus four
+compile-fail examples. Windows runs passed 33 workspace tests (six storage).
+Read-only review did not repeat Cargo/Clippy or independently confirm remote CI;
+the separately retained actual run supplies those checks.
+
+The generated LCOV covers application sources only: common 72/72, config 783/847,
+storage 679/741; no vendored driver or test/helper file is included. Inspection
+of the service report exposed a configuration defect: the backend flag still
+listed only the previous three crates and discarded storage. Its 6/6 combined
+patch lines were auxiliary planning changes, not evidence for new storage code.
+The backend flag now includes routira-storage; the local validator compares its
+paths with workspace members and a missing-crate regression was observed failing
+before correction. Exact-head processed service data and re-review of this
+configuration correction are still required; no storage coverage pass is inferred
+from the old service report or the local LCOV alone.
