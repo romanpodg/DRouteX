@@ -146,7 +146,8 @@ class ValidatorTests(unittest.TestCase):
         config = quality.read_yaml(ROOT / 'codecov.yml')
         quality.check_active_codecov(config)
         for path in ('crates/routira-common/src/', 'crates/routira-config/src/',
-                     'crates/routira-policy/src/', 'crates/routira-storage/src/'):
+                     'crates/routira-policy/src/', 'crates/routira-storage/src/',
+                     'crates/routira-security/src/'):
             bad = copy.deepcopy(config)
             bad['flags']['backend']['paths'] = [
                 entry for entry in bad['flags']['backend']['paths'] if entry != path]

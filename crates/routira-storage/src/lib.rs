@@ -2,7 +2,8 @@
 //!
 //! Revisions preserve the complete checked source document and transactional resource
 //! indexes. Reading revalidates against current trusted references; saving never
-//! publishes/activates policy. Credential material cannot enter this public API.
+//! publishes/activates policy. Only encrypted credential envelopes enter this API;
+//! plaintext and keys belong to the separate security boundary.
 //! Linux private-directory enforcement targets the accepted first MVP server.
 //! Other platforms compile and qualify SQLx, but `Storage::open` fails closed until
 //! their filesystem permission model is implemented and reviewed.
@@ -12,12 +13,15 @@ mod error;
 mod migrations;
 mod model;
 mod paths;
+mod secrets;
 
 pub use error::{StorageError, StorageErrorCode};
 pub use model::{CatalogRevision, ConfigurationWrite, CredentialVerifierLink, StoredConfiguration};
 
 use routira_common::ConfigurationRevisionId;
+use routira_common::SecretRefId;
 use routira_config::DraftRevision;
+use routira_security::EncryptedSecret;
 use sqlx::{Connection, SqliteConnection};
 use std::{fs::File, future::Future, path::PathBuf, time::Duration};
 use tokio::{
@@ -41,6 +45,19 @@ enum Operation {
     },
     DraftHead {
         reply: Reply<Option<ConfigurationRevisionId>>,
+    },
+    InsertSecret {
+        record: EncryptedSecret,
+        reply: Reply<()>,
+    },
+    ReplaceSecret {
+        expected: EncryptedSecret,
+        replacement: EncryptedSecret,
+        reply: Reply<()>,
+    },
+    LoadSecret {
+        id: SecretRefId,
+        reply: Reply<Option<EncryptedSecret>>,
     },
     Load {
         id: ConfigurationRevisionId,
@@ -69,11 +86,14 @@ impl Operation {
     fn abandoned(&self) -> bool {
         match self {
             Self::Save { reply, .. }
+            | Self::InsertSecret { reply, .. }
+            | Self::ReplaceSecret { reply, .. }
             | Self::RegisterCatalog { reply, .. }
             | Self::Close { reply } => reply.is_closed(),
             Self::Load { reply, .. } => reply.is_closed(),
             Self::DraftHead { reply } => reply.is_closed(),
             Self::CatalogDigest { reply, .. } => reply.is_closed(),
+            Self::LoadSecret { reply, .. } => reply.is_closed(),
         }
     }
 
@@ -81,6 +101,8 @@ impl Operation {
         let error = StorageError::new(code);
         match self {
             Self::Save { reply, .. }
+            | Self::InsertSecret { reply, .. }
+            | Self::ReplaceSecret { reply, .. }
             | Self::RegisterCatalog { reply, .. }
             | Self::Close { reply } => {
                 let _ = reply.send(Err(error));
@@ -94,6 +116,9 @@ impl Operation {
             Self::CatalogDigest { reply, .. } => {
                 let _ = reply.send(Err(error));
             }
+            Self::LoadSecret { reply, .. } => {
+                let _ = reply.send(Err(error));
+            }
         }
     }
 }
@@ -105,6 +130,39 @@ pub struct Repository {
 }
 
 impl Repository {
+    /// Persist a new opaque encrypted record. Logical updates require a new reference.
+    /// Ciphertext is structurally validated; this boundary never decrypts/authenticates it.
+    pub async fn insert_secret(&self, record: EncryptedSecret) -> Result<(), StorageError> {
+        self.request(|reply| Operation::InsertSecret { record, reply })
+            .await
+    }
+
+    /// Re-encrypt under the same reference/purpose only if the exact old record still exists.
+    /// An in-flight replacement can commit after timeout/drop; reread its reference.
+    pub async fn replace_secret(
+        &self,
+        expected: EncryptedSecret,
+        replacement: EncryptedSecret,
+    ) -> Result<(), StorageError> {
+        if expected.context() != replacement.context() {
+            return Err(StorageError::new(StorageErrorCode::InvalidSecret));
+        }
+        self.request(|reply| Operation::ReplaceSecret {
+            expected,
+            replacement,
+            reply,
+        })
+        .await
+    }
+
+    pub async fn load_secret(
+        &self,
+        id: SecretRefId,
+    ) -> Result<Option<EncryptedSecret>, StorageError> {
+        self.request(|reply| Operation::LoadSecret { id, reply })
+            .await
+    }
+
     async fn request<T>(
         &self,
         build: impl FnOnce(Reply<T>) -> Operation,
@@ -195,7 +253,7 @@ impl Storage {
     /// Creates only the final 0700 directory and 0600 files; rejects unsafe existing
     /// modes, symlinks/hardlinks and another storage owner, without changing access.
     /// The service must run unprivileged; malicious same-UID filesystem mutation is
-    /// outside this directory boundary. No plaintext verifier/token storage exists.
+    /// outside this directory boundary. Secret records contain encrypted envelopes only.
     /// Timeout/cancellation stops waiting, not initialization: its task retains the
     /// lock, finishes the upgrade and closes if the result is abandoned. Keep the
     /// caller-owned runtime alive; reopening meanwhile returns Busy.
@@ -305,6 +363,22 @@ async fn writer(
             continue;
         }
         let reusable = match command.operation {
+            Operation::InsertSecret { record, reply } => {
+                let result = secrets::insert(&mut connection, record).await;
+                finish_operation(&mut connection, result, reply).await
+            }
+            Operation::ReplaceSecret {
+                expected,
+                replacement,
+                reply,
+            } => {
+                let result = secrets::replace(&mut connection, expected, replacement).await;
+                finish_operation(&mut connection, result, reply).await
+            }
+            Operation::LoadSecret { id, reply } => {
+                let result = secrets::load(&mut connection, id).await;
+                finish_operation(&mut connection, result, reply).await
+            }
             Operation::Save {
                 write,
                 revision,

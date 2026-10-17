@@ -183,5 +183,7 @@ AES-256-GCM-SIV qualification and official packaged Windows NASM objects. The
 [review](../planning/P1_07_SECRET_REVIEW.md) and [standalone package](../../tests/secret-dependencies/README.md)
 record profile, native/source provenance, published advisory review and limits.
 The15-artifact [inventory](SECRET_QUALIFICATION_INVENTORY.csv) is a qualification
-snapshot, not production adoption or complete release notices. Linux/independent
-review must pass before adding the dependencies to routira-security.
+snapshot, not production adoption or complete release notices. Exact qualification
+head203c76f passed actual Windows/Linux CI and independent read-only/never review;
+the owner accepted the envelope/keyring/persistence/export profile D33 before
+dependent implementation. See D33 and the secret review.

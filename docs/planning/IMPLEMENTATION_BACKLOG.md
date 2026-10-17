@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 secret qualification in progress; real fork test deferred.**
+**P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 owner-approved implementation in progress; real fork test deferred.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -189,7 +189,7 @@ Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifi
 |---|---|
 | Goal and implementation scope | Encrypted credential storage, external master-key provision, redacted wrappers and export lifecycle |
 | Prerequisites | P1-01 |
-| Expected files/modules | crates/routira-security; docs/security/KEY_LIFECYCLE.md |
+| Expected files/modules | crates/routira-security; crates/routira-storage/src/secrets.rs; migrations/0004_encrypted_secrets.sql; docs/security/KEY_LIFECYCLE.md |
 | Acceptance criteria | Master key absent from DB/backups by default; rotations and missing key failures explicit |
 | Tests | Redaction in Debug/errors/API fixtures; rotate and restore tests |
 | Security considerations | No custom crypto, argv secrets, shared temp files or encryption key beside ciphertext |

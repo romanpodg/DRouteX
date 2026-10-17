@@ -34,4 +34,5 @@ flags:
       - crates/routira-config/src/
       - crates/routira-policy/src/
       - crates/routira-storage/src/
+      - crates/routira-security/src/
     carryforward: false

@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-18. Current stage: **P1-04/PR #7 complete; P1-07 isolated secret qualification in progress**.
+Date: 2026-10-18. Current stage: **P1-04/PR #7 complete; P1-07 qualification passed, implementation in progress**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -149,8 +149,14 @@ both exact-merge Codecov reports are processed. Full local history:
 P1-07 now starts from that main merge on `security/protect-secret-material`. Owner
 accepted external256-bit key/rotation, conditional AWS-LC/zeroize AEAD qualification
 and official packaged Windows NASM objects. Six Windows probes/24 RFC vectors and
-15-artifact locked audit passed; actual Linux CI and independent review remain. No
-production encryption API/dependency adoption yet; see D30-D32 and the secret review.
+15-artifact locked audit passed. Qualification head203c76f in draft PR #8 passed
+all11 jobs39056761899, including actual Linux probes, and independent read-only/never
+review after a quota-interrupted attempt. Codecov processed both reports; the6/6
+patch is auxiliary planning code, not product crypto coverage. CodeScene7999538
+failed excluded test/auxiliary metrics; P1-07-CS-AUX records the disposition.
+The owner accepted the bounded envelope/keyring/persistence/export profile D33 on
+2026-10-18. Implementation proceeds in draft PR #8; P1-07 stays in progress.
+See D30-D33 and the secret review.
 See D29 and [the revision review](P1_04_REVISION_REVIEW.md).
 
 ## Owner decisions and current progress

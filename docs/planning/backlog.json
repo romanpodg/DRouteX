@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 secret qualification in progress; real fork test deferred",
+  "status": "P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 owner-approved implementation in progress; real fork test deferred",
   "date": "2026-10-18",
   "phases": {
     "P0": "Foundation",
@@ -360,6 +360,8 @@
       "scope": "Encrypted credential storage, external master-key provision, redacted wrappers and export lifecycle",
       "files": [
         "crates/routira-security",
+        "crates/routira-storage/src/secrets.rs",
+        "migrations/0004_encrypted_secrets.sql",
         "docs/security/KEY_LIFECYCLE.md"
       ],
       "acceptance": "Master key absent from DB/backups by default; rotations and missing key failures explicit",
@@ -2751,6 +2753,7 @@
     "rotation": "new writes use active new key; retain old keys for decryption/re-encryption and corresponding historical backup restoration",
     "crypto_qualification": "aws-lc-rs1.18.2 plus zeroize1.9.1, AES256GCM-SIV RFC8452, random nonce and record ID/purpose authentication; adopt only on successful qualification",
     "windows_build": "owner-approved official crate-packaged NASM objects; no installation; Linux source build",
-    "adoption": "pending actual Linux CI and independent review; no production dependency changes"
+    "adoption": "Qualification203c76f passed actual Windows/Linux CI and independent review; owner accepted D33; production profile adopted in implementation, final validation/review pending",
+    "implementation_profile": "Owner accepted full recommended profile on2026-10-18: envelope v1 expected reference/purpose,64KiB records; external binary ring32 keys/one active; encrypted existing SQLite records with expected-envelope replacement; Linux0600/0700 file loader, Windows in-memory; internal plaintext access, P6 user exports"
   }
 }

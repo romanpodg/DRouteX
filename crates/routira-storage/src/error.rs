@@ -7,6 +7,7 @@ pub enum StorageErrorCode {
     InvalidConfiguration,
     InvalidCredentialLink,
     InvalidProvenance,
+    InvalidSecret,
     QueueFull,
     DeadlineOutcomeUnknown,
     Busy,
