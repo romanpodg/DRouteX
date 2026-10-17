@@ -81,11 +81,13 @@ class ValidatorTests(unittest.TestCase):
         missing_evidence = copy.deepcopy(plan)
         missing_evidence['foundation_review']['source'] = ''
         later_work = copy.deepcopy(plan)
-        next(t for t in later_work['tasks'] if t['id'] == 'P1-03')['status'] = 'in_progress'
+        next(t for t in later_work['tasks'] if t['id'] == 'P1-04')['status'] = 'in_progress'
         unfinished_dependencies = copy.deepcopy(plan)
         next(t for t in unfinished_dependencies['tasks'] if t['id'] == 'P0-05')['status'] = 'in_review'
         unfinished_identity = copy.deepcopy(plan)
         next(t for t in unfinished_identity['tasks'] if t['id'] == 'P1-01')['status'] = 'in_review'
+        unfinished_configuration = copy.deepcopy(plan)
+        next(t for t in unfinished_configuration['tasks'] if t['id'] == 'P1-02')['status'] = 'in_review'
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
         missing_native = copy.deepcopy(plan)
@@ -95,7 +97,7 @@ class ValidatorTests(unittest.TestCase):
         unfinished_native = copy.deepcopy(plan)
         next(t for t in unfinished_native['tasks'] if t['id'] == 'P0-03')['status'] = 'in_review'
         for case in (missing_acceptance, missing_evidence, later_work, missing_lab,
-                     missing_native, unapproved_native, unfinished_native, unfinished_dependencies, unfinished_identity):
+                     missing_native, unapproved_native, unfinished_native, unfinished_dependencies, unfinished_identity, unfinished_configuration):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
 

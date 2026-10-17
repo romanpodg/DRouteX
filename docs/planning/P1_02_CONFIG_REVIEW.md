@@ -1,6 +1,6 @@
 # P1-02 configuration boundary review
 
-Date: 2026-10-17. Status: **validated; PR #5 final-head review/checks and merge gates apply**.
+Date: 2026-10-17. Status: **complete; PR #5 merged after final review/checks**.
 Authority: accepted [CR-0002](../architecture/DNS_PRODUCT_MODEL.md),
 [P0-01 contracts](P0_01_FOUNDATION_REVIEW.md), owner answers recorded in D24/D25
 of [OPEN_DECISIONS](OPEN_DECISIONS.md). PR #4 merged first at
@@ -136,5 +136,20 @@ retaining these conditions/parameters. Normal merge still requires the final
 documentation head's applicable checks and review; no protection is bypassed.
 
 The diagnostic precision disposition is recorded in
-[OPEN_DECISIONS](OPEN_DECISIONS.md#p1-02-review-dispositions). P1-03 has not started;
-PR #2 remains a reference-only donor with no imported code.
+[OPEN_DECISIONS](OPEN_DECISIONS.md#p1-02-review-dispositions). PR #2 remains a
+reference-only donor with no imported code.
+
+## Final merge evidence
+
+Documentation head `921d5dd8ab3b44da26702bdc9ca1b6765fce5508` changed no application
+code after `a708e34`. Independent read-only evidence review completed without a
+confirmed defect (`.setup/p1-02/codex-review-evidence.log`, exit 0). All seven jobs
+of [final run 38957381635](https://github.com/romanpodg/Routira/actions/runs/38957381635)
+passed. CodeScene 7991963 repeated the recorded failed new-code gate; two gates passed.
+Exact final-head Codecov backend/patch numbers match the application evidence above.
+
+PR #5 merged normally at `57ce7973228d1c2153601b58f82c08c9cd9302fa`. All seven jobs
+of [main run 38957933166](https://github.com/romanpodg/Routira/actions/runs/38957933166)
+passed; Codecov processed both backend/planning reports for that exact merge.
+Local handoff: `.setup/p1-02/autopilot-completed.json`. P1-03 starts only after this
+verified merge and preserves the deferred fork/diagnostic/maintenance dispositions.

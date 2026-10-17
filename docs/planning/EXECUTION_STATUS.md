@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-17. Current stage: **P1-02 validated; PR #5 final evidence/head checks and merge pending**.
+Date: 2026-10-17. Current stage: **P1-03 isolated SQLite qualification; implementation/Linux/review pending**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -11,7 +11,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P1-02 is the current stage; technical choices retain their owning gates.
+P1-03 is the current stage; technical choices retain their owning gates.
 Force-pushing and branch-protection changes remain unauthorized.
 
 The repository is now public. With explicit owner approval the existing Codecov
@@ -81,8 +81,23 @@ passed independent read-only re-review without confirmed defects and all seven
 jobs of run 38956580440. Codecov backend is 837/894, new Rust 761/815, backend patch
 check successful at 93.37%. CodeScene 7991872 remains failed on the recorded
 maintenance signals; no suppression or score-only rewrite. Final evidence head
-requires its own review/checks before ordinary merge.
-No P1-03 implementation exists yet.
+`921d5dd8ab3b44da26702bdc9ca1b6765fce5508` passed independent review and all seven
+jobs of run 38957381635. CodeScene 7991963 repeated the recorded failed gate.
+PR #5 merged normally at `57ce7973228d1c2153601b58f82c08c9cd9302fa`; all seven main
+jobs of run 38957933166 passed and both exact merge Codecov reports are processed.
+Local review/merge evidence: `.setup/p1-02/autopilot-completed.json`.
+
+P1-03 is on `storage/sqlite-persistence` from that verified merge. The owner approved
+SQLx 0.9.0/Tokio 1.53.3 with defaults off and SQLite bundled/migrate/runtime-tokio,
+then separately Zlib and a minimal upstream driver constraint patch to select
+libsqlite3-sys 0.38.2/SQLite 3.53.2. Original native SQLite 3.51.3 is not adopted:
+its FTS5 CVE fixes are absent despite the successful RustSec audit. Seven Windows
+probes, Clippy, archive/native hashes and all cargo-deny categories pass on the
+patched qualification profile. Linux CI/independent review and production storage
+remain pending. The owner accepted one writer, queue 64, busy 1s, response 5s with
+explicit overload/uncertain commit-time timeout, and metadata/SecretRefId links
+only until P1-07. See [P1-03 evidence](P1_03_STORAGE_REVIEW.md); no plaintext verifier,
+token generation/verification, live admission or deployment is authorized here.
 
 ## Owner decisions and current progress
 
@@ -105,8 +120,9 @@ Seven of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acc
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend, storage or product network-test evidence. P1/P2 features are
-not passed by a workspace bootstrap. PR #4 is merged. P1-02 must complete its own
-review/checks and merge before any next implementation PR; task status cannot bypass that gate.
+not passed by a workspace bootstrap. PR #5 is merged. P1-03 must complete its own
+implementation, review/checks and merge before any next implementation PR; task status
+cannot bypass that gate.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,

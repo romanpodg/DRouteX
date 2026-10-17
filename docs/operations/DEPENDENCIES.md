@@ -4,7 +4,9 @@ Date: 2026-10-16. Status: **P0-05 qualification complete; no production adoption
 The owner selected HTTP CONNECT over TLS and approved this exact candidate set for
 isolated compatibility and transitive-license checks. Original Routira code remains
 Apache-2.0. The owner separately approved Apache-2.0, MIT, ISC, BSD-3-Clause and
-Unicode-3.0 for dependencies, with their texts and notices preserved. Other licenses
+Unicode-3.0 for dependencies, with their texts and notices preserved. The owner
+separately approved Zlib on 2026-10-17, preserving copyrights/notices and marking
+modified sources. Original Routira licensing is unchanged. Other licenses
 and new dependencies retain owner review. No legal compatibility opinion is implied
 by a technical SPDX/policy check.
 

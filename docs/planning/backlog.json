@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "P0-01/P0-02/P0-03/P0-04 accepted; P0-04 fork/report evidence deferred",
-  "date": "2026-10-16",
+  "status": "P0-01 through P0-05 and P1-01/P1-02 complete; P1-03 qualification in progress; real fork test deferred",
+  "date": "2026-10-17",
   "phases": {
     "P0": "Foundation",
     "P1": "Domain and configuration",
@@ -2596,10 +2596,10 @@
   ],
   "scope_amendment": "CR-0001",
   "execution_authorization": {
-    "date": "2026-10-16",
-    "source": "Owner authorized continued MVP work after PR #4 merge and approved parser qualification, strict input limits/profile, and conditional path-adapter adoption in this chat",
-    "scope": "Current P1-02 external configuration boundary. Preserve technical decision gates and finish reviewed current PR before the next; no deployment, protection bypass or privileged runner.",
-    "through_task": "P1-02"
+    "date": "2026-10-17",
+    "source": "Owner continued roadmap after reviewed PR #5 merge; accepted SQLx qualification/minimal upstream patch, Zlib, writer limits and P1-03/P1-07 credential boundary in this chat",
+    "scope": "P1-03 SQLite persistence with conditional dependency adoption; preserve later crypto/admission/deployment gates and finish current reviewed PR before the next",
+    "through_task": "P1-03"
   },
   "design_proposals": [
     {
@@ -2613,11 +2613,11 @@
   "repository": {
     "url": "https://github.com/romanpodg/Routira",
     "default_branch": "main",
-    "review_branch": "config/validate-external-boundaries",
+    "review_branch": "storage/sqlite-persistence",
     "visibility": "public",
-    "review_pr": "https://github.com/romanpodg/Routira/pull/5",
-    "previous_pr": "https://github.com/romanpodg/Routira/pull/4",
-    "previous_merge": "cd2a9c011e4950d80458cfaa72baddd1ac4243c2"
+    "review_pr": null,
+    "previous_pr": "https://github.com/romanpodg/Routira/pull/5",
+    "previous_merge": "57ce7973228d1c2153601b58f82c08c9cd9302fa"
   },
   "foundation_review": {
     "status": "accepted",
@@ -2705,6 +2705,30 @@
       "serde-saphyr": "2.0.0",
       "serde_path_to_error": "0.1.20"
     },
-    "qualification": "Isolated 38-artifact audit/eight Windows probes passed before adoption; production 51-artifact inventory/audit and 18 config tests passed. PR #5 a708e34 passed independent read-only re-review after four fixes, all seven CI jobs and exact-base/head Codecov backend patch (761/815). CodeScene failed maintenance gate remains recorded; final evidence/head review/checks and ordinary merge still apply."
+    "qualification": "PR #5 merged normally at 57ce7973228d1c2153601b58f82c08c9cd9302fa after four fixes, independent implementation/final-evidence reviews and seven successful final-head/main jobs; exact merge Codecov processed. Final-head backend patch 761/815; failed CodeScene maintenance gate remains recorded."
+  },
+  "sqlite_storage_decision": {
+    "date": "2026-10-17",
+    "source": "Direct owner answers in this chat",
+    "sqlx": "0.9.0",
+    "tokio": "1.53.3",
+    "default_features": false,
+    "features": [
+      "runtime-tokio",
+      "sqlite-bundled",
+      "migrate"
+    ],
+    "patch": "Owner-approved one-line sqlx-sqlite constraint change from upstream 94aafe3a68884d923b0798a767c8d7f6cfda89d2",
+    "libsqlite3_sys": "0.38.2",
+    "bundled_sqlite": "3.53.2",
+    "adoption": "Only after successful qualification; Linux and independent review pending",
+    "writers": 1,
+    "queue_capacity": 64,
+    "busy_timeout_ms": 1000,
+    "response_timeout_ms": 5000,
+    "timeout": "Explicit error without hidden retry; commit outcome may need reread, timeout does not prove cancellation",
+    "credential_scope": "Public metadata and SecretRefId links only; verifier/token bytes wait for P1-07, verification P3-07",
+    "licenses": "Existing allowlist plus separately owner-approved Zlib with preserved notices",
+    "evidence": "docs/planning/P1_03_STORAGE_REVIEW.md"
   }
 }
