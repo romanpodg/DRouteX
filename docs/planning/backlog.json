@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01 through P0-05 and P1-01/P1-02 complete; P1-03 qualification in progress; real fork test deferred",
+  "status": "P0-01 through P0-05 and P1-01/P1-02 complete; P1-03 implementation in progress; real fork test deferred",
   "date": "2026-10-17",
   "phases": {
     "P0": "Foundation",
@@ -231,7 +231,7 @@
       "id": "P1-03",
       "phase": "P1",
       "title": "Implement SQLite persistence and migrations",
-      "goal": "SQLx/WAL repositories and migrations for endpoints, credential verifiers, policy/catalog revisions and scoped grants; bounded writer, no database calls in packet hot path",
+      "goal": "SQLx/WAL immutable configuration and catalog revision repositories, transactional endpoint/scoped-grant indexes, public credential metadata and SecretRefId links only (verifier material P1-07); bounded writer, no database calls in packet hot path",
       "spec": [
         17,
         21,
@@ -240,7 +240,7 @@
       "prerequisites": [
         "P1-02"
       ],
-      "scope": "SQLx/WAL repositories and migrations for endpoints, credential verifiers, policy/catalog revisions and scoped grants; bounded writer, no database calls in packet hot path",
+      "scope": "SQLx/WAL immutable configuration and catalog revision repositories, transactional endpoint/scoped-grant indexes, public credential metadata and SecretRefId links only (verifier material P1-07); bounded writer, no database calls in packet hot path",
       "files": [
         "crates/routira-storage",
         "migrations"
@@ -250,11 +250,12 @@
       "security": "Parameterized SQL and restricted database permissions",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
-      "design_change": "CR-0002"
+      "design_change": "CR-0002",
+      "evidence": "docs/planning/P1_03_STORAGE_REVIEW.md"
     },
     {
       "id": "P1-04",
@@ -2615,7 +2616,7 @@
     "default_branch": "main",
     "review_branch": "storage/sqlite-persistence",
     "visibility": "public",
-    "review_pr": null,
+    "review_pr": "https://github.com/romanpodg/Routira/pull/6",
     "previous_pr": "https://github.com/romanpodg/Routira/pull/5",
     "previous_merge": "57ce7973228d1c2153601b58f82c08c9cd9302fa"
   },
@@ -2721,7 +2722,7 @@
     "patch": "Owner-approved one-line sqlx-sqlite constraint change from upstream 94aafe3a68884d923b0798a767c8d7f6cfda89d2",
     "libsqlite3_sys": "0.38.2",
     "bundled_sqlite": "3.53.2",
-    "adoption": "Only after successful qualification; Linux and independent review pending",
+    "adoption": "Patched qualification head 5f0277972257edaf3d4ef91e533be70d1672f417 passed independent read-only review and all nine Windows/Linux CI jobs before storage adoption; actual implementation Linux/review gates remain",
     "writers": 1,
     "queue_capacity": 64,
     "busy_timeout_ms": 1000,

@@ -86,6 +86,8 @@ resource_ids! {
     LegacyNetworkGrantId,
     /// Gateway grant identity; possession of its ID grants no access.
     GatewayNetworkGrantId,
+    /// One immutable control-plane configuration revision, never active authority.
+    ConfigurationRevisionId,
     /// Immutable snapshot content identity, not its increasing activation sequence.
     SnapshotId,
     /// A snapshot publication/application attempt.

@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-17. Current stage: **P1-03 isolated SQLite qualification; implementation/Linux/review pending**.
+Date: 2026-10-17. Current stage: **P1-03 SQLite implementation in draft PR #6; implementation Linux/review pending**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -93,8 +93,15 @@ then separately Zlib and a minimal upstream driver constraint patch to select
 libsqlite3-sys 0.38.2/SQLite 3.53.2. Original native SQLite 3.51.3 is not adopted:
 its FTS5 CVE fixes are absent despite the successful RustSec audit. Seven Windows
 probes, Clippy, archive/native hashes and all cargo-deny categories pass on the
-patched qualification profile. Linux CI/independent review and production storage
-remain pending. The owner accepted one writer, queue 64, busy 1s, response 5s with
+patched qualification profile. Head `5f0277972257edaf3d4ef91e533be70d1672f417` in
+[draft PR #6](https://github.com/romanpodg/Routira/pull/6) then passed independent
+read-only qualification review, all nine CI jobs of run 38988891185, CodeScene
+and actual Codecov patch checks. That qualification is not the storage implementation
+review. The qualified profile is now adopted in the new storage crate; its full
+revision/index transaction, metadata/ref boundary, queue and migration backup logic
+are under implementation validation. Windows check/Clippy, 32 workspace tests and
+four compile-fail examples passed; actual storage Linux tests and implementation
+review remain pending. The owner accepted one writer, queue 64, busy 1s, response 5s with
 explicit overload/uncertain commit-time timeout, and metadata/SecretRefId links
 only until P1-07. See [P1-03 evidence](P1_03_STORAGE_REVIEW.md); no plaintext verifier,
 token generation/verification, live admission or deployment is authorized here.
@@ -115,11 +122,11 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **7 validated/completed (P0-01 through P0-05 and P1-01/P1-02), 81 planned**.
+Current backlog: **7 completed (P0-01 through P0-05 and P1-01/P1-02), P1-03 in progress, 80 planned**.
 Seven of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
-controller, frontend, storage or product network-test evidence. P1/P2 features are
+controller, frontend or product network-test evidence. SQLite storage is being validated. P1/P2 features are
 not passed by a workspace bootstrap. PR #5 is merged. P1-03 must complete its own
 implementation, review/checks and merge before any next implementation PR; task status
 cannot bypass that gate.

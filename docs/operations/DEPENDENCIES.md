@@ -161,3 +161,17 @@ compatibility, feature limits and adoption in routira-config only. The
 registry archives and notice hashes; it supersedes neither historical snapshot
 nor the release requirement to include complete target-specific notices. Raw
 parser errors are never exported; all three tested parsers can echo input values.
+
+
+## Subsequent P1-03 storage dependencies
+
+The [storage review](../planning/P1_03_STORAGE_REVIEW.md) records the separately
+approved SQLx/Tokio profile, native SQLite finding, exact upstream manifest patch,
+Zlib decision and qualification before storage adoption. Qualification inventory
+and [production inventory](STORAGE_INVENTORY.csv) are separate historical snapshots.
+The latter has 167 registry artifacts plus a separately fingerprinted local driver;
+complete SQLx license texts are preserved with that driver. SQLite's native source
+identity is verified separately from the MIT wrapper/RustSec metadata. No other
+database driver, SQLx macro, extension-loading or plaintext-verifier API is enabled.
+Release notices still follow the actual shipped target and include native texts;
+an all-target lock includes optional crates that were not built.

@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0-01 through P0-05 and P1-01/P1-02 complete; P1-03 qualification in progress; actual fork test deferred.**
+Status: **P0-01 through P0-05 and P1-01/P1-02 complete; P1-03 implementation in progress; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are

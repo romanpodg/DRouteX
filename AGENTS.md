@@ -30,7 +30,9 @@ backend patch comparison (71/71 new Rust lines). P1-02/PR #5 merged normally at
 57ce7973228d1c2153601b58f82c08c9cd9302fa after implementation/final-evidence reviews
 and all seven final-head/main CI jobs. Codecov processed both exact merge reports;
 the failed CodeScene maintenance gate stays recorded in P1-02-CS. P1-03 is current:
-SQLx/SQLite qualification precedes production adoption; see D26/D27 and its review.
+the patched SQLx/SQLite profile passed Windows/Linux qualification and independent
+review on PR #6 head 5f02779 before storage adoption. Implementation Linux/review
+gates remain; see D26/D27 and the P1-03 review.
 The owner
 approved the strict JSON/YAML/TOML profile and qualified Serde 1.0.229, serde_json
 1.0.154, toml 1.1.8+spec-1.1.0, serde-saphyr 2.0.0 and serde_path_to_error 0.1.20

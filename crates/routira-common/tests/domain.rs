@@ -39,6 +39,7 @@ fn resource_ids_preserve_v4_vectors_and_reject_wrong_formats() {
         NetworkGroupId,
         LegacyNetworkGrantId,
         GatewayNetworkGrantId,
+        ConfigurationRevisionId,
         SnapshotId,
         DeploymentId,
         SecretRefId,

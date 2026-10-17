@@ -13,11 +13,11 @@
   "mvp_release_dependency_closure": 61,
   "requirements": 188,
   "source_headings": 149,
-  "local_links_checked": 186,
+  "local_links_checked": 193,
   "adrs": 17,
   "accepted_adrs": 2,
   "negative_validator_cases": 9,
   "source_specs_unchanged": true,
-  "workspace_crates": 3,
+  "workspace_crates": 4,
   "runtime_implementation_absent": true
 }

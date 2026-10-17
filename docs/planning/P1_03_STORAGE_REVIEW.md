@@ -1,6 +1,6 @@
 # P1-03 SQLite persistence review
 
-Date: 2026-10-17. Status: **Windows dependency qualification passed; Linux, storage implementation and independent review pending**.
+Date: 2026-10-17. Status: **dependency qualification/review passed; storage implementation Linux and independent review pending**.
 Base: verified PR #5 merge `57ce7973228d1c2153601b58f82c08c9cd9302fa`.
 Authority: accepted CR-0002, task P1-03, direct owner answers in D14/D26/D27 of
 [OPEN_DECISIONS](OPEN_DECISIONS.md). ADR-0007 remains Proposed; later PostgreSQL,
@@ -74,3 +74,41 @@ token bytes cannot be written until P1-07's protected storage/key lifecycle exis
 Actual verification remains P3-07 and live scoped admission remains P4-01. Catalog
 payload/import limits remain P2-07; storing a revision identity is not dataset approval.
 Implementation, failure/permission tests, Linux CI and independent review remain open.
+
+## Qualification publication and implementation progress
+
+[Draft PR #6](https://github.com/romanpodg/Routira/pull/6) head
+`5f0277972257edaf3d4ef91e533be70d1672f417` passed independent read-only qualification
+review against base `57ce7973228d1c2153601b58f82c08c9cd9302fa`, without a confirmed
+defect. Log `.setup/p1-03/codex-review-qualification.log`, exit 0; reviewer did not
+rerun Cargo tests/Clippy in read-only mode. All nine jobs of
+[run 38988891185](https://github.com/romanpodg/Routira/actions/runs/38988891185) passed,
+including actual Linux/Windows SQLite probes and dependency auditing. CodeScene
+and both actual Codecov patch checks succeeded. These are qualification results,
+not evidence for later storage source changes. A CLI rollout-recording error after
+the completed final review did not erase its locally retained review log/result.
+
+The qualified profile is adopted in routira-storage with the same patched native
+version. [Production inventory](../operations/STORAGE_INVENTORY.csv) covers 167
+registry artifacts, plus the separately fingerprinted driver source. The merge
+of dependency graphs initially selected new libc/Unicode patch releases; those
+new-only entries were returned to the already qualified 0.2.190/0.1.25 versions.
+Existing parser dependency versions were preserved. The final precise lock passed all four production cargo-deny categories.
+
+The [storage contract](../../crates/routira-storage/README.md) describes one immutable
+bounded original document with transactional resource indexes, catalog hash claims,
+public credential links, safe errors, one queue/connection/owner and pre-upgrade
+consistent migration copies. No active/published policy pointer or raw SQL handle
+is exposed. Reads revalidate against current trusted references. Full gateway
+targets/ports/outbounds and private records remain in the complete document;
+the smaller grant indexes are not independent live authority.
+
+Windows all-target check, Clippy, 32 workspace tests and four compile-fail examples
+passed. New Linux tests cover reopen/scope preservation, late-FK rollback,
+SQLITE_FULL, BUSY/owner locking, expired/abandoned queue entries, file/link permissions,
+pre-upgrade WAL backup and failed/checksum/dirty-history migrations. They are pending
+actual Linux CI. Linux is the first server access-control implementation; other
+platforms explicitly refuse opening until their permission model is reviewed.
+Windows compile/queue/error tests and SQLx qualification do not establish ACL safety.
+Physical ENOSPC, power loss, encrypted exports/restore and native Debian product
+runtime/systemd checks remain unverified at their owning gates.
