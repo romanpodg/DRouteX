@@ -203,7 +203,7 @@ def validate_adrs():
 def validate_review_boundary(plan):
     assert plan['foundation_review']['status'] == 'accepted', 'Missing owner acceptance'
     assert plan['foundation_review']['source'], 'Missing owner decision evidence'
-    assert plan['execution_authorization']['through_task'] == 'P1-07', 'Unexpected execution boundary'
+    assert plan['execution_authorization']['through_task'] == 'P1-05', 'Unexpected execution boundary'
     assert plan['execution_authorization']['source'], 'Missing stage authorization'
     by_id = {task['id']: task for task in plan['tasks']}
     assert by_id['P0-01']['status'] == 'completed', 'Foundation gate is still open'
@@ -213,16 +213,19 @@ def validate_review_boundary(plan):
     assert by_id['P1-02']['status'] == 'completed', 'Configuration boundary gate is still open'
     assert by_id['P1-03']['status'] == 'completed', 'Storage gate is still open'
     assert by_id['P1-04']['status'] == 'completed', 'Draft provenance gate is still open'
+    assert by_id['P1-07']['status'] == 'completed', 'Secret storage gate is still open'
+    signature = plan['snapshot_auth_qualification_decision']
+    assert signature['status'] == 'accepted' and signature['source'], 'Missing owner signature qualification decision'
     assert plan['secret_storage_decision']['status'] == 'accepted' and plan['secret_storage_decision']['source'], 'Missing owner secret storage decision'
     assert plan['draft_revision_decision']['status'] == 'accepted' and plan['draft_revision_decision']['source'], 'Missing owner draft revision decision'
-    assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02', 'P0-03', 'P0-04', 'P0-05', 'P1-01', 'P1-02', 'P1-03', 'P1-04', 'P1-07'}), 'Work exceeds P1-07'
+    assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02', 'P0-03', 'P0-04', 'P0-05', 'P1-01', 'P1-02', 'P1-03', 'P1-04', 'P1-05', 'P1-07'}), 'Work exceeds P1-05'
     assert plan['network_lab_decision']['source'], 'Missing lab authorization'
     assert by_id['P0-03']['status'] == 'completed', 'Native Debian 13 fixture gate is not complete'
     native = plan['network_lab_decision'].get('native_acceptance', {})
     assert native.get('status') == 'passed' and native.get('source') and native.get('report_sha256'), 'Missing native Debian 13 evidence or authorization'
     assert (ROOT/'Cargo.toml').is_file() and (ROOT/'Cargo.lock').is_file(), 'Missing workspace'
     assert {p.name for p in (ROOT/'crates').iterdir()} == {'routira-common', 'routira-config', 'routira-policy', 'routira-storage', 'routira-security'}, 'Unexpected crate inventory'
-    assert not (ROOT/'apps').exists(), 'Runtime/frontend is outside P1-07'
+    assert not (ROOT/'apps').exists(), 'Runtime/frontend is outside P1-05'
     agents = (ROOT/'AGENTS.md').read_text(encoding='utf-8')
     assert 'mcp__node_repl__js' in agents and 'sky.list_apps()' in agents and 'browser-only' in agents
 
@@ -238,7 +241,7 @@ def main():
     adrs = validate_adrs()
     validate_review_boundary(plan)
     negatives = self_test(plan['tasks']) if '--self-test' in sys.argv else 0
-    result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P1-07','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':5,'runtime_implementation_absent':True}
+    result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P1-05','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':5,'runtime_implementation_absent':True}
     (ROOT/'docs/environment').mkdir(parents=True, exist_ok=True)
     (ROOT/'docs/environment/planning-verification.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
     print(json.dumps(result))

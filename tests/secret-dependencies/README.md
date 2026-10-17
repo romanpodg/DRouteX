@@ -38,3 +38,12 @@ The [inventory](../../docs/operations/SECRET_QUALIFICATION_INVENTORY.csv) finger
 all 15 registry archives and their packaged notices; actual release target notices
 remain P11-05. Current validation/advisory limits are in the
 [P1-07 review](../../docs/planning/P1_07_SECRET_REVIEW.md).
+
+## P1-05 signature qualification
+
+Owner D34 additionally approved isolated Pure Ed25519 qualification in the same
+locked profile. The `snapshot_auth` target covers all five public RFC8032 section7.1
+vectors and message/key/signature/import negatives. See the
+[P1-05 review](../../docs/planning/P1_05_SNAPSHOT_REVIEW.md) for source hash and scope.
+Both existing Windows/Linux CI jobs run this target. No production signature API,
+snapshot codec, key format, replay or rotation policy is adopted here.

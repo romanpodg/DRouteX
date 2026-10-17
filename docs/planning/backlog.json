@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 implementation in review; real fork test deferred",
+  "status": "P0-01 through P0-05 and P1-01 through P1-04/P1-07 complete; P1-05 Ed25519 qualification in progress; real fork test deferred",
   "date": "2026-10-18",
   "phases": {
     "P0": "Foundation",
@@ -310,11 +310,12 @@
       "security": "Use standard signatures/MACs; sign metadata and node scope, never raw embedded secrets",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
-      "design_change": "CR-0002"
+      "design_change": "CR-0002",
+      "evidence": "docs/planning/P1_05_SNAPSHOT_REVIEW.md"
     },
     {
       "id": "P1-06",
@@ -369,7 +370,7 @@
       "security": "No custom crypto, argv secrets, shared temp files or encryption key beside ciphertext",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_review",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2602,9 +2603,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-18",
-    "source": "Owner continued the accepted roadmap after reviewed PR #7 merge; direct accepted external key/rotation, conditional AWS-LC/zeroize AEAD qualification and Windows packaged object answers in this chat",
-    "scope": "P1-07 secret references/key lifecycle; qualification before production adoption; preserve P1-05/06 snapshots/publication, P3-07 verification and P6 RBAC gates",
-    "through_task": "P1-07"
+    "source": "Owner continuation after reviewed PR8 merge and direct Ed25519 qualification approval in this chat",
+    "scope": "P1-05: isolated Ed25519 qualification first; D11 canonical snapshot/sequence/replay/rotation profile requires separate owner acceptance before codec implementation",
+    "through_task": "P1-05"
   },
   "design_proposals": [
     {
@@ -2753,7 +2754,15 @@
     "rotation": "new writes use active new key; retain old keys for decryption/re-encryption and corresponding historical backup restoration",
     "crypto_qualification": "aws-lc-rs1.18.2 plus zeroize1.9.1, AES256GCM-SIV RFC8452, random nonce and record ID/purpose authentication; adopt only on successful qualification",
     "windows_build": "owner-approved official crate-packaged NASM objects; no installation; Linux source build",
-    "adoption": "Qualification203c76f passed actual Windows/Linux CI and independent review; owner accepted D33; production profile adopted in implementation, final validation/review pending",
+    "adoption": "PR8 merged36cb5e3 after independent reviews and all11 final-head jobs; main run39062875433 passed attempt2 after cold-pool fixture timeout on attempt1; exact-merge Codecov processed both reports",
     "implementation_profile": "Owner accepted full recommended profile on2026-10-18: envelope v1 expected reference/purpose,64KiB records; external binary ring32 keys/one active; encrypted existing SQLite records with expected-envelope replacement; Linux0600/0700 file loader, Windows in-memory; internal plaintext access, P6 user exports"
+  },
+  "snapshot_auth_qualification_decision": {
+    "status": "accepted",
+    "date": "2026-10-18",
+    "source": "Direct owner reply in this chat: approve Ed25519 qualification",
+    "profile": "Pure Ed25519 in pinned aws-lc-rs1.18.2; separate protected external CP signing key and DP trusted verification public keys",
+    "adoption": "No production adoption before successful Windows/Linux/RFC8032 checks and independent review",
+    "remaining_gate": "D11 canonical bytes, sequence/replay persistence and key rotation before snapshot codec"
   }
 }

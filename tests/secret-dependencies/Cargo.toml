@@ -16,6 +16,10 @@ zeroize = { version = "=1.9.1", default-features = false, features = ["alloc"] }
 name = "qualification"
 path = "qualification.rs"
 
+[[test]]
+name = "snapshot_auth"
+path = "snapshot_auth.rs"
+
 [lints.rust]
 unsafe_code = "forbid"
 warnings = "deny"

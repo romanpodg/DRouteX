@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-18. Current stage: **P1-04/PR #7 complete; P1-07 implementation in review; final exact-head checks pending**.
+Date: 2026-10-18. Current stage: **P1-07/PR #8 complete; P1-05 Ed25519 qualification in progress**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -11,7 +11,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P1-07 is the current stage; technical choices retain their owning gates.
+P1-05 is the current stage; technical choices retain their owning gates.
 Force-pushing and branch-protection changes remain unauthorized.
 
 The repository is now public. With explicit owner approval the existing Codecov
@@ -155,7 +155,14 @@ review after a quota-interrupted attempt. Codecov processed both reports; the6/6
 patch is auxiliary planning code, not product crypto coverage. CodeScene7999538
 failed excluded test/auxiliary metrics; P1-07-CS-AUX records the disposition.
 The owner accepted the bounded envelope/keyring/persistence/export profile D33 on
-2026-10-18. Implementation proceeds in draft PR #8; P1-07 stays in progress.
+2026-10-18. PR #8 subsequently merged36cb5e3 after independent final review and
+all11 exact-head jobs39062254994. Main run39062875433 passed all11 jobs on attempt2;
+attempt1 cold SQLite pool startup exceeded150ms. The fixture budget is corrected
+in the next qualification change; failure/retry evidence stays local. Both exact-merge
+Codecov reports processed, backend1986/2103. CodeScene7999941 stays failed with
+source-based minor maintenance dispositions. Local history: `.setup/p1-07/autopilot-completed.json`.
+P1-05 now qualifies owner-approved Ed25519 first; production codec remains D11-gated.
+See [snapshot review](P1_05_SNAPSHOT_REVIEW.md).
 See D30-D33 and the secret review.
 See D29 and [the revision review](P1_04_REVISION_REVIEW.md).
 
