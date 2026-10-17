@@ -254,28 +254,54 @@ async fn writer(
                 .reject(StorageErrorCode::DeadlineOutcomeUnknown);
             continue;
         }
-        match command.operation {
+        let reusable = match command.operation {
             Operation::Save { write, reply } => {
-                let _ = reply.send(database::save(&mut connection, *write).await);
+                let result = database::save(&mut connection, *write).await;
+                finish_operation(&mut connection, result, reply).await
             }
             Operation::Load { id, reply } => {
-                let _ = reply.send(database::load(&mut connection, id).await);
+                let result = database::load(&mut connection, id).await;
+                finish_operation(&mut connection, result, reply).await
             }
             Operation::RegisterCatalog {
                 revision,
                 sha256,
                 reply,
             } => {
-                let _ =
-                    reply.send(database::register_catalog(&mut connection, revision, sha256).await);
+                let result = database::register_catalog(&mut connection, revision, sha256).await;
+                finish_operation(&mut connection, result, reply).await
             }
             Operation::CatalogDigest { revision, reply } => {
-                let _ = reply.send(database::catalog_digest(&mut connection, revision).await);
+                let result = database::catalog_digest(&mut connection, revision).await;
+                finish_operation(&mut connection, result, reply).await
             }
-            Operation::Close { .. } => {}
+            Operation::Close { .. } => false,
+        };
+        if !reusable {
+            commands.close();
+            break;
         }
     }
     let _ = connection.close().await;
+    while let Some(queued) = commands.recv().await {
+        queued.operation.reject(StorageErrorCode::Closed);
+    }
+}
+
+async fn finish_operation<T>(
+    connection: &mut SqliteConnection,
+    result: Result<T, StorageError>,
+    reply: Reply<T>,
+) -> bool {
+    // Drain queued rollback before inspecting SQLx depth: SQLite may have rolled back automatically.
+    let reusable = connection.ping().await.is_ok() && !connection.is_in_transaction();
+    let result = if reusable || result.is_err() {
+        result
+    } else {
+        Err(StorageError::new(StorageErrorCode::Unavailable))
+    };
+    let _ = reply.send(result);
+    reusable
 }
 
 #[cfg(test)]

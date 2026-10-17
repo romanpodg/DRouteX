@@ -117,3 +117,29 @@ The first implementation head `4aad827` failed Linux all-target compilation beca
 the Linux test module omitted the `ConnectOptions` trait import used by four calls.
 The shared missing import is fixed; actual Linux execution and implementation review
 must complete on the resulting head. Windows checks do not substitute for that result.
+
+## Implementation review correction
+
+All nine jobs of [run 38991270355](https://github.com/romanpodg/Routira/actions/runs/38991270355)
+passed for `7f5cce34d32b3cf3889f09437ce63fc55093ba7e`: Linux ran 39 workspace
+tests (12 storage) plus four compile-fail examples with default and no-default
+features. Actual Codecov backend/planning patch checks succeeded. CodeScene
+7994560 failed its new-code and critical-rule gates; this is not recorded as passed.
+
+Independent read-only implementation review completed on that same head/base,
+log `.setup/p1-03/codex-review-implementation.log`, exit 0, and found one serious
+defect. SQLite can automatically roll back on SQLITE_FULL while SQLx retains a
+nonzero transaction depth. Reusing that connection after a missing-revision read
+can acknowledge a later save without durably committing it. The existing rollback
+test checked prior data, not a subsequent acknowledged write across reopen.
+
+The correction drains queued rollback with a worker barrier and verifies that
+SQLx has no open transaction before acknowledging an operation. An inconsistent
+connection closes the writer; queued/future commands receive Closed and require
+explicit reopen, without retry. The original error is retained; an apparent
+success on an inconsistent connection becomes Unavailable. A new in-memory actor
+regression failed before the correction and passed afterward on Windows. The
+Linux SQLITE_FULL test now also requires closing the damaged writer, explicit
+reopen and persistence of a subsequent successful write across another reopen.
+Windows six storage tests and workspace Clippy passed after the correction;
+new exact-head Linux CI and independent re-review are required before merge.

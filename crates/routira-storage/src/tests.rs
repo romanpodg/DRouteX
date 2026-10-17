@@ -47,6 +47,63 @@ fn empty_write(number: usize) -> ConfigurationWrite {
 const FIXTURE: &[u8] = include_bytes!("../../routira-config/tests/fixtures/configuration-v1.json");
 
 #[test]
+fn automatic_rollback_closes_writer_before_a_following_write_is_acknowledged() {
+    run(async {
+        use sqlx::ConnectOptions;
+        let mut connection = sqlx::sqlite::SqliteConnectOptions::new()
+            .in_memory(true)
+            .disable_statement_logging()
+            .connect()
+            .await
+            .unwrap();
+        migrations::migrations().run(&mut connection).await.unwrap();
+        database::save(&mut connection, empty_write(500))
+            .await
+            .unwrap();
+        sqlx::query("PRAGMA max_page_count=1")
+            .execute(&mut connection)
+            .await
+            .unwrap();
+        let mut input = b"{\"schemaVersion\":1}".to_vec();
+        input.extend(std::iter::repeat_n(b' ', 200_000));
+        let write = ConfigurationWrite::parse(
+            typed(501),
+            input,
+            InputFormat::Json,
+            &ReferenceCatalog::default(),
+            vec![],
+        )
+        .unwrap();
+        let (sender, receiver) = mpsc::channel(QUEUE_CAPACITY);
+        // In-memory actor test; filesystem access control is tested separately on Linux.
+        let lock = File::open(concat!(env!("CARGO_MANIFEST_DIR"), "/Cargo.toml")).unwrap();
+        let task = tokio::spawn(writer(connection, receiver, lock));
+        let repository = Repository { sender };
+        assert_eq!(
+            repository
+                .save_configuration(write)
+                .await
+                .unwrap_err()
+                .code(),
+            StorageErrorCode::DiskFull
+        );
+        assert!(
+            matches!(repository.load_configuration(typed(501)).await, Err(error) if error.code() == StorageErrorCode::Closed),
+            "writer reused a connection with stale transaction depth after SQLITE_FULL"
+        );
+        assert_eq!(
+            repository
+                .save_configuration(empty_write(502))
+                .await
+                .unwrap_err()
+                .code(),
+            StorageErrorCode::Closed
+        );
+        task.await.unwrap();
+    });
+}
+
+#[test]
 fn input_link_validation_and_debug_errors_do_not_echo_values() {
     let canary =
         b"{\"schemaVersion\":1,\"unknown-disposable-canary\":\"disposable-private-value\"}";

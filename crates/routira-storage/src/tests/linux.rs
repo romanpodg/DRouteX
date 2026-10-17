@@ -236,27 +236,44 @@ fn sqlite_full_leaves_prior_revision_and_all_indexes_intact() {
             vec![],
         )
         .unwrap();
-        let error = database::save(&mut connection, write).await.unwrap_err();
+        let (sender, receiver) = mpsc::channel(QUEUE_CAPACITY);
+        let task = tokio::spawn(writer(connection, receiver, paths.lock));
+        let repository = Repository { sender };
+        let error = repository.save_configuration(write).await.unwrap_err();
         assert_eq!(error.code(), StorageErrorCode::DiskFull);
         assert!(
-            database::load(&mut connection, typed(501))
-                .await
-                .unwrap()
-                .is_none()
+            matches!(repository.load_configuration(typed(501)).await, Err(error) if error.code() == StorageErrorCode::Closed)
         );
-        assert!(
-            database::load(&mut connection, typed(500))
+        assert_eq!(
+            repository
+                .save_configuration(empty_write(502))
                 .await
-                .unwrap()
-                .is_some()
+                .unwrap_err()
+                .code(),
+            StorageErrorCode::Closed
         );
+        task.await.unwrap();
+        let mut connection = external(&directory.data()).await;
         let integrity: String = sqlx::query_scalar("PRAGMA integrity_check")
             .fetch_one(&mut connection)
             .await
             .unwrap();
         assert_eq!(integrity, "ok");
         connection.close().await.unwrap();
-        drop(paths);
+        let storage = Storage::open(directory.data()).await.unwrap();
+        let repository = storage.repository();
+        assert!(
+            repository
+                .load_configuration(typed(501))
+                .await
+                .unwrap()
+                .is_none()
+        );
+        repository
+            .save_configuration(empty_write(502))
+            .await
+            .unwrap();
+        storage.close().await.unwrap();
         let storage = Storage::open(directory.data()).await.unwrap();
         assert!(
             storage
@@ -265,6 +282,15 @@ fn sqlite_full_leaves_prior_revision_and_all_indexes_intact() {
                 .await
                 .unwrap()
                 .is_some()
+        );
+        assert!(
+            storage
+                .repository()
+                .load_configuration(typed(502))
+                .await
+                .unwrap()
+                .is_some(),
+            "a successful write after reopening must survive another reopen"
         );
         storage.close().await.unwrap();
     });

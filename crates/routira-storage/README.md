@@ -27,6 +27,13 @@ running may commit after its caller times out or drops. Reread its revision ID.
 `Storage::close` drains prior commands and closes the connection; dropping the
 lifecycle owner aborts its task without claiming that COMMIT rolled back.
 
+After each database operation the writer drains pending rollback and checks SQLx
+transaction depth before acknowledging success. An unusable connection stops the
+writer and rejects later commands as `Closed`; reopen explicitly after resolving
+the cause. There is no automatic reconnect/retry. This prevents SQLite automatic
+rollback (for example `SQLITE_FULL`) from leaving a stale driver transaction that
+could acknowledge a write without committing it.
+
 Migrations use compiled-in SQL and SQLx transactional/checksum tracking. Missing,
 changed, dirty or future migration history is rejected before changing the journal
 or schema. An upgrade first creates a consistent SQLite `VACUUM INTO` copy, including
