@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-17. Current stage: **P1-03/PR #6 complete; P1-04 draft provenance model accepted, implementation in progress**.
+Date: 2026-10-17. Current stage: **P1-03/PR #6 complete; P1-04/PR #7 implementation reviewed and checked; final evidence review pending**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -136,7 +136,13 @@ P1-04 starts on `config/track-draft-provenance` from that verified main merge.
 The owner accepted one global complete-configuration draft chain, expected-parent
 conflicts without automatic merge, and atomic trusted actor/UTC/correlation/revision
 provenance, without configuration payload in audit. Missing legacy author/time is
-not invented; RBAC remains P6. No P1-04 PR exists yet. See D29 and the revision review.
+not invented; RBAC remains P6. PR #7 implementation head `ab349f7` passed independent
+read-only Code Review and all nine jobs in 39054676807 (Linux46/18 storage,
+Windows36/8, four compile-fail examples). Exact-head Codecov processed both reports:
+backend 1635/1746, backend patch143/155 (92.25%), planning100%. CodeScene7999375
+failed constructor/transaction maintenance gates; source-based minor dispositions
+are in P1-04-CS. Final evidence review and exact-head checks/merge remain required.
+See D29 and [the revision review](P1_04_REVISION_REVIEW.md).
 
 ## Owner decisions and current progress
 
@@ -154,7 +160,7 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **8 completed (P0-01 through P0-05 and P1-01 through P1-03), P1-04 in progress, 79 planned**.
+Current backlog: **8 completed (P0-01 through P0-05 and P1-01 through P1-03), P1-04 in review, 79 planned**.
 Eight of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,

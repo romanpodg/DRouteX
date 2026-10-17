@@ -1,6 +1,6 @@
 # P1-04 draft revision and provenance review
 
-Date: 2026-10-17. Status: **owner model accepted; implementation in progress**.
+Date: 2026-10-17. Status: **in review; implementation checks passed, final evidence review pending**.
 Base: verified PR #6 merge `65c076d6bb00eb7615cc7e697f3f4caeed9e9d7f`.
 
 The owner accepted D29: one global chain of complete configuration drafts, expected
@@ -12,8 +12,8 @@ authenticated snapshot, publication or data-plane authority (P1-05/P1-06).
 
 Reuse existing UUIDv4 parsing/formatting and qualified SQLx/SQLite; no new dependency
 or generator is proposed. Existing runtime, queue/busy/reply budgets, owned startup,
-permission and secret boundaries remain. Implementation, failure/concurrency/upgrade/
-redaction checks, actual Linux CI and independent review are pending.
+permission and secret boundaries remain. Implementation and failure/concurrency/upgrade
+checks passed; actual CI, independent review and service results follow below.
 
 ## Implementation boundary
 
@@ -39,7 +39,7 @@ fail after temporarily removing the ID-match guard, then restored (local red log
 `.setup/p1-04/provenance-regression-red.log`). Linux tests additionally cover an
 injected late tip/audit transaction failure with zero leaked rows, upgrade from
 schema 2 without fabricated metadata and durable head/provenance across reopen.
-Actual Linux CI, exact-head independent review and external metrics remain pending.
+Linux CI and independent implementation review completed on the published head below.
 
 ## Local validation before publication
 
@@ -51,3 +51,39 @@ advisory/license/ban/source categories passed with existing duplicate/unused-lic
 warnings. Planning self-tests and 17 unit tests passed, including refusal to advance
 without completed storage or accepted draft-model evidence. This is not Linux,
 external coverage/health or independent Code Review evidence.
+
+## Published implementation evidence
+
+PR [#7](https://github.com/romanpodg/Routira/pull/7), implementation head
+`ab349f7cf7dd7d9696d03c2164ebea9d5614b0c0`, base
+`65c076d6bb00eb7615cc7e697f3f4caeed9e9d7f`:
+
+- All nine CI jobs in [39054676807](https://github.com/romanpodg/Routira/actions/runs/39054676807)
+  passed. Actual Linux default/no-default runs each passed 46 workspace tests
+  (18 storage), plus four compile-fail examples. The additional config
+  metadata test is a separate integration binary. Upgrade/reopen, competing drafts,
+  late head/audit failure rollback, redaction and existing startup/SQLITE_FULL tests
+  passed. Local log: `.setup/p1-04/ci-linux.log`.
+- Independent built-in Code Review against that base completed exit 0 without
+  confirmed defects, session `01a14af2-3809-7683-8776-3745a060d27a`, read-only sandbox,
+  approval never. Log/exit: `.setup/p1-04/codex-review-implementation.log` / `.exit`.
+  Reviewer ran fmt, seven planning tests and nine existing Windows binary tests;
+  fresh Cargo/Clippy and Linux execution were unavailable in its read-only sandbox.
+  Separate exact-head CI supplies those checks. Post-result rollout-recording errors
+  remain in the log; they do not replace the completed review result.
+- Both exact-head Codecov reports are processed (`complete`, two sessions).
+  The exact-base/head comparison contains all storage sources. Rust backend totals
+  are 1,635/1,746 lines; backend patch 143/155 (92.25%), with successful backend and
+  planning (100%) patch checks. New revision metadata source is 50/55 (90.90%).
+  Combined auxiliary Python totals are not application coverage.
+- [CodeScene 7999375](https://codescene.io/projects/86145/delta/results/7999375)
+  **failed** new-code and critical-rule gates: revision constructors have explicit
+  context arguments (9.69); `database::save` has Bumpy Road Ahead (9.39 to 8.54).
+  Source inspection and the independent review identified no remaining functional
+  defect. These minor maintenance dispositions, impact, rationale and revisit triggers
+  are recorded under P1-04-CS in [OPEN_DECISIONS](OPEN_DECISIONS.md). No suppression,
+  threshold change or score-only rewrite was made.
+
+Final evidence changes require review on their published head before normal merge.
+No API/RBAC, snapshot authentication/publication, encrypted secret storage, physical
+OS ENOSPC/power-loss or native Debian service acceptance is claimed by these tests.

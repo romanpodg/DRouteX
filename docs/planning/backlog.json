@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01 through P0-05 and P1-01 through P1-03 complete; P1-04 global draft chain/provenance in progress; real fork test deferred",
+  "status": "P0-01 through P0-05 and P1-01 through P1-03 complete; P1-04 global draft chain/provenance in review; real fork test deferred",
   "date": "2026-10-17",
   "phases": {
     "P0": "Foundation",
@@ -276,11 +276,11 @@
         "crates/routira-storage"
       ],
       "acceptance": "Concurrent edits cannot silently overwrite; audit links actor and revision",
-      "tests": "Conflicting edits and failed write tests",
+      "tests": "Implementation ab349f7: independent read-only review without confirmed defects, all nine CI jobs39054676807, Linux46/18 storage and Windows36/8 plus four compile-fail examples; concurrent Conflict/ID mismatch, late audit rollback and legacy durable upgrade passed. Exact-base backend patch143/155; failed CodeScene maintenance gates recorded. Final evidence review/merge pending; see P1_04_REVISION_REVIEW.md",
       "security": "Authorization enforced by API later; no public unaudited writer",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_progress",
+      "status": "in_review",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
