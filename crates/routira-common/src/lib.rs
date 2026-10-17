@@ -3,14 +3,14 @@
 mod domain;
 
 pub use domain::{
-    AdministrativeState, AmbiguousLegacyAssignment, DeploymentId, DeviceId, DnsBindingError,
-    DnsEndpointAssignment, DnsProfileBinding, DnsUpstreamId, EmptyResolverCapability, EndpointId,
-    FilterListId, FilterListRevisionId, GatewayNetworkGrantId, GatewayNetworkIdentity,
-    InvalidResourceId, LegacyDnsAssignment, LegacyNetworkGrantId, ListenerId, NetworkGroupId,
-    OutboundAvailability, PrivateDnsRecordId, ProfileId, ProxyOutboundId, ProxyOutboundKind,
-    ResolverCapabilityMaterial, ResolverCredentialId, ResolverCredentialMetadata,
-    ResolverCredentialState, RevisionState, RuleId, SecretRefId, ServiceGroupId,
-    ServiceGroupRevisionId, SnapshotId, SnapshotState, unique_legacy_assignment,
+    AdministrativeState, AmbiguousLegacyAssignment, ConfigurationRevisionId, DeploymentId,
+    DeviceId, DnsBindingError, DnsEndpointAssignment, DnsProfileBinding, DnsUpstreamId,
+    EmptyResolverCapability, EndpointId, FilterListId, FilterListRevisionId, GatewayNetworkGrantId,
+    GatewayNetworkIdentity, InvalidResourceId, LegacyDnsAssignment, LegacyNetworkGrantId,
+    ListenerId, NetworkGroupId, OutboundAvailability, PrivateDnsRecordId, ProfileId,
+    ProxyOutboundId, ProxyOutboundKind, ResolverCapabilityMaterial, ResolverCredentialId,
+    ResolverCredentialMetadata, ResolverCredentialState, RevisionState, RuleId, SecretRefId,
+    ServiceGroupId, ServiceGroupRevisionId, SnapshotId, SnapshotState, unique_legacy_assignment,
 };
 
 /// A policy layer; user priority applies within a layer, never across layers.

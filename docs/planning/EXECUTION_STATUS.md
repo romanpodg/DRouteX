@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-17. Current stage: **P1-02 validated; PR #5 final evidence/head checks and merge pending**.
+Date: 2026-10-17. Current stage: **P1-03 draft PR #6; final review initialization-cancellation defect under owner-approved correction**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -11,7 +11,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P1-02 is the current stage; technical choices retain their owning gates.
+P1-03 is the current stage; technical choices retain their owning gates.
 Force-pushing and branch-protection changes remain unauthorized.
 
 The repository is now public. With explicit owner approval the existing Codecov
@@ -81,8 +81,48 @@ passed independent read-only re-review without confirmed defects and all seven
 jobs of run 38956580440. Codecov backend is 837/894, new Rust 761/815, backend patch
 check successful at 93.37%. CodeScene 7991872 remains failed on the recorded
 maintenance signals; no suppression or score-only rewrite. Final evidence head
-requires its own review/checks before ordinary merge.
-No P1-03 implementation exists yet.
+`921d5dd8ab3b44da26702bdc9ca1b6765fce5508` passed independent review and all seven
+jobs of run 38957381635. CodeScene 7991963 repeated the recorded failed gate.
+PR #5 merged normally at `57ce7973228d1c2153601b58f82c08c9cd9302fa`; all seven main
+jobs of run 38957933166 passed and both exact merge Codecov reports are processed.
+Local review/merge evidence: `.setup/p1-02/autopilot-completed.json`.
+
+P1-03 is on `storage/sqlite-persistence` from that verified merge. The owner approved
+SQLx 0.9.0/Tokio 1.53.3 with defaults off and SQLite bundled/migrate/runtime-tokio,
+then separately Zlib and a minimal upstream driver constraint patch to select
+libsqlite3-sys 0.38.2/SQLite 3.53.2. Original native SQLite 3.51.3 is not adopted:
+its FTS5 CVE fixes are absent despite the successful RustSec audit. Seven Windows
+probes, Clippy, archive/native hashes and all cargo-deny categories pass on the
+patched qualification profile. Head `5f0277972257edaf3d4ef91e533be70d1672f417` in
+[draft PR #6](https://github.com/romanpodg/Routira/pull/6) then passed independent
+read-only qualification review, all nine CI jobs of run 38988891185, CodeScene
+and actual Codecov patch checks. That qualification is not the storage implementation
+review. The qualified profile is now adopted in the new storage crate; its full
+revision/index transaction, metadata/ref boundary, queue and migration backup logic
+are under implementation validation. Windows check/Clippy, 32 workspace tests and
+four compile-fail examples passed; actual storage Linux tests and implementation
+review remain pending. The owner accepted one writer, queue 64, busy 1s, response 5s with
+explicit overload/uncertain commit-time timeout, and metadata/SecretRefId links
+only until P1-07. See [P1-03 evidence](P1_03_STORAGE_REVIEW.md); no plaintext verifier,
+token generation/verification, live admission or deployment is authorized here.
+
+P1-03 implementation review found an acknowledged-write loss after SQLite automatic
+rollback. The writer now drains pending rollback and checks zero transaction depth
+before acknowledgment, then closes an inconsistent connection without retry. The
+fix passed independent re-review and actual Linux reopen regressions. Head
+`20c7a3fea34126fc4d449de358bdf72bd08d88d8` also fixes an omitted storage path in the
+Codecov backend flag and guards coverage against missing workspace crates.
+Its independent review and all nine jobs of run 39049354119 passed. Actual service
+storage patch is 638/680 (93.82%), backend 1475/1574; both patch checks succeeded.
+CodeScene 7998950 stays failed with maintenance dispositions in OPEN_DECISIONS.
+P1-03 is in_review until final evidence review/checks and normal PR #6 merge.
+
+Final review on `4708e53` found that the ordinary response timeout could drop a
+slow upgrade before migration completion, making every reopen repeat its backup.
+The owner accepted D28: a separate task owns initialization and its lock through
+completion/abandoned-result cleanup, retaining the five-second caller response
+deadline. The regression was observed red then green on Windows; new Linux CI and
+independent re-review of this correction are pending. PR #6 remains unmerged.
 
 ## Owner decisions and current progress
 
@@ -100,13 +140,14 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **7 validated/completed (P0-01 through P0-05 and P1-01/P1-02), 81 planned**.
+Current backlog: **7 completed (P0-01 through P0-05 and P1-01/P1-02), P1-03 in progress, 80 planned**.
 Seven of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
-controller, frontend, storage or product network-test evidence. P1/P2 features are
-not passed by a workspace bootstrap. PR #4 is merged. P1-02 must complete its own
-review/checks and merge before any next implementation PR; task status cannot bypass that gate.
+controller, frontend or product network-test evidence. SQLite storage is being validated. P1/P2 features are
+not passed by a workspace bootstrap. PR #5 is merged. P1-03 must complete its own
+implementation, review/checks and merge before any next implementation PR; task status
+cannot bypass that gate.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,

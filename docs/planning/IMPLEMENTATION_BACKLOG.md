@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01/P0-02/P0-03/P0-04 accepted; P0-04 fork/report evidence deferred.**
+**P0-01 through P0-05 and P1-01/P1-02 complete; P1-03 implementation in progress; real fork test deferred.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -123,11 +123,11 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P1-03: Implement SQLite persistence and migrations
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,21,22.
+Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,21,22.
 
 | Field | Deliverable / evidence |
 |---|---|
-| Goal and implementation scope | SQLx/WAL repositories and migrations for endpoints, credential verifiers, policy/catalog revisions and scoped grants; bounded writer, no database calls in packet hot path |
+| Goal and implementation scope | SQLx/WAL immutable configuration and catalog revision repositories, transactional endpoint/scoped-grant indexes, public credential metadata and SecretRefId links only (verifier material P1-07); bounded writer, no database calls in packet hot path |
 | Prerequisites | P1-02 |
 | Expected files/modules | crates/routira-storage; migrations |
 | Acceptance criteria | Migration and transaction rollback preserve invariants; database access absent from packet hot path |

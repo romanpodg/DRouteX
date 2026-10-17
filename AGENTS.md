@@ -26,9 +26,14 @@ a77ed5adce184ffe3214452af0b1e6d83db2cd92 after two independent Code Reviews and
 seven successful final-head/main CI jobs. P1-01/PR #4 merged at
 cd2a9c011e4950d80458cfaa72baddd1ac4243c2 after independent implementation/final-evidence
 Code Reviews, all seven final-head/main CI jobs, CodeScene and an actual Codecov
-backend patch comparison (71/71 new Rust lines). P1-02 is the current task; its
-configuration implementation passed independent re-review and all seven Linux/Windows
-CI jobs on a708e34; final evidence/checks and normal PR #5 merge remain gated. The owner
+backend patch comparison (71/71 new Rust lines). P1-02/PR #5 merged normally at
+57ce7973228d1c2153601b58f82c08c9cd9302fa after implementation/final-evidence reviews
+and all seven final-head/main CI jobs. Codecov processed both exact merge reports;
+the failed CodeScene maintenance gate stays recorded in P1-02-CS. P1-03 is current:
+the patched SQLx/SQLite profile passed Windows/Linux qualification and independent
+review on PR #6 head 5f02779 before storage adoption. Implementation Linux/review
+gates remain; see D26/D27 and the P1-03 review.
+The owner
 approved the strict JSON/YAML/TOML profile and qualified Serde 1.0.229, serde_json
 1.0.154, toml 1.1.8+spec-1.1.0, serde-saphyr 2.0.0 and serde_path_to_error 0.1.20
 for the config boundary. See D24/D25 and the P1-02 review for exact limits/evidence. The owner
@@ -41,8 +46,9 @@ CONNECT over TLS as the first protected outbound and approved isolated compatibi
 and transitive-license qualification of Tokio 1.53.3, Hickory-Proto 0.26.3,
 Rustls 0.23.46 and Tokio-Rustls 0.26.6 with AWS-LC. This is not production adoption
 or approval of new license exceptions. The owner separately approved Apache-2.0,
-MIT, ISC, BSD-3-Clause and Unicode-3.0 for third-party dependencies, preserving
-their license texts/notices; original Routira code remains Apache-2.0.
+MIT, ISC, BSD-3-Clause and Unicode-3.0 for third-party dependencies, and separately
+Zlib on 2026-10-17, preserving texts/copyrights/notices and modified-source marking;
+original Routira code remains Apache-2.0.
 The repository is public. The existing
 Codecov repository was activated with owner approval, preserving OIDC and access;
 the exact main commit now has processed backend/planning reports. Later technical

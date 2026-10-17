@@ -3,6 +3,7 @@ from pathlib import Path
 import copy
 import json
 import re
+import tomllib
 import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -51,6 +52,10 @@ def check_active_codecov(active_config):
         assert statuses['backend']['informational'] is True
     assert active_config['flags']['planning']['carryforward'] is False
     assert active_config['flags']['backend']['carryforward'] is False
+    workspace = tomllib.loads((ROOT/'Cargo.toml').read_text(encoding='utf-8'))['workspace']
+    assert set(active_config['flags']['backend']['paths']) == {
+        f'{member}/src/' for member in workspace['members']
+    }, 'Backend coverage omits a workspace crate or includes a non-application path'
 
 
 def check_proposed_quality(quality):

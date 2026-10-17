@@ -1,6 +1,10 @@
 [workspace]
-members = ["crates/routira-common", "crates/routira-config", "crates/routira-policy"]
+members = ["crates/routira-common", "crates/routira-config", "crates/routira-policy", "crates/routira-storage"]
+exclude = ["vendor/sqlx-sqlite"]
 resolver = "3"
+
+[patch.crates-io]
+sqlx-sqlite = { path = "vendor/sqlx-sqlite" }
 
 [workspace.package]
 version = "0.1.0"
@@ -16,7 +20,10 @@ serde_json = "=1.0.154"
 toml = { version = "=1.1.8", default-features = false, features = ["std", "parse", "serde"] }
 serde-saphyr = { version = "=2.0.0", default-features = false, features = ["deserialize"] }
 serde_path_to_error = "=0.1.20"
+sqlx = { version = "=0.9.0", default-features = false, features = ["runtime-tokio", "sqlite-bundled", "migrate"] }
+tokio = { version = "=1.53.3", default-features = false, features = ["rt-multi-thread", "sync", "time"] }
 routira-common = { path = "crates/routira-common", version = "=0.1.0" }
+routira-config = { path = "crates/routira-config", version = "=0.1.0" }
 routira-policy = { path = "crates/routira-policy", version = "=0.1.0" }
 
 [workspace.lints.rust]

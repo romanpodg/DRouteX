@@ -4,7 +4,9 @@ Date: 2026-10-16. Status: **P0-05 qualification complete; no production adoption
 The owner selected HTTP CONNECT over TLS and approved this exact candidate set for
 isolated compatibility and transitive-license checks. Original Routira code remains
 Apache-2.0. The owner separately approved Apache-2.0, MIT, ISC, BSD-3-Clause and
-Unicode-3.0 for dependencies, with their texts and notices preserved. Other licenses
+Unicode-3.0 for dependencies, with their texts and notices preserved. The owner
+separately approved Zlib on 2026-10-17, preserving copyrights/notices and marking
+modified sources. Original Routira licensing is unchanged. Other licenses
 and new dependencies retain owner review. No legal compatibility opinion is implied
 by a technical SPDX/policy check.
 
@@ -159,3 +161,17 @@ compatibility, feature limits and adoption in routira-config only. The
 registry archives and notice hashes; it supersedes neither historical snapshot
 nor the release requirement to include complete target-specific notices. Raw
 parser errors are never exported; all three tested parsers can echo input values.
+
+
+## Subsequent P1-03 storage dependencies
+
+The [storage review](../planning/P1_03_STORAGE_REVIEW.md) records the separately
+approved SQLx/Tokio profile, native SQLite finding, exact upstream manifest patch,
+Zlib decision and qualification before storage adoption. Qualification inventory
+and [production inventory](STORAGE_INVENTORY.csv) are separate historical snapshots.
+The latter has 167 registry artifacts plus a separately fingerprinted local driver;
+complete SQLx license texts are preserved with that driver. SQLite's native source
+identity is verified separately from the MIT wrapper/RustSec metadata. No other
+database driver, SQLx macro, extension-loading or plaintext-verifier API is enabled.
+Release notices still follow the actual shipped target and include native texts;
+an all-target lock includes optional crates that were not built.
