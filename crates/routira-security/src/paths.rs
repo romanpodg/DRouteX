@@ -13,12 +13,35 @@ pub(crate) fn read(path: &Path, database: &Path, backup: &Path) -> Result<Vec<u8
     }
 }
 
+#[cfg(any(test, all(target_os = "linux", target_arch = "x86_64")))]
+pub(crate) fn parse_effective_uid(status: &str) -> Result<u32, SecretError> {
+    let invalid = || SecretError(SecretErrorCode::UnsafePath);
+    let mut lines = status.lines().filter_map(|line| line.strip_prefix("Uid:"));
+    let values = lines.next().ok_or_else(invalid)?;
+    if lines.next().is_some() {
+        return Err(invalid());
+    }
+    let mut values = values.split_ascii_whitespace();
+    let mut ids = [0_u32; 4];
+    for id in &mut ids {
+        *id = values
+            .next()
+            .ok_or_else(invalid)?
+            .parse()
+            .map_err(|_| invalid())?;
+    }
+    if values.next().is_some() {
+        return Err(invalid());
+    }
+    Ok(ids[1])
+}
+
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 mod linux {
     use super::*;
     use crate::keyring::MAX_KEYRING_BYTES;
     use std::{
-        fs::{self, OpenOptions},
+        fs::{self, File, OpenOptions},
         io::Read,
         os::unix::fs::{MetadataExt, OpenOptionsExt},
         path::Component,
@@ -30,6 +53,19 @@ mod linux {
     }
     fn unsafe_path() -> SecretError {
         SecretError(SecretErrorCode::UnsafePath)
+    }
+
+    fn effective_uid() -> Result<u32, SecretError> {
+        let mut status = String::new();
+        File::open("/proc/self/status")
+            .map_err(io)?
+            .take(65_537)
+            .read_to_string(&mut status)
+            .map_err(io)?;
+        if status.len() > 65_536 {
+            return Err(unsafe_path());
+        }
+        super::parse_effective_uid(&status)
     }
 
     pub(super) fn read(
@@ -54,9 +90,9 @@ mod linux {
                 return Err(unsafe_path());
             }
         }
-        // Trusted Linux procfs supplies the current service identity without FFI.
-        // A non-dumpable process whose proc ownership changes to root fails closed.
-        let uid = fs::metadata("/proc/self").map_err(io)?.uid();
+        // Proc inode ownership can become root when dumpability is disabled.
+        // The trusted kernel status fields retain the effective service UID.
+        let uid = effective_uid()?;
         let directory = fs::symlink_metadata(parent).map_err(io)?;
         if uid == 0
             || !directory.is_dir()

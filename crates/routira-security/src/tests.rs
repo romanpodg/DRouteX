@@ -186,6 +186,32 @@ fn material_bounds_and_random_production_nonces() {
     assert_ne!(first.nonce().unwrap(), second.nonce().unwrap());
 }
 
+#[test]
+fn effective_service_uid_is_read_from_kernel_fields_and_rejects_ambiguous_status() {
+    assert_eq!(
+        paths::parse_effective_uid("Name:\tservice\nUid:\t1000\t1001\t1002\t1003\n").unwrap(),
+        1001
+    );
+    assert_eq!(paths::parse_effective_uid("Uid: 0 0 0 0\n").unwrap(), 0);
+    for invalid in [
+        "",
+        "Uid: 1 2 3",
+        "Uid: 1 2 3 4 5",
+        "Uid: 1 -2 3 4",
+        "Uid: 1 4294967296 3 4",
+        "Uid: 1 2 3 4\nUid: 1 2 3 4",
+        "Uid: 1 2 3 x",
+        " Uid: 1 2 3 4",
+        "Uid:\u{a0}1 2 3 4",
+    ] {
+        assert_eq!(
+            paths::parse_effective_uid(invalid).unwrap_err().code(),
+            SecretErrorCode::UnsafePath,
+            "{invalid:?}"
+        );
+    }
+}
+
 #[cfg(not(all(target_os = "linux", target_arch = "x86_64")))]
 #[test]
 fn unsupported_file_provider_fails_closed() {

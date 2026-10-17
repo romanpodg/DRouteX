@@ -1,7 +1,7 @@
 # Encrypted secret records and key lifecycle
 
 Status: owner-accepted D30-D33 profile; implementation/acceptance in progress.
-First server target: unprivileged Debian13 x86_64. No production deployment here.
+First server target: unprivileged Debian 13 x86_64. No production deployment here.
 
 `routira-security` owns key material and redacted, zeroizing plaintext buffers.
 `routira-storage` persists only structurally checked encrypted envelopes in the
@@ -27,7 +27,7 @@ All integers are unsigned, big-endian. Exact bytes, no trailing extensions:
 | Ciphertext | length |
 | Authentication tag | 16 |
 
-AAD is ASCII `Routira secret record` followed by NUL and the entire58-byte header.
+AAD is ASCII `Routira secret record` followed by NUL and the entire 58-byte header.
 The expected context is supplied independently by the trusted consumer. Unknown
 version/suite/purpose, invalid IDs/lengths and trailing bytes are rejected before
 cryptography. A structurally valid envelope is not authenticated until decryption.
@@ -54,18 +54,20 @@ is secret. Keys are operator-provisioned raw256-bit values, never generated at
 startup or stored in the DB, logs, argv, ordinary configuration or backups.
 
 Linux x86_64 loading requires an absolute path without symlink ancestors, a service-owned
-private0700 parent and a service-owned0600 regular file with one hardlink. Validate
+private 0700 parent and a service-owned 0600 regular file with one hardlink. Validate
 the opened handle, bound reads, and reject paths within the caller-declared existing
 database/backup roots. Those trusted roots must accurately describe storage.
 The loader is synchronous; async services must call it from blocking work.
-Malicious same-UID mutation and a compromised OS/procfs are outside this boundary.
+The effective service UID comes from bounded trusted `/proc/self/status` fields;
+proc inode ownership can change for non-dumpable processes. Malicious same-UID
+mutation and a compromised OS/procfs are outside this boundary.
 Windows protected-file loading fails unsupported; portable in-memory parsing and
 crypto tests are available. A Windows provider requires separate ACL acceptance.
 
 Provision a replacement keyring atomically, then explicitly reload/restart the
 owning service. New writes use its active key. Keep old keys for record
 re-encryption and retained backup restore; no automatic key deletion/pruning.
-The32-key bound fails explicitly. Remove a retired key only after separately
+The 32-key bound fails explicitly. Remove a retired key only after separately
 checking every retained record and backup that requires it. Key loss is not
 recoverable from ciphertext. Full encrypted backup/export orchestration remains
 P6-07; migration copies contain encrypted records and never the external keyring.

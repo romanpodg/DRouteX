@@ -19,8 +19,8 @@ objects for Windows development; Linux uses package source C/assembly. No NASM
 installation, native library override, FIPS module or compliance claim is authorized.
 
 The standalone tests do not implement a Routira encrypted store or accept real
-secrets. Exact envelope/key-registration, import/export limits and protected
-persistence interfaces still require their design gate before dependent code.
+secrets. The envelope, keyring, import/export limits and protected persistence
+profile subsequently passed the owner's D33 design gate before dependent code.
 Resolver token verification/lifetimes/wire format remain P3-07; snapshot authority
 P1-05 and API/RBAC P6. AEAD authentication alone does not prevent a database rollback
 or prove freshness, authorization, backup safety or redaction of a future API.
@@ -127,5 +127,37 @@ no-default all-target check, rustdoc and all four locked cargo-deny categories
 passed. Workspace:45 tests, including7 security/10 storage, plus6 compile-fail
 examples. A temporary removed expected-context guard made its negative regression
 fail; restoring it passed (`.setup/p1-07/context-regression-red.log` / `green.log`).
-Actual Linux keyfile permission/link, durable restore and late-write/corrupt-blob
-checks and full implementation Code Review remain pending at this evidence stage.
+Implementation head `b4732c6085c368927e12d62745aa17ccb9810e06` passed all 11 jobs of
+[run 39061026897](https://github.com/romanpodg/Routira/actions/runs/39061026897),
+including actual Linux keyfile permission/link, schema3 upgrade, durable backup
+restore, late-write rejection and corrupt-blob checks. Linux:58 workspace/23 storage
+tests; Windows:45/10; both defaults and no-default tests, plus6 compile-fail examples.
+Independent read-only/never review against base644348c completed with exit0 and no
+confirmed defects (session `01a14b42-a732-71b2-8313-cd93c0450679`, local
+`.setup/p1-07/codex-review-implementation.log` / `.exit`). Fresh Cargo checks were
+blocked in its read-only sandbox; the separate exact-head CI passed.
+
+Codecov processed both reports and the exact comparison: backend1986/2103;
+new Rust351/357. Aggregate patch358/364 includes7 auxiliary planning lines and
+is not the product patch. New envelope/keyring/material/storage source files are
+fully covered; the Linux keyfile source is61/63. This is execution evidence, not
+a proof of cryptographic safety or runtime authorization. CodeScene7999861 failed
+maintenance gates; the source-based dispositions below remain failed, not suppressed.
+
+## Non-dumpable service identity correction
+
+Additional source inspection found that `/proc/self` inode ownership is not a
+reliable service UID: Linux changes it to root for a non-dumpable process. That
+would refuse a correctly provisioned unprivileged keyring. The loader now reads
+the effective UID from a bounded trusted `/proc/self/status` record, validates all
+four numeric fields and rejects missing/duplicate/malformed records. Ownership,
+mode, link, root-refusal and exclusion rules are unchanged; no FFI/dependency was added.
+See the primary [proc ownership](https://man7.org/linux/man-pages/man5/proc_pid.5.html)
+and [UID field order](https://man7.org/linux/man-pages/man5/proc_pid_status.5.html).
+
+The UID field-selection regression was observed failing with the wrong real-UID
+field, then passed with the effective field. Eight security tests/two compile-fail
+examples and workspace Clippy passed on Windows. Logs:
+`.setup/p1-07/uid-regression-red.log`, `uid-fix-tests.log`, `uid-fix-clippy.log`.
+Actual changed-head Linux CI and independent re-review remain required; the
+earlier b4732c6 results do not certify this correction.
