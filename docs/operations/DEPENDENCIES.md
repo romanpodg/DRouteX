@@ -175,3 +175,15 @@ identity is verified separately from the MIT wrapper/RustSec metadata. No other
 database driver, SQLx macro, extension-loading or plaintext-verifier API is enabled.
 Release notices still follow the actual shipped target and include native texts;
 an all-target lock includes optional crates that were not built.
+
+## P1-07 secret primitive qualification
+
+The owner separately approved external key/rotation, conditional AWS-LC/zeroize
+AES-256-GCM-SIV qualification and official packaged Windows NASM objects. The
+[review](../planning/P1_07_SECRET_REVIEW.md) and [standalone package](../../tests/secret-dependencies/README.md)
+record profile, native/source provenance, published advisory review and limits.
+The15-artifact [inventory](SECRET_QUALIFICATION_INVENTORY.csv) is a qualification
+snapshot, not production adoption or complete release notices. Exact qualification
+head203c76f passed actual Windows/Linux CI and independent read-only/never review;
+the owner accepted the envelope/keyring/persistence/export profile D33 before
+dependent implementation. See D33 and the secret review.

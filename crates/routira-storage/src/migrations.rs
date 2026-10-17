@@ -33,6 +33,13 @@ pub(crate) fn migrations() -> Migrator {
             include_str!("../../../migrations/0003_draft_provenance.sql").into_sql_str(),
             false,
         ),
+        Migration::new(
+            4,
+            Cow::Borrowed("encrypted secrets"),
+            MigrationType::Simple,
+            include_str!("../../../migrations/0004_encrypted_secrets.sql").into_sql_str(),
+            false,
+        ),
     ])
 }
 

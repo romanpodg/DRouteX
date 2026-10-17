@@ -30,9 +30,22 @@ Reads call `StoredConfiguration::check` with current caller-trusted references.
 Catalog hashes are immutable claims, not verified payloads or source/license approval;
 dataset import remains P2-07.
 
-Credential persistence accepts public IDs/state and `SecretRefId` links only.
-Unknown/duplicate links are rejected before queueing. Protected verifier/token
-bytes and their lifecycle remain P1-07; actual verification remains P3-07.
+Configuration persistence accepts public IDs/state and `SecretRefId` links only.
+Unknown/duplicate links are rejected before queueing. P1-07 adds a separate encrypted
+record table via `insert_secret`/`load_secret`/`replace_secret`; the storage boundary
+never receives plaintext or keys and never decrypts. Imported envelopes are only
+structurally checked. The trusted security consumer must authenticate them against
+an independently expected reference/purpose. Actual token verification remains P3-07.
+Logical secret changes use a new reference; re-encryption requires identical context
+and an exact previously read envelope, otherwise Conflict. Missing rows load None.
+These commands share the64-entry queue,5-second response deadline, rollback check
+and shutdown rules below. Payloads are bounded; stale/expired/abandoned writes have
+no hidden retry. A running replacement may commit after timeout/drop; reread it.
+
+Migration4 adds only encrypted records. Old metadata references are preserved;
+it fabricates no ciphertext/key/verifier. Restore copies need separately retained
+matching keys; SQLite/configuration reads do not prove a key can decrypt a record.
+See [key lifecycle](../../docs/security/KEY_LIFECYCLE.md).
 
 One Tokio owner task owns one SQLite connection and a private storage lock. Sender
 clones address that same task. The owner-approved queue holds 64 pending commands;

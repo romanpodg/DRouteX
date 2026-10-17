@@ -1,0 +1,21 @@
+[package]
+name = "routira-secret-qualification"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.99.0"
+license = "Apache-2.0"
+publish = false
+
+[workspace]
+
+[dependencies]
+aws-lc-rs = { version = "=1.18.2", default-features = false, features = ["non-fips", "alloc", "prebuilt-nasm"] }
+zeroize = { version = "=1.9.1", default-features = false, features = ["alloc"] }
+
+[[test]]
+name = "qualification"
+path = "qualification.rs"
+
+[lints.rust]
+unsafe_code = "forbid"
+warnings = "deny"

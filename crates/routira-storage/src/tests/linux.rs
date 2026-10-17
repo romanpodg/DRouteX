@@ -11,6 +11,8 @@ use std::{
     time::{SystemTime, UNIX_EPOCH},
 };
 
+mod secrets;
+
 struct Directory(PathBuf);
 
 impl Directory {
@@ -711,7 +713,7 @@ fn cancelled_or_timed_out_open_completes_upgrade_and_releases_lock() {
                 .fetch_one(&mut connection)
                 .await
                 .unwrap();
-            assert_eq!(version, 3, "abandoned open did not finish the migration");
+            assert_eq!(version, 4, "abandoned open did not finish the migration");
             connection.close().await.unwrap();
         });
     }
@@ -768,7 +770,7 @@ fn upgrade_backup_includes_wal_and_failed_migration_preserves_prior_schema() {
 
         let mut broken = migrations::migrations().migrations.into_owned();
         broken.push(Migration::new(
-            4,
+            5,
             "failure probe".into(),
             MigrationType::Simple,
             "CREATE TABLE incomplete (id INTEGER); INSERT INTO absent_table VALUES (1);"

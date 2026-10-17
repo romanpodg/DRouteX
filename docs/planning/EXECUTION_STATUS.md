@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-17. Current stage: **P1-03/PR #6 complete; P1-04/PR #7 implementation reviewed and checked; final evidence review pending**.
+Date: 2026-10-18. Current stage: **P1-04/PR #7 complete; P1-07 implementation in review; final exact-head checks pending**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -11,7 +11,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P1-04 is the current stage; technical choices retain their owning gates.
+P1-07 is the current stage; technical choices retain their owning gates.
 Force-pushing and branch-protection changes remain unauthorized.
 
 The repository is now public. With explicit owner approval the existing Codecov
@@ -141,7 +141,22 @@ read-only Code Review and all nine jobs in 39054676807 (Linux46/18 storage,
 Windows36/8, four compile-fail examples). Exact-head Codecov processed both reports:
 backend 1635/1746, backend patch143/155 (92.25%), planning100%. CodeScene7999375
 failed constructor/transaction maintenance gates; source-based minor dispositions
-are in P1-04-CS. Final evidence review and exact-head checks/merge remain required.
+are in P1-04-CS. Final head b63fd6e passed independent final-evidence review and all
+nine jobs39055351917. PR #7 merged644348c; all nine main jobs39055754490 passed and
+both exact-merge Codecov reports are processed. Full local history:
+`.setup/p1-04/autopilot-completed.json`. Do not repeat completed PR loops.
+
+P1-07 now starts from that main merge on `security/protect-secret-material`. Owner
+accepted external256-bit key/rotation, conditional AWS-LC/zeroize AEAD qualification
+and official packaged Windows NASM objects. Six Windows probes/24 RFC vectors and
+15-artifact locked audit passed. Qualification head203c76f in draft PR #8 passed
+all11 jobs39056761899, including actual Linux probes, and independent read-only/never
+review after a quota-interrupted attempt. Codecov processed both reports; the6/6
+patch is auxiliary planning code, not product crypto coverage. CodeScene7999538
+failed excluded test/auxiliary metrics; P1-07-CS-AUX records the disposition.
+The owner accepted the bounded envelope/keyring/persistence/export profile D33 on
+2026-10-18. Implementation proceeds in draft PR #8; P1-07 stays in progress.
+See D30-D33 and the secret review.
 See D29 and [the revision review](P1_04_REVISION_REVIEW.md).
 
 ## Owner decisions and current progress
@@ -160,12 +175,12 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **8 completed (P0-01 through P0-05 and P1-01 through P1-03), P1-04 in review, 79 planned**.
-Eight of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
+Current backlog: **9 completed (P0-01 through P0-05 and P1-01 through P1-04), P1-07 in progress, 78 planned**.
+Nine of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend or product network-test evidence. SQLite storage is implemented and reviewed. P1/P2 features are
-not passed by a workspace bootstrap. PR #6 is merged. P1-04 must complete its own implementation, review/checks and merge
+not passed by a workspace bootstrap. PR #7 is merged. P1-07 must complete its own qualification/implementation, review/checks and merge
 before any next implementation PR; task status cannot bypass that gate.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,

@@ -2,6 +2,8 @@ use super::*;
 use routira_config::{InputFormat, ReferenceCatalog, RevisionProvenance};
 use std::{error::Error, future::Future, str::FromStr};
 
+mod secrets;
+
 fn typed<T: FromStr>(number: usize) -> T
 where
     T::Err: std::fmt::Debug,

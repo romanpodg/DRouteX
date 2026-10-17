@@ -33,9 +33,17 @@ the failed CodeScene maintenance gate stays recorded in P1-02-CS. P1-03/PR #6 me
 normally at 65c076d6bb00eb7615cc7e697f3f4caeed9e9d7f after fixing automatic-rollback
 and startup-cancellation defects, independent re-review and all nine final-head/main
 jobs. Both exact-merge Codecov reports are processed; maintenance failures remain
-recorded. P1-04 is current: owner accepted one global draft chain with expected-parent
-conflicts and atomic trusted actor/UTC/correlation provenance, without invented
-legacy authors/times. RBAC remains P6; see D26-D29 and the task reviews.
+recorded. P1-04/PR #7 merged normally at644348cfe53a4b76f8a921cf3e4886b2486e0cb8
+after independent implementation/final reviews and all nine head/main jobs; exact-merge
+Codecov processed. Global draft provenance does not invent legacy authors/times.
+P1-07 is current: owner accepted external256-bit protected-file key/rotation,
+conditional AWS-LC1.18.2/zeroize1.9.1 AES-256-GCM-SIV qualification and official
+packaged NASM objects for Windows development (Linux source build). No production
+crypto adoption before successful qualification. Head203c76f passed actual Windows/Linux
+qualification, all11 CI jobs and independent read-only/never review. Envelope/keyring/
+persistence/export profile D33 is owner-accepted; implementation proceeds in draft PR8,
+P1-07 final exact-head review/CI/merge pending. Snapshot/publication P1-05/06,
+verification P3-07 and RBAC P6 remain gated; see D26-D33 and task reviews.
 The owner
 approved the strict JSON/YAML/TOML profile and qualified Serde 1.0.229, serde_json
 1.0.154, toml 1.1.8+spec-1.1.0, serde-saphyr 2.0.0 and serde_path_to_error 0.1.20

@@ -1,6 +1,6 @@
 # P1-04 draft revision and provenance review
 
-Date: 2026-10-17. Status: **in review; implementation checks passed, final evidence review pending**.
+Date: 2026-10-17. Status: **complete; PR #7 merged after final review and checks**.
 Base: verified PR #6 merge `65c076d6bb00eb7615cc7e697f3f4caeed9e9d7f`.
 
 The owner accepted D29: one global chain of complete configuration drafts, expected
@@ -87,3 +87,19 @@ PR [#7](https://github.com/romanpodg/Routira/pull/7), implementation head
 Final evidence changes require review on their published head before normal merge.
 No API/RBAC, snapshot authentication/publication, encrypted secret storage, physical
 OS ENOSPC/power-loss or native Debian service acceptance is claimed by these tests.
+
+## Final review and merge
+
+Final head `b63fd6e95cb1472b4350b15b4fdea612f4028b3a` passed independent read-only,
+approval-never Code Review without confirmed defects, session
+`01a14afa-f83d-7f03-a277-7264845e9c0d`, exit0. Local log/exit:
+`.setup/p1-04/codex-review-final-evidence.log` / `.exit`. The same reviewer sandbox
+execution limits described above apply. All nine final-head jobs39055351917 passed.
+Both final-head reports were processed, with unchanged exact-base backend patch
+143/155 (92.25%) and successful backend/planning checks. CodeScene7999417 **failed**
+the same constructor/transaction maintenance gates; P1-04-CS dispositions remain.
+
+PR #7 merged normally at `644348cfe53a4b76f8a921cf3e4886b2486e0cb8` on
+2026-10-17T17:54:02Z. Its tree matches the reviewed head. All nine main jobs39055754490
+passed and Codecov processed both exact-merge reports. Full local handoff:
+`.setup/p1-04/autopilot-completed.json`. Do not repeat this PR loop.
