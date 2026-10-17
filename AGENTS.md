@@ -29,10 +29,13 @@ Code Reviews, all seven final-head/main CI jobs, CodeScene and an actual Codecov
 backend patch comparison (71/71 new Rust lines). P1-02/PR #5 merged normally at
 57ce7973228d1c2153601b58f82c08c9cd9302fa after implementation/final-evidence reviews
 and all seven final-head/main CI jobs. Codecov processed both exact merge reports;
-the failed CodeScene maintenance gate stays recorded in P1-02-CS. P1-03 is current:
-the patched SQLx/SQLite profile passed Windows/Linux qualification and independent
-review on PR #6 head 5f02779 before storage adoption. Implementation Linux/review
-gates remain; see D26/D27 and the P1-03 review.
+the failed CodeScene maintenance gate stays recorded in P1-02-CS. P1-03/PR #6 merged
+normally at 65c076d6bb00eb7615cc7e697f3f4caeed9e9d7f after fixing automatic-rollback
+and startup-cancellation defects, independent re-review and all nine final-head/main
+jobs. Both exact-merge Codecov reports are processed; maintenance failures remain
+recorded. P1-04 is current: owner accepted one global draft chain with expected-parent
+conflicts and atomic trusted actor/UTC/correlation provenance, without invented
+legacy authors/times. RBAC remains P6; see D26-D29 and the task reviews.
 The owner
 approved the strict JSON/YAML/TOML profile and qualified Serde 1.0.229, serde_json
 1.0.154, toml 1.1.8+spec-1.1.0, serde-saphyr 2.0.0 and serde_path_to_error 0.1.20

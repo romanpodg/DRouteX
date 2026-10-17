@@ -17,6 +17,7 @@ pub use error::{StorageError, StorageErrorCode};
 pub use model::{CatalogRevision, ConfigurationWrite, CredentialVerifierLink, StoredConfiguration};
 
 use routira_common::ConfigurationRevisionId;
+use routira_config::DraftRevision;
 use sqlx::{Connection, SqliteConnection};
 use std::{fs::File, future::Future, path::PathBuf, time::Duration};
 use tokio::{
@@ -35,7 +36,11 @@ type Reply<T> = oneshot::Sender<Result<T, StorageError>>;
 enum Operation {
     Save {
         write: Box<ConfigurationWrite>,
+        revision: DraftRevision,
         reply: Reply<()>,
+    },
+    DraftHead {
+        reply: Reply<Option<ConfigurationRevisionId>>,
     },
     Load {
         id: ConfigurationRevisionId,
@@ -67,6 +72,7 @@ impl Operation {
             | Self::RegisterCatalog { reply, .. }
             | Self::Close { reply } => reply.is_closed(),
             Self::Load { reply, .. } => reply.is_closed(),
+            Self::DraftHead { reply } => reply.is_closed(),
             Self::CatalogDigest { reply, .. } => reply.is_closed(),
         }
     }
@@ -80,6 +86,9 @@ impl Operation {
                 let _ = reply.send(Err(error));
             }
             Self::Load { reply, .. } => {
+                let _ = reply.send(Err(error));
+            }
+            Self::DraftHead { reply } => {
                 let _ = reply.send(Err(error));
             }
             Self::CatalogDigest { reply, .. } => {
@@ -122,13 +131,26 @@ impl Repository {
     }
 
     /// Append a complete revision and its indexes atomically. Existing IDs conflict.
+    /// Trusted provenance is mandatory; its ID must match the document revision,
+    /// and its parent must equal the current global draft head (None for a root).
+    /// Stale edits fail Conflict; neither audit nor draft head advances on failure.
     /// On timeout/drop, an in-flight transaction may still commit; reread this ID.
-    pub async fn save_configuration(&self, write: ConfigurationWrite) -> Result<(), StorageError> {
+    pub async fn save_configuration(
+        &self,
+        write: ConfigurationWrite,
+        revision: DraftRevision,
+    ) -> Result<(), StorageError> {
         self.request(|reply| Operation::Save {
             write: Box::new(write),
+            revision,
             reply,
         })
         .await
+    }
+
+    /// Current draft only; never an active/published policy or runtime authority.
+    pub async fn draft_head(&self) -> Result<Option<ConfigurationRevisionId>, StorageError> {
+        self.request(|reply| Operation::DraftHead { reply }).await
     }
 
     pub async fn load_configuration(
@@ -283,8 +305,16 @@ async fn writer(
             continue;
         }
         let reusable = match command.operation {
-            Operation::Save { write, reply } => {
-                let result = database::save(&mut connection, *write).await;
+            Operation::Save {
+                write,
+                revision,
+                reply,
+            } => {
+                let result = database::save(&mut connection, *write, revision).await;
+                finish_operation(&mut connection, result, reply).await
+            }
+            Operation::DraftHead { reply } => {
+                let result = database::draft_head(&mut connection).await;
                 finish_operation(&mut connection, result, reply).await
             }
             Operation::Load { id, reply } => {

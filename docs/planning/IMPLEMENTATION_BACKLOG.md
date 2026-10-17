@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01 through P0-05 and P1-01/P1-02 complete; P1-03 implementation in progress; real fork test deferred.**
+**P0-01 through P0-05 and P1-01 through P1-03 complete; P1-04 global draft chain/provenance in progress; real fork test deferred.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -123,7 +123,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P1-03: Implement SQLite persistence and migrations
 
-Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,21,22.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,21,22.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -138,7 +138,7 @@ Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P1-04: Track draft revisions and audit provenance
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,17,18.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,17,18.
 
 | Field | Deliverable / evidence |
 |---|---|

@@ -56,6 +56,10 @@ macro_rules! resource_ids {
 }
 
 resource_ids! {
+    /// Public administrator/operator identity; not authentication evidence.
+    UserId,
+    /// Public correlation identity linking trusted control-plane operations.
+    CorrelationId,
     /// A reusable DNS policy Profile, not an access credential.
     ProfileId,
     /// Public resolver configuration identity; never a resolver bearer secret.

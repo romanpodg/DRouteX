@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01 through P0-05 and P1-01/P1-02 complete; P1-03 implementation in progress; real fork test deferred",
+  "status": "P0-01 through P0-05 and P1-01 through P1-03 complete; P1-04 global draft chain/provenance in progress; real fork test deferred",
   "date": "2026-10-17",
   "phases": {
     "P0": "Foundation",
@@ -250,7 +250,7 @@
       "security": "Parameterized SQL and restricted database permissions",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_review",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -280,10 +280,11 @@
       "security": "Authorization enforced by API later; no public unaudited writer",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
-      "scope_change": "CR-0001"
+      "scope_change": "CR-0001",
+      "evidence": "docs/planning/P1_04_REVISION_REVIEW.md"
     },
     {
       "id": "P1-05",
@@ -2598,9 +2599,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-17",
-    "source": "Owner continued roadmap after reviewed PR #5 merge; accepted SQLx qualification/minimal upstream patch, Zlib, writer limits and P1-03/P1-07 credential boundary in this chat",
-    "scope": "P1-03 SQLite persistence with conditional dependency adoption; preserve later crypto/admission/deployment gates and finish current reviewed PR before the next",
-    "through_task": "P1-03"
+    "source": "Owner continued roadmap after reviewed PR #6 merge and accepted global draft chain, optimistic expected-parent conflict and atomic provenance in this chat",
+    "scope": "P1-04 immutable configuration draft revisions and trusted provenance; preserve P1-05/06 publication, P1-07 secrets and P6 RBAC gates",
+    "through_task": "P1-04"
   },
   "design_proposals": [
     {
@@ -2731,5 +2732,15 @@
     "credential_scope": "Public metadata and SecretRefId links only; verifier/token bytes wait for P1-07, verification P3-07",
     "licenses": "Existing allowlist plus separately owner-approved Zlib with preserved notices",
     "evidence": "docs/planning/P1_03_STORAGE_REVIEW.md"
+  },
+  "draft_revision_decision": {
+    "status": "accepted",
+    "date": "2026-10-17",
+    "source": "Direct owner answer in this chat",
+    "model": "one global complete-configuration draft chain",
+    "conflict": "expected previous revision; Conflict without automatic merge",
+    "audit": "trusted Control Plane actor, UTC timestamp, correlation ID and revision/parent saved atomically; no config payload in audit",
+    "legacy": "do not fabricate absent author/timestamp",
+    "rbac": "P6"
   }
 }

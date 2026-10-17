@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-17. Current stage: **P1-03 draft PR #6; final review initialization-cancellation defect under owner-approved correction**.
+Date: 2026-10-17. Current stage: **P1-03/PR #6 complete; P1-04 draft provenance model accepted, implementation in progress**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -11,7 +11,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P1-03 is the current stage; technical choices retain their owning gates.
+P1-04 is the current stage; technical choices retain their owning gates.
 Force-pushing and branch-protection changes remain unauthorized.
 
 The repository is now public. With explicit owner approval the existing Codecov
@@ -124,6 +124,20 @@ completion/abandoned-result cleanup, retaining the five-second caller response
 deadline. The regression was observed red then green on Windows; new Linux CI and
 independent re-review of this correction are pending. PR #6 remains unmerged.
 
+P1-03 startup correction head `6f3eea1` passed independent re-review without confirmed
+defects and all nine final-head jobs (39052537622), with actual Linux 42 workspace/
+15 storage tests. Codecov backend patch passed at 94% (new storage 658/700); backend
+1495/1594. CodeScene 7999240 remains failed with existing maintenance dispositions.
+PR #6 merged normally at `65c076d6bb00eb7615cc7e697f3f4caeed9e9d7f`; all nine main jobs
+(39053065629) passed and both exact-merge Codecov reports are processed. Full history:
+`.setup/p1-03/autopilot-completed.json`. P1-03 is complete; do not repeat its PR loop.
+
+P1-04 starts on `config/track-draft-provenance` from that verified main merge.
+The owner accepted one global complete-configuration draft chain, expected-parent
+conflicts without automatic merge, and atomic trusted actor/UTC/correlation/revision
+provenance, without configuration payload in audit. Missing legacy author/time is
+not invented; RBAC remains P6. No P1-04 PR exists yet. See D29 and the revision review.
+
 ## Owner decisions and current progress
 
 The owner explicitly accepted [P0-01/CR-0002](P0_01_FOUNDATION_REVIEW.md) in this chat
@@ -140,14 +154,13 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original Rout
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **7 completed (P0-01 through P0-05 and P1-01/P1-02), P1-03 in progress, 80 planned**.
-Seven of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
+Current backlog: **8 completed (P0-01 through P0-05 and P1-01 through P1-03), P1-04 in progress, 79 planned**.
+Eight of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
-controller, frontend or product network-test evidence. SQLite storage is being validated. P1/P2 features are
-not passed by a workspace bootstrap. PR #5 is merged. P1-03 must complete its own
-implementation, review/checks and merge before any next implementation PR; task status
-cannot bypass that gate.
+controller, frontend or product network-test evidence. SQLite storage is implemented and reviewed. P1/P2 features are
+not passed by a workspace bootstrap. PR #6 is merged. P1-04 must complete its own implementation, review/checks and merge
+before any next implementation PR; task status cannot bypass that gate.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,

@@ -82,11 +82,11 @@ fn complete_revision_reopens_with_independent_dns_gateway_and_verifier_links() {
         let repository = storage.repository();
         register_catalogs(&repository).await;
         repository
-            .save_configuration(full_write(500))
+            .save_configuration(full_write(500), revision(500, None))
             .await
             .unwrap();
         let duplicate = repository
-            .save_configuration(empty_write(500))
+            .save_configuration(empty_write(500), revision(500, None))
             .await
             .unwrap_err();
         assert_eq!(duplicate.code(), StorageErrorCode::Conflict);
@@ -108,6 +108,11 @@ fn complete_revision_reopens_with_independent_dns_gateway_and_verifier_links() {
             .await
             .unwrap()
             .unwrap();
+        assert_eq!(
+            stored.provenance(),
+            RevisionProvenance::Recorded(revision(500, None))
+        );
+        assert_eq!(repository.draft_head().await.unwrap(), Some(typed(500)));
         assert_eq!(format!("{stored:?}"), "StoredConfiguration([REDACTED])");
         let checked = stored.check(&catalog()).unwrap();
         let document = checked.document();
@@ -176,7 +181,7 @@ fn late_catalog_constraint_rolls_back_all_resource_indexes() {
         let repository = storage.repository();
         assert_eq!(
             repository
-                .save_configuration(full_write(500))
+                .save_configuration(full_write(500), revision(500, None))
                 .await
                 .unwrap_err()
                 .code(),
@@ -206,7 +211,7 @@ fn late_catalog_constraint_rolls_back_all_resource_indexes() {
         connection.close().await.unwrap();
         register_catalogs(&repository).await;
         repository
-            .save_configuration(full_write(500))
+            .save_configuration(full_write(500), revision(500, None))
             .await
             .unwrap();
         storage.close().await.unwrap();
@@ -219,7 +224,7 @@ fn sqlite_full_leaves_prior_revision_and_all_indexes_intact() {
     run(async {
         let paths = paths::prepare(directory.data()).unwrap();
         let mut connection = migrations::initialize(&paths).await.unwrap();
-        database::save(&mut connection, empty_write(500))
+        database::save(&mut connection, empty_write(500), revision(500, None))
             .await
             .unwrap();
         sqlx::query("PRAGMA max_page_count=1")
@@ -239,14 +244,17 @@ fn sqlite_full_leaves_prior_revision_and_all_indexes_intact() {
         let (sender, receiver) = mpsc::channel(QUEUE_CAPACITY);
         let task = tokio::spawn(writer(connection, receiver, paths.lock));
         let repository = Repository { sender };
-        let error = repository.save_configuration(write).await.unwrap_err();
+        let error = repository
+            .save_configuration(write, revision(501, Some(500)))
+            .await
+            .unwrap_err();
         assert_eq!(error.code(), StorageErrorCode::DiskFull);
         assert!(
             matches!(repository.load_configuration(typed(501)).await, Err(error) if error.code() == StorageErrorCode::Closed)
         );
         assert_eq!(
             repository
-                .save_configuration(empty_write(502))
+                .save_configuration(empty_write(502), revision(502, Some(500)))
                 .await
                 .unwrap_err()
                 .code(),
@@ -270,7 +278,7 @@ fn sqlite_full_leaves_prior_revision_and_all_indexes_intact() {
                 .is_none()
         );
         repository
-            .save_configuration(empty_write(502))
+            .save_configuration(empty_write(502), revision(502, Some(500)))
             .await
             .unwrap();
         storage.close().await.unwrap();
@@ -308,7 +316,7 @@ fn external_busy_and_single_owner_lock_fail_explicitly_then_recover() {
         let held = other.begin_with("BEGIN IMMEDIATE").await.unwrap();
         let started = Instant::now();
         let error = repository
-            .save_configuration(empty_write(500))
+            .save_configuration(empty_write(500), revision(500, None))
             .await
             .unwrap_err();
         assert_eq!(error.code(), StorageErrorCode::Busy);
@@ -322,7 +330,7 @@ fn external_busy_and_single_owner_lock_fail_explicitly_then_recover() {
                 .is_none()
         );
         repository
-            .save_configuration(empty_write(500))
+            .save_configuration(empty_write(500), revision(500, None))
             .await
             .unwrap();
         other.close().await.unwrap();
@@ -349,6 +357,7 @@ fn expired_and_abandoned_queued_commands_never_start_writes() {
                 deadline: Instant::now() - Duration::from_secs(1),
                 operation: Operation::Save {
                     write: Box::new(empty_write(500)),
+                    revision: revision(500, None),
                     reply,
                 },
             })
@@ -366,6 +375,7 @@ fn expired_and_abandoned_queued_commands_never_start_writes() {
                 deadline: Instant::now() + RESPONSE_TIMEOUT,
                 operation: Operation::Save {
                     write: Box::new(empty_write(501)),
+                    revision: revision(501, None),
                     reply,
                 },
             })
@@ -489,6 +499,124 @@ fn wal_files_remain_private_and_preexisting_sidecar_symlink_is_rejected() {
 }
 
 #[test]
+fn audit_or_head_failure_rolls_back_the_entire_draft() {
+    let directory = Directory::new();
+    run(async {
+        let storage = Storage::open(directory.data()).await.unwrap();
+        let repository = storage.repository();
+        register_catalogs(&repository).await;
+        let mut other = external(&directory.data()).await;
+        sqlx::query("CREATE TRIGGER fail_tip AFTER INSERT ON draft_head BEGIN SELECT RAISE(ABORT, 'synthetic-private-failure'); END")
+            .execute(&mut other).await.unwrap();
+        let error = repository
+            .save_configuration(full_write(500), revision(500, None))
+            .await
+            .unwrap_err();
+        assert_eq!(error.code(), StorageErrorCode::Conflict);
+        assert!(!format!("{error:?} {error}").contains("synthetic-private"));
+        assert_eq!(repository.draft_head().await.unwrap(), None);
+        assert!(
+            repository
+                .load_configuration(typed(500))
+                .await
+                .unwrap()
+                .is_none()
+        );
+        for query in [
+            "SELECT count(*) FROM configuration_revisions",
+            "SELECT count(*) FROM configuration_profiles",
+            "SELECT count(*) FROM endpoint_assignments",
+            "SELECT count(*) FROM credential_metadata",
+            "SELECT count(*) FROM legacy_dns_grants",
+            "SELECT count(*) FROM gateway_network_grants",
+            "SELECT count(*) FROM configuration_provenance",
+            "SELECT count(*) FROM draft_head",
+        ] {
+            let count: i64 = sqlx::query_scalar(query)
+                .fetch_one(&mut other)
+                .await
+                .unwrap();
+            assert_eq!(count, 0, "failed draft leaked rows: {query}");
+        }
+        sqlx::query("DROP TRIGGER fail_tip")
+            .execute(&mut other)
+            .await
+            .unwrap();
+        repository
+            .save_configuration(full_write(500), revision(500, None))
+            .await
+            .unwrap();
+        assert_eq!(repository.draft_head().await.unwrap(), Some(typed(500)));
+        other.close().await.unwrap();
+        storage.close().await.unwrap();
+    });
+}
+
+#[test]
+fn legacy_upgrade_keeps_unknown_provenance_and_starts_a_new_draft_chain() {
+    let directory = Directory::new();
+    run(async {
+        let paths = paths::prepare(directory.data()).unwrap();
+        let mut connection = migrations::options(&paths).connect().await.unwrap();
+        let mut previous = migrations::migrations().migrations.into_owned();
+        previous.truncate(2);
+        Migrator::with_migrations(previous)
+            .run_direct(None, &mut connection, false)
+            .await
+            .unwrap();
+        sqlx::query("INSERT INTO configuration_revisions (id,format,document) VALUES (?,0,?)")
+            .bind(typed::<ConfigurationRevisionId>(500).as_bytes().as_slice())
+            .bind(b"{\"schemaVersion\":1}".as_slice())
+            .execute(&mut connection)
+            .await
+            .unwrap();
+        connection.close().await.unwrap();
+        drop(paths);
+        let storage = Storage::open(directory.data()).await.unwrap();
+        let repository = storage.repository();
+        let legacy = repository
+            .load_configuration(typed(500))
+            .await
+            .unwrap()
+            .unwrap();
+        assert_eq!(legacy.id(), typed(500));
+        assert_eq!(legacy.provenance(), RevisionProvenance::LegacyUnknown);
+        assert_eq!(repository.draft_head().await.unwrap(), None);
+        repository
+            .save_configuration(empty_write(501), revision(501, None))
+            .await
+            .unwrap();
+        assert_eq!(repository.draft_head().await.unwrap(), Some(typed(501)));
+        assert_eq!(
+            repository
+                .load_configuration(typed(500))
+                .await
+                .unwrap()
+                .unwrap()
+                .provenance(),
+            RevisionProvenance::LegacyUnknown
+        );
+        storage.close().await.unwrap();
+        let storage = Storage::open(directory.data()).await.unwrap();
+        assert_eq!(
+            storage.repository().draft_head().await.unwrap(),
+            Some(typed(501))
+        );
+        assert_eq!(
+            storage
+                .repository()
+                .load_configuration(typed(501))
+                .await
+                .unwrap()
+                .unwrap()
+                .provenance(),
+            RevisionProvenance::Recorded(revision(501, None))
+        );
+        storage.close().await.unwrap();
+    });
+}
+
+#[test]
 fn cancelled_or_timed_out_open_completes_upgrade_and_releases_lock() {
     for cancel in [false, true] {
         let directory = Directory::new();
@@ -583,7 +711,7 @@ fn cancelled_or_timed_out_open_completes_upgrade_and_releases_lock() {
                 .fetch_one(&mut connection)
                 .await
                 .unwrap();
-            assert_eq!(version, 2, "abandoned open did not finish the migration");
+            assert_eq!(version, 3, "abandoned open did not finish the migration");
             connection.close().await.unwrap();
         });
     }
@@ -640,7 +768,7 @@ fn upgrade_backup_includes_wal_and_failed_migration_preserves_prior_schema() {
 
         let mut broken = migrations::migrations().migrations.into_owned();
         broken.push(Migration::new(
-            3,
+            4,
             "failure probe".into(),
             MigrationType::Simple,
             "CREATE TABLE incomplete (id INTEGER); INSERT INTO absent_table VALUES (1);"

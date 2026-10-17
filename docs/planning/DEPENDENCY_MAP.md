@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0-01 through P0-05 and P1-01/P1-02 complete; P1-03 implementation in progress; real fork test deferred. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0-01 through P0-05 and P1-01 through P1-03 complete; P1-04 global draft chain/provenance in progress; real fork test deferred. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 
