@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0-01 through P0-05 and P1-01 through P1-03 complete; P1-04 in review; actual fork test deferred.**
+Status: **P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 qualification in progress; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -18,6 +18,10 @@ fixes, independent final evidence review and all seven final-head/main CI jobs.
 See [P1-02 evidence](P1_02_CONFIG_REVIEW.md). P1-03 starts with separately approved
 SQLx/SQLite qualification, its minimal upstream patch and explicit secret/writer
 boundaries. See [P1-03 evidence](P1_03_STORAGE_REVIEW.md).
+P1-04/PR #7 merged normally at644348c after independent implementation/final reviews
+and all nine head/main jobs. See [P1-04 evidence](P1_04_REVISION_REVIEW.md). P1-07
+is next because P1-05 requires it: separately owner-approved key/crypto qualification
+precedes secret-storage adoption; see [P1-07 evidence](P1_07_SECRET_REVIEW.md).
 Further technical choices retain their owning gates.
 Primary source: [base specification](../../Routira_Project_Specification_EN.md), all 27 sections,
 with [accepted scope amendment ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).

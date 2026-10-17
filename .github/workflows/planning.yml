@@ -78,6 +78,24 @@ jobs:
       - run: cargo clippy --manifest-path tests/storage-dependencies/Cargo.toml --all-targets --locked -- -D warnings
       - name: Check WAL, migrations, rollback, busy, SQLITE_FULL and cancellation
         run: cargo test --manifest-path tests/storage-dependencies/Cargo.toml --locked
+  secret-qualification:
+    name: Secret dependency qualification / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Install approved qualification toolchain
+        run: rustup toolchain install 1.99.0 --profile minimal --component rustfmt,clippy
+      - run: cargo fmt --manifest-path tests/secret-dependencies/Cargo.toml -- --check
+      - run: cargo clippy --manifest-path tests/secret-dependencies/Cargo.toml --all-targets --locked -- -D warnings
+      - name: Check official vectors, tamper rejection, context and key failures
+        run: cargo test --manifest-path tests/secret-dependencies/Cargo.toml --locked
   backend:
     name: Rust dependencies and coverage
     runs-on: ubuntu-24.04
@@ -97,6 +115,7 @@ jobs:
           cargo deny --locked --offline check
           cargo deny --manifest-path tests/dependencies/Cargo.toml --locked check
           cargo deny --manifest-path tests/storage-dependencies/Cargo.toml --locked check
+          cargo deny --manifest-path tests/secret-dependencies/Cargo.toml --locked check
       - name: Test and generate Rust coverage
         run: |
           mkdir -p coverage

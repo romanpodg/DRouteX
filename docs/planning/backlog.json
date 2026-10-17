@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "P0-01 through P0-05 and P1-01 through P1-03 complete; P1-04 global draft chain/provenance in review; real fork test deferred",
-  "date": "2026-10-17",
+  "status": "P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 secret qualification in progress; real fork test deferred",
+  "date": "2026-10-18",
   "phases": {
     "P0": "Foundation",
     "P1": "Domain and configuration",
@@ -276,11 +276,11 @@
         "crates/routira-storage"
       ],
       "acceptance": "Concurrent edits cannot silently overwrite; audit links actor and revision",
-      "tests": "Implementation ab349f7: independent read-only review without confirmed defects, all nine CI jobs39054676807, Linux46/18 storage and Windows36/8 plus four compile-fail examples; concurrent Conflict/ID mismatch, late audit rollback and legacy durable upgrade passed. Exact-base backend patch143/155; failed CodeScene maintenance gates recorded. Final evidence review/merge pending; see P1_04_REVISION_REVIEW.md",
+      "tests": "PR #7 merged644348c after independent implementation/final reviews without confirmed defects; all nine final-head39055351917 and main39055754490 jobs passed, processed exact-merge Codecov. Backend patch143/155=92.25%, CodeScene failed maintenance dispositions recorded. See P1_04_REVISION_REVIEW.md",
       "security": "Authorization enforced by API later; no public unaudited writer",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_review",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -367,10 +367,11 @@
       "security": "No custom crypto, argv secrets, shared temp files or encryption key beside ciphertext",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
-      "scope_change": "CR-0001"
+      "scope_change": "CR-0001",
+      "evidence": "docs/planning/P1_07_SECRET_REVIEW.md"
     },
     {
       "id": "P2-01",
@@ -2598,10 +2599,10 @@
   ],
   "scope_amendment": "CR-0001",
   "execution_authorization": {
-    "date": "2026-10-17",
-    "source": "Owner continued roadmap after reviewed PR #6 merge and accepted global draft chain, optimistic expected-parent conflict and atomic provenance in this chat",
-    "scope": "P1-04 immutable configuration draft revisions and trusted provenance; preserve P1-05/06 publication, P1-07 secrets and P6 RBAC gates",
-    "through_task": "P1-04"
+    "date": "2026-10-18",
+    "source": "Owner continued the accepted roadmap after reviewed PR #7 merge; direct accepted external key/rotation, conditional AWS-LC/zeroize AEAD qualification and Windows packaged object answers in this chat",
+    "scope": "P1-07 secret references/key lifecycle; qualification before production adoption; preserve P1-05/06 snapshots/publication, P3-07 verification and P6 RBAC gates",
+    "through_task": "P1-07"
   },
   "design_proposals": [
     {
@@ -2742,5 +2743,14 @@
     "audit": "trusted Control Plane actor, UTC timestamp, correlation ID and revision/parent saved atomically; no config payload in audit",
     "legacy": "do not fabricate absent author/timestamp",
     "rbac": "P6"
+  },
+  "secret_storage_decision": {
+    "status": "accepted",
+    "source": "Direct owner answers in this chat on2026-10-17/18",
+    "master_key": "external256bit key, protected file outside DB/backups; secret operations fail without correct key",
+    "rotation": "new writes use active new key; retain old keys for decryption/re-encryption and corresponding historical backup restoration",
+    "crypto_qualification": "aws-lc-rs1.18.2 plus zeroize1.9.1, AES256GCM-SIV RFC8452, random nonce and record ID/purpose authentication; adopt only on successful qualification",
+    "windows_build": "owner-approved official crate-packaged NASM objects; no installation; Linux source build",
+    "adoption": "pending actual Linux CI and independent review; no production dependency changes"
   }
 }

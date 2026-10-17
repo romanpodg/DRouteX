@@ -92,6 +92,10 @@ class ValidatorTests(unittest.TestCase):
         next(t for t in unfinished_storage['tasks'] if t['id'] == 'P1-03')['status'] = 'in_review'
         unaccepted_drafts = copy.deepcopy(plan)
         unaccepted_drafts['draft_revision_decision']['status'] = 'proposed'
+        unfinished_provenance = copy.deepcopy(plan)
+        next(t for t in unfinished_provenance['tasks'] if t['id'] == 'P1-04')['status'] = 'in_review'
+        unaccepted_secrets = copy.deepcopy(plan)
+        unaccepted_secrets['secret_storage_decision']['status'] = 'proposed'
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
         missing_native = copy.deepcopy(plan)
@@ -102,7 +106,8 @@ class ValidatorTests(unittest.TestCase):
         next(t for t in unfinished_native['tasks'] if t['id'] == 'P0-03')['status'] = 'in_review'
         for case in (missing_acceptance, missing_evidence, later_work, missing_lab,
                      missing_native, unapproved_native, unfinished_native, unfinished_dependencies,
-                     unfinished_identity, unfinished_configuration, unfinished_storage, unaccepted_drafts):
+                     unfinished_identity, unfinished_configuration, unfinished_storage, unaccepted_drafts,
+                     unfinished_provenance, unaccepted_secrets):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
 

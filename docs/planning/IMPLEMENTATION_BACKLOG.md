@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01 through P0-05 and P1-01 through P1-03 complete; P1-04 global draft chain/provenance in review; real fork test deferred.**
+**P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 secret qualification in progress; real fork test deferred.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -138,7 +138,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P1-04: Track draft revisions and audit provenance
 
-Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,17,18.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,17,18.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -146,7 +146,7 @@ Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 | Prerequisites | P1-03 |
 | Expected files/modules | crates/routira-config/src/revisions; crates/routira-storage |
 | Acceptance criteria | Concurrent edits cannot silently overwrite; audit links actor and revision |
-| Tests | Implementation ab349f7: independent read-only review without confirmed defects, all nine CI jobs39054676807, Linux46/18 storage and Windows36/8 plus four compile-fail examples; concurrent Conflict/ID mismatch, late audit rollback and legacy durable upgrade passed. Exact-base backend patch143/155; failed CodeScene maintenance gates recorded. Final evidence review/merge pending; see P1_04_REVISION_REVIEW.md |
+| Tests | PR #7 merged644348c after independent implementation/final reviews without confirmed defects; all nine final-head39055351917 and main39055754490 jobs passed, processed exact-merge Codecov. Backend patch143/155=92.25%, CodeScene failed maintenance dispositions recorded. See P1_04_REVISION_REVIEW.md |
 | Security considerations | Authorization enforced by API later; no public unaudited writer |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
 | Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |
@@ -183,7 +183,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specificati
 
 ### P1-07: Implement secret references and key lifecycle
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,19,21.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,19,21.
 
 | Field | Deliverable / evidence |
 |---|---|
