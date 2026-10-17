@@ -18,7 +18,7 @@ pub use model::{CatalogRevision, ConfigurationWrite, CredentialVerifierLink, Sto
 
 use routira_common::ConfigurationRevisionId;
 use sqlx::{Connection, SqliteConnection};
-use std::{fs::File, path::PathBuf, time::Duration};
+use std::{fs::File, future::Future, path::PathBuf, time::Duration};
 use tokio::{
     sync::{mpsc, oneshot},
     task::JoinHandle,
@@ -174,22 +174,50 @@ impl Storage {
     /// modes, symlinks/hardlinks and another storage owner, without changing access.
     /// The service must run unprivileged; malicious same-UID filesystem mutation is
     /// outside this directory boundary. No plaintext verifier/token storage exists.
+    /// Timeout/cancellation stops waiting, not initialization: its task retains the
+    /// lock, finishes the upgrade and closes if the result is abandoned. Keep the
+    /// caller-owned runtime alive; reopening meanwhile returns Busy.
     pub async fn open(directory: PathBuf) -> Result<Self, StorageError> {
+        Self::open_with_initialization(async move {
+            let paths = tokio::task::spawn_blocking(move || paths::prepare(directory))
+                .await
+                .map_err(|_| StorageError::new(StorageErrorCode::Filesystem))??;
+            let connection = migrations::initialize(&paths).await?;
+            Ok((connection, paths.lock))
+        })
+        .await
+    }
+
+    async fn open_with_initialization(
+        initialize: impl Future<Output = Result<(SqliteConnection, File), StorageError>>
+        + Send
+        + 'static,
+    ) -> Result<Self, StorageError> {
         tokio::runtime::Handle::try_current()
             .map_err(|_| StorageError::new(StorageErrorCode::RuntimeUnavailable))?;
         let deadline = Instant::now() + RESPONSE_TIMEOUT;
-        let paths = timeout_at(
-            deadline,
-            tokio::task::spawn_blocking(move || paths::prepare(directory)),
-        )
-        .await
-        .map_err(|_| StorageError::new(StorageErrorCode::DeadlineOutcomeUnknown))?
-        .map_err(|_| StorageError::new(StorageErrorCode::Filesystem))??;
-        let connection = timeout_at(deadline, migrations::initialize(&paths))
-            .await
-            .map_err(|_| StorageError::new(StorageErrorCode::DeadlineOutcomeUnknown))??;
         let (sender, receiver) = mpsc::channel(QUEUE_CAPACITY);
-        let task = tokio::spawn(writer(connection, receiver, paths.lock));
+        let (ready, response) = oneshot::channel();
+        // The task owns initialization even if its caller stops waiting mid-backup.
+        let task = tokio::spawn(async move {
+            let (connection, lock) = match initialize.await {
+                Ok(initialized) => initialized,
+                Err(error) => {
+                    let _ = ready.send(Err(error));
+                    return;
+                }
+            };
+            if ready.send(Ok(())).is_ok() {
+                writer(connection, receiver, lock).await;
+            } else {
+                let _ = connection.close().await;
+                drop(lock);
+            }
+        });
+        timeout_at(deadline, response)
+            .await
+            .map_err(|_| StorageError::new(StorageErrorCode::DeadlineOutcomeUnknown))?
+            .map_err(|_| StorageError::new(StorageErrorCode::Unavailable))??;
         Ok(Self {
             repository: Repository { sender },
             task: Some(task),

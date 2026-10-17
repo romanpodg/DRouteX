@@ -127,8 +127,9 @@ pub(crate) async fn apply(
             .await
             .map_err(|_| StorageError::new(StorageErrorCode::Filesystem))??;
     }
+    // SQLx's direct entry avoids the generic Acquire future's Send limitation.
     migrator
-        .run(connection)
+        .run_direct(None, connection, false)
         .await
         .map_err(|_| StorageError::new(StorageErrorCode::Migration))
 }

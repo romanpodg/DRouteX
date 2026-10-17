@@ -47,6 +47,38 @@ fn empty_write(number: usize) -> ConfigurationWrite {
 const FIXTURE: &[u8] = include_bytes!("../../routira-config/tests/fixtures/configuration-v1.json");
 
 #[test]
+fn opening_finishes_initialization_after_caller_timeout_or_cancellation() {
+    for cancel in [false, true] {
+        run(async {
+            let (started, started_rx) = oneshot::channel();
+            let (release, release_rx) = oneshot::channel();
+            let (completed, completed_rx) = oneshot::channel();
+            let opening = tokio::spawn(Storage::open_with_initialization(async move {
+                started.send(()).unwrap();
+                release_rx.await.unwrap();
+                completed.send(()).unwrap();
+                Err(StorageError::new(StorageErrorCode::Unavailable))
+            }));
+            started_rx.await.unwrap();
+            if cancel {
+                opening.abort();
+                assert!(matches!(opening.await, Err(error) if error.is_cancelled()));
+            } else {
+                assert_eq!(
+                    opening.await.unwrap().err().unwrap().code(),
+                    StorageErrorCode::DeadlineOutcomeUnknown
+                );
+            }
+            assert!(
+                release.send(()).is_ok(),
+                "caller timeout/cancellation dropped unfinished initialization (cancel={cancel})"
+            );
+            completed_rx.await.unwrap();
+        });
+    }
+}
+
+#[test]
 fn automatic_rollback_closes_writer_before_a_following_write_is_acknowledged() {
     run(async {
         use sqlx::ConnectOptions;

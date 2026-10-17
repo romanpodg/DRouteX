@@ -1,8 +1,8 @@
 # P1-03 SQLite persistence review
 
-Date: 2026-10-17. Status: **implementation and coverage correction reviewed; final evidence review/merge pending**.
+Date: 2026-10-17. Status: **final review found initialization cancellation defect; owner-approved correction under validation**.
 Base: verified PR #5 merge `57ce7973228d1c2153601b58f82c08c9cd9302fa`.
-Authority: accepted CR-0002, task P1-03, direct owner answers in D14/D26/D27 of
+Authority: accepted CR-0002, task P1-03, direct owner answers in D14/D26/D27/D28 of
 [OPEN_DECISIONS](OPEN_DECISIONS.md). ADR-0007 remains Proposed; later PostgreSQL,
 backup/restore, cryptography, token verification and live admission are not accepted
 by this qualification.
@@ -190,3 +190,29 @@ concrete defect from those maintenance signals. Their impact, rationale and revi
 triggers are recorded in [P1-03 dispositions](OPEN_DECISIONS.md#p1-03-review-dispositions).
 No suppression, threshold change or score-only source rewrite was made. Final
 evidence changes still require independent review and CI before normal merge.
+
+## Initialization cancellation correction
+
+Final independent review on `4708e5349a48ce7e5ccfa549d9d50d6a1aff2a8b`
+completed (exit 0, `.setup/p1-03/codex-review-final-evidence.log`) and found a
+P2 availability defect. A five-second timeout dropped initialization during a
+slow migration backup; repeated opening could repeat the incomplete backup and
+never reach schema upgrade. This finding blocks merge; earlier passing reviews
+and CI do not establish its absence.
+
+The owner explicitly accepted keeping the five-second response deadline while
+giving initialization to its own task. It retains the lock through preparation
+and migrations despite caller cancellation/timeout, then closes an abandoned
+connection before releasing the lock. Reopening while initialization is in progress
+returns Busy; no automatic retry or new startup timeout is introduced. Runtime
+shutdown still needs its future service lifecycle gate.
+
+A controlled initialization regression was observed failing before the task
+ownership correction and passed afterward on Windows. Seven storage tests pass.
+The Linux regression delays an actual upgrade past caller timeout/cancellation,
+checks Busy during initialization, then requires one completed backup, no pending
+copy, preserved data, migration completion and successful explicit reopen. New
+Linux CI and independent re-review remain required.
+SQLx's direct migrator entry performs the same migration/history checks while
+avoiding its generic Acquire future's Send limitation in a spawned task; no vendor
+source or feature changed. Red/green/build logs stay under `.setup/p1-03`.

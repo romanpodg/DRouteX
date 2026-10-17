@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-17. Current stage: **P1-03 SQLite in draft PR #6; implementation/fix/coverage reviews and CI passed, final evidence/merge pending**.
+Date: 2026-10-17. Current stage: **P1-03 draft PR #6; final review initialization-cancellation defect under owner-approved correction**.
 Repository: [romanpodg/Routira](https://github.com/romanpodg/Routira).
 Foundation: [PR #1](https://github.com/romanpodg/Routira/pull/1) merged on
 2026-10-16 at `c43c2be0d40248f81bb01be9964ba56925b368f5`. Independent Codex
@@ -116,6 +116,13 @@ Its independent review and all nine jobs of run 39049354119 passed. Actual servi
 storage patch is 638/680 (93.82%), backend 1475/1574; both patch checks succeeded.
 CodeScene 7998950 stays failed with maintenance dispositions in OPEN_DECISIONS.
 P1-03 is in_review until final evidence review/checks and normal PR #6 merge.
+
+Final review on `4708e53` found that the ordinary response timeout could drop a
+slow upgrade before migration completion, making every reopen repeat its backup.
+The owner accepted D28: a separate task owns initialization and its lock through
+completion/abandoned-result cleanup, retaining the five-second caller response
+deadline. The regression was observed red then green on Windows; new Linux CI and
+independent re-review of this correction are pending. PR #6 remains unmerged.
 
 ## Owner decisions and current progress
 

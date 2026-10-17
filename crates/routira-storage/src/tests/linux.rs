@@ -489,6 +489,107 @@ fn wal_files_remain_private_and_preexisting_sidecar_symlink_is_rejected() {
 }
 
 #[test]
+fn cancelled_or_timed_out_open_completes_upgrade_and_releases_lock() {
+    for cancel in [false, true] {
+        let directory = Directory::new();
+        run(async {
+            let data = directory.data();
+            let initialize_directory = data.clone();
+            let (started, started_rx) = oneshot::channel();
+            let (release, release_rx) = oneshot::channel();
+            let opening = tokio::spawn(Storage::open_with_initialization(async move {
+                let paths = paths::prepare(initialize_directory)?;
+                let mut connection = migrations::options(&paths).connect().await.unwrap();
+                let mut first = migrations::migrations().migrations.into_owned();
+                first.truncate(1);
+                Migrator::with_migrations(first)
+                    .run_direct(None, &mut connection, false)
+                    .await
+                    .unwrap();
+                sqlx::query(
+                    "INSERT INTO configuration_revisions (id,format,document) VALUES (?,0,?)",
+                )
+                .bind(typed::<ConfigurationRevisionId>(500).as_bytes().as_slice())
+                .bind(b"{\"schemaVersion\":1}".as_slice())
+                .execute(&mut connection)
+                .await
+                .unwrap();
+                connection.close().await.unwrap();
+                started.send(()).unwrap();
+                release_rx.await.unwrap();
+                let connection = migrations::initialize(&paths).await?;
+                Ok((connection, paths.lock))
+            }));
+            started_rx.await.unwrap();
+            if cancel {
+                opening.abort();
+                assert!(matches!(opening.await, Err(error) if error.is_cancelled()));
+            } else {
+                assert_eq!(
+                    opening.await.unwrap().err().unwrap().code(),
+                    StorageErrorCode::DeadlineOutcomeUnknown
+                );
+            }
+            assert_eq!(
+                Storage::open(data.clone()).await.err().unwrap().code(),
+                StorageErrorCode::Busy,
+                "unfinished initialization released its private lock"
+            );
+            release.send(()).unwrap();
+            let storage = loop {
+                match Storage::open(data.clone()).await {
+                    Ok(storage) => break storage,
+                    Err(error) if error.code() == StorageErrorCode::Busy => {
+                        tokio::task::yield_now().await;
+                    }
+                    Err(error) => panic!("reopen after initialization failed: {error:?}"),
+                }
+            };
+            assert!(
+                storage
+                    .repository()
+                    .load_configuration(typed(500))
+                    .await
+                    .unwrap()
+                    .unwrap()
+                    .check(&ReferenceCatalog::default())
+                    .is_ok()
+            );
+            storage.close().await.unwrap();
+            let backups: Vec<_> = fs::read_dir(&data)
+                .unwrap()
+                .map(Result::unwrap)
+                .filter(|entry| entry.file_name().to_string_lossy().ends_with(".backup.db"))
+                .collect();
+            assert_eq!(
+                backups.len(),
+                1,
+                "initialization repeated the upgrade backup"
+            );
+            assert!(
+                fs::read_dir(&data)
+                    .unwrap()
+                    .map(Result::unwrap)
+                    .all(|entry| !entry.file_name().to_string_lossy().ends_with(".pending"))
+            );
+            let mut connection = SqliteConnectOptions::new()
+                .filename(data.join("routira.db"))
+                .read_only(true)
+                .disable_statement_logging()
+                .connect()
+                .await
+                .unwrap();
+            let version: i64 = sqlx::query_scalar("SELECT max(version) FROM _sqlx_migrations")
+                .fetch_one(&mut connection)
+                .await
+                .unwrap();
+            assert_eq!(version, 2, "abandoned open did not finish the migration");
+            connection.close().await.unwrap();
+        });
+    }
+}
+
+#[test]
 fn upgrade_backup_includes_wal_and_failed_migration_preserves_prior_schema() {
     let directory = Directory::new();
     run(async {

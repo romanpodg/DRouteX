@@ -27,6 +27,14 @@ running may commit after its caller times out or drops. Reread its revision ID.
 `Storage::close` drains prior commands and closes the connection; dropping the
 lifecycle owner aborts its task without claiming that COMMIT rolled back.
 
+Opening also has a 5-second response deadline, but initialization belongs to its
+own task. A timeout or cancelled caller does not interrupt backup/migration work.
+The task retains the private lock through initialization and closes the connection
+before releasing it if its result was abandoned. A concurrent reopen gets `Busy`
+until that work finishes; there is no automatic retry. Keep the caller-owned Tokio
+runtime alive for completion: runtime shutdown is not graceful initialization
+cancellation or a power-loss guarantee.
+
 After each database operation the writer drains pending rollback and checks SQLx
 transaction depth before acknowledging success. An unusable connection stops the
 writer and rejects later commands as `Closed`; reopen explicitly after resolving
