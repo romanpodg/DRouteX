@@ -202,7 +202,7 @@ impl Deployment {
         cancel.check()?;
         let next = writer.journal.next(descriptor);
         next.validate(writer.journal.node()?)?;
-        if let Err(error) = writer.store.commit(&next) {
+        if let Err(error) = writer.store.commit(&next, cancel) {
             if error.code() == ErrorCode::UncertainCommit {
                 writer.recovery_required = true;
             }

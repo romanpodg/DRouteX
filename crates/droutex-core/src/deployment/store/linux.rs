@@ -20,6 +20,7 @@ fn unsafe_path() -> Error {
 pub(in crate::deployment) struct FileStore {
     root: PathBuf,
     uid: u32,
+    identity: (u64, u64),
     _lock: File,
 }
 impl FileStore {
@@ -44,15 +45,17 @@ impl FileStore {
         if uid == 0 {
             return Err(unsafe_path());
         }
+        check_ancestors(parent, uid)?;
         DirBuilder::new().mode(0o700).create(root).map_err(io)?;
         let lock = create(&root.join("store.lock"), uid)?;
         lock.try_lock().map_err(|_| Error(ErrorCode::Busy))?;
         let store = Self {
             root: root.to_path_buf(),
             uid,
+            identity: directory_identity(root)?,
             _lock: lock,
         };
-        store.commit(journal)?;
+        store.commit(journal, &Cancellation::default())?;
         sync_directory(parent)?;
         Ok(store)
     }
@@ -62,12 +65,14 @@ impl FileStore {
             return Err(unsafe_path());
         }
         let uid = fs::metadata("/proc/self").map_err(io)?.uid();
+        check_ancestors(root.parent().ok_or_else(unsafe_path)?, uid)?;
         check_directory(root, uid)?;
         let lock = open_file(&root.join("store.lock"), uid, 0, true)?;
         lock.try_lock().map_err(|_| Error(ErrorCode::Busy))?;
         let store = Self {
             root: root.to_path_buf(),
             uid,
+            identity: directory_identity(root)?,
             _lock: lock,
         };
         let bytes = read(&root.join("manifest.json"), uid, MAX_MANIFEST_BYTES)?;
@@ -99,6 +104,13 @@ impl FileStore {
         }
         Ok(self.root.join(format!("slot-{slot}")))
     }
+    fn validate_root(&self) -> Result<()> {
+        check_directory(&self.root, self.uid)?;
+        if directory_identity(&self.root)? != self.identity {
+            return Err(unsafe_path());
+        }
+        check_ancestors(self.root.parent().ok_or_else(unsafe_path)?, self.uid)
+    }
     pub(super) fn stage(
         &self,
         candidate: Generation,
@@ -106,6 +118,7 @@ impl FileStore {
         trust: &SnapshotTrust,
         cancel: &Cancellation,
     ) -> Result<Generation> {
+        self.validate_root()?;
         let path = self.slot(descriptor.slot)?;
         self.remove_slot(&path)?;
         cancel.check()?;
@@ -129,6 +142,11 @@ impl FileStore {
         descriptor: &Descriptor,
         trust: &SnapshotTrust,
     ) -> Result<Generation> {
+        self.validate_root()?;
+        let (envelope, artifacts) = self.read_slot(descriptor)?;
+        Generation::restore(envelope, artifacts, trust, descriptor)
+    }
+    fn read_slot(&self, descriptor: &Descriptor) -> Result<(Vec<u8>, Artifacts)> {
         let path = self.slot(descriptor.slot)?;
         check_directory(&path, self.uid)?;
         let envelope = read(&path.join("snapshot"), self.uid, MAX_SNAPSHOT_BYTES)?;
@@ -150,9 +168,11 @@ impl FileStore {
                 .ok_or(Error(ErrorCode::Size))?;
             entries.push((resource, bytes));
         }
-        Generation::restore(envelope, Artifacts::new(entries)?, trust, descriptor)
+        Ok((envelope, Artifacts::new(entries)?))
     }
-    pub(super) fn commit(&self, journal: &Journal) -> Result<()> {
+    pub(super) fn commit(&self, journal: &Journal, cancel: &Cancellation) -> Result<()> {
+        self.validate_root()?;
+        cancel.check()?;
         let bytes = serde_json::to_vec(journal).map_err(|_| Error(ErrorCode::State))?;
         if bytes.len() > MAX_MANIFEST_BYTES {
             return Err(Error(ErrorCode::Size));
@@ -161,6 +181,8 @@ impl FileStore {
         self.remove_file_if_present(&next)?;
         write(&next, self.uid, &bytes)?;
         checkpoint("manifest-prepared")?;
+        cancel.check()?;
+        self.validate_root()?;
         // Any error from the rename onward has an uncertain durable outcome.
         fs::rename(&next, self.root.join("manifest.json"))
             .map_err(|_| Error(ErrorCode::UncertainCommit))?;
@@ -170,6 +192,12 @@ impl FileStore {
         Ok(())
     }
     pub(super) fn recover(&self, journal: &Journal) -> Result<()> {
+        self.validate_root()?;
+        // Retention has no admission authority, but every retained byte/path still
+        // obeys D36. A revoked previous signer is deliberately not required here.
+        if let Some(previous) = &journal.previous {
+            self.read_slot(previous)?;
+        }
         self.remove_file_if_present(&self.root.join("manifest.next"))?;
         for slot in 0..3 {
             if journal
@@ -203,6 +231,7 @@ impl FileStore {
             Ok(_) => check_directory(path, self.uid)?,
         }
         // Flat, bounded, typed entries only. Never recurse through a substituted link.
+        let mut total = 0_usize;
         for (count, entry) in fs::read_dir(path).map_err(io)?.enumerate() {
             if count > MAX_RESOURCE_PINS {
                 return Err(Error(ErrorCode::Size));
@@ -210,8 +239,15 @@ impl FileStore {
             let entry = entry.map_err(io)?;
             let name = entry.file_name();
             let name = name.to_str().ok_or_else(unsafe_path)?;
+            let max = if name == "snapshot" {
+                MAX_SNAPSHOT_BYTES
+            } else {
+                MAX_RESOURCE_BYTES - total
+            };
+            let file = open_file(&path.join(name), self.uid, max, false)?;
             if name != "snapshot" {
                 parse_filename(name)?;
+                total += file.metadata().map_err(io)?.len() as usize;
             }
             self.remove_file_if_present(&path.join(name))?;
         }
@@ -227,6 +263,27 @@ fn safe_absolute(path: &Path) -> Result<()> {
             .any(|part| !matches!(part, Component::RootDir | Component::Normal(_)))
     {
         return Err(unsafe_path());
+    }
+    Ok(())
+}
+fn directory_identity(path: &Path) -> Result<(u64, u64)> {
+    let metadata = fs::symlink_metadata(path).map_err(io)?;
+    Ok((metadata.dev(), metadata.ino()))
+}
+fn check_ancestors(path: &Path, uid: u32) -> Result<()> {
+    // Trust root/service ownership only. Root-owned sticky shared directories
+    // (e.g. /tmp) cannot have service-owned children renamed by another UID.
+    // A non-sticky group/world-writable ancestor is never a safe store location.
+    for ancestor in path.ancestors() {
+        let metadata = fs::symlink_metadata(ancestor).map_err(io)?;
+        let writable = metadata.mode() & 0o022 != 0;
+        let sticky = metadata.mode() & 0o1000 != 0;
+        if !metadata.is_dir()
+            || (metadata.uid() != 0 && metadata.uid() != uid)
+            || (writable && !sticky)
+        {
+            return Err(unsafe_path());
+        }
     }
     Ok(())
 }

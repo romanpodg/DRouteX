@@ -184,6 +184,151 @@ fn private_owner_modes_symlinks_hardlinks_and_unsafe_placement_refuse() {
 }
 
 #[test]
+fn unsafe_ancestor_and_root_substitution_cannot_redirect_writes() {
+    let fixture = Fixture::new();
+    fs::set_permissions(&fixture.parent, fs::Permissions::from_mode(0o777)).unwrap();
+    assert!(
+        Deployment::provision(
+            &fixture.root,
+            &fixture.parent.join("cp"),
+            &fixture.parent.join("backups"),
+            typed(1),
+            trust(false)
+        )
+        .is_err()
+    );
+    fs::set_permissions(&fixture.parent, fs::Permissions::from_mode(0o700)).unwrap();
+    let deployment = fixture.provision();
+    apply(&deployment, 1, false, b"one").unwrap();
+    fs::set_permissions(&fixture.parent, fs::Permissions::from_mode(0o777)).unwrap();
+    assert_eq!(
+        failure(apply(&deployment, 2, false, b"two")),
+        ErrorCode::UnsafePath
+    );
+    fs::set_permissions(&fixture.parent, fs::Permissions::from_mode(0o700)).unwrap();
+    let other = fixture.parent.join("other");
+    fs::create_dir(&other).unwrap();
+    fs::set_permissions(&other, fs::Permissions::from_mode(0o700)).unwrap();
+    fs::rename(&fixture.root, fixture.parent.join("moved")).unwrap();
+    symlink(&other, &fixture.root).unwrap();
+    assert_eq!(
+        failure(apply(&deployment, 2, false, b"redirected")),
+        ErrorCode::UnsafePath
+    );
+    assert_eq!(fs::read_dir(&other).unwrap().count(), 0);
+    assert_version(&deployment, 1, b"one");
+    drop(deployment);
+    assert!(fixture.open().is_err());
+}
+
+#[test]
+fn previous_retention_must_remain_private_flat_and_bounded() {
+    for damage in ["link", "mode", "size", "aggregate"] {
+        let fixture = Fixture::new();
+        let deployment = fixture.provision();
+        apply(&deployment, 1, false, b"one").unwrap();
+        apply(&deployment, 2, false, b"two").unwrap();
+        drop(deployment);
+        let previous = fixture.root.join("slot-0");
+        match damage {
+            "link" => {
+                fs::remove_dir_all(&previous).unwrap();
+                symlink(fixture.parent.join("cp"), &previous).unwrap();
+            }
+            "mode" => fs::set_permissions(&previous, fs::Permissions::from_mode(0o755)).unwrap(),
+            "size" => fs::OpenOptions::new()
+                .write(true)
+                .open(previous.join(artifacts::filename(resource())))
+                .unwrap()
+                .set_len((MAX_RESOURCE_BYTES + 1) as u64)
+                .unwrap(),
+            "aggregate" => {
+                fs::OpenOptions::new()
+                    .write(true)
+                    .open(previous.join(artifacts::filename(resource())))
+                    .unwrap()
+                    .set_len(MAX_RESOURCE_BYTES as u64)
+                    .unwrap();
+                let extra =
+                    previous.join(artifacts::filename(SnapshotResource::Device(typed(100))));
+                fs::write(&extra, b"x").unwrap();
+                fs::set_permissions(extra, fs::Permissions::from_mode(0o600)).unwrap();
+            }
+            _ => unreachable!(),
+        }
+        assert!(fixture.open().is_err(), "{damage}");
+    }
+}
+
+#[test]
+fn strict_manifest_refuses_inconsistent_floor_schema_unknowns_and_size() {
+    for damage in ["floor", "schema", "unknown", "size", "duplicate"] {
+        let fixture = Fixture::new();
+        let deployment = fixture.provision();
+        apply(&deployment, 1, false, b"one").unwrap();
+        drop(deployment);
+        let path = fixture.root.join("manifest.json");
+        let mut manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(&path).unwrap()).unwrap();
+        match damage {
+            "floor" => manifest["floor"] = serde_json::json!(0),
+            "schema" => manifest["version"] = serde_json::json!(2),
+            "unknown" => manifest["unexpected"] = serde_json::json!(true),
+            "size" => {
+                fs::write(&path, vec![b' '; MAX_MANIFEST_BYTES + 1]).unwrap();
+                assert!(fixture.open().is_err());
+                continue;
+            }
+            "duplicate" => {
+                let text = String::from_utf8(fs::read(&path).unwrap())
+                    .unwrap()
+                    .replacen('{', "{\"version\":1,", 1);
+                fs::write(&path, text).unwrap();
+                assert!(fixture.open().is_err());
+                continue;
+            }
+            _ => unreachable!(),
+        }
+        fs::write(path, serde_json::to_vec(&manifest).unwrap()).unwrap();
+        assert!(fixture.open().is_err(), "{damage}");
+    }
+}
+
+#[test]
+fn cancellation_at_prepared_manifest_preserves_old_but_after_commit_is_applied() {
+    for phase in ["manifest-prepared", "manifest-durable"] {
+        let fixture = Fixture::new();
+        let deployment = fixture.provision();
+        apply(&deployment, 1, false, b"one").unwrap();
+        let cancel = Arc::new(Cancellation::default());
+        let signal = Arc::clone(&cancel);
+        hook(move |at| {
+            if at == phase {
+                signal.cancel();
+            }
+            Ok(())
+        });
+        let (bytes, artifacts) = candidate(2, false, b"two");
+        let outcome = deployment.activate(bytes, artifacts, &cancel);
+        clear_hook();
+        if phase == "manifest-prepared" {
+            assert_eq!(failure(outcome), ErrorCode::Cancelled);
+            assert_version(&deployment, 1, b"one");
+        } else {
+            assert_eq!(outcome.unwrap().sequence.get(), 2);
+            assert_version(&deployment, 2, b"two");
+        }
+        drop(deployment);
+        let recovered = fixture.open().unwrap();
+        if phase == "manifest-prepared" {
+            assert_version(&recovered, 1, b"one");
+        } else {
+            assert_version(&recovered, 2, b"two");
+        }
+    }
+}
+
+#[test]
 fn precommit_write_flush_disk_full_and_cancel_preserve_active() {
     for phase in [
         "file-created",

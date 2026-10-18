@@ -59,14 +59,15 @@ impl Store {
             Self::Files(store) => store.stage(candidate, descriptor, trust, cancel),
         }
     }
-    pub(super) fn commit(&self, journal: &Journal) -> Result<()> {
+    pub(super) fn commit(&self, journal: &Journal, cancel: &Cancellation) -> Result<()> {
+        cancel.check()?;
         match self {
             Self::Memory => {
                 let _ = journal;
                 Ok(())
             }
             #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
-            Self::Files(store) => store.commit(journal),
+            Self::Files(store) => store.commit(journal, cancel),
         }
     }
     pub(super) fn restore(

@@ -45,3 +45,17 @@ completed. Independent standards/spec passes are running; required linked-accoun
 Codex implementation/final-evidence reviews remain pending. CodeScene and Codecov
 results for this candidate are unavailable until actual remote processing.
 No outstanding gate is recorded as passed. P1-06 remains in progress; P2 stays planned.
+
+## Independent pre-CI findings and corrections
+
+Separate read-only standards/spec passes found three defects in be9d600 before
+publication: cancellation during manifest preparation was not rechecked before
+rename; root placement did not exclude mutable untrusted ancestors; previous
+retention was not checked on reopen. These are fixed in the candidate: cancellation
+is checked immediately before the irreversible rename; ancestors require root or
+service ownership and deny non-sticky group/world writes, with root device/inode
+revalidation before storage operations; previous storage is structurally bounded
+and private without requiring its revoked signing key. Added Linux regression
+tests cover each path, strict manifest inconsistencies and cancellation after commit.
+The updated Windows core tests/Clippy passed. Re-review and Linux runtime evidence
+remain pending; source fixes alone do not pass those gates.
