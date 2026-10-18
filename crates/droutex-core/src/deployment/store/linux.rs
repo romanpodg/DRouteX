@@ -16,6 +16,12 @@ fn io(_: std::io::Error) -> Error {
 fn unsafe_path() -> Error {
     Error(ErrorCode::UnsafePath)
 }
+fn lock_error(error: fs::TryLockError) -> Error {
+    match error {
+        fs::TryLockError::WouldBlock => Error(ErrorCode::Busy),
+        fs::TryLockError::Error(error) => io(error),
+    }
+}
 
 pub(in crate::deployment) struct FileStore {
     root: PathBuf,
@@ -23,7 +29,20 @@ pub(in crate::deployment) struct FileStore {
     identity: (u64, u64),
     _lock: File,
 }
+impl Drop for FileStore {
+    fn drop(&mut self) {
+        // File close alone retains flock while a duplicated/inherited open-file
+        // description remains alive (including a concurrent spawn before exec).
+        // This non-Clone owner releases its lock explicitly before closing. Drop
+        // cannot report an unlock error; closing the owned file remains the fallback.
+        let _ = self._lock.unlock();
+    }
+}
 impl FileStore {
+    #[cfg(test)]
+    pub(in crate::deployment) fn duplicate_lock_for_test(&self) -> std::io::Result<File> {
+        self._lock.try_clone()
+    }
     pub(super) fn provision(
         root: &Path,
         database: &Path,
@@ -48,7 +67,7 @@ impl FileStore {
         check_ancestors(parent, uid)?;
         DirBuilder::new().mode(0o700).create(root).map_err(io)?;
         let lock = create(&root.join("store.lock"), uid)?;
-        lock.try_lock().map_err(|_| Error(ErrorCode::Busy))?;
+        lock.try_lock().map_err(lock_error)?;
         let store = Self {
             root: root.to_path_buf(),
             uid,
@@ -68,7 +87,7 @@ impl FileStore {
         check_ancestors(root.parent().ok_or_else(unsafe_path)?, uid)?;
         check_directory(root, uid)?;
         let lock = open_file(&root.join("store.lock"), uid, 0, true)?;
-        lock.try_lock().map_err(|_| Error(ErrorCode::Busy))?;
+        lock.try_lock().map_err(lock_error)?;
         let store = Self {
             root: root.to_path_buf(),
             uid,
@@ -247,7 +266,10 @@ impl FileStore {
             let file = open_file(&path.join(name), self.uid, max, false)?;
             if name != "snapshot" {
                 parse_filename(name)?;
-                total += file.metadata().map_err(io)?.len() as usize;
+                total = total
+                    .checked_add(file.metadata().map_err(io)?.len() as usize)
+                    .filter(|total| *total <= MAX_RESOURCE_BYTES)
+                    .ok_or(Error(ErrorCode::Size))?;
             }
             self.remove_file_if_present(&path.join(name))?;
         }

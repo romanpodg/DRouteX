@@ -59,3 +59,23 @@ and private without requiring its revoked signing key. Added Linux regression
 tests cover each path, strict manifest inconsistencies and cancellation after commit.
 The updated Windows core tests/Clippy passed. Re-review and Linux runtime evidence
 remain pending; source fixes alone do not pass those gates.
+
+## First actual Linux run, retained failure
+
+On98237f4 run39152363848, Linux fmt/check/no-default-check/Clippy passed and16/17
+core tests passed, including all13 process-exit/reopen points. The uncertain-commit
+test observed Busy when reopening immediately after dropping its deployment owner.
+The same-head backend coverage test run succeeded; this does not erase the workspace
+failure. Source inspection and independent follow-up identified an OS file-lock
+lifetime gap: closing one File does not release flock while another duplicated or
+inherited descriptor still owns the same open-file description. Concurrent process
+spawn is a plausible triggering interleaving, not a proven trace of that CI event.
+
+The candidate now explicitly unlocks the uniquely owned non-Clone store before
+closing it. A deterministic Linux regression keeps a duplicated descriptor alive
+after owner drop and checks immediate reopen, then confirms dropping the old
+duplicate cannot unlock the new owner. The previous failure remains recorded;
+new exact-head Linux CI and independent review are required before acceptance.
+Lock contention now maps specifically from WouldBlock; other lock I/O errors map
+to Filesystem instead of claiming contention. The lock lifetime follows the
+[standard File contract](https://doc.rust-lang.org/std/fs/struct.File.html#method.unlock).

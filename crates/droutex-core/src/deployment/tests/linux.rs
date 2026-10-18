@@ -85,6 +85,26 @@ fn cp_database_loss_restart_and_single_writer_lock() {
 }
 
 #[test]
+fn drop_releases_lock_even_if_an_open_file_description_is_duplicated() {
+    let fixture = Fixture::new();
+    let deployment = fixture.provision();
+    apply(&deployment, 1, false, b"one").unwrap();
+    // Models the same OS open-file-description lifetime as a spawn inheriting a
+    // descriptor before exec closes it. The duplicate deliberately outlives owner.
+    let duplicate = match &deployment.writer.lock().unwrap().store {
+        Store::Files(store) => store.duplicate_lock_for_test().unwrap(),
+        Store::Memory => unreachable!(),
+    };
+    drop(deployment);
+    let reopened = fixture.open().unwrap();
+    assert_version(&reopened, 1, b"one");
+    drop(duplicate);
+    assert_eq!(failure(fixture.open()), ErrorCode::Busy); // Closing the old duplicate cannot unlock the new owner.
+    drop(reopened);
+    assert_version(&fixture.open().unwrap(), 1, b"one");
+}
+
+#[test]
 fn rotation_recovery_does_not_require_revoked_previous_key() {
     let fixture = Fixture::new();
     let deployment = fixture.provision();
