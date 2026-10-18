@@ -10,6 +10,7 @@ license.workspace = true
 droutex-common.workspace = true
 aws-lc-rs.workspace = true
 zeroize.workspace = true
+ed25519-dalek.workspace = true
 
 [lints]
 workspace = true

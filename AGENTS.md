@@ -40,13 +40,28 @@ jobs. Both exact-merge Codecov reports are processed; maintenance failures remai
 recorded. P1-04/PR #7 merged normally at644348cfe53a4b76f8a921cf3e4886b2486e0cb8
 after independent implementation/final reviews and all nine head/main jobs; exact-merge
 Codecov processed. Global draft provenance does not invent legacy authors/times.
-P1-07 is current: owner accepted external256-bit protected-file key/rotation,
+P1-07/PR #8 merged normally at36cb5e38e215b1f53a10a3cde1dccbda9c25b5c2.
+Independent final read-only/never review and all11 head/main jobs completed; main
+attempt1 cold-pool fixture timeout is retained and attempt2 passed. Exact-merge
+Codecov processed both reports. P1-05 is current: owner approved Ed25519 qualification
+in pinned aws-lc-rs1.18.2 with separate CP signing private key and DP public trust keys.
+Initial Ed25519 qualification head0c3084d passed all11 jobs and independent review.
+Owner accepted the bounded D11 codec/replay/rotation profile and D35 isolated
+ed25519-dalek3.0.0 qualification (defaults off) with conditional adoption of weak-key
+import refusal and strict verification, retaining AWS-LC signing. Qualifier3bd7db9
+passed all11 Windows/Linux CI jobs and independent read-only/never review. The
+weak-key defect is fixed in implementation cd0e2c5, which passed independent review
+and all11 jobs39147507106. Actual Codecov Rust patch is597/621; maintenance failures
+are explicitly recorded, not passed. P1-05 candidate acceptance is verified; PR9
+finalization still requires current-head checks and final review before normal merge.
+P1-06 durable activation/recovery is not implemented. Do not begin the next
+implementation PR before PR9 merges; future technical choices retain their gates.
+See P1-05-WEAK-TRUST and .setup/roadmap-autopilot-state.json. Historical P1-07 decisions: owner accepted external256-bit protected-file key/rotation,
 conditional AWS-LC1.18.2/zeroize1.9.1 AES-256-GCM-SIV qualification and official
 packaged NASM objects for Windows development (Linux source build). No production
 crypto adoption before successful qualification. Head203c76f passed actual Windows/Linux
 qualification, all11 CI jobs and independent read-only/never review. Envelope/keyring/
-persistence/export profile D33 is owner-accepted; implementation proceeds in draft PR8,
-P1-07 final exact-head review/CI/merge pending. Snapshot/publication P1-05/06,
+persistence/export profile D33 is owner-accepted and implemented in reviewed PR8. Snapshot/publication P1-05/06,
 verification P3-07 and RBAC P6 remain gated; see D26-D33 and task reviews.
 The owner
 approved the strict JSON/YAML/TOML profile and qualified Serde 1.0.229, serde_json

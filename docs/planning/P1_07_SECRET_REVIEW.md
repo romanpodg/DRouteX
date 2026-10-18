@@ -1,8 +1,8 @@
 # P1-07 secret references and external key lifecycle review
 
-Date: 2026-10-18. Status: **isolated qualification passed; implementation in review; final exact-head checks pending**.
+Date: 2026-10-18. Status: **completed; reviewed PR8 merged36cb5e3; exact-head/main evidence below**.
 Base: verified P1-04/PR #7 merge `644348cfe53a4b76f8a921cf3e4886b2486e0cb8`.
-P1-05 requires both P1-04 and P1-07; P1-07 is the next dependency-ready task.
+P1-05 requires both P1-04 and P1-07; both prerequisites are now complete.
 
 ## Owner decisions and boundaries
 
@@ -168,5 +168,20 @@ not passed evidence. The follow-up probe succeeded and records the distinction i
 systemd user session for nobody; the isolated Python process still ran as UID65534.
 No service/runtime/systemd acceptance is inferred from this OS diagnostic.
 
-Final exact-head CI, independent final evidence review and merge verification
-remain required. No known serious defect is deferred by the maintenance records.
+Final head `c764aa41131b8599b69b92d2a097545688c28bcb` passed all11 jobs39062254994
+and independent read-only/never review (session01a14b52-1405-75d0-a26b-ef7e3cb90776,
+local `.setup/p1-07/codex-review-final-evidence.log` / `.exit`, exit0, no confirmed defects).
+Reviewer fmt passed; fresh Clippy/tests were blocked by read-only build writes.
+Both exact-head Codecov reports and comparison processed: backend1986/2103,
+new Rust351/357. GitHub app patch statuses were not emitted for this head; no
+status pass is inferred. CodeScene7999941 remains failed on the recorded source
+maintenance findings and excluded auxiliary scores, without suppression.
+
+PR #8 merged normally at36cb5e38e215b1f53a10a3cde1dccbda9c25b5c2; merge tree
+matches that reviewed head. All11 main jobs39062875433 passed after a single
+failed-only retry. Attempt1 failed the standalone SQLite fixture initial pool
+connection at qualification.rs:317 (`PoolTimedOut`,150ms cold-start budget);
+application Linux/Windows jobs passed. This concrete fixture defect is corrected
+in the next qualification change; it is not a production timeout policy change.
+Both exact-merge Codecov reports processed, backend1986/2103. Raw logs, failed
+attempt and retry evidence are local in `.setup/p1-07/autopilot-completed.json`. No known serious defect is deferred by the maintenance records.

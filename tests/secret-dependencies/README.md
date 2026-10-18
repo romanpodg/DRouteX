@@ -38,3 +38,35 @@ The [inventory](../../docs/operations/SECRET_QUALIFICATION_INVENTORY.csv) finger
 all 15 registry archives and their packaged notices; actual release target notices
 remain P11-05. Current validation/advisory limits are in the
 [P1-07 review](../../docs/planning/P1_07_SECRET_REVIEW.md).
+
+## P1-05 signature qualification
+
+Owner D34 additionally approved isolated Pure Ed25519 qualification in the same
+locked profile. The `snapshot_auth` target covers all five public RFC8032 section7.1
+vectors and message/key/signature/import negatives. See the
+[P1-05 review](../../docs/planning/P1_05_SNAPSHOT_REVIEW.md) for source hash and scope.
+Both existing Windows/Linux CI jobs run this target. No production signature API,
+snapshot codec, key format, replay or rotation policy is adopted here.
+
+## D35 strict-verifier qualification
+
+The owner approved ed25519-dalek exactly3.0.0 with all default/optional features
+disabled, retaining AWS-LC signing. `strict_snapshot_auth` qualifies library
+weak-key refusal, strict individual verification and canonical public-key import
+by comparing library point re-encoding to the supplied bytes. ZIP-215 parsing alone
+does not establish canonicality. No custom curve arithmetic, blacklist or ordinary
+verification fallback is used. The test wrapper is not the production trust API.
+
+Six tests cover the five Pure Ed25519 RFC8032 vectors, AWS-LC cross-verification
+with the DRouteX domain, per-byte tampering, malformed sizes, small-order keys and
+aliases, a nonweak noncanonical key, noncanonical scalars/points and weak R. The
+identity-forgery differential explicitly demonstrates AWS-LC acceptance and strict
+verification refusal without a signing private key. Known public vector seeds
+remain test-only. These checks do not prove all possible curve/subgroup properties.
+
+[SNAPSHOT_VERIFIER_INVENTORY](../../docs/operations/SNAPSHOT_VERIFIER_INVENTORY.csv)
+fingerprints all35 locked registry archives/notices, including the20 additions;
+the original15 versions/checksums are preserved. Exact Windows/Linux execution and
+review evidence are in [P1-05](../../docs/planning/P1_05_SNAPSHOT_REVIEW.md).
+Production adoption is conditional on successful qualification and independent
+review; this package alone supplies no durable replay, deployment or runtime proof.

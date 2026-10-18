@@ -81,7 +81,7 @@ class ValidatorTests(unittest.TestCase):
         missing_evidence = copy.deepcopy(plan)
         missing_evidence['foundation_review']['source'] = ''
         later_work = copy.deepcopy(plan)
-        next(t for t in later_work['tasks'] if t['id'] == 'P1-05')['status'] = 'in_progress'
+        next(t for t in later_work['tasks'] if t['id'] == 'P1-06')['status'] = 'in_progress'
         unfinished_dependencies = copy.deepcopy(plan)
         next(t for t in unfinished_dependencies['tasks'] if t['id'] == 'P0-05')['status'] = 'in_review'
         unfinished_identity = copy.deepcopy(plan)
@@ -96,6 +96,12 @@ class ValidatorTests(unittest.TestCase):
         next(t for t in unfinished_provenance['tasks'] if t['id'] == 'P1-04')['status'] = 'in_review'
         unaccepted_secrets = copy.deepcopy(plan)
         unaccepted_secrets['secret_storage_decision']['status'] = 'proposed'
+        unfinished_secrets = copy.deepcopy(plan)
+        next(t for t in unfinished_secrets['tasks'] if t['id'] == 'P1-07')['status'] = 'in_review'
+        unaccepted_signature = copy.deepcopy(plan)
+        unaccepted_signature['snapshot_auth_qualification_decision']['status'] = 'proposed'
+        missing_signature_source = copy.deepcopy(plan)
+        missing_signature_source['snapshot_auth_qualification_decision']['source'] = ''
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
         missing_native = copy.deepcopy(plan)
@@ -107,7 +113,8 @@ class ValidatorTests(unittest.TestCase):
         for case in (missing_acceptance, missing_evidence, later_work, missing_lab,
                      missing_native, unapproved_native, unfinished_native, unfinished_dependencies,
                      unfinished_identity, unfinished_configuration, unfinished_storage, unaccepted_drafts,
-                     unfinished_provenance, unaccepted_secrets):
+                     unfinished_provenance, unaccepted_secrets, unfinished_secrets,
+                     unaccepted_signature, missing_signature_source):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
 

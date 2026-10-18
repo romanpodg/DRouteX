@@ -187,3 +187,12 @@ snapshot, not production adoption or complete release notices. Exact qualificati
 head203c76f passed actual Windows/Linux CI and independent read-only/never review;
 the owner accepted the envelope/keyring/persistence/export profile D33 before
 dependent implementation. See D33 and the secret review.
+
+## P1-05 snapshot signature qualification
+
+Owner D34 approved Ed25519 qualification in the same pinned AWS-LC1.18.2 profile,
+with a separate controller signing key and consumer public trust keys. The existing
+standalone package/CI jobs add RFC8032 vectors and failure probes without changing
+locks, registry artifacts, features, licenses or native object provenance. See the
+[P1-05 review](../planning/P1_05_SNAPSHOT_REVIEW.md). Production adoption and complete
+snapshot/replay/rotation contracts remain gated.

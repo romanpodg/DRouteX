@@ -27,6 +27,12 @@ implementation task and not a resolution of the open P1-05 security gate.
   names and links do not turn historical evidence into fresh DRouteX validation.
   Existing external integration results must be verified after publication.
 
+Read-only GitHub verification on 2026-10-18 confirmed
+[PR #10](https://github.com/romanpodg/DRouteX/pull/10) merged at
+`9f1aa92b50bd2efd745a96104b0d3c9694764d38`. The current local workspace is
+`C:\Users\roman\Desktop\DRouteX` and its origin is `romanpodg/DRouteX`.
+This verifies rename publication, not fresh runtime or P1-05 acceptance.
+
 ## Validation
 
 Local and published checks are recorded in the rename pull request. Required

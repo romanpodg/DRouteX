@@ -311,7 +311,9 @@ fn pool_deadlines_cancelled_transaction_and_readonly_boundary() {
     run(async {
         let pool = SqlitePoolOptions::new()
             .max_connections(1)
-            .acquire_timeout(Duration::from_millis(150))
+            // This also covers cold SQLite worker/WAL startup on loaded CI hosts.
+            // Keep the saturated-pool timeout and cancellation assertions below.
+            .acquire_timeout(Duration::from_secs(5))
             .connect_with(db.options())
             .await
             .unwrap();

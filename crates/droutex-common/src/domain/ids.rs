@@ -92,6 +92,8 @@ resource_ids! {
     GatewayNetworkGrantId,
     /// One immutable control-plane configuration revision, never active authority.
     ConfigurationRevisionId,
+    /// Permanently provisioned local snapshot scope; not remote-node enrollment.
+    NodeScopeId,
     /// Immutable snapshot content identity, not its increasing activation sequence.
     SnapshotId,
     /// A snapshot publication/application attempt.

@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 implementation in review; real fork test deferred.**
+**P0-01 through P0-05 and P1-01 through P1-05/P1-07 complete; PR9 finalization remains current-head gated; P1-06 planned; real fork test deferred.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -153,7 +153,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P1-05: Encode authenticated immutable snapshots
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§5,8,19.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§5,8,19.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -161,7 +161,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 | Prerequisites | P1-04, P1-07 |
 | Expected files/modules | crates/droutex-config/src/snapshot; api/schemas/snapshot |
 | Acceptance criteria | Tampering, replay and incompatible schema rejected; deterministic bytes/hash for equivalent input |
-| Tests | Golden fixtures, reorder/property tests and replay cases |
+| Tests | Windows/Linux implementation CI39147507106 all11 jobs and independent read-only/never review passed on cd0e2c5; independent OpenSSL golden, format/order permutations, metadata/payload/signature tampering, replay/rotation/rollback, resource/purpose/size and weak/noncanonical-key refusal cases; durable crash/activation evidence remains P1-06 |
 | Security considerations | Use standard signatures/MACs; sign metadata and node scope, never raw embedded secrets |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
 | Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |
@@ -183,7 +183,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specificati
 
 ### P1-07: Implement secret references and key lifecycle
 
-Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,19,21.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§17,19,21.
 
 | Field | Deliverable / evidence |
 |---|---|

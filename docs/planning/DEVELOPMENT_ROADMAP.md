@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 implementation in review; final exact-head checks pending; actual fork test deferred.**
+Status: **P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 complete; P1-05 candidate implementation accepted; PR9 current-head finalization gated; P1-06 planned; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -20,9 +20,13 @@ SQLx/SQLite qualification, its minimal upstream patch and explicit secret/writer
 boundaries. See [P1-03 evidence](P1_03_STORAGE_REVIEW.md).
 P1-04/PR #7 merged normally at644348c after independent implementation/final reviews
 and all nine head/main jobs. See [P1-04 evidence](P1_04_REVISION_REVIEW.md). P1-07
-is next because P1-05 requires it: separately owner-approved key/crypto qualification
-precedes secret-storage adoption. Qualification head203c76f passed actual Windows/Linux
-checks and independent review; the owner accepted implementation profile D33.
+completed in reviewed PR #8 at36cb5e3, with all11 exact-head/main jobs and both
+exact-merge Codecov reports processed. Main attempt1 cold-pool fixture timeout and
+successful retry remain recorded. P1-05 completed initial Ed25519 qualification
+using the pinned crypto profile. The owner accepted D11 codec/replay/rotation;
+D35 strict trust and the candidate codec are now reviewed/tested in cd0e2c5.
+P1-06 durable activation remains planned.
+See [P1-05 evidence](P1_05_SNAPSHOT_REVIEW.md).
 See [P1-07 evidence](P1_07_SECRET_REVIEW.md).
 Further technical choices retain their owning gates.
 Primary source: [base specification](../../DRouteX_Project_Specification_EN.md), all 27 sections,
@@ -106,6 +110,24 @@ protocol UI/acceptance. Complexity S/M/L is scope, not calendar duration.
 No MVP task may directly or transitively depend on a later-delivery task. The planning validator
 enforces this constraint and rejects an injected tunnel dependency.
 
+## Current continuation order under DRouteX
+
+The owner reaffirmed the following order on 2026-10-18 after the project rename.
+This orders existing tasks; it does not change their dependency DAG, accept a new
+security solution or waive any task gate. The current prototype stays local and
+PR #9 stays draft until P1-05-WEAK-TRUST has an explicitly authorized resolution.
+
+| Order | Work and acceptance boundary |
+|---|---|
+| 1. Finish P1-05 | First obtain separate authorization for a weak-key resolution and qualify it. Preserve the failing weak-key regression. Then verify signature/key refusal, tampered authenticated metadata/payload, wrong node/resource pins, incompatible/noncanonical/oversized input, equivalent-format golden bytes, replay/equal/lower sequences, rotation and rollback with a fresh sequence. Require actual Windows/Linux checks and independent implementation/final-head Code Review before merging PR #9. Initial primitive qualification alone does not pass this task. |
+| 2. Complete P1-06 | Implement staged validation/activation, durable journal and replay high-water, complete old/new generation recovery and last-known-good operation without CP/database access. Inject crashes at every transition, disk-full, cancellation and restart; key changes and rollback must never reset the sequence floor. Use controlled DNS/gateway consumers to prove one generation per decision; actual DNS/proxy services are later P3/P4 work, and their end-to-end evidence remains there. Exact persistence/activation choices retain their owning approval gate. |
+| 3. Implement P2 | P2-01 normalization and explicit apex/subdomain modes; P2-02 deterministic scoped precedence; P2-03 conflict rejection; P2-04 distinct DNS/gateway actions and strict failures; P2-07 bounded versioned local filter/service imports; P2-05 compilation with pinned catalogs; P2-06 explain/simulation. Catalog imports precede compilation. Require permutation/conflict/negative cases, compiler/interpreter equivalence and honest simulation output without claimed network execution. |
+
+Finish and merge each authorized implementation PR before starting the next.
+P2-01/P2-07 have earlier prerequisites in the DAG, but this execution order does
+not use them to bypass the current P1-05 hold. P1-06 is foundational recovery, not
+completion of the later P10-06 full-product recovery acceptance.
+
 ## Approval and update protocol
 
 Review [MVP_SCOPE](MVP_SCOPE.md), [OPEN_DECISIONS](OPEN_DECISIONS.md) and proposed technical ADRs.
@@ -138,3 +160,21 @@ The owner selected selective reuse from PR #2 on 2026-10-15 (option A).
 PR #1 remains the foundation; the [donor assessment](EXECUTION_STATUS.md#accepted-selective-reuse-from-pr-2)
 maps candidates to existing tasks. This does not start those tasks or waive the
 task prerequisites, dependency/license review or CR-0002 contracts.
+
+P1-05 continuation hold2026-10-18: all11 qualification jobs39063908865 and independent
+read-only/never review completed on0c3084d. The owner accepted D11, then chose to
+leave the subsequent weak-key security gate open. PR9 remains draft; implementation
+prototype is local/uncommitted/unreviewed. Do not qualify/adopt ed25519-dalek, merge,
+repeat the answered question or start another implementation PR without a new owner
+authorization. See P1-05-WEAK-TRUST and `.setup/roadmap-autopilot-state.json`.
+
+D35 update2026-10-18: the owner subsequently approved ed25519-dalek3.0.0
+qualification and conditional adoption after successful Windows/Linux tests,
+dependency/license checks and independent review. This supersedes the earlier
+no-qualification hold; production acceptance and PR merge remain evidence-gated.
+
+P1-05 acceptance2026-10-18: D35 qualification3bd7db9 and implementationcd0e2c5
+passed independent read-only/never reviews and all11 jobs on each exact head.
+The weak-trust defect is resolved; actual Rust patch597/621 and failed maintenance
+checks are disclosed in P1_05_SNAPSHOT_REVIEW.md. PR9 final current-head review/checks
+remain mandatory before normal merge; P1-06 is next and not yet implemented.

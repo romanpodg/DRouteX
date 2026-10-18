@@ -95,3 +95,7 @@ resolution/CNAME behavior to P3-04; live secret/clock/source/destination admissi
 to P1-07/P3-07/P4-01. Unavailable outbound intent never authorizes DIRECT fallback.
 Persistence, authenticated snapshots, TLS provisioning and runtime network
 acceptance retain their roadmap gates.
+
+The [immutable snapshot candidate v1 contract](snapshot/README.md) records the
+accepted D11/D35 framing, canonicalization, strict trust and sequence boundary.
+Candidate verification does not imply durable publication or runtime activation.

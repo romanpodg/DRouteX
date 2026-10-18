@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-18. Current stage: **P1-04/PR #7 complete; P1-07 implementation in review; final exact-head checks pending**.
+Date: 2026-10-18. Current stage: **P1-07/PR #8 complete; P1-05 candidate implementation accepted; PR9 current-head finalization gated; P1-06 planned**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -12,7 +12,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P1-07 is the current stage; technical choices retain their owning gates.
+P1-05 is the current stage; technical choices retain their owning gates.
 Force-pushing and branch-protection changes remain unauthorized.
 
 The repository is now public. With explicit owner approval the existing Codecov
@@ -156,7 +156,15 @@ review after a quota-interrupted attempt. Codecov processed both reports; the6/6
 patch is auxiliary planning code, not product crypto coverage. CodeScene7999538
 failed excluded test/auxiliary metrics; P1-07-CS-AUX records the disposition.
 The owner accepted the bounded envelope/keyring/persistence/export profile D33 on
-2026-10-18. Implementation proceeds in draft PR #8; P1-07 stays in progress.
+2026-10-18. PR #8 subsequently merged36cb5e3 after independent final review and
+all11 exact-head jobs39062254994. Main run39062875433 passed all11 jobs on attempt2;
+attempt1 cold SQLite pool startup exceeded150ms. The fixture budget is corrected
+in the next qualification change; failure/retry evidence stays local. Both exact-merge
+Codecov reports processed, backend1986/2103. CodeScene7999941 stays failed with
+source-based minor maintenance dispositions. Local history: `.setup/p1-07/autopilot-completed.json`.
+P1-05 initial Ed25519 qualification is complete and the owner accepted D11;
+D35 strict-verifier adoption and the candidate codec are reviewed/tested in cd0e2c5.
+See [snapshot review](P1_05_SNAPSHOT_REVIEW.md).
 See D30-D33 and the secret review.
 See D29 and [the revision review](P1_04_REVISION_REVIEW.md).
 
@@ -176,13 +184,23 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original DRou
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **9 completed (P0-01 through P0-05 and P1-01 through P1-04), P1-07 in progress, 78 planned**.
-Nine of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
+Current backlog: **11 completed (P0-01 through P0-05, P1-01 through P1-05 and P1-07), 77 planned**.
+Eleven of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend or product network-test evidence. SQLite storage is implemented and reviewed. P1/P2 features are
-not passed by a workspace bootstrap. PR #7 is merged. P1-07 must complete its own qualification/implementation, review/checks and merge
-before any next implementation PR; task status cannot bypass that gate.
+not passed by a workspace bootstrap. P1-05 acceptance now has exact implementation
+review and Windows/Linux evidence; PR9 final current-head review/checks and normal
+merge still precede any next implementation PR. P1-06 is planned, not implemented.
+
+On 2026-10-18 the owner reaffirmed continuation under the already renamed DRouteX:
+P1-05 after a separately authorized weak-key resolution, then P1-06, then P2.
+The [roadmap continuation order](DEVELOPMENT_ROADMAP.md#current-continuation-order-under-droutex)
+records acceptance boundaries, including P2-07 before P2-05 and later real-service
+DNS/gateway evidence. No security resolution or new dependency is authorized by
+this ordering. Read-only GitHub verification confirmed rename PR #10 merged at
+`9f1aa92b50bd2efd745a96104b0d3c9694764d38` and PR #9 still open/draft at
+`0c3084daf16d54288791461c83f15573c191ae23`; local prototype changes are preserved.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,
@@ -370,3 +388,22 @@ with routine successful-run alerts disabled. It was paused after PR #1 merged.
 Reuse that heartbeat for authorized roadmap continuation; preserve its cadence and
 notification policy. It must not repeat the completed PR #1 loop or send routine
 unchanged-state updates. Await owner answers for consequential unresolved choices.
+
+P1-05 continuation hold2026-10-18: all11 qualification jobs39063908865 and independent
+read-only/never review completed on0c3084d. The owner accepted D11, then chose to
+leave the subsequent weak-key security gate open. PR9 remains draft; implementation
+prototype is local/uncommitted/unreviewed. Do not qualify/adopt ed25519-dalek, merge,
+repeat the answered question or start another implementation PR without a new owner
+authorization. See P1-05-WEAK-TRUST and `.setup/roadmap-autopilot-state.json`.
+
+D35 update2026-10-18: the owner subsequently approved ed25519-dalek3.0.0
+qualification and conditional adoption after successful Windows/Linux tests,
+dependency/license checks and independent review. This supersedes the earlier
+no-qualification hold; production acceptance and PR merge remain evidence-gated.
+
+P1-05 acceptance2026-10-18: weak/noncanonical trust is fixed; qualifier3bd7db9 and
+implementationcd0e2c5 passed independent read-only/never reviews and all11 jobs on
+each exact head. Codecov Rust patch597/621 is actual base9f1aa92 comparison;
+backend2582/2719. CodeScene8006231 remains failed with source-based minor
+maintenance dispositions. See P1_05_SNAPSHOT_REVIEW.md and OPEN_DECISIONS.md.
+No P1-06 durable activation, P2 policy compiler or runtime DNS/gateway is claimed.

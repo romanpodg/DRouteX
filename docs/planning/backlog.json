@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 implementation in review; real fork test deferred",
+  "status": "P0-01 through P0-05 and P1-01 through P1-05/P1-07 complete; PR9 finalization remains current-head gated; P1-06 planned; real fork test deferred",
   "date": "2026-10-18",
   "phases": {
     "P0": "Foundation",
@@ -306,15 +306,16 @@
         "api/schemas/snapshot"
       ],
       "acceptance": "Tampering, replay and incompatible schema rejected; deterministic bytes/hash for equivalent input",
-      "tests": "Golden fixtures, reorder/property tests and replay cases",
+      "tests": "Windows/Linux implementation CI39147507106 all11 jobs and independent read-only/never review passed on cd0e2c5; independent OpenSSL golden, format/order permutations, metadata/payload/signature tampering, replay/rotation/rollback, resource/purpose/size and weak/noncanonical-key refusal cases; durable crash/activation evidence remains P1-06",
       "security": "Use standard signatures/MACs; sign metadata and node scope, never raw embedded secrets",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
-      "design_change": "CR-0002"
+      "design_change": "CR-0002",
+      "evidence": "docs/planning/P1_05_SNAPSHOT_REVIEW.md"
     },
     {
       "id": "P1-06",
@@ -369,7 +370,7 @@
       "security": "No custom crypto, argv secrets, shared temp files or encryption key beside ciphertext",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_review",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2602,9 +2603,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-18",
-    "source": "Owner continued the accepted roadmap after reviewed PR #7 merge; direct accepted external key/rotation, conditional AWS-LC/zeroize AEAD qualification and Windows packaged object answers in this chat",
-    "scope": "P1-07 secret references/key lifecycle; qualification before production adoption; preserve P1-05/06 snapshots/publication, P3-07 verification and P6 RBAC gates",
-    "through_task": "P1-07"
+    "source": "Owner continuation after reviewed PR8 merge and direct Ed25519 qualification approval in this chat",
+    "scope": "P1-05 D11/D35 implementation accepted on cd0e2c5 after independent review, all11 actual Windows/Linux CI jobs and dependency checks. PR9 normal merge requires final current-head evidence. P1-06 remains planned; no later implementation PR before PR9 merge.",
+    "through_task": "P1-05"
   },
   "design_proposals": [
     {
@@ -2753,7 +2754,31 @@
     "rotation": "new writes use active new key; retain old keys for decryption/re-encryption and corresponding historical backup restoration",
     "crypto_qualification": "aws-lc-rs1.18.2 plus zeroize1.9.1, AES256GCM-SIV RFC8452, random nonce and record ID/purpose authentication; adopt only on successful qualification",
     "windows_build": "owner-approved official crate-packaged NASM objects; no installation; Linux source build",
-    "adoption": "Qualification203c76f passed actual Windows/Linux CI and independent review; owner accepted D33; production profile adopted in implementation, final validation/review pending",
+    "adoption": "PR8 merged36cb5e3 after independent reviews and all11 final-head jobs; main run39062875433 passed attempt2 after cold-pool fixture timeout on attempt1; exact-merge Codecov processed both reports",
     "implementation_profile": "Owner accepted full recommended profile on2026-10-18: envelope v1 expected reference/purpose,64KiB records; external binary ring32 keys/one active; encrypted existing SQLite records with expected-envelope replacement; Linux0600/0700 file loader, Windows in-memory; internal plaintext access, P6 user exports"
+  },
+  "snapshot_auth_qualification_decision": {
+    "status": "accepted",
+    "date": "2026-10-18",
+    "source": "Direct owner reply in this chat: approve Ed25519 qualification",
+    "profile": "Pure Ed25519 in pinned aws-lc-rs1.18.2; separate protected external CP signing key and DP trusted verification public keys",
+    "adoption": "No production adoption before successful Windows/Linux/RFC8032 checks and independent review",
+    "remaining_gate": "P1-05 candidate acceptance verified; P1-06 owns durable sequence/publication/activation/recovery. Later service/RBAC gates remain."
+  },
+  "snapshot_strict_verifier_decision": {
+    "status": "accepted",
+    "date": "2026-10-18",
+    "source": "Direct owner selection in chat: qualification and adoption after successful checks",
+    "candidate": "ed25519-dalek =3.0.0, default-features=false; is_weak import refusal and verify_strict; AWS-LC signing retained",
+    "adoption_gate": "Successful Windows/Linux qualification, dependency/license checks and independent review; no new license exception",
+    "implementation_evidence": {
+      "head": "cd0e2c52704a894d784a378ac26f822d9621efa0",
+      "qualifier_head": "3bd7db95f7bac06408e5e4bf07553d0233f95505",
+      "ci_run": 39147507106,
+      "jobs_passed": 11,
+      "review": "Independent built-in Codex Code Review read-only/approval-never exit0, no confirmed defects; execution restrictions disclosed in P1_05_SNAPSHOT_REVIEW.md",
+      "rust_patch": "597/621 actual Codecov base9f1aa92 comparison",
+      "codescene": "8006231 failed; minor source-based maintenance dispositions retained, no suppression"
+    }
   }
 }
