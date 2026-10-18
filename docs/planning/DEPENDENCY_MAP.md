@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P1-07 complete; P1-05 initial qualification passed, D35 strict-verifier qualification in progress; production adoption and merge remain evidence-gated; real fork test deferred. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0-01 through P0-05 and P1-01 through P1-05/P1-07 complete; PR9 finalization remains current-head gated; P1-06 planned; real fork test deferred. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

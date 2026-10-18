@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-18. Current stage: **P1-07/PR #8 complete; P1-05 initial qualification passed; production acceptance blocked by owner-open security gate**.
+Date: 2026-10-18. Current stage: **P1-07/PR #8 complete; P1-05 candidate implementation accepted; PR9 current-head finalization gated; P1-06 planned**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -163,7 +163,7 @@ in the next qualification change; failure/retry evidence stays local. Both exact
 Codecov reports processed, backend1986/2103. CodeScene7999941 stays failed with
 source-based minor maintenance dispositions. Local history: `.setup/p1-07/autopilot-completed.json`.
 P1-05 initial Ed25519 qualification is complete and the owner accepted D11;
-production signature adoption remains blocked by P1-05-WEAK-TRUST.
+D35 strict-verifier adoption and the candidate codec are reviewed/tested in cd0e2c5.
 See [snapshot review](P1_05_SNAPSHOT_REVIEW.md).
 See D30-D33 and the secret review.
 See D29 and [the revision review](P1_04_REVISION_REVIEW.md).
@@ -184,14 +184,14 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original DRou
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **10 completed (P0-01 through P0-05, P1-01 through P1-04 and P1-07), P1-05 in progress, 77 planned**.
-Ten of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
+Current backlog: **11 completed (P0-01 through P0-05, P1-01 through P1-05 and P1-07), 77 planned**.
+Eleven of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend or product network-test evidence. SQLite storage is implemented and reviewed. P1/P2 features are
-not passed by a workspace bootstrap. PR #8 is merged. P1-05 must resolve its
-owner-open security gate and complete implementation, review/checks and merge
-before any next implementation PR; task status cannot bypass that gate.
+not passed by a workspace bootstrap. P1-05 acceptance now has exact implementation
+review and Windows/Linux evidence; PR9 final current-head review/checks and normal
+merge still precede any next implementation PR. P1-06 is planned, not implemented.
 
 On 2026-10-18 the owner reaffirmed continuation under the already renamed DRouteX:
 P1-05 after a separately authorized weak-key resolution, then P1-06, then P2.
@@ -400,3 +400,10 @@ D35 update2026-10-18: the owner subsequently approved ed25519-dalek3.0.0
 qualification and conditional adoption after successful Windows/Linux tests,
 dependency/license checks and independent review. This supersedes the earlier
 no-qualification hold; production acceptance and PR merge remain evidence-gated.
+
+P1-05 acceptance2026-10-18: weak/noncanonical trust is fixed; qualifier3bd7db9 and
+implementationcd0e2c5 passed independent read-only/never reviews and all11 jobs on
+each exact head. Codecov Rust patch597/621 is actual base9f1aa92 comparison;
+backend2582/2719. CodeScene8006231 remains failed with source-based minor
+maintenance dispositions. See P1_05_SNAPSHOT_REVIEW.md and OPEN_DECISIONS.md.
+No P1-06 durable activation, P2 policy compiler or runtime DNS/gateway is claimed.

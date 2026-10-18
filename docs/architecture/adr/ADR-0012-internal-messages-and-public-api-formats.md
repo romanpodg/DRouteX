@@ -31,3 +31,12 @@ Canonical serialization for signing, unknown fields and schema drift; unsafe gen
 ## Validation approach
 
 P1-02/P6-02 negative/schema/RBAC fixtures; P8-03 version negotiation.
+
+## Implemented bounded subset, 2026-10-18
+
+Owner-accepted D11/D35 is implemented in P1-05: bounded authenticated immutable
+candidates, canonical typed JSON, strict public-key trust and explicit in-memory
+sequence checks. See [candidate v1 contract](../../../api/schemas/snapshot/README.md)
+and [acceptance evidence](../../planning/P1_05_SNAPSHOT_REVIEW.md). This does not
+accept this ADR wholesale: its status stays Proposed. Durable publication,
+activation/recovery, API and later remote/helper contracts retain their owning gates.

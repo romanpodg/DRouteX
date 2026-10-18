@@ -1,9 +1,9 @@
 # P1-05 snapshot authentication review
 
-Date: 2026-10-18. Status: **D35 qualification completed; snapshot implementation and strict-verifier adoption under review**.
+Date: 2026-10-18. Status: **P1-05 candidate implementation accepted after qualification, independent review and actual Windows/Linux CI; normal PR finalization remains current-head gated**.
 Base: verified P1-07/PR #8 merge `36cb5e38e215b1f53a10a3cde1dccbda9c25b5c2`.
-Prerequisites P1-04/P1-07 are complete. The candidate codec is under implementation
-validation; no publication or active runtime consumer is implemented here.
+Prerequisites P1-04/P1-07 are complete. No durable publication or active runtime
+consumer is implemented here; these remain P1-06 and later service gates.
 
 ## Owner decision D34
 
@@ -156,3 +156,32 @@ tests and3 compile-fail examples passed. All174 original production registry
 versions/checksums are preserved; the9 additions exactly match qualified artifacts.
 Full implementation review and current-head Linux/Windows checks remain required
 before implementation acceptance or PR merge. Durable activation remains P1-06.
+
+## Verified implementation acceptance
+
+Implementation `cd0e2c52704a894d784a378ac26f822d9621efa0` passed all11 jobs of
+[run39147507106](https://github.com/romanpodg/DRouteX/actions/runs/39147507106),
+including actual Linux/Windows default/no-default workspace checks/tests, Linux
+protected signing-file refusal/acceptance, all qualification packages, dependency
+checks and both OIDC uploads. Independent built-in Codex Code Review against
+renamed main9f1aa92 completed exit0 with no confirmed defects (read-only/never;
+session01a14ff0-05ef-73c2-b8e6-e17896a0062d). Reviewer fmt passed; fresh Cargo/Clippy
+writes were blocked. Separate local execution passed68 tests/doc tests per default
+and no-default mode, check/Clippy/deny, and17 planning tests with workspace-local
+temporary files. The original sandbox-temp failures are environmental, not passed
+execution; no tests were weakened to work around them.
+
+Codecov processed both exact implementation reports. Backend Rust is2582/2719;
+the [actual comparison](https://api.codecov.io/api/v2/github/romanpodg/repos/DRouteX/compare/?base=9f1aa92b50bd2efd745a96104b0d3c9694764d38&head=cd0e2c52704a894d784a378ac26f822d9621efa0)
+against merged renamed main reports Rust patch597/621 (96.14%), with24 uncovered
+lines. Combined Python/Rust totals are not application coverage. Coverage does not
+prove all cryptographic/subgroup properties, durable replay or runtime admission.
+
+CodeScene8006231 remains failed. New application findings concern validate_links,
+canonical configuration normalization and SnapshotTrust construction; test/auxiliary
+and inherited rename signals are also reported. Source inspection, negative cases
+and independent review found no concrete functional defect. The minor maintenance
+dispositions and revisit triggers are recorded under P1-05-CS in OPEN_DECISIONS;
+no suppression or score-only refactoring is applied. Current-head final review/checks
+and ordinary protected merge policy remain mandatory. The next implementation task
+is P1-06, after PR9 merges, with its own durable design and failure evidence.

@@ -46,14 +46,16 @@ attempt1 cold-pool fixture timeout is retained and attempt2 passed. Exact-merge
 Codecov processed both reports. P1-05 is current: owner approved Ed25519 qualification
 in pinned aws-lc-rs1.18.2 with separate CP signing private key and DP public trust keys.
 Initial Ed25519 qualification head0c3084d passed all11 jobs and independent review.
-Owner accepted the bounded D11 codec/replay/rotation profile, but a local weak-key
-acceptance regression blocks production signature acceptance. On 2026-10-18 the
-owner authorized isolated ed25519-dalek3.0.0 qualification (defaults off) and
-conditional adoption of weak-key import refusal plus strict signature verification,
-retaining AWS-LC signing. Adoption requires successful Windows/Linux tests,
-dependency/license checks and independent review. No gate is passed by approval
-alone. Keep PR9 draft and the prototype local until qualification and implementation
-evidence is reviewed; do not merge or begin another implementation PR prematurely.
+Owner accepted the bounded D11 codec/replay/rotation profile and D35 isolated
+ed25519-dalek3.0.0 qualification (defaults off) with conditional adoption of weak-key
+import refusal and strict verification, retaining AWS-LC signing. Qualifier3bd7db9
+passed all11 Windows/Linux CI jobs and independent read-only/never review. The
+weak-key defect is fixed in implementation cd0e2c5, which passed independent review
+and all11 jobs39147507106. Actual Codecov Rust patch is597/621; maintenance failures
+are explicitly recorded, not passed. P1-05 candidate acceptance is verified; PR9
+finalization still requires current-head checks and final review before normal merge.
+P1-06 durable activation/recovery is not implemented. Do not begin the next
+implementation PR before PR9 merges; future technical choices retain their gates.
 See P1-05-WEAK-TRUST and .setup/roadmap-autopilot-state.json. Historical P1-07 decisions: owner accepted external256-bit protected-file key/rotation,
 conditional AWS-LC1.18.2/zeroize1.9.1 AES-256-GCM-SIV qualification and official
 packaged NASM objects for Windows development (Linux source build). No production

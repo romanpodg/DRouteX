@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 complete; P1-05 initial qualification passed; production acceptance blocked by owner-open security gate; actual fork test deferred.**
+Status: **P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 complete; P1-05 candidate implementation accepted; PR9 current-head finalization gated; P1-06 planned; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -24,7 +24,8 @@ completed in reviewed PR #8 at36cb5e3, with all11 exact-head/main jobs and both
 exact-merge Codecov reports processed. Main attempt1 cold-pool fixture timeout and
 successful retry remain recorded. P1-05 completed initial Ed25519 qualification
 using the pinned crypto profile. The owner accepted D11 codec/replay/rotation;
-production adoption remains blocked by P1-05-WEAK-TRUST.
+D35 strict trust and the candidate codec are now reviewed/tested in cd0e2c5.
+P1-06 durable activation remains planned.
 See [P1-05 evidence](P1_05_SNAPSHOT_REVIEW.md).
 See [P1-07 evidence](P1_07_SECRET_REVIEW.md).
 Further technical choices retain their owning gates.
@@ -171,3 +172,9 @@ D35 update2026-10-18: the owner subsequently approved ed25519-dalek3.0.0
 qualification and conditional adoption after successful Windows/Linux tests,
 dependency/license checks and independent review. This supersedes the earlier
 no-qualification hold; production acceptance and PR merge remain evidence-gated.
+
+P1-05 acceptance2026-10-18: D35 qualification3bd7db9 and implementationcd0e2c5
+passed independent read-only/never reviews and all11 jobs on each exact head.
+The weak-trust defect is resolved; actual Rust patch597/621 and failed maintenance
+checks are disclosed in P1_05_SNAPSHOT_REVIEW.md. PR9 final current-head review/checks
+remain mandatory before normal merge; P1-06 is next and not yet implemented.
