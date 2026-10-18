@@ -3,9 +3,13 @@
 mod envelope;
 mod keyring;
 mod paths;
+mod signing;
 
 pub use envelope::{EncryptedSecret, SecretContext, SecretPurpose};
 pub use keyring::{KeyId, Keyring, MAX_KEYS};
+pub use signing::{
+    SigningError, SigningErrorCode, SigningKey, SigningKeyId, SnapshotTrust, sha256,
+};
 
 use std::{error::Error, fmt};
 use zeroize::Zeroizing;

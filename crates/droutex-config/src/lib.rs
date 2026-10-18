@@ -2,6 +2,7 @@
 
 mod revisions;
 mod schema;
+pub mod snapshot;
 pub use revisions::{DraftRevision, InvalidRevisionMetadata, RevisionProvenance};
 pub use schema::{
     CheckedConfiguration, ConfigError, ConfigErrorCode, Configuration, CredentialMetadata,

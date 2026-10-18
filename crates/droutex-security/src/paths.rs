@@ -2,13 +2,22 @@ use crate::{SecretError, SecretErrorCode};
 use std::path::Path;
 
 pub(crate) fn read(path: &Path, database: &Path, backup: &Path) -> Result<Vec<u8>, SecretError> {
+    read_bounded(path, database, backup, crate::keyring::MAX_KEYRING_BYTES)
+}
+
+pub(crate) fn read_bounded(
+    path: &Path,
+    database: &Path,
+    backup: &Path,
+    max_bytes: usize,
+) -> Result<Vec<u8>, SecretError> {
     #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
     {
-        linux::read(path, database, backup)
+        linux::read(path, database, backup, max_bytes)
     }
     #[cfg(not(all(target_os = "linux", target_arch = "x86_64")))]
     {
-        let _ = (path, database, backup);
+        let _ = (path, database, backup, max_bytes);
         Err(SecretError(SecretErrorCode::UnsupportedPlatform))
     }
 }
@@ -16,7 +25,6 @@ pub(crate) fn read(path: &Path, database: &Path, backup: &Path) -> Result<Vec<u8
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 mod linux {
     use super::*;
-    use crate::keyring::MAX_KEYRING_BYTES;
     use std::{
         fs::{self, OpenOptions},
         io::Read,
@@ -36,6 +44,7 @@ mod linux {
         path: &Path,
         database: &Path,
         backup: &Path,
+        max_bytes: usize,
     ) -> Result<Vec<u8>, SecretError> {
         if !path.is_absolute()
             || path
@@ -78,18 +87,18 @@ mod linux {
             || metadata.uid() != uid
             || metadata.mode() & 0o7777 != 0o600
             || metadata.nlink() != 1
-            || metadata.len() > MAX_KEYRING_BYTES as u64
+            || metadata.len() > max_bytes as u64
             || !before.is_file()
             || before.ino() != metadata.ino()
             || before.dev() != metadata.dev()
         {
             return Err(unsafe_path());
         }
-        let mut bytes = Zeroizing::new(Vec::with_capacity(MAX_KEYRING_BYTES + 1));
-        file.take((MAX_KEYRING_BYTES + 1) as u64)
+        let mut bytes = Zeroizing::new(Vec::with_capacity(max_bytes + 1));
+        file.take((max_bytes + 1) as u64)
             .read_to_end(&mut bytes)
             .map_err(io)?;
-        if bytes.len() > MAX_KEYRING_BYTES {
+        if bytes.len() > max_bytes {
             return Err(unsafe_path());
         }
         Ok(std::mem::take(&mut *bytes))

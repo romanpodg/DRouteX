@@ -3,7 +3,7 @@ use droutex_common::{
     LegacyNetworkGrantId, ListenerId, NetworkGroupId, PrivateDnsRecordId, ProfileId,
     ProxyOutboundId, ResolverCredentialId, RuleId, SecretRefId, ServiceGroupRevisionId,
 };
-use serde::{Deserialize, Deserializer, de};
+use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
 use std::{
     collections::BTreeSet,
     net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr},
@@ -11,7 +11,7 @@ use std::{
 };
 
 /// External configuration data. It is not compiled policy or runtime authority.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Configuration {
     pub schema_version: u32,
@@ -47,10 +47,10 @@ pub struct ReferenceCatalog {
 }
 
 /// Reusable Profile with fixed custom/service/filter/default layers.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Profile {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: ProfileId,
     pub name: String,
     #[serde(deserialize_with = "super::value::object")]
@@ -65,23 +65,27 @@ pub struct Profile {
     pub filter_lists: Vec<FilterSelection>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DnsEndpoint {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: EndpointId,
     pub name: String,
     pub enabled: bool,
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub profile: ProfileId,
-    #[serde(default, deserialize_with = "optional_id")]
+    #[serde(
+        default,
+        deserialize_with = "optional_id",
+        serialize_with = "serialize_optional_id"
+    )]
     pub device: Option<DeviceId>,
     #[serde(deserialize_with = "super::value::objects")]
     pub access: Vec<DnsAccess>,
 }
 
 /// Each transport states its own admission source, allowing both on one Endpoint.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(
     tag = "transport",
     rename_all = "snake_case",
@@ -90,32 +94,32 @@ pub struct DnsEndpoint {
 )]
 pub enum DnsAccess {
     Doh {
-        #[serde(deserialize_with = "resource_id")]
+        #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
         listener: ListenerId,
-        #[serde(deserialize_with = "resource_ids")]
+        #[serde(deserialize_with = "resource_ids", serialize_with = "serialize_ids")]
         credentials: Vec<ResolverCredentialId>,
     },
     Dot {
-        #[serde(deserialize_with = "resource_id")]
+        #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
         listener: ListenerId,
-        #[serde(deserialize_with = "resource_ids")]
+        #[serde(deserialize_with = "resource_ids", serialize_with = "serialize_ids")]
         credentials: Vec<ResolverCredentialId>,
     },
     Udp {
-        #[serde(deserialize_with = "resource_id")]
+        #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
         listener: ListenerId,
-        #[serde(deserialize_with = "resource_ids")]
+        #[serde(deserialize_with = "resource_ids", serialize_with = "serialize_ids")]
         grants: Vec<LegacyNetworkGrantId>,
     },
     Tcp {
-        #[serde(deserialize_with = "resource_id")]
+        #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
         listener: ListenerId,
-        #[serde(deserialize_with = "resource_ids")]
+        #[serde(deserialize_with = "resource_ids", serialize_with = "serialize_ids")]
         grants: Vec<LegacyNetworkGrantId>,
     },
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Deserialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CredentialState {
     Active,
@@ -125,17 +129,17 @@ pub enum CredentialState {
 }
 
 /// Public credential record only; importing this cannot authenticate a capability.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CredentialMetadata {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: ResolverCredentialId,
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub endpoint: EndpointId,
     pub state: CredentialState,
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Deserialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum ListenerTransport {
     DnsUdp,
@@ -145,10 +149,10 @@ pub enum ListenerTransport {
     GatewayTcp,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct Listener {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: ListenerId,
     pub name: String,
     pub enabled: bool,
@@ -159,56 +163,60 @@ pub struct Listener {
     pub dual_stack: bool,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct NetworkGroup {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: NetworkGroupId,
     pub name: String,
     /// Independent gateway policy selection, never learned from a DNS query.
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub traffic_profile: ProfileId,
 }
 
 /// Static desired scope; P4-01 must establish current source/expiry/revocation.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct LegacyGrant {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: LegacyNetworkGrantId,
     pub source: IpAddr,
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub listener: ListenerId,
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub group: NetworkGroupId,
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub endpoint: EndpointId,
 }
 
 /// Separate gateway scope; this data is not a live destination-binding permit.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct GatewayGrant {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: GatewayNetworkGrantId,
     pub source: IpAddr,
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub listener: ListenerId,
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub group: NetworkGroupId,
     #[serde(default)]
     pub targets: Vec<DomainMatch>,
-    #[serde(default, deserialize_with = "resource_ids")]
+    #[serde(
+        default,
+        deserialize_with = "resource_ids",
+        serialize_with = "serialize_ids"
+    )]
     pub services: Vec<ServiceGroupRevisionId>,
     pub ports: Vec<PortRange>,
-    #[serde(deserialize_with = "resource_ids")]
+    #[serde(deserialize_with = "resource_ids", serialize_with = "serialize_ids")]
     pub outbounds: Vec<ProxyOutboundId>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ProxyOutbound {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: ProxyOutboundId,
     pub name: String,
     pub enabled: bool,
@@ -216,7 +224,7 @@ pub struct ProxyOutbound {
     pub transport: OutboundKind,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(
     tag = "kind",
     rename_all = "snake_case",
@@ -229,36 +237,40 @@ pub enum OutboundKind {
         host: String,
         port: u16,
         tls_server_name: String,
-        #[serde(default, deserialize_with = "optional_id")]
+        #[serde(
+            default,
+            deserialize_with = "optional_id",
+            serialize_with = "serialize_optional_id"
+        )]
         secret: Option<SecretRefId>,
     },
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum DnsAction {
     Resolve {
-        #[serde(deserialize_with = "resource_id")]
+        #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
         upstream: DnsUpstreamId,
     },
     Block {},
     Gateway {
-        #[serde(deserialize_with = "resource_id")]
+        #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
         outbound: ProxyOutboundId,
     },
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum TrafficAction {
     Deny {},
     Outbound {
-        #[serde(deserialize_with = "resource_id")]
+        #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
         outbound: ProxyOutboundId,
     },
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(
     tag = "plane",
     content = "action",
@@ -270,7 +282,7 @@ pub enum RuleAction {
     Traffic(#[serde(deserialize_with = "super::value::object")] TrafficAction),
 }
 
-#[derive(Clone, Copy, Debug, Eq, PartialEq, Deserialize)]
+#[derive(Clone, Copy, Debug, Eq, PartialEq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum MatchMode {
     Exact,
@@ -279,24 +291,24 @@ pub enum MatchMode {
 }
 
 /// Text awaiting P2-01 canonicalization, never a compiled DNS/target matcher.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DomainMatch {
     pub mode: MatchMode,
     pub value: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct PortRange {
     pub from: u16,
     pub to: u16,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CustomRule {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: RuleId,
     pub enabled: bool,
     pub priority: i32,
@@ -306,34 +318,34 @@ pub struct CustomRule {
     pub action: RuleAction,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct ServiceRule {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: RuleId,
     pub enabled: bool,
     pub priority: i32,
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub revision: ServiceGroupRevisionId,
     pub action: RuleAction,
 }
 
 /// Immutable verified revision reference; dataset payload import remains P2-07.
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct FilterSelection {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub revision: FilterListRevisionId,
     pub enabled: bool,
     pub priority: i32,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct PrivateRecord {
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: PrivateDnsRecordId,
-    #[serde(deserialize_with = "resource_id")]
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub profile: ProfileId,
     pub name: String,
     pub ttl: u32,
@@ -341,7 +353,7 @@ pub struct PrivateRecord {
     pub record: RecordData,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum RecordData {
     A { address: Ipv4Addr },
@@ -368,4 +380,31 @@ fn resource_ids<'de, D: Deserializer<'de>, T: FromStr>(d: D) -> Result<Vec<T>, D
 
 fn optional_id<'de, D: Deserializer<'de>, T: FromStr>(d: D) -> Result<Option<T>, D::Error> {
     Option::<Id<T>>::deserialize(d).map(|id| id.map(|id| id.0))
+}
+
+fn serialize_id<T: std::fmt::Display, S: Serializer>(
+    value: &T,
+    serializer: S,
+) -> Result<S::Ok, S::Error> {
+    serializer.collect_str(value)
+}
+fn serialize_ids<T: std::fmt::Display, S: Serializer>(
+    values: &[T],
+    serializer: S,
+) -> Result<S::Ok, S::Error> {
+    use serde::ser::SerializeSeq;
+    let mut sequence = serializer.serialize_seq(Some(values.len()))?;
+    for value in values {
+        sequence.serialize_element(&value.to_string())?;
+    }
+    sequence.end()
+}
+fn serialize_optional_id<T: std::fmt::Display, S: Serializer>(
+    value: &Option<T>,
+    serializer: S,
+) -> Result<S::Ok, S::Error> {
+    value
+        .as_ref()
+        .map(ToString::to_string)
+        .serialize(serializer)
 }

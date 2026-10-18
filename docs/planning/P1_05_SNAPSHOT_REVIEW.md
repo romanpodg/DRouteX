@@ -1,8 +1,9 @@
 # P1-05 snapshot authentication review
 
-Date: 2026-10-18. Status: **initial qualification completed; production signature acceptance blocked by open owner security gate**.
+Date: 2026-10-18. Status: **D35 qualification completed; snapshot implementation and strict-verifier adoption under review**.
 Base: verified P1-07/PR #8 merge `36cb5e38e215b1f53a10a3cde1dccbda9c25b5c2`.
-Prerequisites P1-04/P1-07 are complete. No snapshot producer or consumer is adopted.
+Prerequisites P1-04/P1-07 are complete. The candidate codec is under implementation
+validation; no publication or active runtime consumer is implemented here.
 
 ## Owner decision D34
 
@@ -131,3 +132,27 @@ checks nonweak noncanonical key import. Exact final Windows/Linux CI and indepen
 qualification review remain pending; no production strict-verifier adoption is
 claimed by this document. The original public SnapshotTrust regressions remain red
 until qualification permits the implementation fix.
+
+### Completed D35 qualification and local adoption
+
+Exact head `3bd7db95f7bac06408e5e4bf07553d0233f95505` passed all11 jobs of
+[run39135125123](https://github.com/romanpodg/DRouteX/actions/runs/39135125123),
+including actual Windows/Linux execution of all17 isolated tests. Independent
+built-in Codex Code Review against renamed main `9f1aa92` completed exit0 with
+no confirmed defects (`.setup/p1-05/strict-codex-review.log`). The reviewer confirmed
+format/planning checks and7 Python tests; fresh Cargo execution and10 temporary-file
+Python cases were blocked by read-only. Separate local17 planning tests, actual
+CI and the locked35-archive audit provide execution evidence, not the review alone.
+
+CodeScene8005395 remains failed. Its application signals cover previously reviewed
+renamed main files; `git diff --quiet origin/main -- crates` returned0 on the
+qualification head. The auxiliary validator signal repeats P1-05-CS-AUX. No
+suppression or score-only refactor is made; see P1-05-CS-QUAL-RENAME.
+
+After those gates, local SnapshotTrust adoption uses parsed library keys, weak and
+noncanonical import refusal, and verify_strict without fallback. The three public
+boundary regressions were observed red before the fix, then all13 Windows security
+tests and3 compile-fail examples passed. All174 original production registry
+versions/checksums are preserved; the9 additions exactly match qualified artifacts.
+Full implementation review and current-head Linux/Windows checks remain required
+before implementation acceptance or PR merge. Durable activation remains P1-06.

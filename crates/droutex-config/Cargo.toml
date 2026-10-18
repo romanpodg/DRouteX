@@ -8,6 +8,7 @@ license.workspace = true
 
 [dependencies]
 droutex-common.workspace = true
+droutex-security.workspace = true
 droutex-policy.workspace = true
 serde.workspace = true
 serde_json.workspace = true
