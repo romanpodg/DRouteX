@@ -76,19 +76,32 @@ impl Cancellation {
 }
 
 /// Decision-scoped pin, not a TCP session handle. Both consumers share one generation.
-pub struct Decision(Arc<Generation>);
-impl Decision {
+/// The owner cannot close/reopen the store while a decision is still using its pin.
+///
+/// ```compile_fail
+/// use droutex_core::deployment::Deployment;
+/// fn close_while_pinned(store: Deployment) {
+///     let decision = store.pin().unwrap();
+///     drop(store);
+///     decision.metadata();
+/// }
+/// ```
+pub struct Decision<'store> {
+    generation: Arc<Generation>,
+    _owner: &'store Deployment,
+}
+impl Decision<'_> {
     pub fn metadata(&self) -> SnapshotMetadata {
-        self.0.metadata()
+        self.generation.metadata()
     }
     pub fn dns_configuration(&self) -> &CheckedConfiguration {
-        self.0.content().configuration()
+        self.generation.content().configuration()
     }
     pub fn gateway_configuration(&self) -> &CheckedConfiguration {
-        self.0.content().configuration()
+        self.generation.content().configuration()
     }
     pub fn artifact(&self, resource: SnapshotResource) -> Option<&[u8]> {
-        self.0.artifacts.get(resource)
+        self.generation.artifacts.get(resource)
     }
 }
 
@@ -156,7 +169,7 @@ impl Deployment {
             published: RwLock::new(Published { active, admitted }),
         }
     }
-    pub fn pin(&self) -> Result<Decision> {
+    pub fn pin(&self) -> Result<Decision<'_>> {
         let state = self
             .published
             .read()
@@ -167,7 +180,10 @@ impl Deployment {
         state
             .active
             .as_ref()
-            .map(|active| Decision(Arc::clone(active)))
+            .map(|active| Decision {
+                generation: Arc::clone(active),
+                _owner: self,
+            })
             .ok_or(DeploymentError(ErrorCode::Unavailable))
     }
     /// Rechecks the current floor under the serialized writer. Err never means applied;

@@ -459,7 +459,12 @@ fn crash_child() {
         .unwrap()
         .parse()
         .unwrap();
-    let deployment = Deployment::open(Path::new(&root), typed(1), trust(false)).unwrap();
+    let recovery = std::env::var("DROUTEX_TEST_RECOVERY").is_ok();
+    let deployment = if recovery {
+        None
+    } else {
+        Some(Deployment::open(Path::new(&root), typed(1), trust(false)).unwrap())
+    };
     hook(move |at| {
         if at == phase {
             occurrence -= 1;
@@ -469,8 +474,85 @@ fn crash_child() {
         }
         Ok(())
     });
-    apply(&deployment, 2, false, b"two").unwrap();
+    if recovery {
+        Deployment::open(Path::new(&root), typed(1), trust(false)).unwrap();
+    } else {
+        apply(deployment.as_ref().unwrap(), 2, false, b"two").unwrap();
+    }
     panic!("crash point not reached");
+}
+
+fn uncertain_third(fixture: &Fixture) {
+    let deployment = fixture.provision();
+    apply(&deployment, 1, false, b"one").unwrap();
+    apply(&deployment, 2, false, b"two").unwrap();
+    hook(|phase| {
+        if phase == "manifest-renamed" {
+            Err(DeploymentError(ErrorCode::Filesystem))
+        } else {
+            Ok(())
+        }
+    });
+    assert_eq!(
+        failure(apply(&deployment, 3, false, b"three")),
+        ErrorCode::UncertainCommit
+    );
+    clear_hook();
+}
+
+#[test]
+fn recovery_sync_failure_cannot_delete_a_formerly_retained_slot() {
+    let fixture = Fixture::new();
+    uncertain_third(&fixture);
+    let formerly_retained = fixture.root.join("slot-0/snapshot");
+    let bytes = fs::read(&formerly_retained).unwrap();
+    hook(|phase| {
+        if phase == "recovery-before-sync" {
+            Err(DeploymentError(ErrorCode::Filesystem))
+        } else {
+            Ok(())
+        }
+    });
+    assert_eq!(failure(fixture.open()), ErrorCode::Filesystem);
+    clear_hook();
+    assert_eq!(fs::read(&formerly_retained).unwrap(), bytes);
+    assert_version(&fixture.open().unwrap(), 3, b"three");
+    assert!(!formerly_retained.exists());
+}
+
+#[test]
+fn real_process_exit_during_uncertain_recovery_preserves_complete_selection() {
+    for phase in [
+        "recovery-before-sync",
+        "recovery-durable",
+        "recovery-cleaned",
+    ] {
+        let fixture = Fixture::new();
+        uncertain_third(&fixture);
+        let output = std::process::Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--exact",
+                "deployment::tests::linux::crash_child",
+                "--test-threads=1",
+            ])
+            .env("DROUTEX_TEST_CRASH_ROOT", &fixture.root)
+            .env("DROUTEX_TEST_CRASH_PHASE", phase)
+            .env("DROUTEX_TEST_CRASH_NTH", "1")
+            .env("DROUTEX_TEST_RECOVERY", "1")
+            .output()
+            .unwrap();
+        assert_eq!(
+            output.status.code(),
+            Some(88),
+            "{phase}: {}",
+            String::from_utf8_lossy(&output.stderr)
+        );
+        assert_eq!(
+            fixture.root.join("slot-0").exists(),
+            phase != "recovery-cleaned"
+        );
+        assert_version(&fixture.open().unwrap(), 3, b"three");
+    }
 }
 
 #[test]

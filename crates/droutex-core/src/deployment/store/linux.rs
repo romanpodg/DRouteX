@@ -217,6 +217,12 @@ impl FileStore {
         if let Some(previous) = &journal.previous {
             self.read_slot(previous)?;
         }
+        // A visible post-rename manifest may still be the outcome of an uncertain
+        // commit. Make this selection durable before deleting anything that the
+        // former durable manifest could have retained as active/previous.
+        checkpoint("recovery-before-sync")?;
+        sync_directory(&self.root)?;
+        checkpoint("recovery-durable")?;
         self.remove_file_if_present(&self.root.join("manifest.next"))?;
         for slot in 0..3 {
             if journal
@@ -231,7 +237,8 @@ impl FileStore {
                 self.remove_slot(&self.slot(slot)?)?;
             }
         }
-        sync_directory(&self.root)
+        sync_directory(&self.root)?;
+        checkpoint("recovery-cleaned")
     }
     fn remove_file_if_present(&self, path: &Path) -> Result<()> {
         match fs::symlink_metadata(path) {

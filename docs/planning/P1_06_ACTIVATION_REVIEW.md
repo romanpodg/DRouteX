@@ -79,3 +79,14 @@ new exact-head Linux CI and independent review are required before acceptance.
 Lock contention now maps specifically from WouldBlock; other lock I/O errors map
 to Filesystem instead of claiming contention. The lock lifetime follows the
 [standard File contract](https://doc.rust-lang.org/std/fs/struct.File.html#method.unlock).
+
+## Required Codex Code Review findings
+
+The linked-account read-only/never review completed with two actionable findings:
+recovery could clean a slot before making its selected post-uncertainty manifest
+durable; a Decision could outlive its Deployment owner and bypass previous-pin
+backpressure after reopening. Neither is deferred. Recovery now syncs the chosen
+manifest directory before any cleanup. A Decision borrows its owner for its entire
+lifetime, with a compile-fail regression preventing close/reopen while still used.
+Linux fault/crash regressions cover the new recovery boundary. A successful review
+process exit with findings is not a passed review; exact-head re-review remains required.
