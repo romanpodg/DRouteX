@@ -62,7 +62,7 @@ DNS-only cannot guarantee ECH/QUIC/HTTP3 support or full-device traffic enforcem
 
 ## Two useful milestones
 
-G1: client → real Routira legacy/personal DoH/DoT DNS → authorized SmartDNS TCP gateway → controlled TLS origin.
+G1: client → real DRouteX legacy/personal DoH/DoT DNS → authorized SmartDNS TCP gateway → controlled TLS origin.
 Demonstrate DIRECT/BLOCK, trusted ingress context, unchanged origin certificate and observed VPS
 egress, snapshot/version traces, access denial and failure/rollback behavior, with minimal API/UI.
 
@@ -94,7 +94,7 @@ These fixtures exercise actual DNS/TCP/TLS; mocks cannot replace their acceptanc
 | Access administration | Owner adds admins; RBAC/CSRF/MFA/access revocation and last-owner guards enforced |
 | Privileges | API/node cannot run arbitrary OS networking actions; no NET_ADMIN or custom root executor needed |
 
-DNS-only clients may bypass DNS or retain answers/connections. Fail-closed protects Routira's
+DNS-only clients may bypass DNS or retain answers/connections. Fail-closed protects DRouteX's
 authorized proxy boundary, not every connection made by an uncontrolled endpoint.
 The system cannot force a DNS-only device's IPv6/QUIC/application traffic into the proxy.
 DIRECT from a gateway exits at the VPS, not the client's home connection.

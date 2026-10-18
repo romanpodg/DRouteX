@@ -44,13 +44,13 @@ jobs:
           node-version: 24.16.0
       - run: npm install --global pnpm@11.9.0
       - name: Install locked frontend dependencies
-        run: pnpm --dir apps/routira-web install --frozen-lockfile
+        run: pnpm --dir apps/droutex-web install --frozen-lockfile
       - name: Test and generate frontend LCOV
-        run: pnpm --dir apps/routira-web exec vitest run --coverage --coverage.provider=v8 --coverage.reporter=lcov
+        run: pnpm --dir apps/droutex-web exec vitest run --coverage --coverage.provider=v8 --coverage.reporter=lcov
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: frontend-coverage
-          path: apps/routira-web/coverage/lcov.info
+          path: apps/droutex-web/coverage/lcov.info
           if-no-files-found: error
           retention-days: 7
   upload:

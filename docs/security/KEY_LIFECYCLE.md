@@ -3,8 +3,8 @@
 Status: owner-accepted D30-D33 profile; implementation/acceptance in progress.
 First server target: unprivileged Debian 13 x86_64. No production deployment here.
 
-`routira-security` owns key material and redacted, zeroizing plaintext buffers.
-`routira-storage` persists only structurally checked encrypted envelopes in the
+`droutex-security` owns key material and redacted, zeroizing plaintext buffers.
+`droutex-storage` persists only structurally checked encrypted envelopes in the
 existing SQLite single-writer boundary. Configuration DTOs carry SecretRefId;
 neither storage nor configuration imports decrypt. Explicit trusted internal
 decryption is required by each consumer, with expected reference and typed purpose.
@@ -17,7 +17,7 @@ All integers are unsigned, big-endian. Exact bytes, no trailing extensions:
 
 | Field | Bytes |
 |---|---:|
-| Magic/version `RTSEC\0\x00\x01` | 8 |
+| Magic/version `DXSEC\0\x00\x01` | 8 |
 | Suite1 (AWS-LC AES-256-GCM-SIV) | 1 |
 | Public key identifier (nonzero opaque bytes) | 16 |
 | SecretRefId (validated UUIDv4) | 16 |
@@ -27,7 +27,7 @@ All integers are unsigned, big-endian. Exact bytes, no trailing extensions:
 | Ciphertext | length |
 | Authentication tag | 16 |
 
-AAD is ASCII `Routira secret record` followed by NUL and the entire 58-byte header.
+AAD is ASCII `DRouteX secret record` followed by NUL and the entire 58-byte header.
 The expected context is supplied independently by the trusted consumer. Unknown
 version/suite/purpose, invalid IDs/lengths and trailing bytes are rejected before
 cryptography. A structurally valid envelope is not authenticated until decryption.

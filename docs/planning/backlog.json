@@ -67,7 +67,7 @@
       "files": [
         "Cargo.toml",
         "Cargo.lock",
-        "crates/routira-{common,config,policy}",
+        "crates/droutex-{common,config,policy}",
         "docs/agents/rust.md",
         "deny.toml",
         "LICENSE",
@@ -185,7 +185,7 @@
       ],
       "scope": "Typed Profile/DnsEndpoint/ResolverCredential/filter-service revision/private record identities; separate legacy and gateway group grants from Device metadata; proxy/rule/snapshot states",
       "files": [
-        "crates/routira-common/src/domain"
+        "crates/droutex-common/src/domain"
       ],
       "acceptance": "Public EndpointId differs from secret capability; DNS endpoint scope never implies per-device transparent TCP identity",
       "tests": "Identifier mixup, copied/revoked capability, same-NAT distinct DNS endpoints and ambiguous legacy mapping cases",
@@ -213,7 +213,7 @@
       ],
       "scope": "Validate endpoint transport/access modes, single active Profile, typed DNS versus traffic actions, match layers, private records, dataset bounds and separate network grant scopes; reject future engine modes",
       "files": [
-        "crates/routira-config/src/schema",
+        "crates/droutex-config/src/schema",
         "api/schemas"
       ],
       "acceptance": "Malformed/oversized input rejected with field errors; unknown schema/capability fails predictably",
@@ -242,7 +242,7 @@
       ],
       "scope": "SQLx/WAL immutable configuration and catalog revision repositories, transactional endpoint/scoped-grant indexes, public credential metadata and SecretRefId links only (verifier material P1-07); bounded writer, no database calls in packet hot path",
       "files": [
-        "crates/routira-storage",
+        "crates/droutex-storage",
         "migrations"
       ],
       "acceptance": "Migration and transaction rollback preserve invariants; database access absent from packet hot path",
@@ -272,8 +272,8 @@
       ],
       "scope": "Immutable source revisions, authors and optimistic edit conflict handling",
       "files": [
-        "crates/routira-config/src/revisions",
-        "crates/routira-storage"
+        "crates/droutex-config/src/revisions",
+        "crates/droutex-storage"
       ],
       "acceptance": "Concurrent edits cannot silently overwrite; audit links actor and revision",
       "tests": "PR #7 merged644348c after independent implementation/final reviews without confirmed defects; all nine final-head39055351917 and main39055754490 jobs passed, processed exact-merge Codecov. Backend patch143/155=92.25%, CodeScene failed maintenance dispositions recorded. See P1_04_REVISION_REVIEW.md",
@@ -302,7 +302,7 @@
       ],
       "scope": "Canonical authenticated snapshots pin endpoint assignments, resolver capability verification/revocation state, dataset hashes and DNS/gateway grant authority with increasing sequence",
       "files": [
-        "crates/routira-config/src/snapshot",
+        "crates/droutex-config/src/snapshot",
         "api/schemas/snapshot"
       ],
       "acceptance": "Tampering, replay and incompatible schema rejected; deterministic bytes/hash for equivalent input",
@@ -333,7 +333,7 @@
       ],
       "scope": "Durable DNS/gateway stage/validate/activate/verify journal and rollback; preserve one snapshot generation per decision without configuring OS routes or engines",
       "files": [
-        "crates/routira-core/src/deployment"
+        "crates/droutex-core/src/deployment"
       ],
       "acceptance": "Crash at each DNS/proxy transition recovers complete old/new generation; no partial accepted DNS/gateway policy; CP loss preserves last-known-good",
       "tests": "Fault injection, disk-full, cancellation and restart tests",
@@ -360,8 +360,8 @@
       ],
       "scope": "Encrypted credential storage, external master-key provision, redacted wrappers and export lifecycle",
       "files": [
-        "crates/routira-security",
-        "crates/routira-storage/src/secrets.rs",
+        "crates/droutex-security",
+        "crates/droutex-storage/src/secrets.rs",
         "migrations/0004_encrypted_secrets.sql",
         "docs/security/KEY_LIFECYCLE.md"
       ],
@@ -391,7 +391,7 @@
       ],
       "scope": "IDNA/lowercase/trailing-dot normalization and explicit Exact/DomainAndSubdomains/SubdomainsOnly modes; no implicit adoption of Control D wildcard grammar",
       "files": [
-        "crates/routira-policy/src/domain"
+        "crates/droutex-policy/src/domain"
       ],
       "acceptance": "Canonical equivalent names match consistently; invalid labels and wildcard bombs rejected",
       "tests": "Unicode/IDNA cases, apex/subdomain matrix and property tests",
@@ -420,7 +420,7 @@
       ],
       "scope": "Compile custom > service > filter > default ranks; priority within rank, documented specificity, stable ID and trusted endpoint/network scope",
       "files": [
-        "crates/routira-policy/src/evaluate"
+        "crates/droutex-policy/src/evaluate"
       ],
       "acceptance": "Explicit BYPASS overrides lower policy layers but not security checks; default BYPASS does not skip filters; reordered input preserves decisions",
       "tests": "Permutation, exception/default contrast, conflicting rules and two secure endpoints behind one NAT",
@@ -447,7 +447,7 @@
       ],
       "scope": "Reject unresolved layer/match contradictions, missing or unlicensed dataset revisions, invalid private CNAME chains and ambiguous legacy/gateway group assignments",
       "files": [
-        "crates/routira-policy/src/validate"
+        "crates/droutex-policy/src/validate"
       ],
       "acceptance": "Irreconcilable conflict prevents publication with actionable rule IDs",
       "tests": "Exact/wildcard conflicts, removed node and cycles",
@@ -476,7 +476,7 @@
       ],
       "scope": "Keep DNS BYPASS/BLOCK/local overrides and compatible SmartDNS REDIRECT distinct from VPS_DIRECT/protected proxy outbounds; safety checks and strict failures remain mandatory",
       "files": [
-        "crates/routira-policy/src/decision"
+        "crates/droutex-policy/src/decision"
       ],
       "acceptance": "DIRECT decision point explicit; unsupported tunnel/node/UDP capabilities reject; strict proxy failures block",
       "tests": "Unavailable proxy, explicit direct opt-in, DNS-only limits and deferred tunnel/node action negatives",
@@ -506,7 +506,7 @@
       ],
       "scope": "Compile layered endpoint Profiles and pinned catalog hashes into bounded deterministic DNS/gateway generation tables",
       "files": [
-        "crates/routira-policy/src/compile"
+        "crates/droutex-policy/src/compile"
       ],
       "acceptance": "Same revision builds same snapshot; invalid capability never reaches active plan",
       "tests": "Differential interpreter/compiler and hash tests",
@@ -535,7 +535,7 @@
       ],
       "scope": "Explain endpoint/profile, layer/rule/dataset revision, distinct DNS/gateway identity scope, decision point and generation without invented connectivity or attribution",
       "files": [
-        "crates/routira-policy/src/explain",
+        "crates/droutex-policy/src/explain",
         "api/schemas/explain"
       ],
       "acceptance": "Simulation reports network_test_performed=false and distinguishes predicted/effective routes",
@@ -567,7 +567,7 @@
       ],
       "scope": "Bounded local domain/hosts list and service-bundle imports with source/license/hash metadata and last-known-good preservation",
       "files": [
-        "crates/routira-policy/src/catalog",
+        "crates/droutex-policy/src/catalog",
         "configs/catalogs",
         "tests/fixtures/catalogs"
       ],
@@ -598,7 +598,7 @@
       ],
       "scope": "Hickory policy handler with restricted bindings, ACL, size/rate/time limits",
       "files": [
-        "crates/routira-dns/src/listeners"
+        "crates/droutex-dns/src/listeners"
       ],
       "acceptance": "Unauthorized recursion denied; TCP framing and truncation behavior correct",
       "tests": "Real UDP/TCP exchange, malformed/truncated frames and flood limits",
@@ -625,7 +625,7 @@
       ],
       "scope": "Trusted forwarding, deadlines and policy-selected upstream fallback; no full recursion",
       "files": [
-        "crates/routira-dns/src/upstream"
+        "crates/droutex-dns/src/upstream"
       ],
       "acceptance": "A/AAAA/CNAME/TXT/auxiliary queries resolve; timeout gives permitted fallback or SERVFAIL",
       "tests": "Controlled upstream success, timeout, outage and recursion-loop tests",
@@ -651,7 +651,7 @@
       ],
       "scope": "Cache name/type/class/upstream/scope/mode/validation/generation semantics and bounded eviction",
       "files": [
-        "crates/routira-dns/src/cache"
+        "crates/droutex-dns/src/cache"
       ],
       "acceptance": "Profile rewrites never leak; TTL and negative answers expire correctly; memory bound enforced",
       "tests": "Virtual clock, concurrent scopes and policy generation changes",
@@ -678,7 +678,7 @@
       ],
       "scope": "DIRECT/BLOCK and profile-scoped private A/AAAA/CNAME answers with dual-stack/conflict/loop checks; local private answers never authorize gateway SSRF",
       "files": [
-        "crates/routira-dns/src/policy"
+        "crates/droutex-dns/src/policy"
       ],
       "acceptance": "DIRECT returns origin IP; BLOCK predictable; local override does not create proxy route",
       "tests": "Private record isolation across Profiles, A/AAAA/CNAME loops, DNSSEC override and no implicit proxy route",
@@ -706,7 +706,7 @@
       ],
       "scope": "Preserve normal verification versus overrides; handle hints/ECH/ALPN/alternative endpoint compatibility",
       "files": [
-        "crates/routira-dns/src/compatibility"
+        "crates/droutex-dns/src/compatibility"
       ],
       "acceptance": "Overrides clear invalid validity claims; incompatible redirects rejected or explicitly unsupported",
       "tests": "Signed RRsets, validating clients, HTTPS/SVCB hints and IPv6 bypass matrix",
@@ -734,7 +734,7 @@
       ],
       "scope": "Return gateway addresses only for approved compatible route contexts; reconcile TTL/current generation",
       "files": [
-        "crates/routira-dns/src/routes"
+        "crates/droutex-dns/src/routes"
       ],
       "acceptance": "Unknown services receive declared failure/ordinary-resolution policy; DNS and gateway agree on binding generation",
       "tests": "DNS then TLS test, old TTL after publish, expired/removed mapping",
@@ -763,7 +763,7 @@
       ],
       "scope": "Mandatory personal DoH and DoT with valid TLS, bounded capability lookup/revocation and privacy; disabled-by-default scoped peer observations for grant publication; real DNS diagnostics",
       "files": [
-        "crates/routira-dns/src/diagnostics",
+        "crates/droutex-dns/src/diagnostics",
         "docs/operations/DNS.md"
       ],
       "acceptance": "Both secure transports select correct Profile across IP changes; unknown/revoked capabilities denied; observations cannot directly mutate authority or bootstrap restricted-IP mode",
@@ -794,7 +794,7 @@
       ],
       "scope": "Enforce independently scoped legacy DNS and gateway exact-address group grants, service/domain/port/outbound binding, manual bootstrap and opt-in secure-observation publication",
       "files": [
-        "crates/routira-gateway/src/binding",
+        "crates/droutex-gateway/src/binding",
         "docs/security/GATEWAY_BINDING.md"
       ],
       "acceptance": "No last-DNS-query Profile switch or union of conflicting grants; unknown/mismatched source fails closed; expiry and applied revocation persist during CP loss",
@@ -823,7 +823,7 @@
       ],
       "scope": "Use policy-independent trusted resolver; canonical IP classification and checked connect address",
       "files": [
-        "crates/routira-gateway/src/origin"
+        "crates/droutex-gateway/src/origin"
       ],
       "acceptance": "Every new resolution denied for private/loopback/link-local/multicast/metadata/self; no TOCTOU re-resolve",
       "tests": "Rebinding, CNAME chains, IPv4-mapped IPv6 and self-loop cases",
@@ -850,7 +850,7 @@
       ],
       "scope": "Use audited TLS parsing for visible SNI across fragmented records without TLS termination",
       "files": [
-        "crates/routira-gateway/src/tls_metadata"
+        "crates/droutex-gateway/src/tls_metadata"
       ],
       "acceptance": "Fragmented valid handshake preserves all bytes; oversized/incomplete/ECH-ambiguous input rejected",
       "tests": "Fragmented records, slowloris, malformed length and fuzz seeds",
@@ -878,7 +878,7 @@
       ],
       "scope": "Bidirectional passthrough, half-close, deadlines/backpressure/session quotas and shutdown",
       "files": [
-        "crates/routira-gateway/src/session"
+        "crates/droutex-gateway/src/session"
       ],
       "acceptance": "Authorized origin certificate remains unchanged; backpressure and shutdown release resources",
       "tests": "Real TLS, long stream, half-close, cancelled dial and exhausted quota",
@@ -906,7 +906,7 @@
       ],
       "scope": "Support direct egress and one selected protected SOCKS5 or HTTP CONNECT outbound using a bounded stream connector; no managed engine or TUN dependency",
       "files": [
-        "crates/routira-gateway/src/outbound"
+        "crates/droutex-gateway/src/outbound"
       ],
       "acceptance": "Real selected TCP proxy transport works with authenticated or equivalently isolated access; unavailable strict proxy never falls back direct",
       "tests": "Actual controlled proxy/origin egress, transport failure, secret redaction and unsupported-mode cases",
@@ -935,7 +935,7 @@
       ],
       "scope": "Pin active DNS/proxy generation for new flows, document draining and reject unavailable strict routes; keep node-group failover deferred",
       "files": [
-        "crates/routira-gateway/src/router"
+        "crates/droutex-gateway/src/router"
       ],
       "acceptance": "Existing sessions follow documented lifecycle; new flows use active revision and chosen fail policy",
       "tests": "Publish under load, failed outbound, IPv6 and explicit fallback tests",
@@ -962,8 +962,8 @@
       ],
       "scope": "Aggregate flow/byte/limit counters and approved-target Route Test with observed egress evidence",
       "files": [
-        "crates/routira-gateway/src/diagnostics",
-        "crates/routira-telemetry"
+        "crates/droutex-gateway/src/diagnostics",
+        "crates/droutex-telemetry"
       ],
       "acceptance": "Route Test reports actual target/egress/version and failure source; unavailable metrics remain unavailable",
       "tests": "Different decision points, blocked diagnostics and failure attribution",
@@ -1028,7 +1028,7 @@
       ],
       "scope": "After DNS/proxy MVP, select exact WG/AWG/Xray versions and define detect/validate/prepare/apply/health/stop capabilities before adding adapters",
       "files": [
-        "crates/routira-protocols"
+        "crates/droutex-protocols"
       ],
       "acceptance": "Capabilities depend on exact engine version/transport; unknown unavailable; lifecycle errors typed",
       "tests": "Contract suite with fake adapters; negative capability tests",
@@ -1057,7 +1057,7 @@
       ],
       "scope": "Preapproved binaries, restrictive config files, resource/restart limits and isolated state",
       "files": [
-        "crates/routira-agent-core/src/engines"
+        "crates/droutex-agent-core/src/engines"
       ],
       "acceptance": "Engine config validation precedes replacement; crash isolation and last-good recovery observable",
       "tests": "Actual child crash/restart, bad config, cancellation and secret leakage checks",
@@ -1085,7 +1085,7 @@
       ],
       "scope": "Peer/interface/listener and native config export through restricted helper",
       "files": [
-        "crates/routira-protocol-wireguard"
+        "crates/droutex-protocol-wireguard"
       ],
       "acceptance": "Pinned Linux engine accepts config; add/revoke peer state is reported applied",
       "tests": "Real two-peer Linux handshake/export/revocation tests",
@@ -1144,7 +1144,7 @@
       ],
       "scope": "Pinned AWG version/parameters and compatible client export; separate endpoint",
       "files": [
-        "crates/routira-protocol-amneziawg",
+        "crates/droutex-protocol-amneziawg",
         "tests/network/amneziawg"
       ],
       "acceptance": "Real pinned client connects/revokes; incompatible versions fail validation",
@@ -1173,7 +1173,7 @@
       ],
       "scope": "Pinned official Xray lifecycle, listener/outbound credentials and client export",
       "files": [
-        "crates/routira-protocol-xray",
+        "crates/droutex-protocol-xray",
         "tests/network/xray"
       ],
       "acceptance": "Actual VLESS/REALITY inbound/outbound path tested; crash leaves DNS/WG healthy",
@@ -1202,7 +1202,7 @@
       ],
       "scope": "Add/rotate/revoke/export with engine-specific semantics, expiring delivery and QR safeguards",
       "files": [
-        "crates/routira-protocols/src/provisioning",
+        "crates/droutex-protocols/src/provisioning",
         "api/schemas/exports"
       ],
       "acceptance": "Applied revocation rejects new sessions; configuration export lists compatible clients and limitations",
@@ -1262,7 +1262,7 @@
       ],
       "scope": "Extend released DNS/proxy UI with verified WG/AWG/Xray provisioning, ports, credentials, compatible exports and engine status",
       "files": [
-        "apps/routira-web/src/features/{devices,protocols}"
+        "apps/droutex-web/src/features/{devices,protocols}"
       ],
       "acceptance": "Only tested client/engine capabilities exposed; exports/QR and applied revocation are protected; existing DNS/proxy users need no tunnel",
       "tests": "Browser/API provisioning, expired export, incompatible version, peer revocation and independent engine failure cases",
@@ -1324,7 +1324,7 @@
       ],
       "scope": "One-time owner setup, login/MFA/sessions, owner/admin/operator permissions; add admins later",
       "files": [
-        "crates/routira-api/src/auth",
+        "crates/droutex-api/src/auth",
         "migrations/auth",
         "api/openapi"
       ],
@@ -1353,7 +1353,7 @@
       ],
       "scope": "REST /api/v1, OpenAPI, bounded requests, pagination, typed errors and auth mapping",
       "files": [
-        "crates/routira-api/src/contracts",
+        "crates/droutex-api/src/contracts",
         "api/openapi"
       ],
       "acceptance": "Schema matches handlers; every mutation audited and protected; no secret default fields",
@@ -1382,8 +1382,8 @@
       ],
       "scope": "RBAC CRUD for reusable Profiles, DNS Endpoints, single active assignment, resolver provisioning/rotation/revocation, manual network bootstrap and scoped opt-in IP-learning settings",
       "files": [
-        "crates/routira-api/src/devices",
-        "crates/routira-api/src/profiles"
+        "crates/droutex-api/src/devices",
+        "crates/droutex-api/src/profiles"
       ],
       "acceptance": "Device metadata is not credential identity; DNS capability and gateway group authority shown separately with observed/pending/applied/expired states",
       "tests": "Copied/revoked secret, same-NAT DNS versus gateway policy, ambiguous legacy assignment, restricted-IP bootstrap and grant revocation",
@@ -1412,8 +1412,8 @@
       ],
       "scope": "Draft CRUD/import/diff/simulate/validate for custom/service/filter/default layers and private records; pin approved list/group revisions and reject unsupported inputs",
       "files": [
-        "crates/routira-api/src/rules",
-        "crates/routira-api/src/service_groups"
+        "crates/droutex-api/src/rules",
+        "crates/droutex-api/src/service_groups"
       ],
       "acceptance": "Save Draft never implies activation; conflicts and capabilities explained",
       "tests": "Layer precedence/default BYPASS, failed/oversized/unlicensed catalog import, private-record scope, overlapping services and draft races",
@@ -1443,7 +1443,7 @@
       ],
       "scope": "Diff/validate/stage/publish/status/rollback with audit and per-component acknowledgments",
       "files": [
-        "crates/routira-api/src/deployments"
+        "crates/droutex-api/src/deployments"
       ],
       "acceptance": "UI/API show actually applied version and degraded/failed transitions; authorized rollback observable",
       "tests": "Unauthorized publish, concurrent deployment and post-health rollback tests",
@@ -1472,8 +1472,8 @@
       ],
       "scope": "Policy Explain, DNS Test, reachability and approved-target Route Test contracts",
       "files": [
-        "crates/routira-api/src/diagnostics",
-        "crates/routira-telemetry"
+        "crates/droutex-api/src/diagnostics",
+        "crates/droutex-telemetry"
       ],
       "acceptance": "Four tools distinguish policy prediction/process/transport/route/service evidence",
       "tests": "Diagnostic timeout, wrong profile and unavailable metrics tests",
@@ -1502,7 +1502,7 @@
       ],
       "scope": "Consistent SQLite backup, encrypted archive, separate key recovery and restore validation",
       "files": [
-        "crates/routira-api/src/backups",
+        "crates/droutex-api/src/backups",
         "docs/operations/RECOVERY.md"
       ],
       "acceptance": "Restore on fresh host produces validated configuration and working service",
@@ -1532,8 +1532,8 @@
       ],
       "scope": "Admin add/remove/role change/session revocation, retention controls and separated audit/activity stores",
       "files": [
-        "crates/routira-api/src/security",
-        "crates/routira-storage/src/audit"
+        "crates/droutex-api/src/security",
+        "crates/droutex-storage/src/audit"
       ],
       "acceptance": "Role changes take effect predictably; audit retained separately; per-domain logging can be disabled",
       "tests": "Last-owner guard, concurrent demotion and retention purge tests",
@@ -1560,7 +1560,7 @@
       ],
       "scope": "React/TS/Tailwind/shadcn design primitives, light/dark/responsive navigation and login/MFA",
       "files": [
-        "apps/routira-web/src/{app,auth,ui}"
+        "apps/droutex-web/src/{app,auth,ui}"
       ],
       "acceptance": "Keyboard/mobile/reduced-motion usable; private session lifecycle works",
       "tests": "Vitest component tests and browser auth/accessibility checks",
@@ -1588,7 +1588,7 @@
       ],
       "scope": "Capability-aware personal DoH/DoT setup or legacy network resolver setup, profile assignment, secret rotation and separate proxy source/grant status; no VPN client required",
       "files": [
-        "apps/routira-web/src/features/devices"
+        "apps/droutex-web/src/features/devices"
       ],
       "acceptance": "Supported clients roam using personal DNS capability; legacy clients share network scope; no per-device transparent gateway claim",
       "tests": "Actual secure and legacy DNS setup, two endpoints on same NAT, unsupported client, secret revocation and mismatched proxy source",
@@ -1617,7 +1617,7 @@
       ],
       "scope": "Profile editor tabs for Filters, Services, Custom Rules, Private Records and DNS/privacy settings; explicit match modes and layered Explain; diff/draft/validate/publish",
       "files": [
-        "apps/routira-web/src/features/rules"
+        "apps/droutex-web/src/features/rules"
       ],
       "acceptance": "Strict failure default; direct fallback separately explicit; saved/applied status distinct",
       "tests": "Browser negative edit, conflict, stale version and publish failure tests",
@@ -1646,7 +1646,7 @@
       ],
       "scope": "DNS endpoints/listeners/upstreams/cache/TLS and Proxy Outbounds/grants/status screens; actual transport/port capabilities and missing dataset states; no engines",
       "files": [
-        "apps/routira-web/src/features/{profiles,endpoints,filters,services,dns,proxy}"
+        "apps/droutex-web/src/features/{profiles,endpoints,filters,services,dns,proxy}"
       ],
       "acceptance": "Only available metrics shown; port conflicts and compatible transport choices enforced",
       "tests": "Component/API contract tests and disabled feature checks",
@@ -1675,7 +1675,7 @@
       ],
       "scope": "Actual aggregate endpoint/profile/action/rule/dataset metrics and DNS/proxy source mismatch diagnostics; no guessed per-device TCP correlation",
       "files": [
-        "apps/routira-web/src/features/{dashboard,diagnostics}"
+        "apps/droutex-web/src/features/{dashboard,diagnostics}"
       ],
       "acceptance": "Configured/applied/healthy/tested/connected distinct; no fabricated counts or DNS-TCP correlation",
       "tests": "Unavailable telemetry, outage, privacy-disabled logs and real e2e tests",
@@ -1706,7 +1706,7 @@
       ],
       "scope": "Version diffs/status/rollback, backup restore, administrator role assignment and settings",
       "files": [
-        "apps/routira-web/src/features/{operations,security}"
+        "apps/droutex-web/src/features/{operations,security}"
       ],
       "acceptance": "Owner can add later admins; destructive actions confirmed; true apply/restore outcomes displayed",
       "tests": "RBAC UI/API parity, last-owner and failed restore browser tests",
@@ -1767,8 +1767,8 @@
       ],
       "scope": "Single-use expiring token, controller verification, pending operator approval and mTLS identity",
       "files": [
-        "crates/routira-agent-core/src/enrollment",
-        "crates/routira-api/src/nodes"
+        "crates/droutex-agent-core/src/enrollment",
+        "crates/droutex-api/src/nodes"
       ],
       "acceptance": "Replayed/expired/wrong-controller enrollment denied; approved node identity bound",
       "tests": "Replay, stolen token after use, MITM and pending-node tests",
@@ -1796,7 +1796,7 @@
       ],
       "scope": "OS/kernel/ports/interfaces/engine compatibility and separately graded health",
       "files": [
-        "crates/routira-agent-core/src/health"
+        "crates/droutex-agent-core/src/health"
       ],
       "acceptance": "Unknown metrics unavailable; process/transport/route/service health distinguished",
       "tests": "Engine missing, kernel unsupported and handshake-only success cases",
@@ -1824,7 +1824,7 @@
       ],
       "scope": "Version negotiation, authenticated delivery, local validation/stage and per-node receipt",
       "files": [
-        "crates/routira-agent-core/src/sync"
+        "crates/droutex-agent-core/src/sync"
       ],
       "acceptance": "Wrong node, old sequence, corrupted hash and unsupported versions fail closed",
       "tests": "Duplicate/out-of-order/drop packets and incompatible schema tests",
@@ -1853,7 +1853,7 @@
       ],
       "scope": "Restart journal and disconnected-controller behavior; apply failures restore previous config",
       "files": [
-        "crates/routira-agent-core/src/recovery"
+        "crates/droutex-agent-core/src/recovery"
       ],
       "acceptance": "Offline reboot serves last-good; interrupted apply never exposes partial network state",
       "tests": "Controller outage, disk loss/full and power loss at transitions",
@@ -1881,7 +1881,7 @@
       ],
       "scope": "Certificate renewal, controller/node trust rotation and emergency revocation",
       "files": [
-        "crates/routira-security/src/node_trust",
+        "crates/droutex-security/src/node_trust",
         "docs/operations/NODE_RECOVERY.md"
       ],
       "acceptance": "Revoked node cannot receive new configs; offline data-plane behavior explicit and bounded by policy",
@@ -1939,8 +1939,8 @@
       ],
       "scope": "Registry, regions/groups and external proxy type without fabricated agent telemetry",
       "files": [
-        "crates/routira-api/src/nodes",
-        "apps/routira-web/src/features/nodes"
+        "crates/droutex-api/src/nodes",
+        "apps/droutex-web/src/features/nodes"
       ],
       "acceptance": "Managed node and external proxy lifecycle separate; references authorized",
       "tests": "External proxy no-agent fixture, removed target and RBAC tests",
@@ -1969,7 +1969,7 @@
       ],
       "scope": "Pinned/first-healthy initial strategy; measured latency/weights later after comparability",
       "files": [
-        "crates/routira-policy/src/node_selection"
+        "crates/droutex-policy/src/node_selection"
       ],
       "acceptance": "Strict route blocks or switches only to allowed healthy target; cooldown avoids oscillation",
       "tests": "Transport up/route down, timeout, flapping and resource failure cases",
@@ -1998,7 +1998,7 @@
       ],
       "scope": "One pinned WG/AWG termination to compatible proxy outbound using explicit supported bridge",
       "files": [
-        "crates/routira-agent-core/src/routes",
+        "crates/droutex-agent-core/src/routes",
         "tests/network/multi_node"
       ],
       "acceptance": "Observed egress is selected exit; termination and TCP/UDP limits documented",
@@ -2027,8 +2027,8 @@
       ],
       "scope": "Per-node stage/activate/health state and failure-domain policy with divergence display",
       "files": [
-        "crates/routira-core/src/multi_deployment",
-        "apps/routira-web/src/features/deployments"
+        "crates/droutex-core/src/multi_deployment",
+        "apps/droutex-web/src/features/deployments"
       ],
       "acceptance": "Partial failure visibly degraded; compatibility preserved or unauthorized routes blocked",
       "tests": "Partition, slow node, mixed revision and coordinator restart tests",
@@ -2086,8 +2086,8 @@
       ],
       "scope": "Post-MVP, implement authenticated typed interface/route/nftables/approved-engine helper before enabling privileged tunnel features",
       "files": [
-        "apps/routira-node-executor",
-        "crates/routira-agent-core/src/executor"
+        "apps/droutex-node-executor",
+        "crates/droutex-agent-core/src/executor"
       ],
       "acceptance": "Unprivileged API cannot submit shell/executable/path commands; allowed operations idempotent/reversible",
       "tests": "Unauthorized IPC, path injection, interface conflict and cleanup tests",
@@ -2504,7 +2504,7 @@
       ],
       "scope": "CIDR/protocol/service selectors and router/client compatibility beyond accepted MVP subset",
       "files": [
-        "crates/routira-policy",
+        "crates/droutex-policy",
         "docs/operations/ROUTERS.md"
       ],
       "acceptance": "IP cannot be treated as unique domain; complex rules preserve deterministic explain",
@@ -2520,7 +2520,7 @@
     {
       "id": "F-03",
       "phase": "F",
-      "title": "Evaluate Routira client and inbound switching",
+      "title": "Evaluate DRouteX client and inbound switching",
       "goal": "Separate product discovery for endpoint routes/DNS/IPv6 leak diagnostics and consented telemetry",
       "spec": [
         7,
@@ -2617,12 +2617,12 @@
     }
   ],
   "repository": {
-    "url": "https://github.com/romanpodg/Routira",
+    "url": "https://github.com/romanpodg/DRouteX",
     "default_branch": "main",
     "review_branch": "storage/sqlite-persistence",
     "visibility": "public",
-    "review_pr": "https://github.com/romanpodg/Routira/pull/6",
-    "previous_pr": "https://github.com/romanpodg/Routira/pull/5",
+    "review_pr": "https://github.com/romanpodg/DRouteX/pull/6",
+    "previous_pr": "https://github.com/romanpodg/DRouteX/pull/5",
     "previous_merge": "57ce7973228d1c2153601b58f82c08c9cd9302fa"
   },
   "foundation_review": {

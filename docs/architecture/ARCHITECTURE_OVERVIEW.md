@@ -65,9 +65,9 @@ Do not materialize a crate per row. Start with only modules needed by the approv
 | API/browser | Auth, roles, drafts, publication and truthful diagnostics | Engine/peer/export and multi-node UI later |
 | Test support | Actual DNS/TCP/proxy/TLS fixtures and failure injection | Actual engine/tunnel/two-node fixtures |
 
-Possible names follow specification §16: routira-common/config/security/policy/storage/dns/
-gateway/core/api and apps/routira-server/web, with fewer initial crates allowed.
-Post-MVP G3 adds routira-protocols, concrete adapters, isolated external engines and a narrow
+Possible names follow specification §16: droutex-common/config/security/policy/storage/dns/
+gateway/core/api and apps/droutex-server/web, with fewer initial crates allowed.
+Post-MVP G3 adds droutex-protocols, concrete adapters, isolated external engines and a narrow
 executor only for verified OS actions. G4 adds remote agent/enrollment/control.
 Neither the helper nor a generic adapter framework belongs on the MVP dependency path.
 Do not make production code depend on test fixtures or use a universal mutable service registry.

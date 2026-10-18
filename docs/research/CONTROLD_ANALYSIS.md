@@ -29,7 +29,7 @@ runs to completion in sequence. Source:
 
 Custom rules also supply profile-scoped A/AAAA/CNAME answers for private domains.
 Control D's plain domain rule includes subdomains; its wildcard syntax has further
-specificity rules. Routira should expose match modes explicitly instead of assuming
+specificity rules. DRouteX should expose match modes explicitly instead of assuming
 the two products' rule languages are interchangeable. Source:
 [Custom Rules](https://docs.controld.com/docs/custom-rules).
 
@@ -44,7 +44,7 @@ capability, not hardware attestation or an administrator account login. Source:
 Legacy DNS provides IP-address resolvers for older clients. Its access/profile
 selection depends on an authorized source network in the documented legacy setup.
 Documentation describes distinct IPv6 handling; do not infer that every legacy
-transport has identical allocation/identity behavior. Routira's one-VPS design
+transport has identical allocation/identity behavior. DRouteX's one-VPS design
 cannot assume Control D's address resources. Sources:
 [Legacy DNS](https://docs.controld.com/docs/legacy-resolver),
 [IP not authorized](https://docs.controld.com/docs/ip-not-authorized).
@@ -64,7 +64,7 @@ not prove ownership of a new address. Sources:
 
 Transparent proxy access uses source-network authorization separately from DNS
 endpoint selection. Control D documents failure when DNS and proxy source addresses
-differ, and documents authorizing an IPv6 /64 for its proxy firewall. Routira must
+differ, and documents authorizing an IPv6 /64 for its proxy firewall. DRouteX must
 not copy that prefix expansion or claim that a DNS Resolver ID authenticates every
 later TCP connection. Source:
 [DNS/proxy IP mismatch](https://docs.controld.com/docs/ip-mismatch-between-dns-and-proxy).
@@ -79,7 +79,7 @@ Source: [Device Clients](https://docs.controld.com/docs/device-clients).
 Redirect changes DNS answers toward transparent proxy infrastructure; Bypass uses
 ordinary resolution. Control D warns that broad default redirection can break
 nonstandard protocols. Its documented automatic/manual location modes use its
-distributed infrastructure; a single Routira VPS does not acquire city selection
+distributed infrastructure; a single DRouteX VPS does not acquire city selection
 or global anycast by adopting the UI vocabulary. Source:
 [Default Rule](https://docs.controld.com/docs/default-rule).
 
@@ -90,14 +90,14 @@ it does not claim access to the hosted implementation. No installer or router
 configuration command was executed. Source:
 [official ctrld repository](https://github.com/Control-D-Inc/ctrld).
 
-## Changes recommended for Routira
+## Changes recommended for DRouteX
 
-| Reference concept | Routira adaptation | MVP boundary |
+| Reference concept | DRouteX adaptation | MVP boundary |
 |---|---|---|
 | Profile and Endpoint separation | Reusable policy, independent named DNS endpoint and rotatable resolver capability | One active Profile per Endpoint first |
 | Personalized secure DNS | Native DoH and DoT endpoint configuration, usable from changing IPs | Required G2 feature in the revised proposal; both separately tested |
 | Filter categories and Services | Versioned locally imported blocklists and small curated service bundles with provenance | No copied proprietary feed, ML engine or unverified protection claim |
-| Rule hierarchy | Explicit category precedence, documented match modes, deterministic conflicts and Explain | Preserve Routira's stricter ambiguity rejection |
+| Rule hierarchy | Explicit category precedence, documented match modes, deterministic conflicts and Explain | Preserve DRouteX's stricter ambiguity rejection |
 | Private DNS | Both personalized encrypted resolvers and profile-scoped private A/AAAA/CNAME records | Private answer does not authorize a VPS connection into that network |
 | Automatic address authorization | Opt-in secure-query observations producing bounded, revocable network grants | Manual bootstrap/replacement remains available; no default learning or /64 expansion |
 | Proxy destinations | VPS direct egress or one verified protected external proxy | No public explicit proxy inbound, geo network or tunnel requirement |
@@ -110,7 +110,7 @@ Ordinary transparent TCP sessions still cannot carry that resolver capability;
 their network authorization is a separate, coarser boundary. This is an inference
 from the documented distinction above, not a claim of per-device traffic control.
 
-The resulting Routira design is in
+The resulting DRouteX design is in
 [DNS_PRODUCT_MODEL](../architecture/DNS_PRODUCT_MODEL.md) and proposed
 [ADR-0017 / CR-0002](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md).
 Research and plan editing were authorized by the user. The concrete proposal is not

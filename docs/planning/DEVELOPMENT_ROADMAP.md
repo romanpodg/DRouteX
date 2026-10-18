@@ -27,7 +27,7 @@ using the pinned crypto profile; D11 codec/replay/rotation decisions remain gate
 See [P1-05 evidence](P1_05_SNAPSHOT_REVIEW.md).
 See [P1-07 evidence](P1_07_SECRET_REVIEW.md).
 Further technical choices retain their owning gates.
-Primary source: [base specification](../../Routira_Project_Specification_EN.md), all 27 sections,
+Primary source: [base specification](../../DRouteX_Project_Specification_EN.md), all 27 sections,
 with [accepted scope amendment ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 Base EN/RU specifications remain unchanged. A minimal common/config/policy workspace
 passed Windows/Linux checks; runtime DNS/proxy services do not exist yet.
@@ -38,7 +38,7 @@ private records and separately scoped gateway grants. The owner accepted its fou
 
 ## Product outcome and accepted scope
 
-Routira first delivers one Linux VPS with DNS policies and real authorized TCP proxy routing.
+DRouteX first delivers one Linux VPS with DNS policies and real authorized TCP proxy routing.
 No VPN client, tunnel engine, TUN or custom privileged network executor is needed to reach MVP.
 The owner can later add administrators and assign roles. Private management, separate ports,
 MFA/RBAC, fail-closed proxy policies, secret protection, recovery and honest diagnostics remain.

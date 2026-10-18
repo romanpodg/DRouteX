@@ -52,7 +52,7 @@ def certificates(directory):
     command('openssl', 'req', '-x509', '-newkey', 'rsa:2048', '-noenc', '-days', '1',
             '-config', '/dev/null', '-addext', 'basicConstraints=critical,CA:TRUE',
             '-addext', 'keyUsage=critical,keyCertSign,cRLSign', '-addext', 'subjectKeyIdentifier=hash',
-            '-subj', '/CN=Routira disposable fixture CA', '-keyout', str(ca_key), '-out', str(ca))
+            '-subj', '/CN=DRouteX disposable fixture CA', '-keyout', str(ca_key), '-out', str(ca))
     result = {}
     for role, hostname in [('origin', 'origin.test'), ('proxy', 'proxy.test'),
                            ('resolver', '*.resolver.test')]:
@@ -173,7 +173,7 @@ def inside(args):
     command('mount', '-t', 'tmpfs', '-o', 'mode=755', 'tmpfs', '/run')
     Path('/run/netns').mkdir()
     directory = args.directory.resolve(strict=True)
-    if directory.parent != Path(tempfile.gettempdir()) or not directory.name.startswith('routira-p003-'):
+    if directory.parent != Path(tempfile.gettempdir()) or not directory.name.startswith('droutex-p003-'):
         raise RuntimeError('unexpected fixture directory')
     # Keep keys/config in private tmpfs even if the outer supervisor is killed.
     command('mount', '-t', 'tmpfs', '-o', 'size=16m,mode=750,gid=65534', 'tmpfs', str(directory))
@@ -262,7 +262,7 @@ def remaining_processes(namespaces):
 
 
 def run_case(mode, artifacts):
-    with tempfile.TemporaryDirectory(prefix='routira-p003-') as temporary:
+    with tempfile.TemporaryDirectory(prefix='droutex-p003-') as temporary:
         args = ['timeout', '--preserve-status', '--signal=TERM', '--kill-after=5s', '60s',
                 'unshare', '--mount', '--net', '--pid', '--fork', '--kill-child', '--mount-proc',
                 sys.executable, '-I', str(HERE/'run.py'), '--inside', '--mode', mode,
@@ -346,7 +346,7 @@ def main():
     finally:
         assert host_state() == before, 'host network state changed'
     release = platform.freedesktop_os_release()
-    report = {'status': 'passed', 'scope': 'P0-03 fixtures, not Routira acceptance',
+    report = {'status': 'passed', 'scope': 'P0-03 fixtures, not DRouteX acceptance',
               'os': release['PRETTY_NAME'], 'kernel': platform.release(), 'python': platform.python_version(),
               'openssl': ssl.OPENSSL_VERSION, 'iproute2': command('ip', '-Version'),
               'nftables': command('nft', '--version'), 'tcpdump': command('tcpdump', '--version').splitlines()[0],

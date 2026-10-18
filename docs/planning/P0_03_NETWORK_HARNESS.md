@@ -24,7 +24,7 @@ artifact and hard-kill limitations are documented with the lab command.
 
 Local successful report: `.setup/network/be4cca357efdb71a/report.json`.
 It and its pcap remain untracked; no keys/capabilities/raw traffic are published.
-This is fixture evidence, **not Routira DNS/gateway/security acceptance**.
+This is fixture evidence, **not DRouteX DNS/gateway/security acceptance**.
 
 | Environment | Actual value |
 |---|---|
@@ -50,7 +50,7 @@ recorded **41 protocol observations**, including both address families:
   expose different actual origin-side peer addresses. Wrong hostname/untrusted CA,
   missing proxy authentication and arbitrary target requests are denied.
 - After stopping the proxy process, new protected-path attempts fail; no direct
-  fallback succeeds. These are fixture controls, not implemented Routira controls.
+  fallback succeeds. These are fixture controls, not implemented DRouteX controls.
 - Pcap confirms DNS source 198.18.0.1 versus TCP source 198.18.12.2, and IPv6
   fd42:726f:7574::1 versus fd42:726f:7574:c::2. The other-source gateway is denied.
 
@@ -79,6 +79,12 @@ Failures were not treated as passes; no TLS/security gate was relaxed.
 
 ## Native Debian 13 acceptance: 2026-10-16
 
+This subsection records the historical run, not a fresh run of renamed sources.
+The original deployment directory is preserved in the
+[immutable execution record](https://github.com/romanpodg/DRouteX/blob/36cb5e38e215b1f53a10a3cde1dccbda9c25b5c2/docs/planning/P0_03_NETWORK_HARNESS.md#L103).
+No remote directory rename has been performed. The recorded source hashes below
+and above identify the historical fixture revision.
+
 The owner supplied a separate test VPS and explicitly approved installing
 tcpdump 4.99.5-2/libpcap0.8t64 1.10.5-2, copying the reviewed fixture files and
 executing all four lifecycle modes. SSH host identity was verified against the
@@ -99,9 +105,9 @@ identity: /etc/os-release SHA-256
 kernel image SHA-256
 `e175037d019cd29d00bf43282bf6494e51ec71bf540965c13a1b94323f7e4a59`.
 The two source hashes above matched on the VPS before execution; no fixture source
-change was needed. Root-owned source was placed under
-`/opt/routira-p003-20261016-5628f2a` with read/traverse access for the unprivileged
-services. Namespace topology/capture alone used root.
+change was needed. Root-owned source was placed in the archived run directory
+identified above, with read/traverse access for the unprivileged services.
+Namespace topology/capture alone used root.
 
 All **41 protocol observations** passed again, including both address families,
 same-NAT distinct secure Profiles, changed-source secure DNS, source-mismatch
@@ -125,6 +131,6 @@ task cases rejected, and all 15 planning regression tests passed. The accepted
 three-task execution boundary, later-task stop and original EN/RU bytes were
 preserved. No new remote CI, Codecov or CodeScene result is claimed.
 
-P0-03 is complete. This closes native fixture readiness, not Routira service,
+P0-03 is complete. This closes native fixture readiness, not DRouteX service,
 systemd deployment, host crash/power-loss or product security acceptance. The Rust
 workspace remains three crates. P0-04/P0-05 and runtime services remain planned.

@@ -1,6 +1,6 @@
 # P0-03 isolated network fixtures
 
-This is a trusted, manual Linux lab, not Routira DNS/gateway implementation or
+This is a trusted, manual Linux lab, not DRouteX DNS/gateway implementation or
 product acceptance. Review the scripts before privileged execution. Never wire
 this command to arbitrary PR code, a production host or a production root runner.
 The owner approved development in the existing WSL Ubuntu on 2026-10-15 and the
@@ -20,7 +20,7 @@ sudo python3 -I tests/network/run.py
 On this development host the approved equivalent is:
 
 ```powershell
-wsl -d Ubuntu -u root -- python3 -I /mnt/c/Users/roman/Desktop/Routira/tests/network/run.py
+wsl -d Ubuntu -u root -- python3 -I /mnt/c/Users/roman/Desktop/DRouteX/tests/network/run.py
 ```
 
 Portable, unprivileged checks (also suitable for fork CI):
@@ -52,7 +52,7 @@ Roles use high fixture-only ports: DNS 5353, DoT 8853, DoH 8443, origin TLS 9443
 protected proxy 9444, direct gateway 8444 and proxy gateway 8445. The fixture DNS
 parser intentionally supports only uncompressed single-question A/AAAA packets.
 DoH is bounded HTTP/1.1 POST, not an HTTP/2 or general HTTP implementation.
-The gateway is a fixed test relay, not the future Routira SNI/binding engine.
+The gateway is a fixed test relay, not the future DRouteX SNI/binding engine.
 
 Each run creates a private CA and separate origin/resolver/proxy certificates with
 OpenSSL, checks CA/hostname trust and the original origin certificate fingerprint,
@@ -80,7 +80,7 @@ are in private tmpfs. This is not a host crash/power-loss acceptance test.
 Reports and a bounded, snaplen-128 pcap are written under `.setup/network/<run>/`,
 which stays untracked. Pcaps can contain ephemeral DNS capability metadata; keep
 them local. Keys/config disappear with the private mount. Do not publish raw captures
-or substitute fixture passes for Routira authorization/security tests.
+or substitute fixture passes for DRouteX authorization/security tests.
 See [recorded evidence](../../docs/planning/P0_03_NETWORK_HARNESS.md).
 
 The isolation/lifetime design uses [unshare's namespace semantics](https://man7.org/linux/man-pages/man1/unshare.1.html)

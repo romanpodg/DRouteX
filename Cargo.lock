@@ -885,18 +885,18 @@ dependencies = [
 ]
 
 [[package]]
-name = "routira-common"
+name = "droutex-common"
 version = "0.1.0"
 dependencies = [
  "uuid",
 ]
 
 [[package]]
-name = "routira-config"
+name = "droutex-config"
 version = "0.1.0"
 dependencies = [
- "routira-common",
- "routira-policy",
+ "droutex-common",
+ "droutex-policy",
  "serde",
  "serde-saphyr",
  "serde_json",
@@ -905,28 +905,28 @@ dependencies = [
 ]
 
 [[package]]
-name = "routira-policy"
+name = "droutex-policy"
 version = "0.1.0"
 dependencies = [
- "routira-common",
+ "droutex-common",
 ]
 
 [[package]]
-name = "routira-security"
+name = "droutex-security"
 version = "0.1.0"
 dependencies = [
  "aws-lc-rs",
- "routira-common",
+ "droutex-common",
  "zeroize",
 ]
 
 [[package]]
-name = "routira-storage"
+name = "droutex-storage"
 version = "0.1.0"
 dependencies = [
- "routira-common",
- "routira-config",
- "routira-security",
+ "droutex-common",
+ "droutex-config",
+ "droutex-security",
  "sqlx",
  "tokio",
 ]

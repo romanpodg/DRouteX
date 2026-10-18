@@ -14,7 +14,7 @@ use tokio_rustls::{TlsAcceptor, TlsConnector};
 type TestResult = Result<(), Box<dyn Error + Send + Sync>>;
 
 fn identity() -> Result<(Arc<ServerConfig>, ClientConfig), Box<dyn Error + Send + Sync>> {
-    let directory = PathBuf::from(std::env::var("ROUTIRA_QUALIFICATION_CERT_DIR")?);
+    let directory = PathBuf::from(std::env::var("DROUTEX_QUALIFICATION_CERT_DIR")?);
     let cert = CertificateDer::from(std::fs::read(directory.join("proxy.der"))?);
     let key = PrivatePkcs8KeyDer::from(std::fs::read(directory.join("proxy-key.der"))?);
     let server = ServerConfig::builder()

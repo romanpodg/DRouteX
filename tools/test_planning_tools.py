@@ -35,7 +35,7 @@ class TemporaryProject(unittest.TestCase):
 class RendererTests(TemporaryProject):
     def test_generated_planning_matches_reviewed_documents(self):
         inputs = ('docs/planning/backlog.json', 'docs/planning/requirement-map.json',
-                  'Routira_Project_Specification_EN.md')
+                  'DRouteX_Project_Specification_EN.md')
         for name in inputs:
             self.write(name, (ROOT / name).read_text(encoding='utf-8'))
         with patch.object(renderer, 'ROOT', self.root), redirect_stdout(StringIO()):
@@ -152,9 +152,9 @@ class ValidatorTests(unittest.TestCase):
     def test_backend_coverage_cannot_omit_a_workspace_crate(self):
         config = quality.read_yaml(ROOT / 'codecov.yml')
         quality.check_active_codecov(config)
-        for path in ('crates/routira-common/src/', 'crates/routira-config/src/',
-                     'crates/routira-policy/src/', 'crates/routira-storage/src/',
-                     'crates/routira-security/src/'):
+        for path in ('crates/droutex-common/src/', 'crates/droutex-config/src/',
+                     'crates/droutex-policy/src/', 'crates/droutex-storage/src/',
+                     'crates/droutex-security/src/'):
             bad = copy.deepcopy(config)
             bad['flags']['backend']['paths'] = [
                 entry for entry in bad['flags']['backend']['paths'] if entry != path]
@@ -208,7 +208,7 @@ class InventoryTests(TemporaryProject):
 class GraphTests(TemporaryProject):
     def imported_node(self, source='spec.md', label='Scope'):
         return {'source_file': source, 'label': label,
-                'routira_origin': 'deterministic-document-import'}
+                'droutex_origin': 'deterministic-document-import'}
 
     def test_heading_relocation_is_verified_but_arbitrary_deletion_is_not(self):
         node = self.imported_node()
@@ -221,7 +221,7 @@ class GraphTests(TemporaryProject):
         duplicates = graph.duplicate_task_headings([node])
         self.assertEqual(duplicates, [node])
         self.assertTrue(graph.verified_heading_refresh([node], set(), duplicates))
-        node['routira_origin'] = 'native-ast'
+        node['droutex_origin'] = 'native-ast'
         self.assertFalse(graph.verified_heading_refresh([node], set(), duplicates))
 
     def test_explicit_refresh_preserves_native_and_unscanned_nodes(self):
@@ -232,7 +232,7 @@ class GraphTests(TemporaryProject):
             self.assertFalse(graph.explicit_planning_refresh([node], files, False))
             self.assertFalse(graph.explicit_planning_refresh([node], {}, True))
             self.assertFalse(graph.explicit_planning_refresh([], files, True))
-            node['routira_origin'] = 'native-ast'
+            node['droutex_origin'] = 'native-ast'
             self.assertFalse(graph.explicit_planning_refresh([node], files, True))
 
     def test_document_import_preserves_explicit_links_and_task_identity(self):

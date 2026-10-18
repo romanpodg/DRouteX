@@ -1,5 +1,5 @@
 [package]
-name = "routira-dependency-qualification"
+name = "droutex-dependency-qualification"
 version = "0.0.0"
 edition = "2024"
 rust-version = "1.99"

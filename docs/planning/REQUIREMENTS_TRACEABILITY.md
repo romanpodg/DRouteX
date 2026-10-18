@@ -2,7 +2,7 @@
 
 **Proposed implementation plan, not product test evidence.**
 
-Base source: [Routira_Project_Specification_EN.md](../../Routira_Project_Specification_EN.md); SHA-256 78ca71c61755152aa4e369d9b927a8aa73cc6afc8c11bc94c3ceb9c58dc275d9.
+Base source: [DRouteX_Project_Specification_EN.md](../../DRouteX_Project_Specification_EN.md); SHA-256 77b23dc9468c0464eac468d19c20fd7f8594af691581bf689969f6efa69c3767.
 
 Accepted CR-0001: [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md). Original source wording is preserved; effective release applicability is explicit below.
 
@@ -77,7 +77,7 @@ All numbered headings/subsections were considered. Parent rows aggregate childre
 | R-11.2 | Local DNS/proxy coordinator preserves last-known-good; enrollment, engine management and remote agent deferred | Explicit requirement | MVP local snapshots; managed agent later | MVP, POST_MVP_MULTI_NODE | P1-06, P8-01, P8-02, P8-03, P8-04 |
 | R-11.3 | Install separately, verify controller, one-use token, pending approval, scan, baseline and healthcheck; no permanent admin SSH | Explicit requirement | Post-MVP | POST_MVP_MULTI_NODE | P8-01, P8-06 |
 | R-11.4 | Nodes/groups with pinned/healthy strategies; comparable latency/weights later; ping insufficient service proof | Explicit requirement | Post-MVP | POST_MVP_MULTI_NODE | P9-01, P9-02 |
-| R-12 | Routira Web Dashboard: all mapped child obligations below | Section rollup | See child requirements | FUTURE, MVP, POST_MVP_MULTI_NODE, POST_MVP_PROTOCOLS | F-04, P1-01, P2-07, P3-07, P5-07, P5-08, P5-09, P6-01, P6-03, P6-04, P6-05, P6-06, P6-07, P6-08, P7-01, P7-02, P7-03, P7-04, P7-05, P7-06, P9-01, P9-04, P9-05 |
+| R-12 | DRouteX Web Dashboard: all mapped child obligations below | Section rollup | See child requirements | FUTURE, MVP, POST_MVP_MULTI_NODE, POST_MVP_PROTOCOLS | F-04, P1-01, P2-07, P3-07, P5-07, P5-08, P5-09, P6-01, P6-03, P6-04, P6-05, P6-06, P6-07, P6-08, P7-01, P7-02, P7-03, P7-04, P7-05, P7-06, P9-01, P9-04, P9-05 |
 | R-12.1 | Responsive navigation covers overview/network/operations/system; API equivalent for every significant action | Proposed architecture | MVP + later | FUTURE, MVP, POST_MVP_MULTI_NODE | P7-01, P7-06, P9-01, F-04 |
 | R-12.2 | Fast actual component/traffic/latency/degraded/recent-state dashboard; missing engine metric unavailable rather than zero | Explicit requirement | MVP | MVP | P7-05 |
 | R-12.3 | Filtered activity with trace/revision/outcome; DNS and connections distinct, correlated only with reliable evidence | Explicit requirement | MVP | MVP | P6-08, P7-05 |
@@ -121,7 +121,7 @@ All numbered headings/subsections were considered. Parent rows aggregate childre
 | R-19.1 | Threat model covers amplification/open proxy/SSRF/admin/enrollment/supply chain/rebinding/leaks/fail-open | Explicit requirement | MVP | MVP | P0-01, P10-02, P10-05 |
 | R-19.2 | Baseline restrictions apply to enabled features: ACL/auth/address rechecks/limits/private TLS/MFA/RBAC/secrets/snapshots/verified updates. MVP denies privileged OS actions; custom helper required before later privileged tunnel features | Explicit requirement | MVP | MVP, POST_MVP_PROTOCOLS | P1-05, P1-07, P3-01, P4-02, P6-01, P10-01, P10-05 |
 | R-19.3 | Aggregate/minimal optional per-domain retention, separated admin audit, no HTTPS MITM or anonymity guarantee | Explicit requirement | MVP | MVP | P6-08, P7-05, P11-04 |
-| R-19.4 | Exact engine/crate licenses and distribution conditions reviewed; Routira license remains unselected | Open decision | MVP | MVP | P0-05, P11-05 |
+| R-19.4 | Exact engine/crate licenses and distribution conditions reviewed; DRouteX license remains unselected | Open decision | MVP | MVP | P0-05, P11-05 |
 | R-20 | Monitoring, Diagnostics, and Resilience: all mapped child obligations below | Section rollup | See child requirements | FUTURE, MVP, POST_MVP_MULTI_NODE, POST_MVP_PROTOCOLS | F-04, P1-06, P2-04, P2-06, P3-02, P4-07, P5-07, P6-06, P6-08, P7-05, P8-02, P8-04, P9-02 |
 | R-20.1 | Actual bounded DNS/gateway/engine/node/security metrics with units and trustworthy identity/version | Explicit requirement | MVP + later | MVP, POST_MVP_MULTI_NODE | P4-07, P6-06, P7-05, P8-02 |
 | R-20.2 | Process/transport/route/service health distinct; successful ping/handshake not service acceptance | Explicit requirement | MVP + later | MVP, POST_MVP_MULTI_NODE | P6-06, P8-02, P9-02 |
@@ -181,7 +181,7 @@ All numbered headings/subsections were considered. Parent rows aggregate childre
 
 | ID | Source obligation (unchanged) | Kind | Effective scope | Task deliveries | Work items |
 |---|---|---|---|---|---|
-| R-24.1-01 | Users can install Routira on a supported Linux VPS using the documentation. | Explicit base requirement | MVP | MVP | P11-01, P7-07, P10-07 |
+| R-24.1-01 | Users can install DRouteX on a supported Linux VPS using the documentation. | Explicit base requirement | MVP | MVP | P11-01, P7-07, P10-07 |
 | R-24.1-02 | DNS/proxy do not become open public resolvers/proxies by default. | Explicit base requirement | MVP | MVP | P3-01, P7-07, P10-07 |
 | R-24.1-03 | The UI lets users add a DNS profile, device, and rule and test the rule. | Explicit base requirement | MVP | MVP | P7-02, P7-07, P10-07 |
 | R-24.1-04 | DIRECT and BLOCK DNS policies work and produce explainable reasons. | Explicit base requirement | MVP | MVP | P3-04, P7-07, P10-07 |

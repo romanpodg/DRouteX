@@ -149,15 +149,15 @@ def validate_traceability(plan, trace, ids):
 
 
 def validate_source_hashes(trace):
-    source = ROOT/'Routira_Project_Specification_EN.md'
+    source = ROOT/'DRouteX_Project_Specification_EN.md'
     assert hashlib.sha256(source.read_bytes()).hexdigest() == trace['source_sha256'], 'English source changed'
-    ru = ROOT/'Routira_Project_Specification_RU.md'
-    assert hashlib.sha256(ru.read_bytes()).hexdigest() == '25fb27b433fc6b2e72ccf0392a731721be0505e562e539bb93cb8fb20debee46', 'Russian source changed'
+    ru = ROOT/'DRouteX_Project_Specification_RU.md'
+    assert hashlib.sha256(ru.read_bytes()).hexdigest() == '70580392213dd07f8d015c1a161f088f8e5776a7454789712ec9f7863df52686', 'Russian source changed'
 
 
 def validate_source_specs(trace):
     validate_source_hashes(trace)
-    source = ROOT/'Routira_Project_Specification_EN.md'
+    source = ROOT/'DRouteX_Project_Specification_EN.md'
     headings = re.findall(r'^###? (\d+(?:\.\d+)?)\. ', source.read_text(encoding='utf-8'), flags=re.M)
     mapped = {item['section'] for item in trace['requirements']}
     assert set(headings) <= mapped, 'A spec heading was not considered'
@@ -224,7 +224,7 @@ def validate_review_boundary(plan):
     native = plan['network_lab_decision'].get('native_acceptance', {})
     assert native.get('status') == 'passed' and native.get('source') and native.get('report_sha256'), 'Missing native Debian 13 evidence or authorization'
     assert (ROOT/'Cargo.toml').is_file() and (ROOT/'Cargo.lock').is_file(), 'Missing workspace'
-    assert {p.name for p in (ROOT/'crates').iterdir()} == {'routira-common', 'routira-config', 'routira-policy', 'routira-storage', 'routira-security'}, 'Unexpected crate inventory'
+    assert {p.name for p in (ROOT/'crates').iterdir()} == {'droutex-common', 'droutex-config', 'droutex-policy', 'droutex-storage', 'droutex-security'}, 'Unexpected crate inventory'
     assert not (ROOT/'apps').exists(), 'Runtime/frontend is outside P1-05'
     agents = (ROOT/'AGENTS.md').read_text(encoding='utf-8')
     assert 'mcp__node_repl__js' in agents and 'sky.list_apps()' in agents and 'browser-only' in agents

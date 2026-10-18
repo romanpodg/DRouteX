@@ -23,17 +23,17 @@ c46e3cba9e527cb84281355e7cd6d7d2ead627df, installed in .tools/codescene.
 Version/help/auth status were executed. CLI OAuth is not signed in; browser analysis
 is verified below. No CLI analysis or MCP connection has been verified.
 The user authorized configuring CodeScene and Codecov for
-[romanpodg/Routira](https://github.com/romanpodg/Routira) on 2026-10-15.
+[romanpodg/DRouteX](https://github.com/romanpodg/DRouteX) on 2026-10-15.
 GitHub CLI admin access and CodeScene browser sign-in are verified.
-Project [Routira, ID 86145](https://codescene.io/projects/86145/config) was created.
+Project [DRouteX, ID 86145](https://codescene.io/projects/86145/config) was created.
 The analysis ref is `docs/review-dns-proxy-foundation`, which contains the existing
 planning tools; return it to `main` after the owner merges that branch. The first
 review-branch analysis is [job 7965503](https://codescene.io/projects/86145/jobs/7965503/results).
 It completed successfully: Python/PowerShell were detected; Code Health needs
 attention and there is insufficient commit history for a useful technical-debt trend.
 These are tooling/repository results, not application quality evidence.
-The user confirmed adding Routira to the pre-existing CodeScene Access GitHub
-App. The saved grant covers Routira plus the previously selected repository;
+The user confirmed adding DRouteX to the pre-existing CodeScene Access GitHub
+App. The saved grant covers DRouteX plus the previously selected repository;
 other repository access was not changed. PR integration is enabled with the
 existing Minimal Safety Net profile. Individual findings go into Check Run details;
 always-comment and target-ref-only filtering are disabled.
@@ -75,7 +75,7 @@ and TS/React. The completed tooling analysis does not establish product-language
    confirmation. CLI sign-in is separate: `cs auth login`, then `cs auth status`.
    Do not put access tokens in tracked files or chat. CI credentials use approved secret
    storage; source code/service data upload requires account-side access selection.
-2. Create/choose the Routira GitHub repository; grant the CodeScene application only
+2. Create/choose the DRouteX GitHub repository; grant the CodeScene application only
    required repository access and configure the project/PR integration.
 3. Use the existing Python planning tools for an initial supported-code analysis if
    the service can analyze the review branch. Main currently has no product baseline;

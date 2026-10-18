@@ -30,9 +30,9 @@ flags:
     carryforward: false
   backend:
     paths:
-      - crates/routira-common/src/
-      - crates/routira-config/src/
-      - crates/routira-policy/src/
-      - crates/routira-storage/src/
-      - crates/routira-security/src/
+      - crates/droutex-common/src/
+      - crates/droutex-config/src/
+      - crates/droutex-policy/src/
+      - crates/droutex-storage/src/
+      - crates/droutex-security/src/
     carryforward: false

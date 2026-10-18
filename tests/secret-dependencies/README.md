@@ -5,7 +5,7 @@ key provisioning, persistence or secret-export interface is adopted by this pack
 
 Owner-approved candidates: aws-lc-rs 1.18.2, defaults off, non-fips/alloc/prebuilt-nasm;
 zeroize 1.9.1, defaults off, alloc. AES-256-GCM-SIV uses the library implementation,
-not a Routira cipher. The non-FIPS profile makes no FIPS compliance claim. Nonce
+not a DRouteX cipher. The non-FIPS profile makes no FIPS compliance claim. Nonce
 constants/repeated keys in official vectors are test-only; production must request
 a fresh OS-backed random nonce and bind the approved record context.
 

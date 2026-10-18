@@ -85,7 +85,7 @@ Adding an authenticated explicit inbound changes client setup and needs an expli
 scope/compatibility decision; it was not selected for this DNS-only ingress.
 
 DNS-only clients can use cached answers, other resolvers, direct IPv6 and QUIC.
-Fail-closed is a guarantee inside Routira's authorized proxy boundary. Origin and
+Fail-closed is a guarantee inside DRouteX's authorized proxy boundary. Origin and
 proxy operators still observe relevant traffic metadata. Private administrator
 access does not solve data-plane client authorization.
 
