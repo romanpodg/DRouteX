@@ -7,6 +7,10 @@ see docs/planning/P1_06_ACTIVATION_CONTRACT.md. P1-06 implementation is authoriz
 tests and independent reviews remain required before normal merge. P2 stays planned
 until P1-06 finishes and merges. Historical P1-05 holds below have been satisfied,
 not bypassed; the whole-volume malicious rollback exclusion is explicit.
+P1-06 implementation head3c12bba passed independent read-only/never Codex re-review
+and all11 Windows/Linux jobs39153071723. Concrete defects were fixed; CodeScene
+maintenance dispositions remain disclosed. PR11 final-head review/checks and normal
+merge are still required; see docs/planning/P1_06_ACTIVATION_REVIEW.md.
 
 ## Authority and current scope
 

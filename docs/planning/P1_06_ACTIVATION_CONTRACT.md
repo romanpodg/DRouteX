@@ -1,7 +1,8 @@
 # P1-06 local activation and recovery contract
 
-Status: D36 owner-accepted on 2026-10-18; implementation and acceptance evidence
-are in progress. Approval selects the design; it does not pass its tests or reviews.
+Status: D36 owner-accepted on 2026-10-18; implementation reviewed/tested on3c12bba.
+See [evidence](P1_06_ACTIVATION_REVIEW.md). PR11 final-head checks/review and merge
+remain gated. Approval alone does not pass tests or reviews.
 P1-05/PR9 merged normally at521bfa76fbc27e14cd4981638af775ba92c6299f;
 all11 exact-main jobs39148795165 passed and both exact-merge Codecov reports
 processed (Rust backend2582/2719). The failed CodeScene maintenance findings retain

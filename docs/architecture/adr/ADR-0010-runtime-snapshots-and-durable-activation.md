@@ -43,5 +43,6 @@ activation/recovery, API and later remote/helper contracts retain their owning g
 
 The owner subsequently accepted D36's bounded local filesystem profile for P1-06.
 See [activation contract](../../planning/P1_06_ACTIVATION_CONTRACT.md). Its
-implementation/recovery evidence is in progress; this does not accept the complete
+implementation/recovery passed independent review and actual Windows/Linux CI
+on3c12bba; PR11 finalization remains gated. This does not accept the complete
 ADR or the later kernel/engine/remote activation mechanisms.

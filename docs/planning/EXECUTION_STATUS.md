@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-18. Current stage: **P1-05/PR9 merged and exact-main verified; P1-06 D36 filesystem profile accepted, implementation in progress**.
+Date: 2026-10-19. Current stage: **P1-05/PR9 merged and exact-main verified; P1-06 implementation accepted on3c12bba; PR11 final-head review/checks and normal merge pending**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -18,6 +18,10 @@ implementation/final-evidence reviews and all11 final-head jobs. All11 exact-mai
 jobs39148795165 passed and both Codecov reports processed. The owner then accepted
 the complete [D36 local activation profile](P1_06_ACTIVATION_CONTRACT.md).
 P2 remains planned until P1-06 finishes and merges.
+P1-06's candidate passed independent Codex re-review and all11 jobs of39153071723;
+actual Codecov processed both reports. See [evidence](P1_06_ACTIVATION_REVIEW.md)
+for the retained first Linux failure, resolved review findings,94.01% Rust patch
+coverage and explicitly failed CodeScene maintenance gates/dispositions.
 Force-pushing and branch-protection changes remain unauthorized.
 
 The repository is now public. With explicit owner approval the existing Codecov

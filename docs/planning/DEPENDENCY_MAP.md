@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P1-05/PR9 merged and exact-main verified; P1-06 D36 filesystem profile owner-accepted, implementation in progress; P2 and later remain planned. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P1-05/PR9 merged and exact-main verified; P1-06 implementation accepted on3c12bba after review/all11 CI jobs; PR11 final-head finalization gated; P2 stays planned. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0-01 through P0-05 and P1-01 through P1-05/P1-07 complete; PR9 merged and exact-main verified; P1-06 D36 accepted, implementation in progress; actual fork test deferred.**
+Status: **P0-01 through P0-05 and P1 implementation complete; PR9 merged and exact-main verified; P1-06 accepted on3c12bba after review/all11 CI jobs; PR11 finalization gated; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -26,7 +26,9 @@ successful retry remain recorded. P1-05 completed initial Ed25519 qualification
 using the pinned crypto profile. The owner accepted D11 codec/replay/rotation;
 D35 strict trust and the candidate codec are now reviewed/tested in cd0e2c5.
 P1-06 durable activation is authorized under the owner-accepted
-[D36 filesystem profile](P1_06_ACTIVATION_CONTRACT.md); implementation evidence is pending.
+[D36 filesystem profile](P1_06_ACTIVATION_CONTRACT.md); the implementation passed
+independent review and all11 jobs on3c12bba. See [evidence](P1_06_ACTIVATION_REVIEW.md).
+PR11 final-head review/checks and merge remain gated; P2 stays planned.
 See [P1-05 evidence](P1_05_SNAPSHOT_REVIEW.md).
 See [P1-07 evidence](P1_07_SECRET_REVIEW.md).
 Further technical choices retain their owning gates.

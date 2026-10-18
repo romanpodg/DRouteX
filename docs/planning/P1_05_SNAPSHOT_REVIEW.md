@@ -1,6 +1,10 @@
 # P1-05 snapshot authentication review
 
-Date: 2026-10-18. Status: **P1-05 candidate implementation accepted after qualification, independent review and actual Windows/Linux CI; normal PR finalization remains current-head gated**.
+Date: 2026-10-18. Status: **P1-05 complete; PR9 merged normally and exact-main verified**.
+PR9 merged at521bfa76fbc27e14cd4981638af775ba92c6299f after independent
+implementation/final-evidence reviews and all11 final-head jobs. All11 exact-main
+jobs39148795165 passed; Codecov processed both reports (Rust backend2582/2719).
+Failed CodeScene maintenance results retain the recorded dispositions below.
 Base: verified P1-07/PR #8 merge `36cb5e38e215b1f53a10a3cde1dccbda9c25b5c2`.
 Prerequisites P1-04/P1-07 are complete. No durable publication or active runtime
 consumer is implemented here; these remain P1-06 and later service gates.
