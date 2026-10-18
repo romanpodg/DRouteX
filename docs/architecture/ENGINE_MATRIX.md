@@ -18,15 +18,15 @@ This is a capability inventory, not a claim of implemented runtime support.
 
 CONNECT semantics follow [RFC 9110 §9.3.6](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3.6).
 The TLS connection authenticates the configured proxy; it does not authenticate an
-arbitrary origin or replace Routira's route authorization. The connector must send
+arbitrary origin or replace DRouteX's route authorization. The connector must send
 the checked numeric IPv4/IPv6 address, avoid proxy-side hostname re-resolution, and
 keep end-to-end origin TLS bytes unchanged. Authentication/verification/connection
 failure must never silently become DIRECT. Production deadlines, address bans,
 ingress/grant isolation, revocation and secret storage retain their owning gates.
 
 [Control D custom rules](https://docs.controld.com/docs/custom-rules) are the DNS/redirect
-product reference. Its documented IP/proxy redirection does not specify Routira's
-outbound implementation; HTTPS CONNECT is an explicit Routira choice, not a claim
+product reference. Its documented IP/proxy redirection does not specify DRouteX's
+outbound implementation; HTTPS CONNECT is an explicit DRouteX choice, not a claim
 about Control D's internal transport. No proprietary catalog or code was copied.
 
 Exact candidates, artifact hashes, licensing, build evidence and limitations are in

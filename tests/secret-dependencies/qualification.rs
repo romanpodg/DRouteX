@@ -1,4 +1,4 @@
-//! Isolated primitive qualification; no Routira storage or secret API is adopted here.
+//! Isolated primitive qualification; no DRouteX storage or secret API is adopted here.
 use aws_lc_rs::{
     aead::{AES_256_GCM_SIV, Aad, LessSafeKey, Nonce, UnboundKey},
     rand::fill,
@@ -56,7 +56,7 @@ fn sealed_fixture() -> (LessSafeKey, [u8; 12], Vec<u8>, Vec<u8>) {
     let key = key(&[7; 32]);
     let nonce = [8; 12];
     // Synthetic test data only. A production envelope still requires its own design gate.
-    let aad = b"routira-test:v1:secret-id:outbound-auth".to_vec();
+    let aad = b"droutex-test:v1:secret-id:outbound-auth".to_vec();
     let mut buffer = b"synthetic-secret-canary".to_vec();
     key.seal_in_place_append_tag(self::nonce(&nonce), Aad::from(&aad), &mut buffer)
         .unwrap();

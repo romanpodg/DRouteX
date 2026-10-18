@@ -1,5 +1,5 @@
 [package]
-name = "routira-secret-qualification"
+name = "droutex-secret-qualification"
 version = "0.0.0"
 edition = "2024"
 rust-version = "1.99.0"

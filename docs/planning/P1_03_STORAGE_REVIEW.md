@@ -19,7 +19,7 @@ SQLx's original highest permitted libsqlite3-sys 0.37.0 bundles SQLite 3.51.3.
 Its C-source SHA3 matches the official release, but that release lacks the FTS5
 fixes listed for CVE-2026-11822/11824 in the [SQLite advisory](https://sqlite.org/cves.html).
 The documented attack needs hostile SQL/database input and FTS5; this does not
-establish a remotely reachable Routira exploit. A successful RustSec check alone
+establish a remotely reachable DRouteX exploit. A successful RustSec check alone
 does not audit bundled native C.
 
 The owner separately approved qualification and conditional adoption of the
@@ -45,7 +45,7 @@ expression does not approve LGPL. Metadata, file fingerprints and a policy pass
 are not a complete target-specific binary redistribution notice bundle.
 
 The owner approved Zlib for foldhash 0.2.0, preserving its text, attribution and
-modified-source notices; original Routira remains Apache-2.0. After that decision,
+modified-source notices; original DRouteX remains Apache-2.0. After that decision,
 patched locked cargo-deny passes advisories, bans, licenses and sources (exit 0).
 Duplicate hashbrown/syn versions remain warnings: retain upstream-compatible
 ranges and audit target contribution; no incompatible pin or suppression was added.
@@ -77,25 +77,25 @@ Implementation, failure/permission tests, Linux CI and independent review remain
 
 ## Qualification publication and implementation progress
 
-[Draft PR #6](https://github.com/romanpodg/Routira/pull/6) head
+[Draft PR #6](https://github.com/romanpodg/DRouteX/pull/6) head
 `5f0277972257edaf3d4ef91e533be70d1672f417` passed independent read-only qualification
 review against base `57ce7973228d1c2153601b58f82c08c9cd9302fa`, without a confirmed
 defect. Log `.setup/p1-03/codex-review-qualification.log`, exit 0; reviewer did not
 rerun Cargo tests/Clippy in read-only mode. All nine jobs of
-[run 38988891185](https://github.com/romanpodg/Routira/actions/runs/38988891185) passed,
+[run 38988891185](https://github.com/romanpodg/DRouteX/actions/runs/38988891185) passed,
 including actual Linux/Windows SQLite probes and dependency auditing. CodeScene
 and both actual Codecov patch checks succeeded. These are qualification results,
 not evidence for later storage source changes. A CLI rollout-recording error after
 the completed final review did not erase its locally retained review log/result.
 
-The qualified profile is adopted in routira-storage with the same patched native
+The qualified profile is adopted in droutex-storage with the same patched native
 version. [Production inventory](../operations/STORAGE_INVENTORY.csv) covers 167
 registry artifacts, plus the separately fingerprinted driver source. The merge
 of dependency graphs initially selected new libc/Unicode patch releases; those
 new-only entries were returned to the already qualified 0.2.190/0.1.25 versions.
 Existing parser dependency versions were preserved. The final precise lock passed all four production cargo-deny categories.
 
-The [storage contract](../../crates/routira-storage/README.md) describes one immutable
+The [storage contract](../../crates/droutex-storage/README.md) describes one immutable
 bounded original document with transactional resource indexes, catalog hash claims,
 public credential links, safe errors, one queue/connection/owner and pre-upgrade
 consistent migration copies. No active/published policy pointer or raw SQL handle
@@ -120,7 +120,7 @@ must complete on the resulting head. Windows checks do not substitute for that r
 
 ## Implementation review correction
 
-All nine jobs of [run 38991270355](https://github.com/romanpodg/Routira/actions/runs/38991270355)
+All nine jobs of [run 38991270355](https://github.com/romanpodg/DRouteX/actions/runs/38991270355)
 passed for `7f5cce34d32b3cf3889f09437ce63fc55093ba7e`: Linux ran 39 workspace
 tests (12 storage) plus four compile-fail examples with default and no-default
 features. Actual Codecov backend/planning patch checks succeeded. CodeScene
@@ -147,7 +147,7 @@ new exact-head Linux CI and independent re-review are required before merge.
 Head `1d588a2c2d4ed417483bb5d88f40ba76e5fb9337` subsequently passed independent
 read-only re-review without a confirmed defect (log
 `.setup/p1-03/codex-review-rollback-fix.log`, exit 0) and all nine jobs of
-[run 38991989823](https://github.com/romanpodg/Routira/actions/runs/38991989823).
+[run 38991989823](https://github.com/romanpodg/DRouteX/actions/runs/38991989823).
 Actual Linux default/no-default runs passed 40 workspace tests (13 storage),
 including writer shutdown and durable writes after explicit reopen, plus four
 compile-fail examples. Windows runs passed 33 workspace tests (six storage).
@@ -159,7 +159,7 @@ storage 679/741; no vendored driver or test/helper file is included. Inspection
 of the service report exposed a configuration defect: the backend flag still
 listed only the previous three crates and discarded storage. Its 6/6 combined
 patch lines were auxiliary planning changes, not evidence for new storage code.
-The backend flag now includes routira-storage; the local validator compares its
+The backend flag now includes droutex-storage; the local validator compares its
 paths with workspace members and a missing-crate regression was observed failing
 before correction. Exact-head processed service data and re-review of this
 configuration correction are still required; no storage coverage pass is inferred
@@ -172,7 +172,7 @@ independent read-only review against the verified base without confirmed defects
 (`.setup/p1-03/codex-review-coverage-fix.log`, exit 0). The reviewer could check
 formatting/source fingerprints; Cargo tests/Clippy could not acquire build locks
 in its read-only sandbox. All nine jobs of
-[run 39049354119](https://github.com/romanpodg/Routira/actions/runs/39049354119)
+[run 39049354119](https://github.com/romanpodg/DRouteX/actions/runs/39049354119)
 passed separately on that exact head, including actual Windows/Linux execution.
 
 Codecov processed both reports and the exact base/head comparison. The service
@@ -224,7 +224,7 @@ review against the verified base with no confirmed defect (exit 0,
 `.setup/p1-03/codex-review-startup-fix.log`). The reviewer ran the existing seven-test
 Windows binary, formatting and vendor fingerprints; fresh Cargo/Clippy were blocked
 by the review sandbox and Linux was not independently repeated. The separate actual
-[CI run 39052537622](https://github.com/romanpodg/Routira/actions/runs/39052537622)
+[CI run 39052537622](https://github.com/romanpodg/DRouteX/actions/runs/39052537622)
 passed all nine jobs: Linux default/no-default 42 workspace tests (15 storage),
 Windows 34 (seven storage), four compile-fail examples, static checks and audit.
 Codecov processed both exact-head reports/comparison: storage patch 658/700 (94%),
@@ -233,7 +233,7 @@ remained failed on the recorded maintenance signals, including the new excluded
 test-method size; no suppression. A rollout-recording error after the completed
 review result is retained in its local log, not treated as missing Code Review.
 
-[PR #6](https://github.com/romanpodg/Routira/pull/6) merged normally at
+[PR #6](https://github.com/romanpodg/DRouteX/pull/6) merged normally at
 `65c076d6bb00eb7615cc7e697f3f4caeed9e9d7f`; its tree equals the reviewed head.
 All nine main jobs of run 39053065629 passed; Codecov processed both exact-merge
 reports. Full merge, review and service records are in

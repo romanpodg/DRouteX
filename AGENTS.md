@@ -1,9 +1,13 @@
-# Routira project instructions
+# DRouteX project instructions
 
 ## Authority and current scope
 
-Routira is a self-hosted DNS, selective-routing and multi-protocol network platform.
-Read `Routira_Project_Specification_EN.md` with the accepted scope amendment
+Owner-authorized DRouteX rename (2026-10-18) is a separate maintenance change;
+see docs/planning/DROUTEX_RENAME.md. It includes accepted incompatibility of
+old cryptographic data, but does not resolve P1-05 or authorize signature adoption.
+
+DRouteX is a self-hosted DNS, selective-routing and multi-protocol network platform.
+Read `DRouteX_Project_Specification_EN.md` with the accepted scope amendment
 `docs/architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md` as product authority.
 The EN/RU base specifications are preserved. MVP is DNS routing and authorized TCP
 proxying only; tunnels, managed protocol engines and privileged network execution
@@ -14,7 +18,7 @@ isolated namespaces and lab iproute2/nftables/tcpdump. WSL fixture/cleanup check
 passed. On 2026-10-16 the owner supplied a dedicated Debian 13 KVM VPS and approved
 tcpdump/libpcap installation and the isolated P0-03 run. All 41 protocol observations
 and four cleanup modes passed there with unchanged host networking. This proves
-fixture readiness, not Routira runtime or systemd acceptance.
+fixture readiness, not DRouteX runtime or systemd acceptance.
 On 2026-10-16 the owner authorized publishing P0-03 to PR #1 and proceeding through
 P0-04 CI only. Private fork workflows require owner approval and receive no secrets
 or write tokens; the owner deferred a real fork PR test.
@@ -59,14 +63,14 @@ Rustls 0.23.46 and Tokio-Rustls 0.26.6 with AWS-LC. This is not production adopt
 or approval of new license exceptions. The owner separately approved Apache-2.0,
 MIT, ISC, BSD-3-Clause and Unicode-3.0 for third-party dependencies, and separately
 Zlib on 2026-10-17, preserving texts/copyrights/notices and modified-source marking;
-original Routira code remains Apache-2.0.
+original DRouteX code remains Apache-2.0.
 The repository is public. The existing
 Codecov repository was activated with owner approval, preserving OIDC and access;
 the exact main commit now has processed backend/planning reports. Later technical
 choices retain their gates. No production-root or
 untrusted privileged PR runner is authorized.
 The user authorized initial GitHub commits/pushes, PR creation and activity monitoring
-on 2026-10-15. Repository: romanpodg/Routira; current task and execution
+on 2026-10-15. Repository: romanpodg/DRouteX; current task and execution
 boundary are recorded in `docs/planning/EXECUTION_STATUS.md`. On 2026-10-16 the
 owner also authorized autonomous merging after Code Review and checks under the
 PR policy below. Force-pushing and changing branch protections remain unauthorized.
@@ -87,7 +91,7 @@ limits and outbound choices remain at their owning gates; other technical ADRs
 are not blanket-approved. Debian 13 x86_64 is the accepted first native test target.
 P0-02 uses owner-approved Rust 1.99.0/MSRV, Edition 2024, no external dependencies
 and a limited Windows/Linux workspace CI job. The owner selected Apache-2.0 for
-original Routira code; third-party licenses are preserved. The owner authorized the
+original DRouteX code; third-party licenses are preserved. The owner authorized the
 existing P0-04 heartbeat in its automation chat, with routine successful-run alerts disabled;
 this does not authorize unrelated reminders or automations.
 User communication is Russian; code and
@@ -95,7 +99,7 @@ technical documentation are English.
 
 ## Project collaboration and quality policy
 
-These rules apply only inside the Routira repository. Do not propagate them to
+These rules apply only inside the DRouteX repository. Do not propagate them to
 global agent instructions or other projects.
 
 - "Close a PR" means merge its reviewed changes into main, as explicitly clarified
@@ -141,11 +145,11 @@ global agent instructions or other projects.
   briefly and offer a recommendation; do not silently treat it as accepted. Continue
   independent authorized work while waiting and reuse decisions already given.
 - Use Control D as the primary reference for DNS-proxy and SmartDNS concepts,
-  onboarding, Profiles, DNS Endpoints and selective routing. Routira is inspired
+  onboarding, Profiles, DNS Endpoints and selective routing. DRouteX is inspired
   by and intended to develop that concept further. Verify relevant vendor behavior,
-  distinguish documented facts from Routira proposals, and discuss meaningful
+  distinguish documented facts from DRouteX proposals, and discuss meaningful
   departures or extensions with the owner. Reference behavior never overrides
-  Routira's accepted scope, security boundaries or P0-01 approval gate.
+  DRouteX's accepted scope, security boundaries or P0-01 approval gate.
 
 ## Windows native computer use routing (preserved user instructions)
 

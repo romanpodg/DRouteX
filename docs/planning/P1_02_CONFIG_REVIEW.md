@@ -15,7 +15,7 @@ match their recorded SHA-256 values and contain approved license texts. The
 isolated 38-artifact lock passed all four cargo-deny categories, eight Windows
 probes and warning-free Clippy before production use. Probes cover independently
 written formats, duplicate/unknown rejection, bounded YAML and sanitized paths.
-Raw errors from all three parsers echo a synthetic canary, so Routira discards
+Raw errors from all three parsers echo a synthetic canary, so DRouteX discards
 their text and source chains rather than trying to scrub arbitrary diagnostics.
 
 Only the config crate adopts these five dependencies. TOML enables std/parse/serde;
@@ -68,9 +68,9 @@ Local LCOV and raw logs remain ignored under `.setup/p1-02/`. After review fixes
 the new schema has 761/815 covered executable lines and the workspace 837/894.
 These local numbers are distinct from service-side coverage.
 
-[PR #5](https://github.com/romanpodg/Routira/pull/5) initial head
+[PR #5](https://github.com/romanpodg/DRouteX/pull/5) initial head
 `edbcb8fa1cdf1badbf7c6263646fc46215e3474d` passed all seven jobs of
-[run 38954296579](https://github.com/romanpodg/Routira/actions/runs/38954296579),
+[run 38954296579](https://github.com/romanpodg/DRouteX/actions/runs/38954296579),
 including Linux/Windows workspace, fresh locked dependency checks and coverage.
 The completed independent read-only built-in Code Review against verified base
 `cd2a9c011e4950d80458cfaa72baddd1ac4243c2` identified three defects:
@@ -89,7 +89,7 @@ Initial review log: `.setup/p1-02/codex-review.log` (exit 0 with findings, not a
 The reviewer ran fmt and an existing test binary; read-only restrictions prevented
 rebuilding/Clippy. The separate local/CI runs above provide execution evidence.
 The first corrected head `3a57a1a7c551521a60a70b0732406fa362dcc974` passed
-all seven jobs of [run 38955541778](https://github.com/romanpodg/Routira/actions/runs/38955541778).
+all seven jobs of [run 38955541778](https://github.com/romanpodg/DRouteX/actions/runs/38955541778).
 Codecov processed both flags and the exact base/head comparison: backend 817/874,
 Rust patch 741/795 with a successful backend patch check (93.20% displayed).
 Aggregate patch 746/800 includes five auxiliary Python lines and is not product
@@ -107,7 +107,7 @@ confirmed defect. Log: `.setup/p1-02/codex-review-tagged.log`, exit 0. The revie
 ran fmt/diff checks and 27 tests from existing binaries; read-only build-lock
 restrictions prevented fresh Cargo compilation/Clippy in that review. Separate
 local checks and all seven jobs of
-[run 38956580440](https://github.com/romanpodg/Routira/actions/runs/38956580440)
+[run 38956580440](https://github.com/romanpodg/DRouteX/actions/runs/38956580440)
 passed, including default/no-default Linux/Windows and fresh dependency auditing.
 No review finding remains unresolved or is deferred.
 
@@ -116,7 +116,7 @@ with base `cd2a9c011e4950d80458cfaa72baddd1ac4243c2`: backend 837/894 (93.62%),
 new Rust 761/815, successful backend patch check (93.37% displayed) and successful
 100% planning patch check. Aggregate patch 766/820 includes five auxiliary Python
 lines; aggregate total 1271/1331 likewise is not application coverage.
-The [PR report](https://app.codecov.io/gh/romanpodg/Routira/pull/5) is real service
+The [PR report](https://app.codecov.io/gh/romanpodg/DRouteX/pull/5) is real service
 evidence, distinct from local LCOV. The actual fork test remains owner-deferred.
 
 [CodeScene 7991651](https://codescene.io/projects/86145/delta/results/7991651)
@@ -144,12 +144,12 @@ reference-only donor with no imported code.
 Documentation head `921d5dd8ab3b44da26702bdc9ca1b6765fce5508` changed no application
 code after `a708e34`. Independent read-only evidence review completed without a
 confirmed defect (`.setup/p1-02/codex-review-evidence.log`, exit 0). All seven jobs
-of [final run 38957381635](https://github.com/romanpodg/Routira/actions/runs/38957381635)
+of [final run 38957381635](https://github.com/romanpodg/DRouteX/actions/runs/38957381635)
 passed. CodeScene 7991963 repeated the recorded failed new-code gate; two gates passed.
 Exact final-head Codecov backend/patch numbers match the application evidence above.
 
 PR #5 merged normally at `57ce7973228d1c2153601b58f82c08c9cd9302fa`. All seven jobs
-of [main run 38957933166](https://github.com/romanpodg/Routira/actions/runs/38957933166)
+of [main run 38957933166](https://github.com/romanpodg/DRouteX/actions/runs/38957933166)
 passed; Codecov processed both backend/planning reports for that exact merge.
 Local handoff: `.setup/p1-02/autopilot-completed.json`. P1-03 starts only after this
 verified merge and preserves the deferred fork/diagnostic/maintenance dispositions.

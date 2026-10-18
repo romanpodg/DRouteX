@@ -1,4 +1,4 @@
-"""Bounded P0-03 protocol fixtures, never Routira production implementations."""
+"""Bounded P0-03 protocol fixtures, never DRouteX production implementations."""
 import argparse
 import hashlib
 import ipaddress

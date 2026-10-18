@@ -6,11 +6,11 @@ Scope: MVP inventories runtime dependencies; engine licenses, acquisition and di
 
 ## Context
 
-Crates and separate external engines have distinct license/distribution conditions; the owner selected Apache-2.0 for original Routira code on 2026-10-15.
+Crates and separate external engines have distinct license/distribution conditions; the owner selected Apache-2.0 for original DRouteX code on 2026-10-15.
 
 ## Decision
 
-Owner decision on 2026-10-15: original Routira code uses Apache-2.0, with the
+Owner decision on 2026-10-15: original DRouteX code uses Apache-2.0, with the
 official LICENSE text and inherited workspace metadata. Third-party resources
 retain their own licenses. The following distribution/inventory mechanisms remain proposed.
 

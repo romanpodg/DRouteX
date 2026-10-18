@@ -1,13 +1,13 @@
 # Configuration import contract, version 1
 
 This is the P1-02 import boundary, implemented by
-[`parse_configuration`](../../crates/routira-config/src/schema/parser.rs).
+[`parse_configuration`](../../crates/droutex-config/src/schema/parser.rs).
 It does not create listeners, verify credentials, publish policy or admit traffic.
 Callers supply the format and a trusted `ReferenceCatalog`; documents cannot
 declare trusted devices, upstreams, secrets or verified dataset revisions.
 The authoritative field definitions are the
-[typed schema](../../crates/routira-config/src/schema/model.rs). An independently
-written [complete JSON fixture](../../crates/routira-config/tests/fixtures/configuration-v1.json)
+[typed schema](../../crates/droutex-config/src/schema/model.rs). An independently
+written [complete JSON fixture](../../crates/droutex-config/tests/fixtures/configuration-v1.json)
 shows the wire shape; its synthetic UUIDs need the catalog in the integration test.
 OpenAPI and management endpoints remain P6-02.
 

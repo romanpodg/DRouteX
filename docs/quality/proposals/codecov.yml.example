@@ -20,17 +20,17 @@ coverage:
       critical-policy-parsing:
         flags: [backend]
         paths:
-          - crates/routira-policy/
-          - crates/routira-config/
-          - crates/routira-gateway/src/tls_metadata*
-          - crates/routira-gateway/src/origin*
+          - crates/droutex-policy/
+          - crates/droutex-config/
+          - crates/droutex-gateway/src/tls_metadata*
+          - crates/droutex-gateway/src/origin*
         target: 90%
         threshold: 0%
         informational: false
 flags:
   backend:
-    paths: [crates/, apps/routira-server/, apps/routira-agent/]
+    paths: [crates/, apps/droutex-server/, apps/droutex-agent/]
     carryforward: false
   frontend:
-    paths: [apps/routira-web/]
+    paths: [apps/droutex-web/]
     carryforward: false

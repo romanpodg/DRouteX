@@ -24,11 +24,11 @@ only. It introduces no Windows/Linux runtime dependency beyond uuid itself.
 The all-target lock records 19 registry artifacts; exact provenance is in
 [UUID_INVENTORY](../operations/UUID_INVENTORY.csv). No ID/token RNG feature,
 project build script or executable package is added.
-All packages have publish=false. The owner selected Apache-2.0 for original Routira
+All packages have publish=false. The owner selected Apache-2.0 for original DRouteX
 code during P0-02. LICENSE contains the official text; package metadata inherits it.
 P0-05 owner approval expanded deny.toml for third-party dependencies to Apache-2.0,
 MIT, ISC, BSD-3-Clause and Unicode-3.0, preserving their texts/notices. Original
-Routira code remains Apache-2.0. The standalone tests/dependencies package qualifies
+DRouteX code remains Apache-2.0. The standalone tests/dependencies package qualifies
 the proposed network stack; it is not a production workspace dependency. Exact
 versions, audit decisions and test limits are in
 [DEPENDENCIES](../operations/DEPENDENCIES.md). P0-04 owns the full CI policy.

@@ -39,7 +39,7 @@ its original [LICENSE](../../.codex/skills/graphify/LICENSE),
 [LICENSE-MIT](../../.codex/skills/graphify/LICENSE-MIT) and
 [NOTICE](../../.codex/skills/graphify/NOTICE) are preserved alongside the copied skill.
 Ponytail's user-level installed plugin retains its own MIT license. These developer-tool
-licenses do not decide Routira's application or engine-distribution license.
+licenses do not decide DRouteX's application or engine-distribution license.
 
 | Skill | Use when / invocation |
 |---|---|

@@ -18,7 +18,7 @@ implementation is from the library. D32: owner approved official packaged NASM
 objects for Windows development; Linux uses package source C/assembly. No NASM
 installation, native library override, FIPS module or compliance claim is authorized.
 
-The standalone tests do not implement a Routira encrypted store or accept real
+The standalone tests do not implement a DRouteX encrypted store or accept real
 secrets. The envelope, keyring, import/export limits and protected persistence
 profile subsequently passed the owner's D33 design gate before dependent code.
 Resolver token verification/lifetimes/wire format remain P3-07; snapshot authority
@@ -56,9 +56,9 @@ actual Linux CI and independent Code Review subsequently passed as recorded belo
 
 ## Published qualification and independent review
 
-[Draft PR #8](https://github.com/romanpodg/Routira/pull/8), qualification head
+[Draft PR #8](https://github.com/romanpodg/DRouteX/pull/8), qualification head
 `203c76f11a2e745c74d9c3cfe95d3b6396ea8796`, passed all 11 jobs of
-[run 39056761899](https://github.com/romanpodg/Routira/actions/runs/39056761899).
+[run 39056761899](https://github.com/romanpodg/DRouteX/actions/runs/39056761899).
 Both actual Windows and Linux secret jobs passed six probes/24 official vectors,
 fmt and warnings-denied Clippy; the dependency job passed the locked secret audit.
 Production workspace tests also passed. No production crypto dependency or encrypted
@@ -106,7 +106,7 @@ P1-05/P1-06 and live verification/admission remain gated.
 
 The five-crate production workspace now adopts the exact qualified AWS-LC/zeroize
 profile. All newly added registry versions/checksums match the standalone lock;
-existing SQLx/SQLite versions and driver patch are unchanged. `routira-security`
+existing SQLx/SQLite versions and driver patch are unchanged. `droutex-security`
 owns bounded redacted/zeroizing plaintext, context-authenticated binary envelopes,
 external keyring parsing and Linux protected-file loading. It exposes no plaintext
 serialization or user export. OS memory/library internals are not covered by the
@@ -128,7 +128,7 @@ passed. Workspace:45 tests, including7 security/10 storage, plus6 compile-fail
 examples. A temporary removed expected-context guard made its negative regression
 fail; restoring it passed (`.setup/p1-07/context-regression-red.log` / `green.log`).
 Implementation head `b4732c6085c368927e12d62745aa17ccb9810e06` passed all 11 jobs of
-[run 39061026897](https://github.com/romanpodg/Routira/actions/runs/39061026897),
+[run 39061026897](https://github.com/romanpodg/DRouteX/actions/runs/39061026897),
 including actual Linux keyfile permission/link, schema3 upgrade, durable backup
 restore, late-write rejection and corrupt-blob checks. Linux:58 workspace/23 storage
 tests; Windows:45/10; both defaults and no-default tests, plus6 compile-fail examples.

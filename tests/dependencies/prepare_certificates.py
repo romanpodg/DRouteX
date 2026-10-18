@@ -11,7 +11,7 @@ def openssl(*args):
                    capture_output=True, timeout=30)
 
 openssl('req', '-x509', '-newkey', 'rsa:2048', '-noenc', '-days', '1',
-        '-subj', '/CN=Routira disposable qualification CA',
+        '-subj', '/CN=DRouteX disposable qualification CA',
         '-addext', 'basicConstraints=critical,CA:TRUE',
         '-addext', 'keyUsage=critical,keyCertSign,cRLSign',
         '-keyout', 'ca.key', '-out', 'ca.pem')

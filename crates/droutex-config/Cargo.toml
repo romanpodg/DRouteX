@@ -1,0 +1,19 @@
+[package]
+name = "droutex-config"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[dependencies]
+droutex-common.workspace = true
+droutex-policy.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+toml.workspace = true
+serde-saphyr.workspace = true
+serde_path_to_error.workspace = true
+
+[lints]
+workspace = true

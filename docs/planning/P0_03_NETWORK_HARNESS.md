@@ -24,7 +24,7 @@ artifact and hard-kill limitations are documented with the lab command.
 
 Local successful report: `.setup/network/be4cca357efdb71a/report.json`.
 It and its pcap remain untracked; no keys/capabilities/raw traffic are published.
-This is fixture evidence, **not Routira DNS/gateway/security acceptance**.
+This is fixture evidence, **not DRouteX DNS/gateway/security acceptance**.
 
 | Environment | Actual value |
 |---|---|
@@ -50,7 +50,7 @@ recorded **41 protocol observations**, including both address families:
   expose different actual origin-side peer addresses. Wrong hostname/untrusted CA,
   missing proxy authentication and arbitrary target requests are denied.
 - After stopping the proxy process, new protected-path attempts fail; no direct
-  fallback succeeds. These are fixture controls, not implemented Routira controls.
+  fallback succeeds. These are fixture controls, not implemented DRouteX controls.
 - Pcap confirms DNS source 198.18.0.1 versus TCP source 198.18.12.2, and IPv6
   fd42:726f:7574::1 versus fd42:726f:7574:c::2. The other-source gateway is denied.
 
@@ -100,7 +100,7 @@ kernel image SHA-256
 `e175037d019cd29d00bf43282bf6494e51ec71bf540965c13a1b94323f7e4a59`.
 The two source hashes above matched on the VPS before execution; no fixture source
 change was needed. Root-owned source was placed under
-`/opt/routira-p003-20261016-5628f2a` with read/traverse access for the unprivileged
+`/opt/droutex-p003-20261016-5628f2a` with read/traverse access for the unprivileged
 services. Namespace topology/capture alone used root.
 
 All **41 protocol observations** passed again, including both address families,
@@ -125,6 +125,6 @@ task cases rejected, and all 15 planning regression tests passed. The accepted
 three-task execution boundary, later-task stop and original EN/RU bytes were
 preserved. No new remote CI, Codecov or CodeScene result is claimed.
 
-P0-03 is complete. This closes native fixture readiness, not Routira service,
+P0-03 is complete. This closes native fixture readiness, not DRouteX service,
 systemd deployment, host crash/power-loss or product security acceptance. The Rust
 workspace remains three crates. P0-04/P0-05 and runtime services remain planned.

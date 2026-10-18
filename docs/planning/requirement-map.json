@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "source": "Routira_Project_Specification_EN.md",
-  "source_sha256": "78ca71c61755152aa4e369d9b927a8aa73cc6afc8c11bc94c3ceb9c58dc275d9",
+  "source": "DRouteX_Project_Specification_EN.md",
+  "source_sha256": "77b23dc9468c0464eac468d19c20fd7f8594af691581bf689969f6efa69c3767",
   "requirements": {
     "16": {
       "tasks": [
@@ -959,7 +959,7 @@
       ],
       "scope": "MVP",
       "kind": "Open decision",
-      "requirement": "Exact engine/crate licenses and distribution conditions reviewed; Routira license remains unselected"
+      "requirement": "Exact engine/crate licenses and distribution conditions reviewed; DRouteX license remains unselected"
     },
     "20.1": {
       "tasks": [
