@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-18. Current stage: **P1-07/PR #8 complete; P1-05 Ed25519 qualification in progress**.
+Date: 2026-10-18. Current stage: **P1-07/PR #8 complete; P1-05 initial qualification passed; production acceptance blocked by owner-open security gate**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -162,7 +162,8 @@ attempt1 cold SQLite pool startup exceeded150ms. The fixture budget is corrected
 in the next qualification change; failure/retry evidence stays local. Both exact-merge
 Codecov reports processed, backend1986/2103. CodeScene7999941 stays failed with
 source-based minor maintenance dispositions. Local history: `.setup/p1-07/autopilot-completed.json`.
-P1-05 now qualifies owner-approved Ed25519 first; production codec remains D11-gated.
+P1-05 initial Ed25519 qualification is complete and the owner accepted D11;
+production signature adoption remains blocked by P1-05-WEAK-TRUST.
 See [snapshot review](P1_05_SNAPSHOT_REVIEW.md).
 See D30-D33 and the secret review.
 See D29 and [the revision review](P1_04_REVISION_REVIEW.md).
@@ -183,13 +184,23 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original DRou
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **9 completed (P0-01 through P0-05 and P1-01 through P1-04), P1-07 in progress, 78 planned**.
-Nine of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
+Current backlog: **10 completed (P0-01 through P0-05, P1-01 through P1-04 and P1-07), P1-05 in progress, 77 planned**.
+Ten of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
 with the deferred evidence below, not by claiming every acceptance test passed.
 The application foundation exists; there is no running DNS resolver, TCP gateway,
 controller, frontend or product network-test evidence. SQLite storage is implemented and reviewed. P1/P2 features are
-not passed by a workspace bootstrap. PR #7 is merged. P1-07 must complete its own qualification/implementation, review/checks and merge
+not passed by a workspace bootstrap. PR #8 is merged. P1-05 must resolve its
+owner-open security gate and complete implementation, review/checks and merge
 before any next implementation PR; task status cannot bypass that gate.
+
+On 2026-10-18 the owner reaffirmed continuation under the already renamed DRouteX:
+P1-05 after a separately authorized weak-key resolution, then P1-06, then P2.
+The [roadmap continuation order](DEVELOPMENT_ROADMAP.md#current-continuation-order-under-droutex)
+records acceptance boundaries, including P2-07 before P2-05 and later real-service
+DNS/gateway evidence. No security resolution or new dependency is authorized by
+this ordering. Read-only GitHub verification confirmed rename PR #10 merged at
+`9f1aa92b50bd2efd745a96104b0d3c9694764d38` and PR #9 still open/draft at
+`0c3084daf16d54288791461c83f15573c191ae23`; local prototype changes are preserved.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,
@@ -377,3 +388,15 @@ with routine successful-run alerts disabled. It was paused after PR #1 merged.
 Reuse that heartbeat for authorized roadmap continuation; preserve its cadence and
 notification policy. It must not repeat the completed PR #1 loop or send routine
 unchanged-state updates. Await owner answers for consequential unresolved choices.
+
+P1-05 continuation hold2026-10-18: all11 qualification jobs39063908865 and independent
+read-only/never review completed on0c3084d. The owner accepted D11, then chose to
+leave the subsequent weak-key security gate open. PR9 remains draft; implementation
+prototype is local/uncommitted/unreviewed. Do not qualify/adopt ed25519-dalek, merge,
+repeat the answered question or start another implementation PR without a new owner
+authorization. See P1-05-WEAK-TRUST and `.setup/roadmap-autopilot-state.json`.
+
+D35 update2026-10-18: the owner subsequently approved ed25519-dalek3.0.0
+qualification and conditional adoption after successful Windows/Linux tests,
+dependency/license checks and independent review. This supersedes the earlier
+no-qualification hold; production acceptance and PR merge remain evidence-gated.

@@ -45,8 +45,16 @@ Independent final read-only/never review and all11 head/main jobs completed; mai
 attempt1 cold-pool fixture timeout is retained and attempt2 passed. Exact-merge
 Codecov processed both reports. P1-05 is current: owner approved Ed25519 qualification
 in pinned aws-lc-rs1.18.2 with separate CP signing private key and DP public trust keys.
-No production signature adoption before successful qualification; D11 codec/replay/
-rotation remains gated. Historical P1-07 decisions: owner accepted external256-bit protected-file key/rotation,
+Initial Ed25519 qualification head0c3084d passed all11 jobs and independent review.
+Owner accepted the bounded D11 codec/replay/rotation profile, but a local weak-key
+acceptance regression blocks production signature acceptance. On 2026-10-18 the
+owner authorized isolated ed25519-dalek3.0.0 qualification (defaults off) and
+conditional adoption of weak-key import refusal plus strict signature verification,
+retaining AWS-LC signing. Adoption requires successful Windows/Linux tests,
+dependency/license checks and independent review. No gate is passed by approval
+alone. Keep PR9 draft and the prototype local until qualification and implementation
+evidence is reviewed; do not merge or begin another implementation PR prematurely.
+See P1-05-WEAK-TRUST and .setup/roadmap-autopilot-state.json. Historical P1-07 decisions: owner accepted external256-bit protected-file key/rotation,
 conditional AWS-LC1.18.2/zeroize1.9.1 AES-256-GCM-SIV qualification and official
 packaged NASM objects for Windows development (Linux source build). No production
 crypto adoption before successful qualification. Head203c76f passed actual Windows/Linux

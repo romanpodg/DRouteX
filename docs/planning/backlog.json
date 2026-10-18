@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01 through P0-05 and P1-01 through P1-04/P1-07 complete; P1-05 Ed25519 qualification in progress; real fork test deferred",
+  "status": "P1-07 complete; P1-05 initial qualification passed, D35 strict-verifier qualification in progress; production adoption and merge remain evidence-gated; real fork test deferred",
   "date": "2026-10-18",
   "phases": {
     "P0": "Foundation",
@@ -2604,7 +2604,7 @@
   "execution_authorization": {
     "date": "2026-10-18",
     "source": "Owner continuation after reviewed PR8 merge and direct Ed25519 qualification approval in this chat",
-    "scope": "P1-05: isolated Ed25519 qualification first; D11 canonical snapshot/sequence/replay/rotation profile requires separate owner acceptance before codec implementation",
+    "scope": "P1-05 bounded D11 profile accepted; D35 authorizes ed25519-dalek3.0.0 qualification and conditional adoption after Windows/Linux checks, dependency/license audit and independent review. Preserve draft PR9 until implementation acceptance.",
     "through_task": "P1-05"
   },
   "design_proposals": [
@@ -2763,6 +2763,13 @@
     "source": "Direct owner reply in this chat: approve Ed25519 qualification",
     "profile": "Pure Ed25519 in pinned aws-lc-rs1.18.2; separate protected external CP signing key and DP trusted verification public keys",
     "adoption": "No production adoption before successful Windows/Linux/RFC8032 checks and independent review",
-    "remaining_gate": "D11 canonical bytes, sequence/replay persistence and key rotation before snapshot codec"
+    "remaining_gate": "D11 owner-accepted2026-10-18. Weak-trust defect remains blocking until D35 qualification, independent review and production regression fix; no unreviewed adoption."
+  },
+  "snapshot_strict_verifier_decision": {
+    "status": "accepted",
+    "date": "2026-10-18",
+    "source": "Direct owner selection in chat: qualification and adoption after successful checks",
+    "candidate": "ed25519-dalek =3.0.0, default-features=false; is_weak import refusal and verify_strict; AWS-LC signing retained",
+    "adoption_gate": "Successful Windows/Linux qualification, dependency/license checks and independent review; no new license exception"
   }
 }

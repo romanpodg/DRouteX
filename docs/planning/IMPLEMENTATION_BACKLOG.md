@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01 through P0-05 and P1-01 through P1-04/P1-07 complete; P1-05 Ed25519 qualification in progress; real fork test deferred.**
+**P1-07 complete; P1-05 initial qualification passed, D35 strict-verifier qualification in progress; production adoption and merge remain evidence-gated; real fork test deferred.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
