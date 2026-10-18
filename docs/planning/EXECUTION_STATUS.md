@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-19. Current stage: **P1-05/PR9 merged and exact-main verified; P1-06 implementation accepted on3c12bba; PR11 final-head review/checks and normal merge pending**.
+Date: 2026-10-19. Current stage: **P1-06/PR11 merged and exact-main verified; P2-01 D37 isolated qualification in progress, production adoption gated**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -12,12 +12,16 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P1-06 is the current stage; technical choices retain their owning gates.
+P2-01 is the current stage; technical choices retain their owning gates.
 PR9 merged at521bfa76fbc27e14cd4981638af775ba92c6299f after independent
 implementation/final-evidence reviews and all11 final-head jobs. All11 exact-main
 jobs39148795165 passed and both Codecov reports processed. The owner then accepted
 the complete [D36 local activation profile](P1_06_ACTIVATION_CONTRACT.md).
-P2 remains planned until P1-06 finishes and merges.
+P1-06 subsequently merged normally at6b58b892cf2e9c58499cd60d4ccad9c503a1d656;
+all11 main jobs39154498259 passed, and both exact-merge Codecov reports processed
+(Rust3322/3503). The owner accepted the [D37 domain profile](P2_01_DOMAIN_CONTRACT.md)
+and conditional IDNA qualification/adoption. Production adoption is still gated;
+later P2 tasks stay planned until reviewed P2-01 merge.
 P1-06's candidate passed independent Codex re-review and all11 jobs of39153071723;
 actual Codecov processed both reports. See [evidence](P1_06_ACTIVATION_REVIEW.md)
 for the retained first Linux failure, resolved review findings,94.01% Rust patch

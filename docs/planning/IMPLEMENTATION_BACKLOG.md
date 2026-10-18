@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P1-05/PR9 merged and exact-main verified; P1-06 implementation accepted on3c12bba after review/all11 CI jobs; PR11 final-head finalization gated; P2 stays planned.**
+**P0/P1 complete and merged; P1-06 exact-main verified; P2-01 D37 isolated IDNA qualification in progress; production adoption gated; later tasks planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -200,7 +200,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P2-01: Normalize domains and wildcard semantics
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,8,22.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,8,22.
 
 | Field | Deliverable / evidence |
 |---|---|

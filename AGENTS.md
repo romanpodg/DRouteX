@@ -1,5 +1,13 @@
 # DRouteX project instructions
 
+Current gate2026-10-19: P1-06/PR11 merged normally at6b58b892cf2e9c58499cd60d4ccad9c503a1d656;
+all11 main jobs39154498259 and both processed Codecov reports passed. The owner
+accepted D37's P2-01 domain profile and conditional idna1.1.0 qualification/adoption.
+See docs/planning/P2_01_DOMAIN_CONTRACT.md. Production normalization remains gated
+until actual Windows/Linux tests, dependency/license checks and independent review;
+no handwritten IDNA, silent registry update or malformed-ACE exception. Later P2
+implementation tasks stay planned until reviewed P2-01 merge.
+
 Current continuation: P1-05/PR9 merged normally at521bfa76fbc27e14cd4981638af775ba92c6299f;
 all11 exact-main jobs39148795165 passed and both Codecov reports processed. The
 owner then explicitly accepted the complete P1-06 bounded filesystem profile D36:

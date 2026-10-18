@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P1-05/PR9 merged and exact-main verified; P1-06 implementation accepted on3c12bba after review/all11 CI jobs; PR11 final-head finalization gated; P2 stays planned",
+  "status": "P0/P1 complete and merged; P1-06 exact-main verified; P2-01 D37 isolated IDNA qualification in progress; production adoption gated; later tasks planned",
   "date": "2026-10-18",
   "phases": {
     "P0": "Foundation",
@@ -401,7 +401,7 @@
       "security": "Bound length/label/rule expansion at input boundary",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2605,10 +2605,10 @@
   ],
   "scope_amendment": "CR-0001",
   "execution_authorization": {
-    "date": "2026-10-18",
-    "source": "Direct owner reply accepting P1-06 bounded filesystem profile after PR9 merge and exact-main verification",
-    "scope": "P1-06 D36 candidate implementation accepted on3c12bba after actual independent review and all11 Windows/Linux jobs. PR11 final-head evidence review/checks and normal merge remain required; no P2 implementation PR before that merge.",
-    "through_task": "P1-06"
+    "date": "2026-10-19",
+    "source": "Direct owner reply accepting complete .setup/p2-01/domain-design-proposal.md and qualification/adoption after successful checks",
+    "scope": "P2-01 D37 qualification and conditional implementation only, after verified P1-06 merge6b58b89. Production adoption requires actual Windows/Linux/dependency/license qualification and independent review; later P2 tasks stay planned until reviewed P2-01 merge.",
+    "through_task": "P2-01"
   },
   "design_proposals": [
     {
@@ -2789,5 +2789,13 @@
     "date": "2026-10-18",
     "source": "Direct owner reply in this chat accepting .setup/p1-06/activation-design-proposal.md; docs/planning/P1_06_ACTIVATION_CONTRACT.md",
     "profile": "D36: separate private DP filesystem; three slots, 64MiB resources per generation, 16KiB manifest; Linux x86_64 durable boundary; rollback requires fresh signed higher sequence; whole-volume malicious rollback excluded"
+  },
+  "domain_normalization_decision": {
+    "status": "accepted",
+    "date": "2026-10-19",
+    "source": "Direct owner reply: qualification and adoption after successful checks; docs/planning/P2_01_DOMAIN_CONTRACT.md",
+    "dependency": "idna1.1.0 defaults off, std/compiled_data; existing29 locked registry packages only",
+    "profile": "D37 nontransitional UTS46 URL/Allow/VerifyAllowRootDot with same-library roundtrip for malformed ACE;1024-byte input,63/253/127 output bounds; explicit CR-0002 modes",
+    "qualification_status": "in_progress; production adoption not yet permitted by evidence"
   }
 }
