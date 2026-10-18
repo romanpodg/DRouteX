@@ -1,0 +1,357 @@
+use super::*;
+use std::{
+    cell::RefCell,
+    fs,
+    io::Write,
+    os::unix::fs::{PermissionsExt, symlink},
+    path::PathBuf,
+    sync::atomic::AtomicU64,
+};
+type Hook = Box<dyn FnMut(&str) -> Result<()>>;
+thread_local! { static HOOK: RefCell<Option<Hook>> = RefCell::new(None); }
+pub(super) fn checkpoint(phase: &str) -> Result<()> {
+    HOOK.with_borrow_mut(|hook| match hook {
+        Some(hook) => hook(phase),
+        None => Ok(()),
+    })
+}
+fn hook(callback: impl FnMut(&str) -> Result<()> + 'static) {
+    HOOK.with_borrow_mut(|slot| *slot = Some(Box::new(callback)));
+}
+fn clear_hook() {
+    HOOK.with_borrow_mut(|slot| *slot = None);
+}
+struct Fixture {
+    parent: PathBuf,
+    root: PathBuf,
+}
+impl Fixture {
+    fn new() -> Self {
+        static SERIAL: AtomicU64 = AtomicU64::new(0);
+        let parent = std::env::temp_dir().join(format!(
+            "droutex-activation-{}-{}",
+            std::process::id(),
+            SERIAL.fetch_add(1, Ordering::Relaxed)
+        ));
+        fs::create_dir(&parent).unwrap();
+        fs::set_permissions(&parent, fs::Permissions::from_mode(0o700)).unwrap();
+        fs::create_dir(parent.join("cp")).unwrap();
+        fs::create_dir(parent.join("backups")).unwrap();
+        Self {
+            root: parent.join("dp"),
+            parent,
+        }
+    }
+    fn provision(&self) -> Deployment {
+        Deployment::provision(
+            &self.root,
+            &self.parent.join("cp"),
+            &self.parent.join("backups"),
+            typed(1),
+            trust(false),
+        )
+        .unwrap()
+    }
+    fn open(&self) -> Result<Deployment> {
+        Deployment::open(&self.root, typed(1), trust(false))
+    }
+}
+impl Drop for Fixture {
+    fn drop(&mut self) {
+        clear_hook();
+        fs::remove_dir_all(&self.parent).unwrap();
+    }
+}
+
+#[test]
+fn cp_database_loss_restart_and_single_writer_lock() {
+    let fixture = Fixture::new();
+    let deployment = fixture.provision();
+    assert_eq!(failure(fixture.open()), ErrorCode::Busy);
+    apply(&deployment, 1, false, b"one").unwrap();
+    apply(&deployment, 2, false, b"two").unwrap();
+    drop(deployment);
+    fs::remove_dir(fixture.parent.join("cp")).unwrap();
+    fs::remove_dir(fixture.parent.join("backups")).unwrap();
+    let deployment = fixture.open().unwrap();
+    assert_version(&deployment, 2, b"two");
+    assert_eq!(
+        failure(apply(&deployment, 1, false, b"old")),
+        ErrorCode::Snapshot(snapshot::SnapshotErrorCode::Replay)
+    );
+    apply(&deployment, 3, false, b"one").unwrap();
+    drop(deployment);
+    assert_version(&fixture.open().unwrap(), 3, b"one");
+}
+
+#[test]
+fn rotation_recovery_does_not_require_revoked_previous_key() {
+    let fixture = Fixture::new();
+    let deployment = fixture.provision();
+    apply(&deployment, 1, false, b"old").unwrap();
+    let (k1, p1) = signer(false);
+    let (k2, p2) = signer(true);
+    deployment
+        .replace_trust(SnapshotTrust::new(vec![(k1.id(), p1), (k2.id(), p2)]).unwrap())
+        .unwrap();
+    apply(&deployment, 2, true, b"new").unwrap();
+    drop(deployment);
+    assert!(fixture.open().is_err()); // Active signer absent, no fallback to previous.
+    let restored = Deployment::open(&fixture.root, typed(1), trust(true)).unwrap();
+    assert_version(&restored, 2, b"new");
+}
+
+#[test]
+fn missing_corrupt_or_revoked_active_refuses_without_fallback() {
+    for damage in [
+        "manifest",
+        "envelope",
+        "artifact",
+        "missing-envelope",
+        "missing-artifact",
+        "missing-manifest",
+        "wrong-scope",
+    ] {
+        let fixture = Fixture::new();
+        let deployment = fixture.provision();
+        apply(&deployment, 1, false, b"old").unwrap();
+        apply(&deployment, 2, false, b"good").unwrap();
+        drop(deployment);
+        let manifest: serde_json::Value =
+            serde_json::from_slice(&fs::read(fixture.root.join("manifest.json")).unwrap()).unwrap();
+        let slot = fixture.root.join(format!(
+            "slot-{}",
+            manifest["active"]["slot"].as_u64().unwrap()
+        ));
+        match damage {
+            "manifest" => fs::write(fixture.root.join("manifest.json"), b"{}").unwrap(),
+            "envelope" => fs::write(slot.join("snapshot"), b"tamper").unwrap(),
+            "artifact" => fs::write(slot.join(artifacts::filename(resource())), b"tamper").unwrap(),
+            "missing-envelope" => fs::remove_file(slot.join("snapshot")).unwrap(),
+            "missing-artifact" => {
+                fs::remove_file(slot.join(artifacts::filename(resource()))).unwrap()
+            }
+            "missing-manifest" => fs::remove_file(fixture.root.join("manifest.json")).unwrap(),
+            "wrong-scope" => {
+                assert!(Deployment::open(&fixture.root, typed(123), trust(false)).is_err());
+                continue;
+            }
+            _ => unreachable!(),
+        }
+        assert!(fixture.open().is_err(), "{damage}");
+        assert!(
+            Deployment::provision(
+                &fixture.root,
+                &fixture.parent.join("cp"),
+                &fixture.parent.join("backups"),
+                typed(1),
+                trust(false)
+            )
+            .is_err()
+        );
+    }
+}
+
+#[test]
+fn private_owner_modes_symlinks_hardlinks_and_unsafe_placement_refuse() {
+    let fixture = Fixture::new();
+    let deployment = fixture.provision();
+    apply(&deployment, 1, false, b"one").unwrap();
+    drop(deployment);
+    fs::set_permissions(&fixture.root, fs::Permissions::from_mode(0o755)).unwrap();
+    assert!(fixture.open().is_err());
+    fs::set_permissions(&fixture.root, fs::Permissions::from_mode(0o700)).unwrap();
+    let manifest = fixture.root.join("manifest.json");
+    let saved = fs::read(&manifest).unwrap();
+    fs::hard_link(&manifest, fixture.parent.join("hardlink")).unwrap();
+    assert!(fixture.open().is_err());
+    fs::remove_file(fixture.parent.join("hardlink")).unwrap();
+    fs::remove_file(&manifest).unwrap();
+    fs::write(fixture.parent.join("outside"), saved).unwrap();
+    symlink(fixture.parent.join("outside"), &manifest).unwrap();
+    assert!(fixture.open().is_err());
+    assert!(
+        Deployment::provision(
+            &fixture.parent.join("cp/forbidden"),
+            &fixture.parent.join("cp"),
+            &fixture.parent.join("backups"),
+            typed(1),
+            trust(false)
+        )
+        .is_err()
+    );
+    assert!(Deployment::open(Path::new("relative"), typed(1), trust(false)).is_err());
+}
+
+#[test]
+fn precommit_write_flush_disk_full_and_cancel_preserve_active() {
+    for phase in [
+        "file-created",
+        "file-written",
+        "file-synced",
+        "stage-envelope",
+        "stage-resource",
+        "stage-durable",
+        "manifest-prepared",
+    ] {
+        let fixture = Fixture::new();
+        let deployment = fixture.provision();
+        apply(&deployment, 1, false, b"one").unwrap();
+        hook(move |at| {
+            if at == phase {
+                Err(DeploymentError(ErrorCode::Filesystem))
+            } else {
+                Ok(())
+            }
+        });
+        assert_eq!(
+            failure(apply(&deployment, 2, false, b"two")),
+            ErrorCode::Filesystem
+        );
+        clear_hook();
+        assert_version(&deployment, 1, b"one");
+        drop(deployment);
+        assert_version(&fixture.open().unwrap(), 1, b"one");
+    }
+    let fixture = Fixture::new();
+    let deployment = fixture.provision();
+    apply(&deployment, 1, false, b"one").unwrap();
+    hook(|at| {
+        if at == "file-created" {
+            // Real unprivileged kernel ENOSPC; do not fill or mount a host filesystem.
+            let error = fs::OpenOptions::new()
+                .write(true)
+                .open("/dev/full")
+                .unwrap()
+                .write_all(b"x")
+                .unwrap_err();
+            assert_eq!(error.raw_os_error(), Some(28));
+            return Err(DeploymentError(ErrorCode::Filesystem));
+        }
+        Ok(())
+    });
+    assert!(apply(&deployment, 2, false, b"two").is_err());
+    clear_hook();
+    assert_version(&deployment, 1, b"one");
+    let cancel = Arc::new(Cancellation::default());
+    let signal = Arc::clone(&cancel);
+    hook(move |at| {
+        if at == "stage-durable" {
+            signal.cancel();
+        }
+        Ok(())
+    });
+    let (bytes, artifacts) = candidate(2, false, b"two");
+    assert_eq!(
+        failure(deployment.activate(bytes, artifacts, &cancel)),
+        ErrorCode::Cancelled
+    );
+    clear_hook();
+    drop(deployment);
+    assert_version(&fixture.open().unwrap(), 1, b"one");
+}
+
+#[test]
+fn uncertain_commit_freezes_writer_and_recovery_finds_committed_generation() {
+    for phase in ["manifest-renamed", "manifest-durable"] {
+        let fixture = Fixture::new();
+        let deployment = fixture.provision();
+        apply(&deployment, 1, false, b"one").unwrap();
+        hook(move |at| {
+            if at == phase {
+                Err(DeploymentError(ErrorCode::Filesystem))
+            } else {
+                Ok(())
+            }
+        });
+        assert_eq!(
+            failure(apply(&deployment, 2, false, b"two")),
+            ErrorCode::UncertainCommit
+        );
+        clear_hook();
+        assert_version(&deployment, 1, b"one");
+        assert_eq!(
+            failure(apply(&deployment, 3, false, b"three")),
+            ErrorCode::RecoveryRequired
+        );
+        drop(deployment);
+        let recovered = fixture.open().unwrap();
+        assert_version(&recovered, 2, b"two");
+        assert_eq!(
+            failure(apply(&recovered, 2, false, b"replay")),
+            ErrorCode::Snapshot(snapshot::SnapshotErrorCode::Replay)
+        );
+    }
+}
+
+#[test]
+fn crash_child() {
+    let Ok(root) = std::env::var("DROUTEX_TEST_CRASH_ROOT") else {
+        return;
+    };
+    let phase = std::env::var("DROUTEX_TEST_CRASH_PHASE").unwrap();
+    let mut occurrence: usize = std::env::var("DROUTEX_TEST_CRASH_NTH")
+        .unwrap()
+        .parse()
+        .unwrap();
+    let deployment = Deployment::open(Path::new(&root), typed(1), trust(false)).unwrap();
+    hook(move |at| {
+        if at == phase {
+            occurrence -= 1;
+            if occurrence == 0 {
+                std::process::exit(88);
+            }
+        }
+        Ok(())
+    });
+    apply(&deployment, 2, false, b"two").unwrap();
+    panic!("crash point not reached");
+}
+
+#[test]
+fn real_process_exit_at_every_durable_transition_recovers_complete_generation() {
+    let phases = [
+        ("stage-directory", 1),
+        ("file-created", 1),
+        ("file-written", 1),
+        ("file-synced", 1),
+        ("stage-envelope", 1),
+        ("stage-resource", 1),
+        ("stage-durable", 1),
+        ("file-created", 3),
+        ("file-written", 3),
+        ("file-synced", 3),
+        ("manifest-prepared", 1),
+        ("manifest-renamed", 1),
+        ("manifest-durable", 1),
+    ];
+    for (phase, nth) in phases {
+        let fixture = Fixture::new();
+        let deployment = fixture.provision();
+        apply(&deployment, 1, false, b"one").unwrap();
+        drop(deployment);
+        let status = std::process::Command::new(std::env::current_exe().unwrap())
+            .args([
+                "--exact",
+                "deployment::tests::linux::crash_child",
+                "--test-threads=1",
+            ])
+            .env("DROUTEX_TEST_CRASH_ROOT", &fixture.root)
+            .env("DROUTEX_TEST_CRASH_PHASE", phase)
+            .env("DROUTEX_TEST_CRASH_NTH", nth.to_string())
+            .output()
+            .unwrap();
+        assert_eq!(
+            status.status.code(),
+            Some(88),
+            "{phase}/{nth}: {}",
+            String::from_utf8_lossy(&status.stderr)
+        );
+        let deployment = fixture.open().unwrap();
+        if matches!(phase, "manifest-renamed" | "manifest-durable") {
+            assert_version(&deployment, 2, b"two");
+        } else {
+            assert_version(&deployment, 1, b"one");
+        }
+    }
+}

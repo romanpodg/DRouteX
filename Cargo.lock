@@ -329,6 +329,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "droutex-core"
+version = "0.1.0"
+dependencies = [
+ "droutex-common",
+ "droutex-config",
+ "droutex-security",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "droutex-policy"
 version = "0.1.0"
 dependencies = [

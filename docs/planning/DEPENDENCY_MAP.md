@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0-01 through P0-05 and P1-01 through P1-05/P1-07 complete; PR9 finalization remains current-head gated; P1-06 planned; real fork test deferred. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P1-05/PR9 merged and exact-main verified; P1-06 D36 filesystem profile owner-accepted, implementation in progress; P2 and later remain planned. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

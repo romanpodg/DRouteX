@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01 through P0-05 and P1-01 through P1-05/P1-07 complete; PR9 finalization remains current-head gated; P1-06 planned; real fork test deferred.**
+**P1-05/PR9 merged and exact-main verified; P1-06 D36 filesystem profile owner-accepted, implementation in progress; P2 and later remain planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -168,7 +168,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P1-06: Implement local staged activation and recovery
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specification: §§8,11,20,24.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specification: §§8,11,20,24.
 
 | Field | Deliverable / evidence |
 |---|---|

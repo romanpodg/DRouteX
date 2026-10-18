@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0-01 through P0-05 and P1-01 through P1-04 complete; P1-07 complete; P1-05 candidate implementation accepted; PR9 current-head finalization gated; P1-06 planned; actual fork test deferred.**
+Status: **P0-01 through P0-05 and P1-01 through P1-05/P1-07 complete; PR9 merged and exact-main verified; P1-06 D36 accepted, implementation in progress; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -25,7 +25,8 @@ exact-merge Codecov reports processed. Main attempt1 cold-pool fixture timeout a
 successful retry remain recorded. P1-05 completed initial Ed25519 qualification
 using the pinned crypto profile. The owner accepted D11 codec/replay/rotation;
 D35 strict trust and the candidate codec are now reviewed/tested in cd0e2c5.
-P1-06 durable activation remains planned.
+P1-06 durable activation is authorized under the owner-accepted
+[D36 filesystem profile](P1_06_ACTIVATION_CONTRACT.md); implementation evidence is pending.
 See [P1-05 evidence](P1_05_SNAPSHOT_REVIEW.md).
 See [P1-07 evidence](P1_07_SECRET_REVIEW.md).
 Further technical choices retain their owning gates.
@@ -114,8 +115,9 @@ enforces this constraint and rejects an injected tunnel dependency.
 
 The owner reaffirmed the following order on 2026-10-18 after the project rename.
 This orders existing tasks; it does not change their dependency DAG, accept a new
-security solution or waive any task gate. The current prototype stays local and
-PR #9 stays draft until P1-05-WEAK-TRUST has an explicitly authorized resolution.
+security solution or waive any task gate. P1-05 subsequently passed its D35 gates;
+PR9 merged at521bfa7 and all11 exact-main jobs passed. The owner then accepted D36
+for P1-06. P2 remains planned until reviewed P1-06 merge.
 
 | Order | Work and acceptance boundary |
 |---|---|
@@ -125,7 +127,7 @@ PR #9 stays draft until P1-05-WEAK-TRUST has an explicitly authorized resolution
 
 Finish and merge each authorized implementation PR before starting the next.
 P2-01/P2-07 have earlier prerequisites in the DAG, but this execution order does
-not use them to bypass the current P1-05 hold. P1-06 is foundational recovery, not
+not use them to bypass the current P1-06 acceptance gate. P1-06 is foundational recovery, not
 completion of the later P10-06 full-product recovery acceptance.
 
 ## Approval and update protocol

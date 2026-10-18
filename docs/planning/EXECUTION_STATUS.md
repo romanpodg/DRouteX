@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-18. Current stage: **P1-07/PR #8 complete; P1-05 candidate implementation accepted; PR9 current-head finalization gated; P1-06 planned**.
+Date: 2026-10-18. Current stage: **P1-05/PR9 merged and exact-main verified; P1-06 D36 filesystem profile accepted, implementation in progress**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -12,7 +12,12 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P1-05 is the current stage; technical choices retain their owning gates.
+P1-06 is the current stage; technical choices retain their owning gates.
+PR9 merged at521bfa76fbc27e14cd4981638af775ba92c6299f after independent
+implementation/final-evidence reviews and all11 final-head jobs. All11 exact-main
+jobs39148795165 passed and both Codecov reports processed. The owner then accepted
+the complete [D36 local activation profile](P1_06_ACTIVATION_CONTRACT.md).
+P2 remains planned until P1-06 finishes and merges.
 Force-pushing and branch-protection changes remain unauthorized.
 
 The repository is now public. With explicit owner approval the existing Codecov
