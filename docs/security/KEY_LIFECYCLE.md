@@ -17,7 +17,7 @@ All integers are unsigned, big-endian. Exact bytes, no trailing extensions:
 
 | Field | Bytes |
 |---|---:|
-| Magic/version `RTSEC\0\x00\x01` | 8 |
+| Magic/version `DXSEC\0\x00\x01` | 8 |
 | Suite1 (AWS-LC AES-256-GCM-SIV) | 1 |
 | Public key identifier (nonzero opaque bytes) | 16 |
 | SecretRefId (validated UUIDv4) | 16 |
