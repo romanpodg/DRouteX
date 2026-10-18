@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0-01 through P0-05 and P1-01 through P1-05/P1-07 complete; PR9 finalization remains current-head gated; P1-06 planned; real fork test deferred.**
+**P1-05/PR9 merged and exact-main verified; P1-06 implementation accepted on3c12bba after review/all11 CI jobs; PR11 final-head finalization gated; P2 stays planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -168,15 +168,15 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P1-06: Implement local staged activation and recovery
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specification: §§8,11,20,24.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specification: §§8,11,20,24.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Durable DNS/gateway stage/validate/activate/verify journal and rollback; preserve one snapshot generation per decision without configuring OS routes or engines |
 | Prerequisites | P1-05 |
-| Expected files/modules | crates/droutex-core/src/deployment |
+| Expected files/modules | crates/droutex-core/src/deployment; crates/droutex-config/src/snapshot; docs/planning/P1_06_ACTIVATION_CONTRACT.md; docs/planning/P1_06_ACTIVATION_REVIEW.md |
 | Acceptance criteria | Crash at each DNS/proxy transition recovers complete old/new generation; no partial accepted DNS/gateway policy; CP loss preserves last-known-good |
-| Tests | Fault injection, disk-full, cancellation and restart tests |
+| Tests | Exact-head3c12bba CI39153071723 all11 jobs passed; Windows77/Linux104 tests per default/no-default configuration;20 Linux core tests,13 publication+3 recovery process exits, ENOSPC/cancellation/uncertain/revoked/corrupt/replay/fresh rollback/reader-lifetime tests; independent read-only/never Codex re-review passed after concrete fixes; PR11 final-head review/checks and merge still required |
 | Security considerations | Rollback gets new authorized sequence referring to old content; reject arbitrary old replay |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
 | Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |

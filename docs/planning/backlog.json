@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0-01 through P0-05 and P1-01 through P1-05/P1-07 complete; PR9 finalization remains current-head gated; P1-06 planned; real fork test deferred",
+  "status": "P1-05/PR9 merged and exact-main verified; P1-06 implementation accepted on3c12bba after review/all11 CI jobs; PR11 final-head finalization gated; P2 stays planned",
   "date": "2026-10-18",
   "phases": {
     "P0": "Foundation",
@@ -333,14 +333,17 @@
       ],
       "scope": "Durable DNS/gateway stage/validate/activate/verify journal and rollback; preserve one snapshot generation per decision without configuring OS routes or engines",
       "files": [
-        "crates/droutex-core/src/deployment"
+        "crates/droutex-core/src/deployment",
+        "crates/droutex-config/src/snapshot",
+        "docs/planning/P1_06_ACTIVATION_CONTRACT.md",
+        "docs/planning/P1_06_ACTIVATION_REVIEW.md"
       ],
       "acceptance": "Crash at each DNS/proxy transition recovers complete old/new generation; no partial accepted DNS/gateway policy; CP loss preserves last-known-good",
-      "tests": "Fault injection, disk-full, cancellation and restart tests",
+      "tests": "Exact-head3c12bba CI39153071723 all11 jobs passed; Windows77/Linux104 tests per default/no-default configuration;20 Linux core tests,13 publication+3 recovery process exits, ENOSPC/cancellation/uncertain/revoked/corrupt/replay/fresh rollback/reader-lifetime tests; independent read-only/never Codex re-review passed after concrete fixes; PR11 final-head review/checks and merge still required",
       "security": "Rollback gets new authorized sequence referring to old content; reject arbitrary old replay",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "L",
-      "status": "planned",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -2603,9 +2606,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-18",
-    "source": "Owner continuation after reviewed PR8 merge and direct Ed25519 qualification approval in this chat",
-    "scope": "P1-05 D11/D35 implementation accepted on cd0e2c5 after independent review, all11 actual Windows/Linux CI jobs and dependency checks. PR9 normal merge requires final current-head evidence. P1-06 remains planned; no later implementation PR before PR9 merge.",
-    "through_task": "P1-05"
+    "source": "Direct owner reply accepting P1-06 bounded filesystem profile after PR9 merge and exact-main verification",
+    "scope": "P1-06 D36 candidate implementation accepted on3c12bba after actual independent review and all11 Windows/Linux jobs. PR11 final-head evidence review/checks and normal merge remain required; no P2 implementation PR before that merge.",
+    "through_task": "P1-06"
   },
   "design_proposals": [
     {
@@ -2780,5 +2783,11 @@
       "rust_patch": "597/621 actual Codecov base9f1aa92 comparison",
       "codescene": "8006231 failed; minor source-based maintenance dispositions retained, no suppression"
     }
+  },
+  "activation_storage_decision": {
+    "status": "accepted",
+    "date": "2026-10-18",
+    "source": "Direct owner reply in this chat accepting .setup/p1-06/activation-design-proposal.md; docs/planning/P1_06_ACTIVATION_CONTRACT.md",
+    "profile": "D36: separate private DP filesystem; three slots, 64MiB resources per generation, 16KiB manifest; Linux x86_64 durable boundary; rollback requires fresh signed higher sequence; whole-volume malicious rollback excluded"
   }
 }

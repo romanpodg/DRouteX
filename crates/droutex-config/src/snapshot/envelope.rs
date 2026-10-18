@@ -86,6 +86,63 @@ pub fn verify_snapshot(
     replay: &ReplayState,
     resources: &TrustedResources,
 ) -> Result<VerifiedSnapshot, SnapshotError> {
+    authenticate_snapshot(bytes, trust, resources, Some(replay))
+}
+
+/// Exact identity obtained from a separately trusted durable activation manifest.
+/// Possession grants no fresh-admission or sequence-reset authority.
+#[derive(Clone, Copy, Debug, Eq, PartialEq)]
+pub struct RetainedSnapshotIdentity {
+    pub metadata: SnapshotMetadata,
+    pub signing_key: SigningKeyId,
+    pub envelope_hash: ContentHash,
+}
+
+/// Authenticated retained state, deliberately distinct from a fresh candidate.
+///
+/// ```compile_fail
+/// use droutex_config::snapshot::{RestoredSnapshot, VerifiedSnapshot};
+/// fn fresh(_: VerifiedSnapshot) {}
+/// fn restore(value: RestoredSnapshot) { fresh(value); }
+/// ```
+pub struct RestoredSnapshot(VerifiedSnapshot);
+impl RestoredSnapshot {
+    pub const fn metadata(&self) -> SnapshotMetadata {
+        self.0.metadata()
+    }
+    pub const fn signing_key(&self) -> SigningKeyId {
+        self.0.signing_key()
+    }
+    pub fn content(&self) -> &SnapshotContent {
+        self.0.content()
+    }
+}
+
+pub fn restore_snapshot(
+    bytes: &[u8],
+    trust: &SnapshotTrust,
+    expected: RetainedSnapshotIdentity,
+    resources: &TrustedResources,
+) -> Result<RestoredSnapshot, SnapshotError> {
+    if bytes.len() > MAX_SNAPSHOT_BYTES {
+        return Err(SnapshotError(Code::Size));
+    }
+    if ContentHash::of(bytes) != expected.envelope_hash {
+        return Err(SnapshotError(Code::Authentication));
+    }
+    let verified = authenticate_snapshot(bytes, trust, resources, None)?;
+    if verified.metadata != expected.metadata || verified.signing_key != expected.signing_key {
+        return Err(SnapshotError(Code::Scope));
+    }
+    Ok(RestoredSnapshot(verified))
+}
+
+fn authenticate_snapshot(
+    bytes: &[u8],
+    trust: &SnapshotTrust,
+    resources: &TrustedResources,
+    replay: Option<&ReplayState>,
+) -> Result<VerifiedSnapshot, SnapshotError> {
     if bytes.len() > MAX_SNAPSHOT_BYTES {
         return Err(SnapshotError(Code::Size));
     }
@@ -116,7 +173,9 @@ pub fn verify_snapshot(
             .map_err(|_| SnapshotError(Code::Format))?,
         sequence: SnapshotSequence::new(u64::from_be_bytes(part(bytes, 77)?))?,
     };
-    replay.check(metadata.node, metadata.sequence)?;
+    if let Some(replay) = replay {
+        replay.check(metadata.node, metadata.sequence)?;
+    }
     let payload = &bytes[HEADER..signed_length];
     if ContentHash::of(payload).as_bytes() != &bytes[89..121] {
         return Err(SnapshotError(Code::Authentication));

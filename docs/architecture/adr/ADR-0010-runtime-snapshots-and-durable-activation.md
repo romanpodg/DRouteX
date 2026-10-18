@@ -40,3 +40,9 @@ sequence checks. See [candidate v1 contract](../../../api/schemas/snapshot/READM
 and [acceptance evidence](../../planning/P1_05_SNAPSHOT_REVIEW.md). This does not
 accept this ADR wholesale: its status stays Proposed. Durable publication,
 activation/recovery, API and later remote/helper contracts retain their owning gates.
+
+The owner subsequently accepted D36's bounded local filesystem profile for P1-06.
+See [activation contract](../../planning/P1_06_ACTIVATION_CONTRACT.md). Its
+implementation/recovery passed independent review and actual Windows/Linux CI
+on3c12bba; PR11 finalization remains gated. This does not accept the complete
+ADR or the later kernel/engine/remote activation mechanisms.

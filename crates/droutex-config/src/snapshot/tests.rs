@@ -71,6 +71,76 @@ fn empty_content() -> SnapshotContent {
     )
     .unwrap()
 }
+
+#[test]
+fn retained_verification_requires_exact_trusted_identity_without_resetting_floor() {
+    let (key, public) = signer(false);
+    let trust = SnapshotTrust::new(vec![(key.id(), public)]).unwrap();
+    let bytes = encode_snapshot(&empty_content(), metadata(19), &key).unwrap();
+    let expected = RetainedSnapshotIdentity {
+        metadata: metadata(19),
+        signing_key: key.id(),
+        envelope_hash: ContentHash::of(&bytes),
+    };
+    let floor = ReplayState::from_trusted_high_water(typed(1), SnapshotSequence::new(19).unwrap());
+    assert_eq!(
+        verify_snapshot(&bytes, &trust, &floor, &empty_resources())
+            .unwrap_err()
+            .code(),
+        SnapshotErrorCode::Replay
+    );
+    assert_eq!(
+        restore_snapshot(&bytes, &trust, expected, &empty_resources())
+            .unwrap()
+            .metadata(),
+        metadata(19)
+    );
+    for wrong in [
+        RetainedSnapshotIdentity {
+            metadata: metadata(18),
+            ..expected
+        },
+        RetainedSnapshotIdentity {
+            metadata: SnapshotMetadata {
+                snapshot: typed(9),
+                ..metadata(19)
+            },
+            ..expected
+        },
+        RetainedSnapshotIdentity {
+            metadata: SnapshotMetadata {
+                source: typed(9),
+                ..metadata(19)
+            },
+            ..expected
+        },
+        RetainedSnapshotIdentity {
+            metadata: SnapshotMetadata {
+                node: typed(9),
+                ..metadata(19)
+            },
+            ..expected
+        },
+        RetainedSnapshotIdentity {
+            signing_key: SigningKeyId::from_bytes([2; 16]).unwrap(),
+            ..expected
+        },
+        RetainedSnapshotIdentity {
+            envelope_hash: ContentHash::of(b"wrong"),
+            ..expected
+        },
+    ] {
+        assert!(restore_snapshot(&bytes, &trust, wrong, &empty_resources()).is_err());
+    }
+    let mut tampered = bytes.clone();
+    tampered[140] ^= 1;
+    let replaced_hash = RetainedSnapshotIdentity {
+        envelope_hash: ContentHash::of(&tampered),
+        ..expected
+    };
+    assert!(restore_snapshot(&tampered, &trust, replaced_hash, &empty_resources()).is_err());
+    assert!(verify_snapshot(&bytes, &trust, &floor, &empty_resources()).is_err());
+}
 fn verify(bytes: &[u8]) -> Result<VerifiedSnapshot, SnapshotError> {
     let (key, public) = signer(false);
     verify_snapshot(

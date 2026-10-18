@@ -5,7 +5,10 @@ mod envelope;
 mod resources;
 
 pub use content::{CredentialLink, SnapshotContent};
-pub use envelope::{SnapshotMetadata, VerifiedSnapshot, encode_snapshot, verify_snapshot};
+pub use envelope::{
+    RestoredSnapshot, RetainedSnapshotIdentity, SnapshotMetadata, VerifiedSnapshot,
+    encode_snapshot, restore_snapshot, verify_snapshot,
+};
 pub use resources::{ContentHash, ResourcePin, SnapshotResource, TrustedResources};
 
 use droutex_common::NodeScopeId;

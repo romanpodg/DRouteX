@@ -1,5 +1,17 @@
 # DRouteX project instructions
 
+Current continuation: P1-05/PR9 merged normally at521bfa76fbc27e14cd4981638af775ba92c6299f;
+all11 exact-main jobs39148795165 passed and both Codecov reports processed. The
+owner then explicitly accepted the complete P1-06 bounded filesystem profile D36:
+see docs/planning/P1_06_ACTIVATION_CONTRACT.md. P1-06 implementation is authorized;
+tests and independent reviews remain required before normal merge. P2 stays planned
+until P1-06 finishes and merges. Historical P1-05 holds below have been satisfied,
+not bypassed; the whole-volume malicious rollback exclusion is explicit.
+P1-06 implementation head3c12bba passed independent read-only/never Codex re-review
+and all11 Windows/Linux jobs39153071723. Concrete defects were fixed; CodeScene
+maintenance dispositions remain disclosed. PR11 final-head review/checks and normal
+merge are still required; see docs/planning/P1_06_ACTIVATION_REVIEW.md.
+
 ## Authority and current scope
 
 Owner-authorized DRouteX rename (2026-10-18) is a separate maintenance change;

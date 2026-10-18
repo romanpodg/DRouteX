@@ -6,8 +6,10 @@ Tunnels and managed WG/AWG/Xray engines follow after that release; see the
 [accepted scope amendment](docs/architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 The owner accepted **P0-01 / CR-0002** on 2026-10-15. Foundation work through P0-05,
 domain types and bounded configuration imports (P1-01/P1-02) are complete and merged.
-P0-03 fixtures passed in WSL and native Debian 13. P1-03 SQLite storage is being
-validated in PR #6; no DRouteX DNS/gateway service exists yet.
+P0-03 fixtures passed in WSL and native Debian 13. P1-03/04 storage/revisions,
+P1-07 secrets and P1-05 authenticated snapshots are merged. The P1-06 local
+activation/recovery candidate passed implementation review and Windows/Linux CI;
+PR #11 finalization remains gated. No DRouteX DNS/gateway listener exists yet.
 
 - [Development roadmap](docs/planning/DEVELOPMENT_ROADMAP.md)
 - [Current execution boundary and repository handoff](docs/planning/EXECUTION_STATUS.md)
@@ -23,12 +25,14 @@ validated in PR #6; no DRouteX DNS/gateway service exists yet.
 - [Quality strategy](docs/quality/QUALITY_STRATEGY.md)
 - [SQLite storage contract](crates/droutex-storage/README.md)
 - [P1-03 validation evidence](docs/planning/P1_03_STORAGE_REVIEW.md)
+- [P1-06 activation contract](docs/planning/P1_06_ACTIVATION_CONTRACT.md)
+- [P1-06 validation evidence](docs/planning/P1_06_ACTIVATION_REVIEW.md)
 - [English source specification](DRouteX_Project_Specification_EN.md)
 
 Windows PowerShell development environment: `. ./tools/activate.ps1`.
 This uses local Rust tooling and existing Visual Studio without persistent PATH edits.
 Read AGENTS.md before work. The user authorized starting MVP roadmap work on 2026-10-15;
-P0-01 is accepted; the current execution boundary is P1-03 with its recorded gates.
+P0-01 is accepted; the current execution boundary is P1-06 with its recorded gates.
 See [Rust workspace posture](docs/agents/rust.md) for build commands and scope.
 
 Original DRouteX code is licensed under [Apache-2.0](LICENSE), selected by the owner
