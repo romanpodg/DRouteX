@@ -1,4 +1,4 @@
-# Routira DNS product model
+# DRouteX DNS product model
 
 Status: **Accepted** by the owner at P0-01 on 2026-10-15; design revision CR-0002. Prepared at the user's
 request using the [Control D analysis](../research/CONTROLD_ANALYSIS.md).

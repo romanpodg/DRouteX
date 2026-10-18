@@ -4,7 +4,7 @@ Inspection/setup date: **2026-10-15**, user timezone Asia/Omsk.
 Historical initial-setup snapshot below. P0-02 subsequently added the Rust workspace;
 P0-03 now has owner-approved WSL and native Debian 13 labs with passing fixture
 and cleanup evidence (native run: 2026-10-16). No
-Routira production service/frontend exists. Current state is recorded in
+DRouteX production service/frontend exists. Current state is recorded in
 [execution status](../planning/EXECUTION_STATUS.md) and
 [network harness review](../planning/P0_03_NETWORK_HARNESS.md).
 Current scope revision: user accepted DNS/proxy MVP first (CR-0001/ADR-0016); tunnels,
@@ -21,7 +21,7 @@ results below are unchanged by this planning-only revision.
 | Existing source | Only EN/RU specification documents, both preserved byte-for-byte |
 | Codex | Desktop environment; bundled CLI 0.160.0 with plugin marketplace/add, MCP and app-server registry APIs |
 | Codex skill discovery | Actual app-server skills/list forceReload, no model/thread turn; 21 required entrypoints found, zero registry errors |
-| GitHub | User romanpodg authenticated via keyring outside sandbox; no Routira remote selected/created |
+| GitHub | User romanpodg authenticated via keyring outside sandbox; no DRouteX remote selected/created |
 | Node/npm/pnpm | Node 24.16.0, npm 11.13.0, pnpm 11.9.0; existing installations reused |
 | Python/uv | Managed Python 3.12.13 at python3.12.exe; uv 0.11.20; plain python.exe is nonworking WindowsApps alias |
 | WSL | Existing Ubuntu and docker-desktop; Ubuntu kernel 6.18.33.2-microsoft-standard-WSL2 x86_64 verified |
@@ -45,7 +45,7 @@ CLI listing, desktop tool exposure and successful external authentication are di
 Existing global skills (unmodified): architecture-contracts, codex-budget-mode,
 provider-development, security-boundaries, stage-workflow, validation-engineering,
 system skills and hatch-pet. Musicbot-specific architecture/provider guidance is not adopted
-as Routira architecture. Existing uv free-claude-code tooling was neither used nor modified.
+as DRouteX architecture. Existing uv free-claude-code tooling was neither used nor modified.
 
 ## Installed/reused Rust and analysis tools
 
@@ -87,7 +87,7 @@ or promise of arbitrary dependency compatibility is used.
 - Installed Rust skill resources were compared byte-for-byte with pinned upstream: 16 skills,
   52 files. App-server discovery returned every expected skill and four Ponytail capabilities.
 - Edition 2024 standalone temporary Rust program compiled, linked with MSVC/SDK and ran its
-  assertion successfully. This proves developer compilation, not Routira behavior.
+  assertion successfully. This proves developer compilation, not DRouteX behavior.
 - PowerShell activation run twice without duplicate tool PATH entries. It only changes the
   current process environment; the user PATH, execution policy and installed VS were unchanged.
 - EN SHA-256: 78ca71c61755152aa4e369d9b927a8aa73cc6afc8c11bc94c3ceb9c58dc275d9.

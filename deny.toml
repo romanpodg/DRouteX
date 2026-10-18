@@ -1,4 +1,4 @@
-# Original Routira code: Apache-2.0. Dependency licenses approved 2026-10-16; Zlib 2026-10-17.
+# Original DRouteX code: Apache-2.0. Dependency licenses approved 2026-10-16; Zlib 2026-10-17.
 # Preserve third-party license texts/notices; other licenses need an owner decision.
 [licenses]
 allow = ["Apache-2.0", "MIT", "ISC", "BSD-3-Clause", "Unicode-3.0", "Zlib"]

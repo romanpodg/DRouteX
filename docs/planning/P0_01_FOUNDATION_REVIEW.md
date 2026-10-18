@@ -11,7 +11,7 @@ Updated after the user's Control D research request: accepted
 The owner explicitly accepted this package and CR-0002 before authorizing P0-02.
 They replace the earlier manual-IP-only mechanism proposal. The
 [research report](../research/CONTROLD_ANALYSIS.md) separates vendor documentation
-from Routira design inferences; no vendor runtime behavior was independently tested.
+from DRouteX design inferences; no vendor runtime behavior was independently tested.
 
 ## Execution authorization and confirmed requirements
 
@@ -74,8 +74,8 @@ Pin maximum lease duration, clock-uncertainty handling, exact quota values and t
 registration/replacement API in P4-01 before exposing a listener. No indefinite
 grant or extension on controller loss is permitted.
 
-Changing DNS settings cannot by itself attach a Routira credential to an unrelated
-TCP connection. SNI indicates a requested server name; it is not a Routira login
+Changing DNS settings cannot by itself attach a DRouteX credential to an unrelated
+TCP connection. SNI indicates a requested server name; it is not a DRouteX login
 ([RFC 6066, section 3](https://www.rfc-editor.org/rfc/rfc6066.html#section-3)).
 Authenticating a DoH request does not authenticate a subsequent ordinary TLS flow
 to a shared gateway. This is an architectural inference from the separate protocols,
@@ -138,7 +138,7 @@ an explicit new authorized change rather than an incidental rollback side effect
 
 For W3, CONNECT establishes a tunnel after proxy authorization; it is not itself
 transport encryption ([RFC 9110, section 9.3.6](https://www.rfc-editor.org/rfc/rfc9110.html#section-9.3.6)).
-Requiring TLS to the proxy and checked numeric targets is the proposed Routira design.
+Requiring TLS to the proxy and checked numeric targets is the proposed DRouteX design.
 
 ## Five failure-scenario walkthroughs
 
@@ -161,7 +161,7 @@ were rechecked after activating tools/activate.ps1. No workspace exists yet.
 Proposed first native acceptance target: Debian 13 x86_64, subject to the operator's
 answer. Debian lists amd64 among supported architectures in its
 [release notes](https://www.debian.org/releases/trixie/release-notes/whats-new.en.html#supported-architectures).
-This is target selection evidence, not Routira compatibility evidence. Record the
+This is target selection evidence, not DRouteX compatibility evidence. Record the
 actual image/package/kernel versions in P0-03; WSL cannot replace native systemd proof.
 
 The owner explicitly accepted P0-01/CR-0002 in this chat on 2026-10-15, including

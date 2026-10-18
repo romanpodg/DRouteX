@@ -37,7 +37,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 |---|---|
 | Goal and implementation scope | Create only common/config/policy crates needed next; record edition 2024, MSRV, lint and unsafe posture |
 | Prerequisites | P0-01 |
-| Expected files/modules | Cargo.toml; Cargo.lock; crates/routira-{common,config,policy}; docs/agents/rust.md; deny.toml; LICENSE; .github/workflows/planning.yml |
+| Expected files/modules | Cargo.toml; Cargo.lock; crates/droutex-{common,config,policy}; docs/agents/rust.md; deny.toml; LICENSE; .github/workflows/planning.yml |
 | Acceptance criteria | Windows and Linux check succeed with pinned compatible dependencies; no placeholder engine crates |
 | Tests | Windows/Linux fmt/check/Clippy/default/no-default tests passed in Actions run 38760651619 on 7ac5f14; local cargo-deny all checks and Rust failure-mutation tests passed; see EXECUTION_STATUS.md |
 | Security considerations | Supply-chain inventory and no secrets in examples |
@@ -99,7 +99,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 |---|---|
 | Goal and implementation scope | Typed Profile/DnsEndpoint/ResolverCredential/filter-service revision/private record identities; separate legacy and gateway group grants from Device metadata; proxy/rule/snapshot states |
 | Prerequisites | P0-02 |
-| Expected files/modules | crates/routira-common/src/domain |
+| Expected files/modules | crates/droutex-common/src/domain |
 | Acceptance criteria | Public EndpointId differs from secret capability; DNS endpoint scope never implies per-device transparent TCP identity |
 | Tests | Identifier mixup, copied/revoked capability, same-NAT distinct DNS endpoints and ambiguous legacy mapping cases |
 | Security considerations | Secrets distinct from serializable public fields |
@@ -114,7 +114,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 |---|---|
 | Goal and implementation scope | Validate endpoint transport/access modes, single active Profile, typed DNS versus traffic actions, match layers, private records, dataset bounds and separate network grant scopes; reject future engine modes |
 | Prerequisites | P1-01 |
-| Expected files/modules | crates/routira-config/src/schema; api/schemas |
+| Expected files/modules | crates/droutex-config/src/schema; api/schemas |
 | Acceptance criteria | Malformed/oversized input rejected with field errors; unknown schema/capability fails predictably |
 | Tests | Negative JSON/YAML/TOML fixtures and port scope conflicts |
 | Security considerations | Bound parser complexity; no secret echo in errors |
@@ -129,7 +129,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 |---|---|
 | Goal and implementation scope | SQLx/WAL immutable configuration and catalog revision repositories, transactional endpoint/scoped-grant indexes, public credential metadata and SecretRefId links only (verifier material P1-07); bounded writer, no database calls in packet hot path |
 | Prerequisites | P1-02 |
-| Expected files/modules | crates/routira-storage; migrations |
+| Expected files/modules | crates/droutex-storage; migrations |
 | Acceptance criteria | Migration and transaction rollback preserve invariants; database access absent from packet hot path |
 | Tests | Fresh/install/upgrade/busy/disk-full transaction tests |
 | Security considerations | Parameterized SQL and restricted database permissions |
@@ -144,7 +144,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 |---|---|
 | Goal and implementation scope | Immutable source revisions, authors and optimistic edit conflict handling |
 | Prerequisites | P1-03 |
-| Expected files/modules | crates/routira-config/src/revisions; crates/routira-storage |
+| Expected files/modules | crates/droutex-config/src/revisions; crates/droutex-storage |
 | Acceptance criteria | Concurrent edits cannot silently overwrite; audit links actor and revision |
 | Tests | PR #7 merged644348c after independent implementation/final reviews without confirmed defects; all nine final-head39055351917 and main39055754490 jobs passed, processed exact-merge Codecov. Backend patch143/155=92.25%, CodeScene failed maintenance dispositions recorded. See P1_04_REVISION_REVIEW.md |
 | Security considerations | Authorization enforced by API later; no public unaudited writer |
@@ -159,7 +159,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Canonical authenticated snapshots pin endpoint assignments, resolver capability verification/revocation state, dataset hashes and DNS/gateway grant authority with increasing sequence |
 | Prerequisites | P1-04, P1-07 |
-| Expected files/modules | crates/routira-config/src/snapshot; api/schemas/snapshot |
+| Expected files/modules | crates/droutex-config/src/snapshot; api/schemas/snapshot |
 | Acceptance criteria | Tampering, replay and incompatible schema rejected; deterministic bytes/hash for equivalent input |
 | Tests | Golden fixtures, reorder/property tests and replay cases |
 | Security considerations | Use standard signatures/MACs; sign metadata and node scope, never raw embedded secrets |
@@ -174,7 +174,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specificati
 |---|---|
 | Goal and implementation scope | Durable DNS/gateway stage/validate/activate/verify journal and rollback; preserve one snapshot generation per decision without configuring OS routes or engines |
 | Prerequisites | P1-05 |
-| Expected files/modules | crates/routira-core/src/deployment |
+| Expected files/modules | crates/droutex-core/src/deployment |
 | Acceptance criteria | Crash at each DNS/proxy transition recovers complete old/new generation; no partial accepted DNS/gateway policy; CP loss preserves last-known-good |
 | Tests | Fault injection, disk-full, cancellation and restart tests |
 | Security considerations | Rollback gets new authorized sequence referring to old content; reject arbitrary old replay |
@@ -189,7 +189,7 @@ Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 |---|---|
 | Goal and implementation scope | Encrypted credential storage, external master-key provision, redacted wrappers and export lifecycle |
 | Prerequisites | P1-01 |
-| Expected files/modules | crates/routira-security; crates/routira-storage/src/secrets.rs; migrations/0004_encrypted_secrets.sql; docs/security/KEY_LIFECYCLE.md |
+| Expected files/modules | crates/droutex-security; crates/droutex-storage/src/secrets.rs; migrations/0004_encrypted_secrets.sql; docs/security/KEY_LIFECYCLE.md |
 | Acceptance criteria | Master key absent from DB/backups by default; rotations and missing key failures explicit |
 | Tests | Redaction in Debug/errors/API fixtures; rotate and restore tests |
 | Security considerations | No custom crypto, argv secrets, shared temp files or encryption key beside ciphertext |
@@ -206,7 +206,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | IDNA/lowercase/trailing-dot normalization and explicit Exact/DomainAndSubdomains/SubdomainsOnly modes; no implicit adoption of Control D wildcard grammar |
 | Prerequisites | P1-02 |
-| Expected files/modules | crates/routira-policy/src/domain |
+| Expected files/modules | crates/droutex-policy/src/domain |
 | Acceptance criteria | Canonical equivalent names match consistently; invalid labels and wildcard bombs rejected |
 | Tests | Unicode/IDNA cases, apex/subdomain matrix and property tests |
 | Security considerations | Bound length/label/rule expansion at input boundary |
@@ -221,7 +221,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Compile custom > service > filter > default ranks; priority within rank, documented specificity, stable ID and trusted endpoint/network scope |
 | Prerequisites | P2-01, P1-01 |
-| Expected files/modules | crates/routira-policy/src/evaluate |
+| Expected files/modules | crates/droutex-policy/src/evaluate |
 | Acceptance criteria | Explicit BYPASS overrides lower policy layers but not security checks; default BYPASS does not skip filters; reordered input preserves decisions |
 | Tests | Permutation, exception/default contrast, conflicting rules and two secure endpoints behind one NAT |
 | Security considerations | Untrusted metadata cannot upgrade identity confidence |
@@ -236,7 +236,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Reject unresolved layer/match contradictions, missing or unlicensed dataset revisions, invalid private CNAME chains and ambiguous legacy/gateway group assignments |
 | Prerequisites | P2-02 |
-| Expected files/modules | crates/routira-policy/src/validate |
+| Expected files/modules | crates/droutex-policy/src/validate |
 | Acceptance criteria | Irreconcilable conflict prevents publication with actionable rule IDs |
 | Tests | Exact/wildcard conflicts, removed node and cycles |
 | Security considerations | No arbitrary map iteration or warning-only unsafe acceptance |
@@ -251,7 +251,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Keep DNS BYPASS/BLOCK/local overrides and compatible SmartDNS REDIRECT distinct from VPS_DIRECT/protected proxy outbounds; safety checks and strict failures remain mandatory |
 | Prerequisites | P2-03 |
-| Expected files/modules | crates/routira-policy/src/decision |
+| Expected files/modules | crates/droutex-policy/src/decision |
 | Acceptance criteria | DIRECT decision point explicit; unsupported tunnel/node/UDP capabilities reject; strict proxy failures block |
 | Tests | Unavailable proxy, explicit direct opt-in, DNS-only limits and deferred tunnel/node action negatives |
 | Security considerations | Fail-open requires explicit profile permission and audit |
@@ -266,7 +266,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Compile layered endpoint Profiles and pinned catalog hashes into bounded deterministic DNS/gateway generation tables |
 | Prerequisites | P2-04, P1-05, P2-07 |
-| Expected files/modules | crates/routira-policy/src/compile |
+| Expected files/modules | crates/droutex-policy/src/compile |
 | Acceptance criteria | Same revision builds same snapshot; invalid capability never reaches active plan |
 | Tests | Differential interpreter/compiler and hash tests |
 | Security considerations | Compile validates ingress-target binding and authorized resolver scope |
@@ -281,7 +281,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **S**. Specificati
 |---|---|
 | Goal and implementation scope | Explain endpoint/profile, layer/rule/dataset revision, distinct DNS/gateway identity scope, decision point and generation without invented connectivity or attribution |
 | Prerequisites | P2-05 |
-| Expected files/modules | crates/routira-policy/src/explain; api/schemas/explain |
+| Expected files/modules | crates/droutex-policy/src/explain; api/schemas/explain |
 | Acceptance criteria | Simulation reports network_test_performed=false and distinguishes predicted/effective routes |
 | Tests | Golden explain outputs for precedence, ECH/QUIC/NAT/IPv6 |
 | Security considerations | Redact secrets and restrict diagnostic profile visibility |
@@ -296,7 +296,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Bounded local domain/hosts list and service-bundle imports with source/license/hash metadata and last-known-good preservation |
 | Prerequisites | P1-02, P0-05 |
-| Expected files/modules | crates/routira-policy/src/catalog; configs/catalogs; tests/fixtures/catalogs |
+| Expected files/modules | crates/droutex-policy/src/catalog; configs/catalogs; tests/fixtures/catalogs |
 | Acceptance criteria | Valid local revisions normalize deterministically and can be pinned; malformed/oversized/unsupported or unapproved-license input cannot replace accepted data; no silent empty protection |
 | Tests | Real local format fixtures, Unicode/hosts entries, malformed/oversized lists, revision/hash pinning, failed update rollback and cross-profile isolation |
 | Security considerations | No arbitrary URL fetch or proprietary Control D feed import; retain provenance/license and bounded parser limits |
@@ -313,7 +313,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Hickory policy handler with restricted bindings, ACL, size/rate/time limits |
 | Prerequisites | P0-03, P2-05 |
-| Expected files/modules | crates/routira-dns/src/listeners |
+| Expected files/modules | crates/droutex-dns/src/listeners |
 | Acceptance criteria | Unauthorized recursion denied; TCP framing and truncation behavior correct |
 | Tests | Real UDP/TCP exchange, malformed/truncated frames and flood limits |
 | Security considerations | No open resolver; limited concurrency and amplification surface |
@@ -328,7 +328,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Trusted forwarding, deadlines and policy-selected upstream fallback; no full recursion |
 | Prerequisites | P3-01 |
-| Expected files/modules | crates/routira-dns/src/upstream |
+| Expected files/modules | crates/droutex-dns/src/upstream |
 | Acceptance criteria | A/AAAA/CNAME/TXT/auxiliary queries resolve; timeout gives permitted fallback or SERVFAIL |
 | Tests | Controlled upstream success, timeout, outage and recursion-loop tests |
 | Security considerations | DNS resolver changes never imply traffic exit changes |
@@ -343,7 +343,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Cache name/type/class/upstream/scope/mode/validation/generation semantics and bounded eviction |
 | Prerequisites | P3-02 |
-| Expected files/modules | crates/routira-dns/src/cache |
+| Expected files/modules | crates/droutex-dns/src/cache |
 | Acceptance criteria | Profile rewrites never leak; TTL and negative answers expire correctly; memory bound enforced |
 | Tests | Virtual clock, concurrent scopes and policy generation changes |
 | Security considerations | Partition validated origin data and local overrides |
@@ -358,7 +358,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | DIRECT/BLOCK and profile-scoped private A/AAAA/CNAME answers with dual-stack/conflict/loop checks; local private answers never authorize gateway SSRF |
 | Prerequisites | P3-03 |
-| Expected files/modules | crates/routira-dns/src/policy |
+| Expected files/modules | crates/droutex-dns/src/policy |
 | Acceptance criteria | DIRECT returns origin IP; BLOCK predictable; local override does not create proxy route |
 | Tests | Private record isolation across Profiles, A/AAAA/CNAME loops, DNSSEC override and no implicit proxy route |
 | Security considerations | Signed data modification cannot preserve apparent authenticity |
@@ -373,7 +373,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Preserve normal verification versus overrides; handle hints/ECH/ALPN/alternative endpoint compatibility |
 | Prerequisites | P3-04 |
-| Expected files/modules | crates/routira-dns/src/compatibility |
+| Expected files/modules | crates/droutex-dns/src/compatibility |
 | Acceptance criteria | Overrides clear invalid validity claims; incompatible redirects rejected or explicitly unsupported |
 | Tests | Signed RRsets, validating clients, HTTPS/SVCB hints and IPv6 bypass matrix |
 | Security considerations | No blanket ECH stripping, downgrade claims or silent QUIC control |
@@ -388,7 +388,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Return gateway addresses only for approved compatible route contexts; reconcile TTL/current generation |
 | Prerequisites | P3-05, P4-01 |
-| Expected files/modules | crates/routira-dns/src/routes |
+| Expected files/modules | crates/droutex-dns/src/routes |
 | Acceptance criteria | Unknown services receive declared failure/ordinary-resolution policy; DNS and gateway agree on binding generation |
 | Tests | DNS then TLS test, old TTL after publish, expired/removed mapping |
 | Security considerations | Never authorize a TCP request solely because prior DNS/IP matches |
@@ -403,7 +403,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specificati
 |---|---|
 | Goal and implementation scope | Mandatory personal DoH and DoT with valid TLS, bounded capability lookup/revocation and privacy; disabled-by-default scoped peer observations for grant publication; real DNS diagnostics |
 | Prerequisites | P3-06, P6-01 |
-| Expected files/modules | crates/routira-dns/src/diagnostics; docs/operations/DNS.md |
+| Expected files/modules | crates/droutex-dns/src/diagnostics; docs/operations/DNS.md |
 | Acceptance criteria | Both secure transports select correct Profile across IP changes; unknown/revoked capabilities denied; observations cannot directly mutate authority or bootstrap restricted-IP mode |
 | Tests | Real DoH/DoT TLS/hostname/port and roaming tests, same-NAT distinct Profiles, capability leakage/revocation, untrusted headers, bounded observation queue and CP outage |
 | Security considerations | Redact resolver path/SNI secrets; do not equate TLS endpoint authentication or client labels with device identity; no implicit learned grants |
@@ -420,7 +420,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Enforce independently scoped legacy DNS and gateway exact-address group grants, service/domain/port/outbound binding, manual bootstrap and opt-in secure-observation publication |
 | Prerequisites | P2-05, P0-01 |
-| Expected files/modules | crates/routira-gateway/src/binding; docs/security/GATEWAY_BINDING.md |
+| Expected files/modules | crates/droutex-gateway/src/binding; docs/security/GATEWAY_BINDING.md |
 | Acceptance criteria | No last-DNS-query Profile switch or union of conflicting grants; unknown/mismatched source fails closed; expiry and applied revocation persist during CP loss |
 | Tests | Same-NAT conflicting endpoints, forged SNI, learning from invalid credentials/legacy/untrusted headers, address replacement, source mismatch and lease expiry |
 | Security considerations | SNI identifies a candidate; separate ingress authorization grants access |
@@ -435,7 +435,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Use policy-independent trusted resolver; canonical IP classification and checked connect address |
 | Prerequisites | P4-01 |
-| Expected files/modules | crates/routira-gateway/src/origin |
+| Expected files/modules | crates/droutex-gateway/src/origin |
 | Acceptance criteria | Every new resolution denied for private/loopback/link-local/multicast/metadata/self; no TOCTOU re-resolve |
 | Tests | Rebinding, CNAME chains, IPv4-mapped IPv6 and self-loop cases |
 | Security considerations | Administrative internal override requires narrow explicit authorization |
@@ -450,7 +450,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Use audited TLS parsing for visible SNI across fragmented records without TLS termination |
 | Prerequisites | P4-01 |
-| Expected files/modules | crates/routira-gateway/src/tls_metadata |
+| Expected files/modules | crates/droutex-gateway/src/tls_metadata |
 | Acceptance criteria | Fragmented valid handshake preserves all bytes; oversized/incomplete/ECH-ambiguous input rejected |
 | Tests | Fragmented records, slowloris, malformed length and fuzz seeds |
 | Security considerations | No custom cryptography, MITM certificate or unbounded buffer |
@@ -465,7 +465,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Bidirectional passthrough, half-close, deadlines/backpressure/session quotas and shutdown |
 | Prerequisites | P4-02, P4-03 |
-| Expected files/modules | crates/routira-gateway/src/session |
+| Expected files/modules | crates/droutex-gateway/src/session |
 | Acceptance criteria | Authorized origin certificate remains unchanged; backpressure and shutdown release resources |
 | Tests | Real TLS, long stream, half-close, cancelled dial and exhausted quota |
 | Security considerations | Per-source/session limits; no locks across unsuitable await |
@@ -480,7 +480,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Support direct egress and one selected protected SOCKS5 or HTTP CONNECT outbound using a bounded stream connector; no managed engine or TUN dependency |
 | Prerequisites | P4-04, P1-07, P0-05 |
-| Expected files/modules | crates/routira-gateway/src/outbound |
+| Expected files/modules | crates/droutex-gateway/src/outbound |
 | Acceptance criteria | Real selected TCP proxy transport works with authenticated or equivalently isolated access; unavailable strict proxy never falls back direct |
 | Tests | Actual controlled proxy/origin egress, transport failure, secret redaction and unsupported-mode cases |
 | Security considerations | Use protected proxy transport; pin checked origin IP through outbound to prevent unsafe remote re-resolution; no plaintext credentials on untrusted WAN |
@@ -495,7 +495,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Pin active DNS/proxy generation for new flows, document draining and reject unavailable strict routes; keep node-group failover deferred |
 | Prerequisites | P4-05, P2-04 |
-| Expected files/modules | crates/routira-gateway/src/router |
+| Expected files/modules | crates/droutex-gateway/src/router |
 | Acceptance criteria | Existing sessions follow documented lifecycle; new flows use active revision and chosen fail policy |
 | Tests | Publish under load, failed outbound, IPv6 and explicit fallback tests |
 | Security considerations | No silent home-IP DIRECT claim or session-migration promise |
@@ -510,7 +510,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Aggregate flow/byte/limit counters and approved-target Route Test with observed egress evidence |
 | Prerequisites | P4-06 |
-| Expected files/modules | crates/routira-gateway/src/diagnostics; crates/routira-telemetry |
+| Expected files/modules | crates/droutex-gateway/src/diagnostics; crates/droutex-telemetry |
 | Acceptance criteria | Route Test reports actual target/egress/version and failure source; unavailable metrics remain unavailable |
 | Tests | Different decision points, blocked diagnostics and failure attribution |
 | Security considerations | Diagnostic API itself cannot become SSRF proxy |
@@ -542,7 +542,7 @@ Status: **planned**. Delivery: **POST_MVP_PROTOCOLS** (CR-0001). Complexity: **M
 |---|---|
 | Goal and implementation scope | After DNS/proxy MVP, select exact WG/AWG/Xray versions and define detect/validate/prepare/apply/health/stop capabilities before adding adapters |
 | Prerequisites | P1-02, P0-05, P11-06 |
-| Expected files/modules | crates/routira-protocols |
+| Expected files/modules | crates/droutex-protocols |
 | Acceptance criteria | Capabilities depend on exact engine version/transport; unknown unavailable; lifecycle errors typed |
 | Tests | Contract suite with fake adapters; negative capability tests |
 | Security considerations | Protocol abstractions cannot accept arbitrary executable commands |
@@ -557,7 +557,7 @@ Status: **planned**. Delivery: **POST_MVP_PROTOCOLS** (CR-0001). Complexity: **M
 |---|---|
 | Goal and implementation scope | Preapproved binaries, restrictive config files, resource/restart limits and isolated state |
 | Prerequisites | P5-01, P1-06, P1-07 |
-| Expected files/modules | crates/routira-agent-core/src/engines |
+| Expected files/modules | crates/droutex-agent-core/src/engines |
 | Acceptance criteria | Engine config validation precedes replacement; crash isolation and last-good recovery observable |
 | Tests | Actual child crash/restart, bad config, cancellation and secret leakage checks |
 | Security considerations | No shell interpolation, argv keys, writable binary search paths or public admin ports |
@@ -572,7 +572,7 @@ Status: **planned**. Delivery: **POST_MVP_PROTOCOLS** (CR-0001). Complexity: **M
 |---|---|
 | Goal and implementation scope | Peer/interface/listener and native config export through restricted helper |
 | Prerequisites | P5-02, P10-01 |
-| Expected files/modules | crates/routira-protocol-wireguard |
+| Expected files/modules | crates/droutex-protocol-wireguard |
 | Acceptance criteria | Pinned Linux engine accepts config; add/revoke peer state is reported applied |
 | Tests | Real two-peer Linux handshake/export/revocation tests |
 | Security considerations | Keys private; peer access and allowed IP overlaps checked |
@@ -602,7 +602,7 @@ Status: **planned**. Delivery: **POST_MVP_PROTOCOLS** (CR-0001). Complexity: **L
 |---|---|
 | Goal and implementation scope | Pinned AWG version/parameters and compatible client export; separate endpoint |
 | Prerequisites | P5-04, P0-05 |
-| Expected files/modules | crates/routira-protocol-amneziawg; tests/network/amneziawg |
+| Expected files/modules | crates/droutex-protocol-amneziawg; tests/network/amneziawg |
 | Acceptance criteria | Real pinned client connects/revokes; incompatible versions fail validation |
 | Tests | Kernel/userspace compatibility and client export tests in Linux lab |
 | Security considerations | No claim AWG equals WG or sing-box replaces AWG |
@@ -617,7 +617,7 @@ Status: **planned**. Delivery: **POST_MVP_PROTOCOLS** (CR-0001). Complexity: **L
 |---|---|
 | Goal and implementation scope | Pinned official Xray lifecycle, listener/outbound credentials and client export |
 | Prerequisites | P5-04, P0-05 |
-| Expected files/modules | crates/routira-protocol-xray; tests/network/xray |
+| Expected files/modules | crates/droutex-protocol-xray; tests/network/xray |
 | Acceptance criteria | Actual VLESS/REALITY inbound/outbound path tested; crash leaves DNS/WG healthy |
 | Tests | Real engine/client config, transport handshake, egress and crash tests |
 | Security considerations | Private material redacted; port/TLS combinations validated |
@@ -632,7 +632,7 @@ Status: **planned**. Delivery: **POST_MVP_PROTOCOLS** (CR-0001). Complexity: **M
 |---|---|
 | Goal and implementation scope | Add/rotate/revoke/export with engine-specific semantics, expiring delivery and QR safeguards |
 | Prerequisites | P5-05, P5-06 |
-| Expected files/modules | crates/routira-protocols/src/provisioning; api/schemas/exports |
+| Expected files/modules | crates/droutex-protocols/src/provisioning; api/schemas/exports |
 | Acceptance criteria | Applied revocation rejects new sessions; configuration export lists compatible clients and limitations |
 | Tests | Revoke during active session, stale export and rotation tests |
 | Security considerations | No publicly accessible permanent download or cross-profile export |
@@ -662,7 +662,7 @@ Status: **planned**. Delivery: **POST_MVP_PROTOCOLS** (CR-0001). Complexity: **M
 |---|---|
 | Goal and implementation scope | Extend released DNS/proxy UI with verified WG/AWG/Xray provisioning, ports, credentials, compatible exports and engine status |
 | Prerequisites | P5-08, P7-02, P7-04 |
-| Expected files/modules | apps/routira-web/src/features/{devices,protocols} |
+| Expected files/modules | apps/droutex-web/src/features/{devices,protocols} |
 | Acceptance criteria | Only tested client/engine capabilities exposed; exports/QR and applied revocation are protected; existing DNS/proxy users need no tunnel |
 | Tests | Browser/API provisioning, expired export, incompatible version, peer revocation and independent engine failure cases |
 | Security considerations | No secret redisplay or cross-profile export; server-side permissions remain authoritative |
@@ -694,7 +694,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | One-time owner setup, login/MFA/sessions, owner/admin/operator permissions; add admins later |
 | Prerequisites | P1-03, P1-07 |
-| Expected files/modules | crates/routira-api/src/auth; migrations/auth; api/openapi |
+| Expected files/modules | crates/droutex-api/src/auth; migrations/auth; api/openapi |
 | Acceptance criteria | Bootstrap closes after owner creation; only authorized owner can grant role; last owner protected |
 | Tests | Concurrent bootstrap, session fixation, CSRF/origin, MFA and privilege escalation negatives |
 | Security considerations | Private TLS admin endpoint, strong password hashing and rate limits |
@@ -709,7 +709,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | REST /api/v1, OpenAPI, bounded requests, pagination, typed errors and auth mapping |
 | Prerequisites | P6-01, P2-06 |
-| Expected files/modules | crates/routira-api/src/contracts; api/openapi |
+| Expected files/modules | crates/droutex-api/src/contracts; api/openapi |
 | Acceptance criteria | Schema matches handlers; every mutation audited and protected; no secret default fields |
 | Tests | Contract fixtures, RBAC table, malformed request and pagination tests |
 | Security considerations | Authentication applies to diagnostics, metrics and exports too |
@@ -724,7 +724,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | RBAC CRUD for reusable Profiles, DNS Endpoints, single active assignment, resolver provisioning/rotation/revocation, manual network bootstrap and scoped opt-in IP-learning settings |
 | Prerequisites | P6-02, P1-04 |
-| Expected files/modules | crates/routira-api/src/devices; crates/routira-api/src/profiles |
+| Expected files/modules | crates/droutex-api/src/devices; crates/droutex-api/src/profiles |
 | Acceptance criteria | Device metadata is not credential identity; DNS capability and gateway group authority shown separately with observed/pending/applied/expired states |
 | Tests | Copied/revoked secret, same-NAT DNS versus gateway policy, ambiguous legacy assignment, restricted-IP bootstrap and grant revocation |
 | Security considerations | No MAC-over-internet or shared-IP individual authorization |
@@ -739,7 +739,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Draft CRUD/import/diff/simulate/validate for custom/service/filter/default layers and private records; pin approved list/group revisions and reject unsupported inputs |
 | Prerequisites | P6-03, P2-06 |
-| Expected files/modules | crates/routira-api/src/rules; crates/routira-api/src/service_groups |
+| Expected files/modules | crates/droutex-api/src/rules; crates/droutex-api/src/service_groups |
 | Acceptance criteria | Save Draft never implies activation; conflicts and capabilities explained |
 | Tests | Layer precedence/default BYPASS, failed/oversized/unlicensed catalog import, private-record scope, overlapping services and draft races |
 | Security considerations | Bound subscription/import input; no automatic broad external changes |
@@ -754,7 +754,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Diff/validate/stage/publish/status/rollback with audit and per-component acknowledgments |
 | Prerequisites | P6-04, P1-06 |
-| Expected files/modules | crates/routira-api/src/deployments |
+| Expected files/modules | crates/droutex-api/src/deployments |
 | Acceptance criteria | UI/API show actually applied version and degraded/failed transitions; authorized rollback observable |
 | Tests | Unauthorized publish, concurrent deployment and post-health rollback tests |
 | Security considerations | No partial ruleset accepted; secrets excluded from diff |
@@ -769,7 +769,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Policy Explain, DNS Test, reachability and approved-target Route Test contracts |
 | Prerequisites | P6-02, P3-07, P4-07 |
-| Expected files/modules | crates/routira-api/src/diagnostics; crates/routira-telemetry |
+| Expected files/modules | crates/droutex-api/src/diagnostics; crates/droutex-telemetry |
 | Acceptance criteria | Four tools distinguish policy prediction/process/transport/route/service evidence |
 | Tests | Diagnostic timeout, wrong profile and unavailable metrics tests |
 | Security considerations | Limit cardinality and SSRF target scope; redact raw browsing data |
@@ -784,7 +784,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Consistent SQLite backup, encrypted archive, separate key recovery and restore validation |
 | Prerequisites | P6-05, P1-07 |
-| Expected files/modules | crates/routira-api/src/backups; docs/operations/RECOVERY.md |
+| Expected files/modules | crates/droutex-api/src/backups; docs/operations/RECOVERY.md |
 | Acceptance criteria | Restore on fresh host produces validated configuration and working service |
 | Tests | WAL-consistent backup, wrong key, corrupt archive and upgrade restore |
 | Security considerations | Authorized offline recovery; no archive traversal or exported plaintext keys |
@@ -799,7 +799,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Admin add/remove/role change/session revocation, retention controls and separated audit/activity stores |
 | Prerequisites | P6-01, P6-05 |
-| Expected files/modules | crates/routira-api/src/security; crates/routira-storage/src/audit |
+| Expected files/modules | crates/droutex-api/src/security; crates/droutex-storage/src/audit |
 | Acceptance criteria | Role changes take effect predictably; audit retained separately; per-domain logging can be disabled |
 | Tests | Last-owner guard, concurrent demotion and retention purge tests |
 | Security considerations | Never log credentials; lower-privilege user cannot read unrelated browsing history |
@@ -816,7 +816,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | React/TS/Tailwind/shadcn design primitives, light/dark/responsive navigation and login/MFA |
 | Prerequisites | P6-02 |
-| Expected files/modules | apps/routira-web/src/{app,auth,ui} |
+| Expected files/modules | apps/droutex-web/src/{app,auth,ui} |
 | Acceptance criteria | Keyboard/mobile/reduced-motion usable; private session lifecycle works |
 | Tests | Vitest component tests and browser auth/accessibility checks |
 | Security considerations | No secrets in localStorage or bundled environment variables |
@@ -831,7 +831,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Capability-aware personal DoH/DoT setup or legacy network resolver setup, profile assignment, secret rotation and separate proxy source/grant status; no VPN client required |
 | Prerequisites | P7-01, P6-03 |
-| Expected files/modules | apps/routira-web/src/features/devices |
+| Expected files/modules | apps/droutex-web/src/features/devices |
 | Acceptance criteria | Supported clients roam using personal DNS capability; legacy clients share network scope; no per-device transparent gateway claim |
 | Tests | Actual secure and legacy DNS setup, two endpoints on same NAT, unsupported client, secret revocation and mismatched proxy source |
 | Security considerations | Mask secrets and gate copy/export permissions |
@@ -846,7 +846,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Profile editor tabs for Filters, Services, Custom Rules, Private Records and DNS/privacy settings; explicit match modes and layered Explain; diff/draft/validate/publish |
 | Prerequisites | P7-01, P6-05 |
-| Expected files/modules | apps/routira-web/src/features/rules |
+| Expected files/modules | apps/droutex-web/src/features/rules |
 | Acceptance criteria | Strict failure default; direct fallback separately explicit; saved/applied status distinct |
 | Tests | Browser negative edit, conflict, stale version and publish failure tests |
 | Security considerations | Warnings about leaks cannot be hidden under Advanced |
@@ -861,7 +861,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | DNS endpoints/listeners/upstreams/cache/TLS and Proxy Outbounds/grants/status screens; actual transport/port capabilities and missing dataset states; no engines |
 | Prerequisites | P7-02, P3-07, P4-08 |
-| Expected files/modules | apps/routira-web/src/features/{profiles,endpoints,filters,services,dns,proxy} |
+| Expected files/modules | apps/droutex-web/src/features/{profiles,endpoints,filters,services,dns,proxy} |
 | Acceptance criteria | Only available metrics shown; port conflicts and compatible transport choices enforced |
 | Tests | Component/API contract tests and disabled feature checks |
 | Security considerations | No open resolver toggle without explicit restricted access configuration |
@@ -876,7 +876,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Actual aggregate endpoint/profile/action/rule/dataset metrics and DNS/proxy source mismatch diagnostics; no guessed per-device TCP correlation |
 | Prerequisites | P7-01, P6-06 |
-| Expected files/modules | apps/routira-web/src/features/{dashboard,diagnostics} |
+| Expected files/modules | apps/droutex-web/src/features/{dashboard,diagnostics} |
 | Acceptance criteria | Configured/applied/healthy/tested/connected distinct; no fabricated counts or DNS-TCP correlation |
 | Tests | Unavailable telemetry, outage, privacy-disabled logs and real e2e tests |
 | Security considerations | Bound history; minimum browsing data visible by permission |
@@ -891,7 +891,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 |---|---|
 | Goal and implementation scope | Version diffs/status/rollback, backup restore, administrator role assignment and settings |
 | Prerequisites | P7-03, P6-07, P6-08 |
-| Expected files/modules | apps/routira-web/src/features/{operations,security} |
+| Expected files/modules | apps/droutex-web/src/features/{operations,security} |
 | Acceptance criteria | Owner can add later admins; destructive actions confirmed; true apply/restore outcomes displayed |
 | Tests | RBAC UI/API parity, last-owner and failed restore browser tests |
 | Security considerations | Front-end hiding never substitutes server authorization |
@@ -923,7 +923,7 @@ Status: **planned**. Delivery: **POST_MVP_MULTI_NODE** (CR-0001). Complexity: **
 |---|---|
 | Goal and implementation scope | Single-use expiring token, controller verification, pending operator approval and mTLS identity |
 | Prerequisites | P6-01, P1-05, P5-10 |
-| Expected files/modules | crates/routira-agent-core/src/enrollment; crates/routira-api/src/nodes |
+| Expected files/modules | crates/droutex-agent-core/src/enrollment; crates/droutex-api/src/nodes |
 | Acceptance criteria | Replayed/expired/wrong-controller enrollment denied; approved node identity bound |
 | Tests | Replay, stolen token after use, MITM and pending-node tests |
 | Security considerations | No permanent admin SSH key; identity compromise recovery designed |
@@ -938,7 +938,7 @@ Status: **planned**. Delivery: **POST_MVP_MULTI_NODE** (CR-0001). Complexity: **
 |---|---|
 | Goal and implementation scope | OS/kernel/ports/interfaces/engine compatibility and separately graded health |
 | Prerequisites | P8-01, P5-08 |
-| Expected files/modules | crates/routira-agent-core/src/health |
+| Expected files/modules | crates/droutex-agent-core/src/health |
 | Acceptance criteria | Unknown metrics unavailable; process/transport/route/service health distinguished |
 | Tests | Engine missing, kernel unsupported and handshake-only success cases |
 | Security considerations | Telemetry contains no private credentials |
@@ -953,7 +953,7 @@ Status: **planned**. Delivery: **POST_MVP_MULTI_NODE** (CR-0001). Complexity: **
 |---|---|
 | Goal and implementation scope | Version negotiation, authenticated delivery, local validation/stage and per-node receipt |
 | Prerequisites | P8-02, P6-05 |
-| Expected files/modules | crates/routira-agent-core/src/sync |
+| Expected files/modules | crates/droutex-agent-core/src/sync |
 | Acceptance criteria | Wrong node, old sequence, corrupted hash and unsupported versions fail closed |
 | Tests | Duplicate/out-of-order/drop packets and incompatible schema tests |
 | Security considerations | Transport auth plus durable anti-replay; secrets delivered only to authorized node |
@@ -968,7 +968,7 @@ Status: **planned**. Delivery: **POST_MVP_MULTI_NODE** (CR-0001). Complexity: **
 |---|---|
 | Goal and implementation scope | Restart journal and disconnected-controller behavior; apply failures restore previous config |
 | Prerequisites | P8-03, P1-06 |
-| Expected files/modules | crates/routira-agent-core/src/recovery |
+| Expected files/modules | crates/droutex-agent-core/src/recovery |
 | Acceptance criteria | Offline reboot serves last-good; interrupted apply never exposes partial network state |
 | Tests | Controller outage, disk loss/full and power loss at transitions |
 | Security considerations | Local state permissions and key-unavailable fail behavior explicit |
@@ -983,7 +983,7 @@ Status: **planned**. Delivery: **POST_MVP_MULTI_NODE** (CR-0001). Complexity: **
 |---|---|
 | Goal and implementation scope | Certificate renewal, controller/node trust rotation and emergency revocation |
 | Prerequisites | P8-04, P1-07 |
-| Expected files/modules | crates/routira-security/src/node_trust; docs/operations/NODE_RECOVERY.md |
+| Expected files/modules | crates/droutex-security/src/node_trust; docs/operations/NODE_RECOVERY.md |
 | Acceptance criteria | Revoked node cannot receive new configs; offline data-plane behavior explicit and bounded by policy |
 | Tests | Expired certificate, clock skew, overlap and compromise simulations |
 | Security considerations | Revocation cannot magically kill disconnected node; report retained capabilities/secrets |
@@ -1015,7 +1015,7 @@ Status: **planned**. Delivery: **POST_MVP_MULTI_NODE** (CR-0001). Complexity: **
 |---|---|
 | Goal and implementation scope | Registry, regions/groups and external proxy type without fabricated agent telemetry |
 | Prerequisites | P8-06, P6-02 |
-| Expected files/modules | crates/routira-api/src/nodes; apps/routira-web/src/features/nodes |
+| Expected files/modules | crates/droutex-api/src/nodes; apps/droutex-web/src/features/nodes |
 | Acceptance criteria | Managed node and external proxy lifecycle separate; references authorized |
 | Tests | External proxy no-agent fixture, removed target and RBAC tests |
 | Security considerations | Proxy credentials encrypted and restricted to assigned routes |
@@ -1030,7 +1030,7 @@ Status: **planned**. Delivery: **POST_MVP_MULTI_NODE** (CR-0001). Complexity: **
 |---|---|
 | Goal and implementation scope | Pinned/first-healthy initial strategy; measured latency/weights later after comparability |
 | Prerequisites | P9-01, P4-06 |
-| Expected files/modules | crates/routira-policy/src/node_selection |
+| Expected files/modules | crates/droutex-policy/src/node_selection |
 | Acceptance criteria | Strict route blocks or switches only to allowed healthy target; cooldown avoids oscillation |
 | Tests | Transport up/route down, timeout, flapping and resource failure cases |
 | Security considerations | Never treat ping as proof of service health or fallback to direct |
@@ -1045,7 +1045,7 @@ Status: **planned**. Delivery: **POST_MVP_MULTI_NODE** (CR-0001). Complexity: **
 |---|---|
 | Goal and implementation scope | One pinned WG/AWG termination to compatible proxy outbound using explicit supported bridge |
 | Prerequisites | P9-02, P5-06 |
-| Expected files/modules | crates/routira-agent-core/src/routes; tests/network/multi_node |
+| Expected files/modules | crates/droutex-agent-core/src/routes; tests/network/multi_node |
 | Acceptance criteria | Observed egress is selected exit; termination and TCP/UDP limits documented |
 | Tests | Actual two-node TUN/route/proxy engines, loops and leak cases |
 | Security considerations | No fictional packet protocol conversion; hop credentials isolated |
@@ -1060,7 +1060,7 @@ Status: **planned**. Delivery: **POST_MVP_MULTI_NODE** (CR-0001). Complexity: **
 |---|---|
 | Goal and implementation scope | Per-node stage/activate/health state and failure-domain policy with divergence display |
 | Prerequisites | P9-03, P8-03 |
-| Expected files/modules | crates/routira-core/src/multi_deployment; apps/routira-web/src/features/deployments |
+| Expected files/modules | crates/droutex-core/src/multi_deployment; apps/droutex-web/src/features/deployments |
 | Acceptance criteria | Partial failure visibly degraded; compatibility preserved or unauthorized routes blocked |
 | Tests | Partition, slow node, mixed revision and coordinator restart tests |
 | Security considerations | No distributed global-atomicity claim; rollback uses authorized increasing epoch |
@@ -1092,7 +1092,7 @@ Status: **planned**. Delivery: **POST_MVP_PROTOCOLS** (CR-0001). Complexity: **M
 |---|---|
 | Goal and implementation scope | Post-MVP, implement authenticated typed interface/route/nftables/approved-engine helper before enabling privileged tunnel features |
 | Prerequisites | P0-03, P1-02, P1-07, P11-06 |
-| Expected files/modules | apps/routira-node-executor; crates/routira-agent-core/src/executor |
+| Expected files/modules | apps/droutex-node-executor; crates/droutex-agent-core/src/executor |
 | Acceptance criteria | Unprivileged API cannot submit shell/executable/path commands; allowed operations idempotent/reversible |
 | Tests | Unauthorized IPC, path injection, interface conflict and cleanup tests |
 | Security considerations | Minimal capabilities, peer credentials, deny-by-default and independent review |
@@ -1306,14 +1306,14 @@ Status: **planned**. Delivery: **FUTURE** (CR-0001). Complexity: **L**. Specific
 |---|---|
 | Goal and implementation scope | CIDR/protocol/service selectors and router/client compatibility beyond accepted MVP subset |
 | Prerequisites | P9-05 |
-| Expected files/modules | crates/routira-policy; docs/operations/ROUTERS.md |
+| Expected files/modules | crates/droutex-policy; docs/operations/ROUTERS.md |
 | Acceptance criteria | IP cannot be treated as unique domain; complex rules preserve deterministic explain |
 | Tests | Shared-CDN IP, split tunnel and router hardware tests |
 | Security considerations | No inferred device identity or unrestricted route export |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
 | Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |
 
-### F-03: Evaluate Routira client and inbound switching
+### F-03: Evaluate DRouteX client and inbound switching
 
 Status: **planned**. Delivery: **FUTURE** (CR-0001). Complexity: **L**. Specification: §§7,14,23.
 

@@ -56,7 +56,7 @@ def add_tasks(file_ids, nodes, node, edge):
     tasks = json.loads(backlog_file.read_text(encoding='utf-8'))['tasks']
     for task in tasks:
         node('task_'+nid(task['id']), task['id']+' '+task['title'], backlog_file, kind='concept')
-        nodes['task_'+nid(task['id'])]['routira_delivery'] = task['delivery']
+        nodes['task_'+nid(task['id'])]['droutex_delivery'] = task['delivery']
     for task in tasks:
         key = 'task_'+nid(task['id'])
         edge(file_ids[backlog_file.resolve()], key, 'contains', backlog_file)
@@ -71,7 +71,7 @@ def add_requirements(file_ids, nodes, node, edge):
         spec_file = ROOT/item['source_file']
         key = 'requirement_'+nid(item['id'])
         node(key, item['id']+' '+item['title'], spec_file, item['line'], 'concept')
-        nodes[key]['routira_delivery'] = ','.join(item['delivery'])
+        nodes[key]['droutex_delivery'] = ','.join(item['delivery'])
         edge(file_ids[spec_file.resolve()], key, 'contains', spec_file, item['line'])
         for task_id in item['tasks']:
             edge(key, 'task_'+nid(task_id), 'planned_work_item', trace_file)
@@ -80,7 +80,7 @@ def add_requirements(file_ids, nodes, node, edge):
 def document_extraction(files):
     nodes, edges = {}, []
     def node(key, label, file, line=1, kind='document'):
-        nodes[key] = {'id':key, 'label':label, 'file_type':kind, 'source_file':str(file.resolve()), 'source_location':f'L{line}', '_origin':'semantic', 'routira_origin':'deterministic-document-import', 'routira_state':'planning only'}
+        nodes[key] = {'id':key, 'label':label, 'file_type':kind, 'source_file':str(file.resolve()), 'source_location':f'L{line}', '_origin':'semantic', 'droutex_origin':'deterministic-document-import', 'droutex_state':'planning only'}
     def edge(source, target, relation, file, line=1):
         edges.append({'source':source,'target':target,'relation':relation,'confidence':'EXTRACTED','confidence_score':1.0,'source_file':str(file.resolve()),'source_location':f'L{line}','weight':1.0,'_origin':'semantic','rationale':'Explicit document citation or proposed task prerequisite; no implemented runtime dependency claim'})
     file_ids = {}
@@ -104,7 +104,7 @@ def duplicate_task_headings(dropped):
 
 def verified_heading_refresh(dropped, new_locations, duplicate_tasks):
     verified_refresh = bool(dropped) and all(
-        n.get('routira_origin') == 'deterministic-document-import' and
+        n.get('droutex_origin') == 'deterministic-document-import' and
         (n in duplicate_tasks or (n.get('source_file'),n.get('label')) in new_locations)
         for n in dropped)
     return verified_refresh
@@ -113,7 +113,7 @@ def verified_heading_refresh(dropped, new_locations, duplicate_tasks):
 def explicit_planning_refresh(dropped, file_ids, requested):
     # Explicit refresh may replace imported headings, never native or unscanned nodes.
     planning_refresh = requested and bool(dropped) and all(
-        n.get('routira_origin') == 'deterministic-document-import' and
+        n.get('droutex_origin') == 'deterministic-document-import' and
         (ROOT/n.get('source_file', '')).resolve() in file_ids
         for n in dropped)
     return planning_refresh
@@ -166,7 +166,7 @@ def main():
     if errors:
         raise ValueError(errors)
     G = build([ast, document_data], directed=True, dedup=False, root=ROOT)
-    G.graph.update({'routira_baseline':'Explicit document headings/citations, proposed task dependencies and native AST of planning tools', 'graphify_version':importlib.metadata.version('graphifyy'), 'routira_external_api_calls':0, 'routira_document_files':len(files)})
+    G.graph.update({'droutex_baseline':'Explicit document headings/citations, proposed task dependencies and native AST of planning tools', 'graphify_version':importlib.metadata.version('graphifyy'), 'droutex_external_api_calls':0, 'droutex_document_files':len(files)})
     write_graph(G, files, document_data, file_ids)
 
 

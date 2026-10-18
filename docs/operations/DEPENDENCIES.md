@@ -2,11 +2,11 @@
 
 Date: 2026-10-16. Status: **P0-05 qualification complete; no production adoption**.
 The owner selected HTTP CONNECT over TLS and approved this exact candidate set for
-isolated compatibility and transitive-license checks. Original Routira code remains
+isolated compatibility and transitive-license checks. Original DRouteX code remains
 Apache-2.0. The owner separately approved Apache-2.0, MIT, ISC, BSD-3-Clause and
 Unicode-3.0 for dependencies, with their texts and notices preserved. The owner
 separately approved Zlib on 2026-10-17, preserving copyrights/notices and marking
-modified sources. Original Routira licensing is unchanged. Other licenses
+modified sources. Original DRouteX licensing is unchanged. Other licenses
 and new dependencies retain owner review. No legal compatibility opinion is implied
 by a technical SPDX/policy check.
 
@@ -91,7 +91,7 @@ observed failing with an intentionally corrupted expectation, then restored; no
 mutation is present in tracked source. The final tracked-source run used its own
 build directory to avoid reusing the exploratory package's mutation-test cache.
 
-[Actions run 38867986135](https://github.com/romanpodg/Routira/actions/runs/38867986135)
+[Actions run 38867986135](https://github.com/romanpodg/DRouteX/actions/runs/38867986135)
 passed all seven jobs on `1ed74f933fdbfc5cf3265a4a4c82648fd1278234`, including
 Linux qualification (3 tests, fmt/Clippy), both platform workspace/planning jobs,
 both locked dependency inventories and OIDC uploads. The exact head's Codecov report
@@ -120,7 +120,7 @@ certificate/egress checks and strict outage handling in P0-03. The fresh P0-05 W
 run on 2026-10-16 again passed all 41 observations, normal/setup-failure/SIGTERM/
 SIGKILL cleanup, zero remaining processes and unchanged host networking. Report
 SHA-256: `163eb09cdba791addaeb2d04f51163228d79c0efc7a62654720fd60e15adba31`.
-This is fixture interoperability evidence, not Routira implementation proof.
+This is fixture interoperability evidence, not DRouteX implementation proof.
 Native Debian 13 product, systemd, origin-validation and real external-proxy acceptance
 remain later gates.
 
@@ -156,7 +156,7 @@ candidate stack remains outside production crates.
 
 The owner separately approved parser/path qualification and the strict input
 profile. The [configuration review](../planning/P1_02_CONFIG_REVIEW.md) records
-compatibility, feature limits and adoption in routira-config only. The
+compatibility, feature limits and adoption in droutex-config only. The
 [config inventory](CONFIG_INVENTORY.csv) covers all 51 current production-lock
 registry archives and notice hashes; it supersedes neither historical snapshot
 nor the release requirement to include complete target-specific notices. Raw

@@ -1,7 +1,7 @@
 * text=auto eol=lf
 # Preserve the authoritative specifications byte-for-byte for hash verification.
-Routira_Project_Specification_EN.md -text whitespace=-blank-at-eol
-Routira_Project_Specification_RU.md -text whitespace=-blank-at-eol
+DRouteX_Project_Specification_EN.md -text whitespace=-blank-at-eol
+DRouteX_Project_Specification_RU.md -text whitespace=-blank-at-eol
 # Keep vendored skill resources identical to their recorded installation hashes.
 .agents/skills/** -text whitespace=cr-at-eol,-blank-at-eol
 .codex/skills/** -text whitespace=cr-at-eol,-blank-at-eol

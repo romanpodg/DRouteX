@@ -2,8 +2,8 @@
 
 Status on 2026-10-16: **Main reports and meaningful P1-01 application comparison verified.**
 The user authorized configuring both quality services for
-[romanpodg/Routira](https://github.com/romanpodg/Routira). GitHub CLI has verified
-repository admin access. The user signed into Codecov; Routira is activated.
+[romanpodg/DRouteX](https://github.com/romanpodg/DRouteX). GitHub CLI has verified
+repository admin access. The user signed into Codecov; DRouteX is activated.
 The pre-existing Codecov GitHub App covers this repository; its permissions were
 not changed. Root YAML passed the official `https://codecov.io/validate` endpoint
 with `Valid!`. No permanent upload token is stored in this repository.
@@ -12,10 +12,10 @@ project without changing OIDC, tokens, access or plan. The common/config/policy
 workspace exists; no frontend workspace exists. Planning coverage is separate from application
 coverage; see [execution status](../planning/EXECUTION_STATUS.md).
 
-On [PR #4](https://app.codecov.io/gh/romanpodg/Routira/pull/4), exact implementation
+On [PR #4](https://app.codecov.io/gh/romanpodg/DRouteX/pull/4), exact implementation
 head `4d79b7a95f094851bd2b73c4c924a85c7231de44` is processed against main base
 `a77ed5adce184ffe3214452af0b1e6d83db2cd92`. All seven jobs of
-[run 38911280732](https://github.com/romanpodg/Routira/actions/runs/38911280732)
+[run 38911280732](https://github.com/romanpodg/DRouteX/actions/runs/38911280732)
 passed. New Rust application lines are 71/71 covered; the backend patch check
 passed at 100% and backend totals are 76/79 (96.20%). The aggregate patch 76/76
 also counts five auxiliary Python lines, and aggregate 509/515 is not application
@@ -27,14 +27,14 @@ test remains owner-deferred.
 
 ## Historical bootstrap evidence
 
-[Actions run 38709252934](https://github.com/romanpodg/Routira/actions/runs/38709252934)
+[Actions run 38709252934](https://github.com/romanpodg/DRouteX/actions/runs/38709252934)
 passed both OS jobs and the OIDC upload for commit `2aef0d5` on PR #1.
-The [Codecov commit report](https://app.codecov.io/gh/romanpodg/Routira/commit/2aef0d59729ecd6ea6a8b57e0beb801e30e5ca96)
+The [Codecov commit report](https://app.codecov.io/gh/romanpodg/DRouteX/commit/2aef0d59729ecd6ea6a8b57e0beb801e30e5ca96)
 shows **95.95%**, 308 covered lines of 321, six partial and seven missed. This is
 the three planning tools only. Codecov and coverage.py count partial branches
 differently; use the service report for Codecov's percentage. Main has no baseline
 report yet; view the review branch explicitly until the owner merges PR #1.
-The subsequent [run 38709858143](https://github.com/romanpodg/Routira/actions/runs/38709858143)
+The subsequent [run 38709858143](https://github.com/romanpodg/DRouteX/actions/runs/38709858143)
 also passed both OS checks and upload on commit `32a458d`.
 
 ## Active reports
@@ -48,11 +48,11 @@ The initial local baseline was 62.50% of eight instrumented source lines. See th
 [P0-04 review](../planning/P0_04_CI_REVIEW.md) for actual service/run evidence;
 local percentage and a successful upload are distinct observations.
 
-[Run 38860444206](https://github.com/romanpodg/Routira/actions/runs/38860444206)
+[Run 38860444206](https://github.com/romanpodg/DRouteX/actions/runs/38860444206)
 passed all six jobs on `e4f4143`, including both explicit-file OIDC uploads. The
 downloaded Rust LCOV has the expected crate source path and five of eight lines
 covered. The missing-report upload probe failed as intended in
-[run 38860049899](https://github.com/romanpodg/Routira/actions/runs/38860049899).
+[run 38860049899](https://github.com/romanpodg/DRouteX/actions/runs/38860049899).
 GitHub's backend/planning patch checks succeeded with the explicit message
 "No report found to compare against"; main then lacked a baseline. The signed-in
 commit page returned 404 and repository search remained empty after Resync, so
@@ -142,8 +142,8 @@ result or application coverage.
 The owner made the repository public; Codecov still reported `activated: false`.
 With explicit owner approval the existing project was activated, preserving the
 OIDC workflow, credentials, access and plan. Upload attempt 2 of
-[Actions run 38865306388](https://github.com/romanpodg/Routira/actions/runs/38865306388)
-passed. The [actual main report](https://app.codecov.io/github/romanpodg/routira/commit/c43c2be0d40248f81bb01be9964ba56925b368f5)
+[Actions run 38865306388](https://github.com/romanpodg/DRouteX/actions/runs/38865306388)
+passed. The [actual main report](https://app.codecov.io/github/romanpodg/droutex/commit/c43c2be0d40248f81bb01be9964ba56925b368f5)
 is complete with two uploads labeled backend and planning. The exact merge commit
 has 5/8 covered Rust config lines (62.50%). The combined 437/443 figure includes
 auxiliary Python tooling and must not be presented as application coverage.
@@ -152,7 +152,7 @@ verified at the next relevant change. The owner-deferred real fork test is uncha
 
 ## P1-02 exact-base/head comparison
 
-The [PR #5 report](https://app.codecov.io/gh/romanpodg/Routira/pull/5) processed
+The [PR #5 report](https://app.codecov.io/gh/romanpodg/DRouteX/pull/5) processed
 backend/planning on head `a708e34b27a82fe5b4682b1761b34569144c94c7` against
 base `cd2a9c011e4950d80458cfaa72baddd1ac4243c2`: backend 837/894 (93.62%),
 new Rust 761/815 and a successful 93.37% backend patch check. The planning patch

@@ -54,11 +54,11 @@ external coverage/health or independent Code Review evidence.
 
 ## Published implementation evidence
 
-PR [#7](https://github.com/romanpodg/Routira/pull/7), implementation head
+PR [#7](https://github.com/romanpodg/DRouteX/pull/7), implementation head
 `ab349f7cf7dd7d9696d03c2164ebea9d5614b0c0`, base
 `65c076d6bb00eb7615cc7e697f3f4caeed9e9d7f`:
 
-- All nine CI jobs in [39054676807](https://github.com/romanpodg/Routira/actions/runs/39054676807)
+- All nine CI jobs in [39054676807](https://github.com/romanpodg/DRouteX/actions/runs/39054676807)
   passed. Actual Linux default/no-default runs each passed 46 workspace tests
   (18 storage), plus four compile-fail examples. The additional config
   metadata test is a separate integration binary. Upgrade/reopen, competing drafts,

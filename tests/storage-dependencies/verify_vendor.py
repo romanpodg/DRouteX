@@ -15,7 +15,7 @@ def verify():
     proof = json.loads((VENDOR / 'SOURCE.json').read_text(encoding='utf-8'))
     expected = proof['files_SHA256_LF']
     actual = {p.relative_to(VENDOR).as_posix() for p in VENDOR.rglob('*') if p.is_file()}
-    assert actual == set(expected) | {'SOURCE.json', 'README.routira.md'}, 'Unexpected source inventory'
+    assert actual == set(expected) | {'SOURCE.json', 'README.droutex.md'}, 'Unexpected source inventory'
     for name, digest in expected.items():
         assert '..' not in Path(name).parts and not Path(name).is_absolute()
         assert fingerprint(VENDOR / name) == digest, f'Reviewed source changed: {name}'

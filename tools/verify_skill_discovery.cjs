@@ -40,4 +40,4 @@ readline.createInterface({input: server.stdout}).on('line', line => {
   }
 });
 server.on('error', error => finish(error));
-send({id: 1, method: 'initialize', params: {clientInfo: {name: 'routira_registry_probe', version: '1.0'}, capabilities: {experimentalApi: true}}});
+send({id: 1, method: 'initialize', params: {clientInfo: {name: 'droutex_registry_probe', version: '1.0'}, capabilities: {experimentalApi: true}}});

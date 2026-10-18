@@ -1,7 +1,7 @@
 # P0-05 dependency qualification
 
 This independent test package qualifies owner-approved candidates; it is not a
-production dependency, workspace member, reusable proxy or running Routira service.
+production dependency, workspace member, reusable proxy or running DRouteX service.
 Its own lockfile pins all registry artifacts. The production workspace stays free
 of third-party dependencies until a consuming implementation task adopts them.
 
@@ -9,7 +9,7 @@ With Rust 1.99.0 and an existing OpenSSL executable on PATH:
 
 ```sh
 python tests/dependencies/prepare_certificates.py .setup/dependency-certificates
-export ROUTIRA_QUALIFICATION_CERT_DIR="$PWD/.setup/dependency-certificates"
+export DROUTEX_QUALIFICATION_CERT_DIR="$PWD/.setup/dependency-certificates"
 cargo fmt --manifest-path tests/dependencies/Cargo.toml -- --check
 cargo clippy --manifest-path tests/dependencies/Cargo.toml --all-targets --locked -- -D warnings
 cargo test --manifest-path tests/dependencies/Cargo.toml --locked

@@ -35,7 +35,7 @@ capture is used in Actions.
 
 ## Fork policy and validation boundary
 
-GitHub reports Routira as **private**, correcting the earlier planning metadata.
+GitHub reports DRouteX as **private**, correcting the earlier planning metadata.
 The owner approved enabling private fork workflows with mandatory approval and
 without secrets/variables or write tokens. A subsequent API read confirmed all four
 settings. Repository visibility and branch protection were not changed.
@@ -55,17 +55,17 @@ active YAML. Rust LCOV measured 62.50% of eight instrumented source lines, uncha
 from P0-02; this is a local result, not a Codecov service percentage.
 
 The first implementation, `ee206c96d3bd4573feccddf20c21b1b4ac617f38`, exposed a
-clean-runner defect in [run 38859969991](https://github.com/romanpodg/Routira/actions/runs/38859969991):
+clean-runner defect in [run 38859969991](https://github.com/romanpodg/DRouteX/actions/runs/38859969991):
 workspace/planning jobs, cargo-deny and the instrumented tests passed, but LCOV
 could not create its absent parent directory. No upload ran. Commit `e4f4143`
 adds `mkdir -p coverage` before report generation; actionlint and the authorization
 validator passed afterward. The corrected positive run is recorded separately.
 
 For corrected commit `e4f41430515bbd7c6551cdf091a50a9fe57266e5`,
-[run 38860444206](https://github.com/romanpodg/Routira/actions/runs/38860444206)
+[run 38860444206](https://github.com/romanpodg/DRouteX/actions/runs/38860444206)
 passed all six jobs: Workspace and Planning on Ubuntu/Windows, dependency/coverage,
 and both Codecov uploads. The downloaded backend artifact contains only
-`crates/routira-config/src/lib.rs`, eight instrumented lines and five covered lines
+`crates/droutex-config/src/lib.rs`, eight instrumented lines and five covered lines
 (62.50%). The other two crates currently have no instrumented executable lines;
 no test or planning source appears in the backend LCOV. The artifact's runner-root
 source path maps to the intended crate path. Upload and service rendering are
@@ -82,7 +82,7 @@ made to resolve it. Both uploads were accepted and queued in the Actions log.
 The disposable same-repository branch `ci/p0-04-failure-probes-20261016` added only
 a pinned, GitHub-hosted probe workflow at commit
 `b8855f5ba4d80dc6a6c1411c5d18f8c4a82929f1`. Its
-[actual run](https://github.com/romanpodg/Routira/actions/runs/38860049899)
+[actual run](https://github.com/romanpodg/DRouteX/actions/runs/38860049899)
 failed all three jobs for the intended reasons, without continue-on-error:
 
 | Probe | Actual rejection |
@@ -140,21 +140,21 @@ Actions jobs passed and PR #1 merged normally at
 `c43c2be0d40248f81bb01be9964ba56925b368f5`; all six main jobs passed too.
 On owner-authorized continuation, the public repository was found still deactivated
 in Codecov. Explicitly approved activation preserved OIDC, tokens, access and plan.
-Attempt 2 of [run 38865306388](https://github.com/romanpodg/Routira/actions/runs/38865306388)
+Attempt 2 of [run 38865306388](https://github.com/romanpodg/DRouteX/actions/runs/38865306388)
 successfully uploaded both reports; the exact merge commit's
-[service report](https://app.codecov.io/github/romanpodg/routira/commit/c43c2be0d40248f81bb01be9964ba56925b368f5)
+[service report](https://app.codecov.io/github/romanpodg/droutex/commit/c43c2be0d40248f81bb01be9964ba56925b368f5)
 is complete. Rust config remains 5/8 instrumented lines (62.50%); the combined
 437/443 includes auxiliary scripts. A meaningful new-code PR comparison and the
 owner-deferred actual fork run remained unverified at that snapshot.
 
 ## Meaningful application comparison verified at P1-01
 
-After P0-05/PR #3 merged, [PR #4](https://github.com/romanpodg/Routira/pull/4)
+After P0-05/PR #3 merged, [PR #4](https://github.com/romanpodg/DRouteX/pull/4)
 added domain application code. On implementation head
 `4d79b7a95f094851bd2b73c4c924a85c7231de44`, all seven Actions jobs passed and
 Codecov processed both flags against exact main base
 `a77ed5adce184ffe3214452af0b1e6d83db2cd92`. The
-[service comparison](https://app.codecov.io/gh/romanpodg/Routira/pull/4) and backend
+[service comparison](https://app.codecov.io/gh/romanpodg/DRouteX/pull/4) and backend
 patch check report 100% of new Rust lines covered (71/71); backend totals are
 76/79 (96.20%). Combined patch 76/76 includes five auxiliary Python lines.
 This resolves the Codecov comparison deferral; it does not resolve the actual

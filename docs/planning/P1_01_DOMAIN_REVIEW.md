@@ -31,7 +31,7 @@ failure explicitly when added. Public UUIDs carry no access authority.
   Device metadata, list/service revisions, private records, rules, outbounds,
   listeners/groups, independent DNS/gateway grants, snapshots and deployments.
   Private fields reject nil, non-v4 and non-RFC-variant identifiers. Public APIs
-  expose standard bytes/text and Routira errors, not uuid dependency types.
+  expose standard bytes/text and DRouteX errors, not uuid dependency types.
 - ResolverCredentialMetadata contains only public record ID, Endpoint ID and
   lifecycle observation. ResolverCapabilityMaterial is a separate owned value
   with redacted Debug and no Clone/Copy/Display/serialization implementation.
@@ -80,21 +80,21 @@ native Debian runtime acceptance is claimed.
 
 ## Independent review and service evidence
 
-[PR #4](https://github.com/romanpodg/Routira/pull/4) implementation head
+[PR #4](https://github.com/romanpodg/DRouteX/pull/4) implementation head
 `4d79b7a95f094851bd2b73c4c924a85c7231de44` was independently reviewed against
 `a77ed5adce184ffe3214452af0b1e6d83db2cd92` with the built-in Codex review through
 the signed-in ChatGPT account, read-only sandbox and approval policy never.
 The completed review found no confirmed defect. Its read-only environment could
 not execute Rust compilation/tests or Python tests needing PyYAML; this limitation
 does not stand in for test success. Separate Windows evidence above and all seven
-jobs of [CI run 38911280732](https://github.com/romanpodg/Routira/actions/runs/38911280732)
+jobs of [CI run 38911280732](https://github.com/romanpodg/DRouteX/actions/runs/38911280732)
 passed, including Linux/Windows workspace tests, Linux dependency qualification,
 both locked audits, coverage generation and OIDC uploads. Raw logs stay local.
 
 [CodeScene review 7987296](https://codescene.io/projects/86145/delta/results/7987296)
 passed all three quality gates. Its expected-document-change suggestions identify
 historical cochanges, not functional defects or additional implementation scope.
-[Codecov's processed comparison](https://app.codecov.io/gh/romanpodg/Routira/pull/4)
+[Codecov's processed comparison](https://app.codecov.io/gh/romanpodg/DRouteX/pull/4)
 uses the exact base/head above. All 71 service-counted new Rust lines are covered
 (identity 37/37, IDs 20/20, secret material 14/14); the backend patch check passed
 at 100%. Backend totals are 76/79 (96.20%), including the existing config 5/8.
