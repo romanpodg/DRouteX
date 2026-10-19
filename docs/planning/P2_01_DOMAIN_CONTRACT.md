@@ -1,8 +1,8 @@
 # P2-01 bounded domain profile
 
-Status: D37 owner-accepted2026-10-19, isolated qualification in progress. No direct
-policy dependency or production normalizer is adopted until Windows/Linux tests,
-dependency/license checks and independent review pass. P1-06/PR11 merged normally
+Status: D37 owner-accepted2026-10-19. Qualification head a60b3e4 passed Windows/Linux
+CI39156440746, dependency/license checks and independent linked-account review.
+Conditional adoption is implemented; implementation/final-evidence acceptance is pending. P1-06/PR11 merged normally
 at6b58b892cf2e9c58499cd60d4ccad9c503a1d656; all11 main jobs39154498259 passed and
 both exact-merge Codecov reports processed (Rust3322/3503).
 

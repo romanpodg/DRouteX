@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0/P1 complete and merged; PR11 exact-main verified; P2-01 D37 qualification in progress, production adoption gated; actual fork test deferred.**
+Status: **P0/P1 complete and merged; PR11 exact-main verified; P2-01 D37 qualification passed; domain normalization/matching implementation under review; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are

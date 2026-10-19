@@ -196,3 +196,16 @@ standalone package/CI jobs add RFC8032 vectors and failure probes without changi
 locks, registry artifacts, features, licenses or native object provenance. See the
 [P1-05 review](../planning/P1_05_SNAPSHOT_REVIEW.md). Production adoption and complete
 snapshot/replay/rotation contracts remain gated.
+
+## P2-01 domain profile
+
+Owner D37 conditionally approved exactly idna1.1.0 (defaults off, std/compiled_data).
+Qualification head a60b3e4 passed actual Windows/Linux CI39156440746, fresh deny and
+independent linked-account review before adding the direct policy dependency.
+All29 registry archives, extracted files and license/notice hashes were checked in
+the [inventory](POLICY_DOMAIN_DEPENDENCY_INVENTORY.csv); no package version/checksum
+changed from the existing root lock. This snapshot is not complete release notices.
+The [review](../planning/P2_01_DOMAIN_REVIEW.md) records malformed-ACE refusal via
+same-library roundtrip, CDN compatibility, selected Unicode17 fixture scope and
+failed exploratory16/18 repertoire comparisons. Production implementation acceptance
+remains pending; no URL/TLS/destination authority follows from DNS normalization.

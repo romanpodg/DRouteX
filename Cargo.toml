@@ -29,6 +29,7 @@ droutex-security = { path = "crates/droutex-security", version = "=0.1.0" }
 aws-lc-rs = { version = "=1.18.2", default-features = false, features = ["non-fips", "alloc", "prebuilt-nasm"] }
 zeroize = { version = "=1.9.1", default-features = false, features = ["alloc"] }
 ed25519-dalek = { version = "=3.0.0", default-features = false }
+idna = { version = "=1.1.0", default-features = false, features = ["std", "compiled_data"] }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

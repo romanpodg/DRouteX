@@ -38,3 +38,10 @@ qualified pinned behavior; a data/version change requires renewed qualification.
 Run fmt/Clippy/test/default/no-default and cargo-deny with this manifest on Windows
 and Linux. Production adoption requires actual successful evidence and independent
 review; approval alone never passes the gate. No remote downloads happen in tests.
+
+Qualification head a60b3e4 passed both Windows/Linux default/no-default8-test groups,
+fresh dependency checks and independent linked-account review before conditional
+production adoption. The immutable official-vector checker in vectors.rs is now
+shared with production policy integration tests; both boundaries are checked against
+official expected results under this selected profile. Library qualification is
+separate from implementation/final acceptance; see the task review.

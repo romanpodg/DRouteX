@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0/P1 complete and merged; P1-06 exact-main verified; P2-01 D37 isolated IDNA qualification in progress; production adoption gated; later tasks planned",
+  "status": "P0/P1 complete and merged; P2-01 IDNA qualification passed; bounded domain normalization/matching implementation under review; later tasks planned",
   "date": "2026-10-18",
   "phases": {
     "P0": "Foundation",
@@ -394,7 +394,9 @@
       ],
       "scope": "IDNA/lowercase/trailing-dot normalization and explicit Exact/DomainAndSubdomains/SubdomainsOnly modes; no implicit adoption of Control D wildcard grammar",
       "files": [
-        "crates/droutex-policy/src/domain"
+        "crates/droutex-policy/src/domain.rs",
+        "crates/droutex-config/src/schema/model.rs",
+        "crates/droutex-config/src/schema/validation.rs"
       ],
       "acceptance": "Canonical equivalent names match consistently; invalid labels and wildcard bombs rejected",
       "tests": "Unicode/IDNA cases, apex/subdomain matrix and property tests",
@@ -2796,6 +2798,6 @@
     "source": "Direct owner reply: qualification and adoption after successful checks; docs/planning/P2_01_DOMAIN_CONTRACT.md",
     "dependency": "idna1.1.0 defaults off, std/compiled_data; existing29 locked registry packages only",
     "profile": "D37 nontransitional UTS46 URL/Allow/VerifyAllowRootDot with same-library roundtrip for malformed ACE;1024-byte input,63/253/127 output bounds; explicit CR-0002 modes",
-    "qualification_status": "in_progress; production adoption not yet permitted by evidence"
+    "qualification_status": "passed at a60b3e4dd60c2ae7ede71f78840489efea0cd84d: all11 Windows/Linux CI39156440746, fresh deny, every29 archive/source/license checked, independent linked-account review01a1505d-f3c3-7491-9281-ce5be624a3fa; conditional adoption implemented, implementation acceptance pending"
   }
 }
