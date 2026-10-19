@@ -246,7 +246,7 @@ pub enum OutboundKind {
     },
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Eq, PartialEq, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum DnsAction {
     Resolve {
@@ -260,7 +260,7 @@ pub enum DnsAction {
     },
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Eq, PartialEq, Deserialize, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 pub enum TrafficAction {
     Deny {},

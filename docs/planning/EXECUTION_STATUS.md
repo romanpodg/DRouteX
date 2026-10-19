@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-19. Current stage: **P1-06/PR11 merged and exact-main verified; P2-01 D37 qualification passed; bounded domain normalization/matching implementation under review**.
+Date: 2026-10-19. Current stage: **P2-01/PR12 merged and exact-main verified; P2-02 D38 bounded deterministic scoped selection implementation under review**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -12,7 +12,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P2-01 is the current stage; technical choices retain their owning gates.
+P2-02 is the current stage; technical choices retain their owning gates.
 PR9 merged at521bfa76fbc27e14cd4981638af775ba92c6299f after independent
 implementation/final-evidence reviews and all11 final-head jobs. All11 exact-main
 jobs39148795165 passed and both Codecov reports processed. The owner then accepted
@@ -23,10 +23,14 @@ all11 main jobs39154498259 passed, and both exact-merge Codecov reports processe
 and conditional IDNA qualification/adoption. Qualification head a60b3e4 passed all11
 Windows/Linux jobs39156440746, fresh dependency checks and independent linked-account
 read-only/never review01a1505d-f3c3-7491-9281-ce5be624a3fa with no confirmed defect.
-Bounded production normalization/matching is now implemented in draft
-[PR12](https://github.com/romanpodg/DRouteX/pull/12), with implementation acceptance
-pending; see [evidence](P2_01_DOMAIN_REVIEW.md). Later P2 tasks stay planned until
-reviewed P2-01 merge.
+Bounded production normalization/matching subsequently merged normally in
+[PR12](https://github.com/romanpodg/DRouteX/pull/12) at6fa475976df6a9194dcab3ccdbc3c759308cd7b0.
+All11 final-head/main jobs completed successfully; both exact-merge reports processed
+(Rust3406/3589). The earlier queued metadata recovered after the owner selected
+waiting; no exception or check bypass was used. See [evidence](P2_01_DOMAIN_REVIEW.md).
+The owner accepted [D38 scoped selection](P2_02_EVALUATION_CONTRACT.md) after that
+merge. P2-02 implementation is now under review; later implementation stays planned
+until reviewed P2-02 merge. See [candidate evidence](P2_02_EVALUATION_REVIEW.md).
 P1-06's candidate passed independent Codex re-review and all11 jobs of39153071723;
 actual Codecov processed both reports. See [evidence](P1_06_ACTIVATION_REVIEW.md)
 for the retained first Linux failure, resolved review findings,94.01% Rust patch

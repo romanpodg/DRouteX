@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "P0/P1 complete and merged; P2-01 IDNA qualification passed; bounded domain normalization/matching implementation under review; later tasks planned",
-  "date": "2026-10-18",
+  "status": "P0/P1 and P2-01 complete and merged; PR12 exact-main verified; P2-02 D38 deterministic scoped selection implementation under review; later tasks planned",
+  "date": "2026-10-19",
   "phases": {
     "P0": "Foundation",
     "P1": "Domain and configuration",
@@ -403,7 +403,7 @@
       "security": "Bound length/label/rule expansion at input boundary",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_progress",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -425,14 +425,15 @@
       ],
       "scope": "Compile custom > service > filter > default ranks; priority within rank, documented specificity, stable ID and trusted endpoint/network scope",
       "files": [
-        "crates/droutex-policy/src/evaluate"
+        "crates/droutex-policy/src/evaluate",
+        "crates/droutex-config/src/schema/model.rs"
       ],
       "acceptance": "Explicit BYPASS overrides lower policy layers but not security checks; default BYPASS does not skip filters; reordered input preserves decisions",
       "tests": "Permutation, exception/default contrast, conflicting rules and two secure endpoints behind one NAT",
       "security": "Untrusted metadata cannot upgrade identity confidence",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2608,9 +2609,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-19",
-    "source": "Direct owner reply accepting complete .setup/p2-01/domain-design-proposal.md and qualification/adoption after successful checks",
-    "scope": "P2-01 D37 qualification and conditional implementation only, after verified P1-06 merge6b58b89. Production adoption requires actual Windows/Linux/dependency/license qualification and independent review; later P2 tasks stay planned until reviewed P2-01 merge.",
-    "through_task": "P2-01"
+    "source": "Direct owner reply accepting complete .setup/p2-02/evaluation-design-proposal.md after reviewed PR12 merge; docs/planning/P2_02_EVALUATION_CONTRACT.md",
+    "scope": "Owner-accepted D38 P2-02 pure bounded prepared selection only, after reviewed PR12 normal merge6fa4759 and all11 exact-main CI39291553252 plus processed Codecov. No new dependencies, full compiler, catalog importer or network admission; later implementation tasks planned until reviewed P2-02 merge.",
+    "through_task": "P2-02"
   },
   "design_proposals": [
     {
@@ -2798,6 +2799,12 @@
     "source": "Direct owner reply: qualification and adoption after successful checks; docs/planning/P2_01_DOMAIN_CONTRACT.md",
     "dependency": "idna1.1.0 defaults off, std/compiled_data; existing29 locked registry packages only",
     "profile": "D37 nontransitional UTS46 URL/Allow/VerifyAllowRootDot with same-library roundtrip for malformed ACE;1024-byte input,63/253/127 output bounds; explicit CR-0002 modes",
-    "qualification_status": "passed at a60b3e4dd60c2ae7ede71f78840489efea0cd84d: all11 Windows/Linux CI39156440746, fresh deny, every29 archive/source/license checked, independent linked-account review01a1505d-f3c3-7491-9281-ce5be624a3fa; conditional adoption implemented, implementation acceptance pending"
+    "qualification_status": "P2-01 merged normally at6fa475976df6a9194dcab3ccdbc3c759308cd7b0 after linked-account implementation/final reviews and ordinary successful CI39282692111/39283680050; all11 exact-main jobs39291553252 success, Codecov complete2 reports Rust3406/3589; original queued metadata resolved without exception."
+  },
+  "policy_evaluation_decision": {
+    "status": "accepted",
+    "date": "2026-10-19",
+    "source": "Direct owner reply accepting .setup/p2-02/evaluation-design-proposal.md after PR12 merge; docs/planning/P2_02_EVALUATION_CONTRACT.md",
+    "profile": "D38 fixed layers, larger i32 priority, more domain labels, Exact/SubdomainsOnly/DomainAndSubdomains; stable UUID bytes among equivalent effects only, contradictory top effects error; ports eligibility only; separate endpoint/gateway scopes;10000 aggregate entries; no new registry dependencies"
   }
 }

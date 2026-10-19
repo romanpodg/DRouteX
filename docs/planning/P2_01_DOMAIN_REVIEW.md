@@ -1,8 +1,9 @@
 # P2-01 domain qualification evidence
 
-Status: isolated qualification passed; conditional adoption implemented in draft
-[PR12](https://github.com/romanpodg/DRouteX/pull/12). Implementation/final acceptance
-is pending, not implied by qualification or owner approval.
+Status: P2-01 completed; [PR12](https://github.com/romanpodg/DRouteX/pull/12) merged
+normally at6fa475976df6a9194dcab3ccdbc3c759308cd7b0. All11 exact-main jobs39291553252
+passed; both exact-merge Codecov reports processed (Rust3406/3589). No approval alone
+passed a gate. Candidate/queued observations below are historical, not current holds.
 Owner-accepted [D37](P2_01_DOMAIN_CONTRACT.md) requires actual Windows/Linux,
 dependencies/licenses and independent review before implementation adoption.
 
@@ -53,7 +54,7 @@ source URL, SHA and exact test scope are in the
 paid service or privileged operation is added. Later production matching must
 still prove the accepted apex/subdomain matrix and config/snapshot integration.
 
-## Implementation candidate
+## Implementation candidate (historical evidence)
 
 The pure policy crate now owns CanonicalDomain, sanitized DomainError and an
 explicit DomainMatcher. Raw strings cannot be matched until parsed. Names are
@@ -126,3 +127,27 @@ policy domain72/74. The aggregate3857/4043 includes auxiliary Python and is not
 application coverage. Both backend/planning patch checks passed. The two missed
 domain lines are the roundtrip-inequality refusal and the InputTooLong display arm;
 they are not claimed executed. Coverage is not a correctness proof.
+
+## Final acceptance and ordinary merge
+
+At unchanged final head83e6e3c, actual linked-account read-only/never final-evidence
+review against a9ae189 completed with no confirmed defect, session
+01a154e8-f65b-71d1-9cfe-9d1b02e19274, exit0. The reviewer checked the two-document
+diff/whitespace; external results were separately checked by the parent agent.
+Source/CI/tests/manifests remained byte-identical to reviewed implementation a9ae189.
+CodeScene8021525 repeated8021355 findings exactly after result-URL normalization;
+all3 maintenance gates stayed failed with P2-01-CS-DOMAIN/AUX dispositions.
+
+Ordinary CI statuses later recovered: implementation39281335957 and final-head
+39282692111 plus separate full manual39283680050 each completed all11 jobs
+successfully. Both final reports processed. The owner chose waiting for normal
+statuses, not the proposed exception; that choice was honored. Rerun/cancel
+requests had been refused with contradictory running/completed responses and
+changed nothing; the isolated manual workflow changed no code, permission or gate.
+The cause of the earlier metadata inconsistency remains unestablished.
+
+PR12 merged normally at6fa475976df6a9194dcab3ccdbc3c759308cd7b0 on
+2026-10-19T17:08:15Z, without admin/force/check bypass/protection changes. All11
+exact-main jobs39291553252 succeeded; Codecov complete with2 reports, Rust3406/3589.
+This closes P2-01 and satisfies the owner's prerequisite for accepted D38 P2-02.
+It does not implement live DNS/proxy listeners or later P2 catalogs/compiler.

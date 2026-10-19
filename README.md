@@ -9,8 +9,9 @@ domain types and bounded configuration imports (P1-01/P1-02) are complete and me
 P0-03 fixtures passed in WSL and native Debian 13. P1-03/04 storage/revisions,
 P1-07 secrets and P1-05 authenticated snapshots are merged. The P1-06 local
 activation/recovery completed in PR #11 with exact-main Windows/Linux CI verified.
-P2-01 qualified its owner-accepted IDNA profile on Windows/Linux and adopted bounded
-domain normalization/matching; implementation review and final acceptance are pending. No DRouteX DNS/gateway listener exists yet.
+P2-01 domain normalization/matching merged in PR #12 with exact-main CI verified.
+P2-02 implements the owner-accepted bounded deterministic policy selection profile;
+implementation review and final acceptance are pending. No DRouteX DNS/gateway listener exists yet.
 
 - [Development roadmap](docs/planning/DEVELOPMENT_ROADMAP.md)
 - [Current execution boundary and repository handoff](docs/planning/EXECUTION_STATUS.md)
