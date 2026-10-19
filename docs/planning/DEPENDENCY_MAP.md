@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0/P1 and P2-01 complete and merged; PR12 exact-main verified; P2-02 D38 deterministic scoped selection implementation under review; later tasks planned. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0/P1 and P2-01/02 complete and merged; PR13 exact-main verified; P2-03 D39 publication validation implementation under review; later tasks planned. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

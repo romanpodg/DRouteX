@@ -1,6 +1,8 @@
 //! Bounded configuration import and validation against accepted policy contracts.
 
+mod publication;
 mod revisions;
+pub use publication::PublicationResourceError;
 mod schema;
 pub mod snapshot;
 pub use revisions::{DraftRevision, InvalidRevisionMetadata, RevisionProvenance};

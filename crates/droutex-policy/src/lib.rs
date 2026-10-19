@@ -4,6 +4,7 @@ use droutex_common::RuleLayer;
 
 mod domain;
 mod evaluate;
+mod validate;
 pub use domain::{
     CanonicalDomain, DomainError, DomainMatchMode, DomainMatcher, MAX_DOMAIN_INPUT_BYTES,
 };
@@ -11,6 +12,12 @@ pub use evaluate::{
     DomainRule, EvaluationError, GatewayProfileAssignment, MAX_POLICY_ENTRIES, PolicyBuildError,
     PolicyScope, PolicySelection, PolicySet, PreparedProfile, RuleMetadata, RuleSource,
     TcpPortRange, TcpPortScope, TcpRule,
+};
+pub use validate::{
+    CatalogIssue, CatalogLicense, CatalogPin, CatalogProvenance, CatalogRevision,
+    CatalogRevisionFacts, CatalogValidationError, CatalogValidationState, PolicyPlane,
+    PolicyValidationError, PreparedPrivateRecord, PrivateRecordIssue, PrivateRecordValidationError,
+    PrivateRecordValue, validate_catalog_dependencies, validate_private_records,
 };
 
 /// Accepted CR-0002 precedence, from highest priority to fallback.

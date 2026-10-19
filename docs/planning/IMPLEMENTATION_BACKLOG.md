@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1 and P2-01 complete and merged; PR12 exact-main verified; P2-02 D38 deterministic scoped selection implementation under review; later tasks planned.**
+**P0/P1 and P2-01/02 complete and merged; PR13 exact-main verified; P2-03 D39 publication validation implementation under review; later tasks planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -215,7 +215,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P2-02: Evaluate scoped rules deterministically
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,14,17.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,14,17.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -230,13 +230,13 @@ Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifi
 
 ### P2-03: Detect policy conflicts and dependencies
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,17.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,17.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Reject unresolved layer/match contradictions, missing or unlicensed dataset revisions, invalid private CNAME chains and ambiguous legacy/gateway group assignments |
 | Prerequisites | P2-02 |
-| Expected files/modules | crates/droutex-policy/src/validate |
+| Expected files/modules | crates/droutex-policy/src/validate; crates/droutex-config/src/publication.rs |
 | Acceptance criteria | Irreconcilable conflict prevents publication with actionable rule IDs |
 | Tests | Exact/wildcard conflicts, removed node and cycles |
 | Security considerations | No arbitrary map iteration or warning-only unsafe acceptance |

@@ -18,6 +18,10 @@ impl CheckedConfiguration {
     pub fn document(&self) -> &Configuration {
         &self.0
     }
+
+    pub(crate) fn revalidate(&self, catalog: &ReferenceCatalog) -> Result<(), ConfigError> {
+        validation::validate(&self.0, catalog)
+    }
 }
 
 pub fn parse_configuration(
