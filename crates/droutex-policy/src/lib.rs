@@ -3,8 +3,14 @@
 use droutex_common::RuleLayer;
 
 mod domain;
+mod evaluate;
 pub use domain::{
     CanonicalDomain, DomainError, DomainMatchMode, DomainMatcher, MAX_DOMAIN_INPUT_BYTES,
+};
+pub use evaluate::{
+    DomainRule, EvaluationError, GatewayProfileAssignment, MAX_POLICY_ENTRIES, PolicyBuildError,
+    PolicyScope, PolicySelection, PolicySet, PreparedProfile, RuleMetadata, RuleSource,
+    TcpPortRange, TcpPortScope, TcpRule,
 };
 
 /// Accepted CR-0002 precedence, from highest priority to fallback.

@@ -1,16 +1,18 @@
 # DRouteX project instructions
 
-Current gate2026-10-19: P1-06/PR11 merged normally at6b58b892cf2e9c58499cd60d4ccad9c503a1d656;
-all11 main jobs39154498259 and both processed Codecov reports passed. The owner
-accepted D37's P2-01 domain profile and conditional idna1.1.0 qualification/adoption.
-See docs/planning/P2_01_DOMAIN_CONTRACT.md. Qualification head a60b3e4 passed all11
-Windows/Linux jobs39156440746, fresh dependency checks, every29 archive/source/license
-check and linked-account read-only/never review01a1505d-f3c3-7491-9281-ce5be624a3fa.
-Conditional production adoption is implemented in draft PR12; implementation/final
-reviews and checks remain required. No handwritten IDNA, silent registry update or
-malformed-ACE exception. Later P2 implementation tasks stay planned until reviewed
-P2-01 merge. P1-05/PR9 and P1-06/PR11 historical holds below were satisfied by their
-recorded reviews, fixes and exact-main evidence, not bypassed. See their task reviews.
+Current gate2026-10-19: P2-01/PR12 merged normally at6fa475976df6a9194dcab3ccdbc3c759308cd7b0.
+All11 exact-main jobs39291553252 passed; both exact-merge Codecov reports processed
+(Rust3406/3589). Ordinary final-head runs39282692111/39283680050 also passed all11;
+previous queued metadata resolved, no owner exception, force or check bypass.
+Implementation and final-evidence linked-account read-only/never reviews passed;
+CodeScene minor maintenance dispositions remain disclosed in the task review.
+The owner explicitly accepted D38 after PR12 merge: see
+docs/planning/P2_02_EVALUATION_CONTRACT.md and .setup/p2-02/evaluation-design-proposal.md.
+P2-02 bounded pure scoped selection is current; actual Windows/Linux tests,
+independent implementation/final reviews and normal merge are still required.
+Catalog imports P2-07, full compilation P2-05 and runtime admission P3/P4 retain
+their own gates. Later implementation tasks stay planned until reviewed P2-02 merge.
+Historical P1/P2-01 holds below were satisfied by recorded evidence, not bypassed.
 
 ## Authority and current scope
 

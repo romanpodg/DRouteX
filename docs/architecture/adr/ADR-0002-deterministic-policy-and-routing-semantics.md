@@ -16,6 +16,12 @@ a rank. Exact/DomainAndSubdomains/SubdomainsOnly are distinct match modes.
 Explicit BYPASS skips lower rule layers, not safety checks; default BYPASS is only
 a fallback. Pin filter/service revisions and include their provenance in Explain.
 
+The owner separately accepted the bounded D37 name profile and D38 comparator/
+scoped prepared-selection contract. See [D38](../../planning/P2_02_EVALUATION_CONTRACT.md)
+for exact within-layer directions, ambiguity refusal, TCP scope and bounds. This
+does not accept all later action/capability, publication or runtime details in this
+proposed ADR, which retain their own gates.
+
 ## Alternatives
 
 First match by user order; hash-map order; universal domain-from-IP mapping.

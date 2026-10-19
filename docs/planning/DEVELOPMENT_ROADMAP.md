@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0/P1 complete and merged; PR11 exact-main verified; P2-01 D37 qualification passed; domain normalization/matching implementation under review; actual fork test deferred.**
+Status: **P0/P1 and P2-01 complete and merged; PR12 exact-main verified; P2-02 D38 scoped selection implementation under review; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -29,8 +29,10 @@ P1-06 durable activation is authorized under the owner-accepted
 [D36 filesystem profile](P1_06_ACTIVATION_CONTRACT.md); the implementation passed
 independent review and all11 jobs on3c12bba. See [evidence](P1_06_ACTIVATION_REVIEW.md).
 PR11 subsequently passed final-head review/all11 jobs, merged at6b58b89 and passed
-all11 exact-main jobs39154498259 plus processed Codecov. P2-01 is now authorized
-under the [D37 profile](P2_01_DOMAIN_CONTRACT.md); later P2 tasks remain planned.
+all11 exact-main jobs39154498259 plus processed Codecov. P2-01 then merged normally
+at6fa4759 after reviews and all11 final-head/main jobs; Codecov processed both reports.
+P2-02 is authorized under the owner-accepted [D38 profile](P2_02_EVALUATION_CONTRACT.md)
+and is implementing bounded pure scoped selection; later P2 tasks remain planned.
 See [P1-05 evidence](P1_05_SNAPSHOT_REVIEW.md).
 See [P1-07 evidence](P1_07_SECRET_REVIEW.md).
 Further technical choices retain their owning gates.

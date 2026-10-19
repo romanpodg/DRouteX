@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1 complete and merged; P2-01 IDNA qualification passed; bounded domain normalization/matching implementation under review; later tasks planned.**
+**P0/P1 and P2-01 complete and merged; PR12 exact-main verified; P2-02 D38 deterministic scoped selection implementation under review; later tasks planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -200,7 +200,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P2-01: Normalize domains and wildcard semantics
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,8,22.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,8,22.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -215,13 +215,13 @@ Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifi
 
 ### P2-02: Evaluate scoped rules deterministically
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,14,17.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,14,17.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Compile custom > service > filter > default ranks; priority within rank, documented specificity, stable ID and trusted endpoint/network scope |
 | Prerequisites | P2-01, P1-01 |
-| Expected files/modules | crates/droutex-policy/src/evaluate |
+| Expected files/modules | crates/droutex-policy/src/evaluate; crates/droutex-config/src/schema/model.rs |
 | Acceptance criteria | Explicit BYPASS overrides lower policy layers but not security checks; default BYPASS does not skip filters; reordered input preserves decisions |
 | Tests | Permutation, exception/default contrast, conflicting rules and two secure endpoints behind one NAT |
 | Security considerations | Untrusted metadata cannot upgrade identity confidence |
