@@ -116,3 +116,83 @@ fn canonical_alias_cycle_passes_old_shape_checks_but_cannot_pass_publication_res
             .is_ok()
     );
 }
+
+#[test]
+fn full_configuration_requires_filter_and_gateway_pins_and_checks_both_address_families() {
+    let mut input: serde_json::Value =
+        serde_json::from_str(include_str!("fixtures/configuration-v1.json")).unwrap();
+    input["profiles"][0]["filterLists"][0]["enabled"] = json!(false);
+    input["gatewayGrants"][0]["services"] = json!([text(102)]);
+    let refs = ReferenceCatalog {
+        devices: [id(120)].into(),
+        upstreams: [id(90)].into(),
+        secrets: [id(99)].into(),
+        filter_revisions: [id(101)].into(),
+        service_revisions: [id(100), id(102)].into(),
+    };
+    let revisions = [
+        CatalogRevision::Filter(id(101)),
+        CatalogRevision::Service(id(100)),
+        CatalogRevision::Service(id(102)),
+    ];
+    let pins: Vec<_> = revisions
+        .iter()
+        .map(|&revision| CatalogPin {
+            revision,
+            hash: [7; 32],
+        })
+        .collect();
+    let facts: Vec<_> = revisions
+        .iter()
+        .map(|&revision| CatalogRevisionFacts {
+            revision,
+            actual_hash: [7; 32],
+            license: CatalogLicense::Approved,
+            provenance: CatalogProvenance::Recorded,
+            validation: CatalogValidationState::Valid,
+            dependencies: vec![],
+        })
+        .collect();
+    let checked = parse_configuration(
+        &serde_json::to_vec(&input).unwrap(),
+        InputFormat::Json,
+        &refs,
+    )
+    .unwrap();
+    let before = serde_json::to_vec(checked.document()).unwrap();
+    assert!(
+        checked
+            .validate_publication_resources(&refs, &pins, &facts)
+            .is_ok()
+    );
+    for missing in revisions {
+        let incomplete: Vec<_> = pins
+            .iter()
+            .copied()
+            .filter(|p| p.revision != missing)
+            .collect();
+        let error = checked
+            .validate_publication_resources(&refs, &incomplete, &facts)
+            .unwrap_err();
+        assert_eq!(error, Error::MissingCatalogPin(missing));
+        assert!(!format!("{error} {error:?}").contains("internal"));
+    }
+    assert_eq!(serde_json::to_vec(checked.document()).unwrap(), before);
+    input["privateRecords"].as_array_mut().unwrap().push(json!({
+        "id":text(114),"profile":text(1),"name":"IPV6.internal.","ttl":61,
+        "record":{"kind":"aaaa","address":"fd00::2"}
+    }));
+    let checked = parse_configuration(
+        &serde_json::to_vec(&input).unwrap(),
+        InputFormat::Json,
+        &refs,
+    )
+    .unwrap();
+    assert!(matches!(
+        checked.validate_publication_resources(&refs, &pins, &facts),
+        Err(Error::PrivateRecord(PrivateRecordValidationError::Record {
+            issue: PrivateRecordIssue::Ttl,
+            ..
+        }))
+    ));
+}

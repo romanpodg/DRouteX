@@ -1,6 +1,8 @@
 # P2-03 publication validation evidence
 
-Status: D39 owner-accepted; implementation candidate under review, not merged.
+Status: D39 implementation accepted at5fa3a37a797b6aeebea0068f707dc0a3fd9bdcb7;
+[PR14](https://github.com/romanpodg/DRouteX/pull/14) final-head review/checks and normal
+merge remain required. No next implementation begins before that gate.
 PR13/P2-02 merged normally at ecc8a9e9cc903b6264b502cfdc407eb4fd70d5ab; all11
 exact-main jobs39296627839 passed and Codecov processed both reports (Rust3638/3828)
 BEFORE this implementation began. See the [accepted contract](P2_03_PUBLICATION_CONTRACT.md).
@@ -63,4 +65,51 @@ confirmed actionable defect; they changed no files and ran no Cargo commands.
 Q-DOC passed17 tests,9 negative validator cases and250 links, preserving88 tasks,
 61-task MVP closure,188 requirements and17 ADRs/2 Accepted. Actual current-head
 Windows/Linux CI, external coverage/health assessment,
-required linked-account implementation/final reviews and normal merge remain pending.
+required final-head review/checks and normal merge remain pending.
+
+## Actual implementation acceptance
+
+At unchanged implementation5fa3a37, actual linked-account read-only/never Code Review
+completed with no confirmed defect, session01a15554-9ad7-7932-8118-b80ce4f73375,
+exit0. Formatting and13 existing binary tests passed there; rebuild/Clippy were
+refused by the read-only Cargo build lock. That limitation is not a successful
+rebuild; parent Windows Q-RUST and actual CI separately prove those checks.
+All11 exact-head jobs39299342954 succeeded, including Windows/Linux default/no-default
+workspace, all existing qualification jobs, fresh deny for the workspace and four
+qualification manifests and backend/planning generation/OIDC uploads.
+Saved actual logs confirm119 Windows and146 Linux tests per default/no-default
+workspace profile and all five four-category deny summaries successful.
+
+Codecov processed both exact-head reports, state complete/sessions2. Rust backend
+is4062/4274; composite4519/4734 includes auxiliary Python and is not application
+coverage. The exact-base ecc8a9e comparison covers439/462 new Rust lines (95.02%):
+config publication49/61, parser3/3, shared ordering15/15, catalog53/56,
+conflicts217/221, graph19/20, validation entry16/19 and private records67/67.
+Misses include formatting/error-source accessors, the A/AAAA config-adapter arms
+before the supplemental fixture below, and defensive/closing lines. They are not
+claimed executed at this head. Coverage alone is not a correctness proof.
+
+CodeScene8023118 failed all3 maintenance gates. Source assessment and the three
+independent reviews found no confirmed functional defect. conflicts.rs7.03,
+private.rs8.96, graph.rs9.24 and catalog.rs9.49 maintenance observations have explicit
+impact/rationale/revisit triggers in [OPEN_DECISIONS](OPEN_DECISIONS.md), including
+re-review before P2-05 compilation/P2-07 data integration or semantic/bound changes.
+The accepted complete symbol/interval reasoning and iterative graph invariants
+remain together; no score-only splitting, suppression, weakened tests or green claim.
+Test/auxiliary findings9.04/9.69 and validator/planning9.00->8.97/9.64->9.60 remain
+outside the owner's independent metric scope; the repository-wide check stays failed.
+
+## Final supplemental regression and next gate
+
+One additional config integration group checks the existing full configuration
+fixture: disabled filter and gateway-only service each independently require their
+pin; A/AAAA adapters preserve separate families; canonical AAAA owners with different
+TTL refuse; successful validation preserves serialization. This closes real scope/
+adapter test gaps, not a score-only target. Local fmt,3 config groups and all-feature
+Clippy passed; read-only standards/spec follow-ups found no defect. Production
+source/manifests/workflows remain byte-identical to5fa3a37. Current-head CI/coverage
+and linked-account final review must verify the supplemental test/evidence diff.
+
+The owner accepted [D40 strict actions](P2_04_ACTION_CONTRACT.md) after reviewed
+PR14 normal merge and exact-main checks. That is planning authority, not current
+P2-04 implementation or a successful test. Later backlog tasks remain planned.
