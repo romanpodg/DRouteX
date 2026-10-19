@@ -82,8 +82,19 @@ A compile-fail example prevents raw string queries. Windows whole-workspace fmt,
 check/all-targets, Clippy/all-features, default/no-default tests and offline deny
 passed, as did isolated default/no-default8-test groups after sharing the checker.
 Planning17 tests,9 negative validator cases,238 local links and actionlint passed.
-Actual implementation Linux CI, external coverage and linked-account implementation/
-final reviews remain pending.
+Direct implementation CI logs show116 Linux/89 Windows workspace tests per default
+and no-default profile, plus isolated8-test groups in each profile, all passing.
+Fresh CI deny passed all five manifests. Aggregate Actions metadata still shows
+queued; full final status and final-evidence review remain pending.
+
+Implementation head a9ae18903cb9968273175e84ab8898206e1d1988 passed actual linked-account
+read-only/never Codex review against6b58b89, session01a154dd-cda3-7722-8ae3-d207beaf72e1,
+exit0 with no confirmed defect. Head/source stayed unchanged during review. The
+reviewer ran both formatting checks and37 tests from existing binaries; Cargo
+rebuild/Clippy were blocked by read-only build locks. Local parent Windows builds
+passed separately. CI39281335957 aggregate status is still queued, despite
+completed direct Windows/Linux job logs and processed exact-head Codecov. No next
+implementation PR or dependency/profile expansion is authorized by this review.
 
 Independent parallel Rust standards/spec source passes found no actionable defect
 in the candidate. They ran no tests and do not substitute for actual CI or the
@@ -93,5 +104,25 @@ Qualification CodeScene review8006853 failed all3 maintenance gates solely on
 auxiliary planning/test files: validator9.05->9.02, planning tests9.69->9.66 and
 qualifier8.09 (complex/large method and Bumpy Road Ahead). No application source
 was changed at that qualification head. The check stays failed; source-scoped
-disposition P2-01-CS-AUX is recorded in OPEN_DECISIONS. Implementation CodeScene
-results must still be inspected for changed application code, not assumed passed.
+disposition P2-01-CS-AUX is recorded in OPEN_DECISIONS. Implementation CodeScene was
+separately inspected below for changed application code; it is not assumed passed.
+
+Implementation CodeScene review8021355 also failed all3 maintenance gates. The only
+application finding is valid_ascii_name,9.69, Complex Method. Source inspection
+shows one short, bounded conjunction of explicit length/label/alphabet constraints,
+with no state, I/O or unsafe code. Official vectors, boundary negatives, matching
+matrices and both independent source passes plus linked-account review identify no
+functional defect. Immediate restructuring would separate one security predicate
+solely for a score; P2-01-CS-DOMAIN records its minor maintenance disposition and
+revisit trigger. Remaining findings are qualifier9.39, shared vector checker8.87
+(complex/large/Bumpy), and the unchanged auxiliary validator/planning-test scores.
+They remain outside independent metric scope under P2-01-CS-AUX. No suppression,
+check bypass or green CodeScene claim is made.
+
+Exact implementation Codecov reports are processed (state complete,2 sessions) at
+a9ae189: Rust backend3406/3589. The actual base6b58b89/head a9ae189 comparison covers
+91/93 new application Rust lines (97.85%): config adapter7/7, DNS validation12/12,
+policy domain72/74. The aggregate3857/4043 includes auxiliary Python and is not
+application coverage. Both backend/planning patch checks passed. The two missed
+domain lines are the roundtrip-inequality refusal and the InputTooLong display arm;
+they are not claimed executed. Coverage is not a correctness proof.
