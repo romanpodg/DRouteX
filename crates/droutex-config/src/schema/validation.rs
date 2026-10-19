@@ -118,12 +118,17 @@ pub(super) fn ports(ports: &[PortRange], path: &str) -> Result<(), ConfigError> 
     Ok(())
 }
 pub(super) fn domain(pattern: &DomainMatch, path: &str) -> Result<(), ConfigError> {
-    host_syntax(&pattern.value, &format!("{path}.value"))?;
-    require(
-        !pattern.value.contains('*'),
-        Code::InvalidValue,
-        &format!("{path}.value"),
-    )
+    pattern
+        .normalized()
+        .map(|_| ())
+        .map_err(|_| error(Code::InvalidValue, &format!("{path}.value")))
+}
+
+fn dns_name(value: &str, path: &str) -> Result<(), ConfigError> {
+    value
+        .parse::<droutex_policy::CanonicalDomain>()
+        .map(|_| ())
+        .map_err(|_| error(Code::InvalidValue, path))
 }
 
 fn host_syntax(value: &str, path: &str) -> Result<(), ConfigError> {
@@ -188,9 +193,9 @@ fn validate_private_records(
             Code::UnknownReference,
             &field("privateRecords", i, "profile"),
         )?;
-        host_syntax(&record.name, &field("privateRecords", i, "name"))?;
+        dns_name(&record.name, &field("privateRecords", i, "name"))?;
         if let RecordData::Cname { target } = &record.record {
-            host_syntax(target, &field("privateRecords", i, "record.target"))?;
+            dns_name(target, &field("privateRecords", i, "record.target"))?;
         }
     }
     Ok(())

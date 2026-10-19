@@ -73,6 +73,41 @@ fn empty_content() -> SnapshotContent {
 }
 
 #[test]
+fn signed_domain_text_is_preserved_while_matching_uses_canonical_names() {
+    let document = json!({"schemaVersion":1,"profiles":[{
+        "id":typed::<ProfileId>(1).to_string(),"name":"p",
+        "defaultDnsAction":{"kind":"block"},"defaultTrafficAction":{"kind":"deny"},
+        "customRules":[{"id":typed::<RuleId>(2).to_string(),"enabled":true,"priority":0,
+        "matcher":{"mode":"suffix","value":"BÜCHER.Example."},
+        "action":{"plane":"dns","action":{"kind":"block"}}}]
+    }]});
+    let checked = parse_configuration(
+        &serde_json::to_vec(&document).unwrap(),
+        InputFormat::Json,
+        &ReferenceCatalog::default(),
+    )
+    .unwrap();
+    let content = SnapshotContent::new(checked, vec![], &empty_resources()).unwrap();
+    let (key, _) = signer(false);
+    let bytes = encode_snapshot(&content, metadata(1), &key).unwrap();
+    let restored = verify(&bytes).unwrap();
+    let matcher =
+        &restored.content().configuration().document().profiles[0].custom_rules[0].matcher;
+    assert_eq!(matcher.value, "BÜCHER.Example.");
+    assert!(
+        matcher
+            .normalized()
+            .unwrap()
+            .matches(&"child.xn--bcher-kva.example".parse().unwrap())
+    );
+    assert_eq!(
+        encode_snapshot(restored.content(), metadata(1), &key).unwrap(),
+        bytes
+    );
+    assert_eq!(restored.content().as_bytes(), content.as_bytes());
+}
+
+#[test]
 fn retained_verification_requires_exact_trusted_identity_without_resetting_floor() {
     let (key, public) = signer(false);
     let trust = SnapshotTrust::new(vec![(key.id(), public)]).unwrap();

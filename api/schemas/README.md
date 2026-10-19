@@ -69,6 +69,12 @@ DNS actions are `resolve` with an upstream reference, `block`, or `gateway` with
 outbound reference. Traffic actions are `deny` or `outbound`. Custom/service rule
 actions explicitly name their `plane` and `action`. Domain match modes are
 `exact`, `wildcard` or `suffix`, with the bare base name in `value`; no `*` syntax.
+P2-01 derives a separate canonical matcher: `exact` is base-only, `suffix` includes
+base and descendants, and `wildcard` includes descendants while excluding the base.
+The accepted [bounded DNS/IDNA profile](../../docs/planning/P2_01_DOMAIN_CONTRACT.md)
+validates rule/grant names, private record names and CNAME targets; original strings
+remain unchanged in serialization and signed snapshots. This is not TLS or gateway
+destination authorization.
 Priority is an explicit signed integer. DNS rules cannot carry TCP port ranges.
 Ranges include both endpoints and require `1 <= from <= to <= 65535`.
 Filter/service selections reference caller-known immutable revision IDs.

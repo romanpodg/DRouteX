@@ -1,16 +1,16 @@
 # DRouteX project instructions
 
-Current continuation: P1-05/PR9 merged normally at521bfa76fbc27e14cd4981638af775ba92c6299f;
-all11 exact-main jobs39148795165 passed and both Codecov reports processed. The
-owner then explicitly accepted the complete P1-06 bounded filesystem profile D36:
-see docs/planning/P1_06_ACTIVATION_CONTRACT.md. P1-06 implementation is authorized;
-tests and independent reviews remain required before normal merge. P2 stays planned
-until P1-06 finishes and merges. Historical P1-05 holds below have been satisfied,
-not bypassed; the whole-volume malicious rollback exclusion is explicit.
-P1-06 implementation head3c12bba passed independent read-only/never Codex re-review
-and all11 Windows/Linux jobs39153071723. Concrete defects were fixed; CodeScene
-maintenance dispositions remain disclosed. PR11 final-head review/checks and normal
-merge are still required; see docs/planning/P1_06_ACTIVATION_REVIEW.md.
+Current gate2026-10-19: P1-06/PR11 merged normally at6b58b892cf2e9c58499cd60d4ccad9c503a1d656;
+all11 main jobs39154498259 and both processed Codecov reports passed. The owner
+accepted D37's P2-01 domain profile and conditional idna1.1.0 qualification/adoption.
+See docs/planning/P2_01_DOMAIN_CONTRACT.md. Qualification head a60b3e4 passed all11
+Windows/Linux jobs39156440746, fresh dependency checks, every29 archive/source/license
+check and linked-account read-only/never review01a1505d-f3c3-7491-9281-ce5be624a3fa.
+Conditional production adoption is implemented in draft PR12; implementation/final
+reviews and checks remain required. No handwritten IDNA, silent registry update or
+malformed-ACE exception. Later P2 implementation tasks stay planned until reviewed
+P2-01 merge. P1-05/PR9 and P1-06/PR11 historical holds below were satisfied by their
+recorded reviews, fixes and exact-main evidence, not bypassed. See their task reviews.
 
 ## Authority and current scope
 

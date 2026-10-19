@@ -41,6 +41,151 @@ fn reject(value: &Value, code: Code, field: &str) {
 }
 
 #[test]
+fn wire_match_modes_derive_explicit_semantics_without_rewriting_text() {
+    use droutex_config::{DomainMatch, MatchMode};
+    use droutex_policy::{CanonicalDomain, DomainMatchMode};
+    for (wire, mode, semantic, apex) in [
+        ("exact", MatchMode::Exact, DomainMatchMode::Exact, true),
+        (
+            "suffix",
+            MatchMode::Suffix,
+            DomainMatchMode::DomainAndSubdomains,
+            true,
+        ),
+        (
+            "wildcard",
+            MatchMode::Wildcard,
+            DomainMatchMode::SubdomainsOnly,
+            false,
+        ),
+    ] {
+        let original = DomainMatch {
+            mode,
+            value: "BÜCHER.Example.".to_owned(),
+        };
+        let before = serde_json::to_vec(&original).unwrap();
+        let matcher = original.normalized().unwrap();
+        assert_eq!(matcher.mode(), semantic);
+        assert_eq!(matcher.domain().as_str(), "xn--bcher-kva.example");
+        assert_eq!(
+            matcher.matches(&"bücher.example".parse::<CanonicalDomain>().unwrap()),
+            apex
+        );
+        assert_eq!(
+            matcher.matches(&"child.xn--bcher-kva.example".parse().unwrap()),
+            mode != MatchMode::Exact
+        );
+        assert_eq!(serde_json::to_vec(&original).unwrap(), before);
+        assert_eq!(serde_json::to_value(&original).unwrap()["mode"], wire);
+    }
+}
+
+#[test]
+fn invalid_domains_refuse_in_rules_grants_and_private_dns_fields() {
+    for invalid in [
+        "xn--xn--a--gua.pt".to_owned(),
+        "*.example".to_owned(),
+        "a..b".to_owned(),
+        "a".repeat(1025),
+    ] {
+        let mut data = fixture();
+        data["profiles"][0]["customRules"][0]["matcher"]["value"] = json!(invalid);
+        reject(
+            &data,
+            Code::InvalidValue,
+            "$.profiles[0].customRules[0].matcher.value",
+        );
+        let mut data = fixture();
+        data["gatewayGrants"][0]["targets"][0]["value"] = json!(invalid);
+        reject(
+            &data,
+            Code::InvalidValue,
+            "$.gatewayGrants[0].targets[0].value",
+        );
+        let mut data = fixture();
+        data["privateRecords"][0]["name"] = json!(invalid);
+        reject(&data, Code::InvalidValue, "$.privateRecords[0].name");
+        let mut data = fixture();
+        data["privateRecords"][0]["record"] = json!({"kind":"cname", "target":invalid});
+        reject(
+            &data,
+            Code::InvalidValue,
+            "$.privateRecords[0].record.target",
+        );
+    }
+}
+
+#[test]
+fn private_dns_and_gateway_names_preserve_unicode_and_cdn_compatibility() {
+    let mut data = fixture();
+    data["gatewayGrants"][0]["targets"][0]["value"] = json!("BÜCHER.Example.");
+    data["privateRecords"][0]["name"] = json!("_sip._tcp.Example.");
+    data["privateRecords"][0]["record"] = json!({"kind":"cname", "target":"r3---sn.Example."});
+    let checked = parse(&data).unwrap();
+    assert_eq!(
+        checked.document().private_records[0].name,
+        "_sip._tcp.Example."
+    );
+    let matcher = checked.document().gateway_grants[0].targets[0]
+        .normalized()
+        .unwrap();
+    assert_eq!(matcher.domain().as_str(), "xn--bcher-kva.example");
+}
+
+#[test]
+fn all_config_formats_validate_domains_and_keep_original_text() {
+    for (format, input) in [
+        (
+            InputFormat::Json,
+            format!(
+                r#"{{"schemaVersion":1,"profiles":[{{"id":"{}","name":"p","defaultDnsAction":{{"kind":"block"}},"defaultTrafficAction":{{"kind":"deny"}},"customRules":[{{"id":"{}","enabled":true,"priority":0,"matcher":{{"mode":"suffix","value":"BÜCHER.Example."}},"action":{{"plane":"dns","action":{{"kind":"block"}}}}}}]}}]}}"#,
+                id(1),
+                id(2)
+            ),
+        ),
+        (
+            InputFormat::Yaml,
+            format!(
+                "schemaVersion: 1\nprofiles:\n- id: {}\n  name: p\n  defaultDnsAction: {{kind: block}}\n  defaultTrafficAction: {{kind: deny}}\n  customRules:\n  - id: {}\n    enabled: true\n    priority: 0\n    matcher: {{mode: suffix, value: BÜCHER.Example.}}\n    action: {{plane: dns, action: {{kind: block}}}}\n",
+                id(1),
+                id(2)
+            ),
+        ),
+        (
+            InputFormat::Toml,
+            format!(
+                "schemaVersion=1\n[[profiles]]\nid='{}'\nname='p'\ndefaultDnsAction={{kind='block'}}\ndefaultTrafficAction={{kind='deny'}}\n[[profiles.customRules]]\nid='{}'\nenabled=true\npriority=0\nmatcher={{mode='suffix',value='BÜCHER.Example.'}}\naction={{plane='dns',action={{kind='block'}}}}\n",
+                id(1),
+                id(2)
+            ),
+        ),
+    ] {
+        let checked =
+            parse_configuration(input.as_bytes(), format, &ReferenceCatalog::default()).unwrap();
+        let original = &checked.document().profiles[0].custom_rules[0].matcher;
+        assert_eq!(original.value, "BÜCHER.Example.");
+        assert!(
+            original
+                .normalized()
+                .unwrap()
+                .matches(&"child.xn--bcher-kva.example".parse().unwrap())
+        );
+        assert_eq!(
+            parse_configuration(
+                input
+                    .replace("BÜCHER.Example.", "xn--xn--a--gua.pt")
+                    .as_bytes(),
+                format,
+                &ReferenceCatalog::default()
+            )
+            .unwrap_err()
+            .code(),
+            Code::InvalidValue
+        );
+    }
+}
+
+#[test]
 fn same_empty_draft_in_all_three_formats() {
     for (format, input) in [
         (InputFormat::Json, "{\"schemaVersion\":1}"),

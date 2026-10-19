@@ -1,0 +1,20 @@
+[package]
+name = "droutex-policy-qualification"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.99.0"
+license = "Apache-2.0"
+publish = false
+
+[workspace]
+
+[dependencies]
+idna = { version = "=1.1.0", default-features = false, features = ["std", "compiled_data"] }
+
+[[test]]
+name = "idna_profile"
+path = "idna_profile.rs"
+
+[lints.rust]
+unsafe_code = "forbid"
+warnings = "deny"

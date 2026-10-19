@@ -8,6 +8,7 @@ license.workspace = true
 
 [dependencies]
 droutex-common.workspace = true
+idna.workspace = true
 
 [lints]
 workspace = true

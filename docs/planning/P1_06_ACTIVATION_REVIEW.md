@@ -1,7 +1,9 @@
 # P1-06 activation implementation evidence
 
-Status: implementation accepted on3c12bba after independent review and all11
-exact-head jobs; PR11 final-head evidence review/checks and normal merge pending.
+Status: P1-06 complete; PR11 merged normally at6b58b892cf2e9c58499cd60d4ccad9c503a1d656
+after independent final-evidence review and all11 final-head jobs39153940919.
+All11 exact-main jobs39154498259 passed; Codecov processed both reports with Rust
+backend3322/3503. Implementation had passed review/all11 jobs on3c12bba.
 The owner accepted
 [D36](P1_06_ACTIVATION_CONTRACT.md) after P1-05's reviewed merge and verified main.
 No new dependency, protocol engine, privileged execution or listener is introduced.
@@ -44,9 +46,11 @@ physical power-loss or volume-exhaustion tests.
 
 ## Outstanding gates
 
-Implementation gates below passed. Final documentation head still requires its own
-independent evidence review and exact-head CI before normal merge; exact-main
-verification follows merge. P2 stays planned until those steps finish.
+Implementation/final-head/main gates passed. Final evidence review session
+01a15041-414f-7d51-a125-c15d56d357c2 exited0 with no findings,228 checked links
+and9 negative cases. CodeScene8006668 retained the same failed maintenance findings
+after result-link normalization; dispositions below remain. No gate was bypassed.
+Later runtime/product acceptance remains at its owning tasks.
 
 ## Independent pre-CI findings and corrections
 

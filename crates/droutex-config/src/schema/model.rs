@@ -290,12 +290,26 @@ pub enum MatchMode {
     Suffix,
 }
 
-/// Text awaiting P2-01 canonicalization, never a compiled DNS/target matcher.
+/// Original wire text, retained unchanged in serialization and signed snapshots.
+/// Canonical matching derives a separate value; this is not live target authority.
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct DomainMatch {
     pub mode: MatchMode,
     pub value: String,
+}
+
+impl DomainMatch {
+    /// Validate and derive the explicit CR-0002 matcher without rewriting wire text.
+    pub fn normalized(&self) -> Result<droutex_policy::DomainMatcher, droutex_policy::DomainError> {
+        use droutex_policy::{DomainMatchMode, DomainMatcher};
+        let mode = match self.mode {
+            MatchMode::Exact => DomainMatchMode::Exact,
+            MatchMode::Suffix => DomainMatchMode::DomainAndSubdomains,
+            MatchMode::Wildcard => DomainMatchMode::SubdomainsOnly,
+        };
+        Ok(DomainMatcher::new(self.value.parse()?, mode))
+    }
 }
 
 #[derive(Debug, Deserialize, Serialize)]

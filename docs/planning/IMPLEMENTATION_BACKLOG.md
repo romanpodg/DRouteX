@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P1-05/PR9 merged and exact-main verified; P1-06 implementation accepted on3c12bba after review/all11 CI jobs; PR11 final-head finalization gated; P2 stays planned.**
+**P0/P1 complete and merged; P2-01 IDNA qualification passed; bounded domain normalization/matching implementation under review; later tasks planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -200,13 +200,13 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P2-01: Normalize domains and wildcard semantics
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,8,22.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,8,22.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | IDNA/lowercase/trailing-dot normalization and explicit Exact/DomainAndSubdomains/SubdomainsOnly modes; no implicit adoption of Control D wildcard grammar |
 | Prerequisites | P1-02 |
-| Expected files/modules | crates/droutex-policy/src/domain |
+| Expected files/modules | crates/droutex-policy/src/domain.rs; crates/droutex-config/src/schema/model.rs; crates/droutex-config/src/schema/validation.rs |
 | Acceptance criteria | Canonical equivalent names match consistently; invalid labels and wildcard bombs rejected |
 | Tests | Unicode/IDNA cases, apex/subdomain matrix and property tests |
 | Security considerations | Bound length/label/rule expansion at input boundary |
