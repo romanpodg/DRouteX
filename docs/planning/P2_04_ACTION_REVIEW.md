@@ -1,8 +1,8 @@
 # P2-04 strict action resolution evidence
 
-Status: D40 pure action components implemented; independent implementation review,
-actual Windows/Linux CI, external coverage/health assessment and final-head review,
-checks and normal merge remain required. Later tasks remain planned.
+Status: D40 implementation8a07755 accepted after actual linked-account review,
+all11 current-head CI jobs and external coverage/health assessment. Final-head
+review/checks and normal merge remain required. Later tasks remain planned.
 The prerequisite [PR14](https://github.com/romanpodg/DRouteX/pull/14) merged normally
 at a50c6a432c08e1a4422ae625a25b392e54a62d42; all11 exact-main39476373259 jobs passed
 and both Codecov reports processed (Rust4071/4274) before implementation began.
@@ -77,3 +77,38 @@ risk; it is not a metric-driven refactor. Read-only standards follow-up confirme
 Graphify AST-only update completed locally (3771 nodes/8006 edges); missing SQL
 parser and zero-node Cargo.toml warnings remain explicit, no semantic/API backend
 or complete graph coverage claim. Generated graph artifacts remain untracked.
+
+
+## Actual implementation review and maintenance assessment
+
+At implementation8a07755f53eb32fd9685203e45cf300ce87f7db8 the linked-account
+read-only/never Code Review completed, session01a15aad-c262-7470-8f53-de4bb857b184,
+exit0, no confirmed defect. Formatting, seven planning-validator tests and existing
+binaries of the new Rust tests passed. Full rebuild/Clippy/cargo test were refused
+by the read-only build lock; parent actual Q-RUST and CI are separate evidence.
+
+CodeScene8044281 failed all3 maintenance gates. Application decision/mod.rs9.84
+flags Bumpy Road Ahead in ActionResolver.new; the source-assessed minor assembly
+maintenance risk, rationale and P2-05/bounds/kinds revisit trigger are recorded as
+P2-04-CS-INVENTORY in [OPEN_DECISIONS](OPEN_DECISIONS.md). Tests/auxiliary scores
+8.97/9.02 and9.60->9.56/8.97->8.95 remain outside the owner's independent metric
+scope under P2-04-CS-AUX. No suppression, metric-only split or green CodeScene claim.
+
+
+Codecov processed both exact implementation reports, state complete/sessions2:
+Rust4329/4535; exact-base a50c6a4 Rust patch257/261 (98.47%). Config action adapter
+132/136, local-answer32/32 and policy action resolver93/93. The four missed lines
+are the inventory Error::source arm and InvalidActionScope Display, not claimed
+executed. Coverage does not prove live failure/authorization or full correctness.
+All11 exact-head jobs39479414389 completed successfully: Windows/Linux workspace,
+existing qualification jobs, fresh dependency/license checks for the workspace and
+four qualification manifests, backend/planning generation and OIDC uploads. Actual
+saved logs confirm133 Windows/160 Linux tests per default/no-default profile and
+all five advisories/bans/licenses/sources summaries successful. Source/config/signed
+vectors passed unchanged. No runtime DNS/CONNECT or live failure evidence is inferred.
+
+The final evidence commit changes only this report, current-gate instructions,
+maintenance dispositions and generated planning-verification links. Application
+source, tests, manifests and workflows remain byte-identical to8a07755. Current-head
+CI/Codecov/CodeScene and separate linked-account final review must verify this diff;
+no next implementation starts before normal merge and exact-main acceptance.

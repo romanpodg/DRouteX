@@ -99,6 +99,13 @@ IPv6/QUIC/application enforcement.
 The owner explicitly accepted the P0-01 foundation and CR-0002, then authorized
 P0-02. Other technical details and later task execution retain their own gates.
 
+## P2-04 review dispositions
+
+| ID | Finding, impact and decision | Owner / revisit trigger |
+|---|---|---|
+| P2-04-CS-INVENTORY | CodeScene8044281 failed all3 maintenance gates; decision/mod.rs9.84 flags Bumpy Road Ahead in ActionResolver.new. The bounded constructor preflights the combined inventory before allocation, sorts each typed namespace for deterministic duplicate errors, then builds two immutable lookup tables. Source tracing and independent standards/spec/linked-account reviews found no functional defect after fixing the separate config preflight allocation issue. Exact-limit/reordered duplicate and missing-fact regressions passed. Splitting the short constructor solely to move two sequential typed loops would disperse the shared preflight/assembly invariant without demonstrated safety benefit. Remaining maintenance risk is minor for the current two namespaces, recorded rather than suppressed; the failed check remains failed. | P2-04; re-review before P2-05 generation integration or adding inventory kinds, bounds, duplicate/error ordering or capability semantics |
+| P2-04-CS-AUX | Same actual run reports policy tests/actions.rs8.97 Large Method/Large Assertion Blocks, config tests/action_resolution.rs9.02 Large Method (verify_separation and wrong-scope regression), test_planning_tools.py9.60->9.56 and verify_planning.py8.97->8.95 Complex Method. These test/auxiliary tools are outside the owner's independent metric scope. Actual matrix/negative checks pass; do not split tests or weaken rejection gates for score. No cleanup/suppression or successful CodeScene claim. | Revisit for a concrete functional/test-maintenance defect or execution-boundary change, preserving negative and independent-scope regressions |
+
 ## P2-03 review dispositions
 
 | Item | Finding, impact and rationale | Owning task / revisit trigger |

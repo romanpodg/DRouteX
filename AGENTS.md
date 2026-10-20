@@ -9,9 +9,11 @@ all11 final-head39300467355 jobs passed. Earlier quota failures were not success
 reviews; fresh successful review completed before merge. Failed CodeScene maintenance
 findings remain disclosed without suppression/check bypass. See P2_03_PUBLICATION_REVIEW.md.
 The owner accepted complete D40 strict actions after that prerequisite:
-see docs/planning/P2_04_ACTION_CONTRACT.md. P2-04 pure intents are current;
-actual Windows/Linux tests, independent implementation/final reviews and normal
-merge remain required. No automatic fail-open, new schema field or network authority.
+see docs/planning/P2_04_ACTION_CONTRACT.md. P2-04 pure intents8a07755 passed
+linked-account read-only/never implementation review01a15aad-c262-7470-8f53-de4bb857b184,
+all11 jobs39479414389 and processed Codecov (Rust4329/4535; patch257/261).
+CodeScene8044281 remains failed with recorded minor maintenance dispositions.
+PR15 final-head review/checks and normal merge remain required. No automatic fail-open, new schema field or network authority.
 P2-05 binds config/resource and COMPLETE prepared policy checks to one generation;
 P2-07 constructs actual verified catalog facts. No standalone validation Result or
 intent is signing/import/runtime authority. Later tasks stay planned until reviewed
