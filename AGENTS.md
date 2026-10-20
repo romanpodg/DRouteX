@@ -14,6 +14,10 @@ merge remain required. No automatic feed download, new dependency/current config
 field or network/publication authority. P2-05 binds actual verified catalog bytes,
 config/resources and COMPLETE prepared policies to one generation; P2-06 Explain
 and P3/P4 retain their gates. No standalone Result/facts/intent is admission authority.
+Owner D42 authorizes exact rustls-webpki0.103.16 qualification/conditional adoption
+in the existing TLS qualifier for RUSTSEC-2026-0382; actual Windows/Linux, complete
+dependency/license checks and independent review remain required. No production
+TLS adoption or advisory/check suppression. See WEBPKI_SECURITY_UPDATE.md.
 Later tasks stay planned until reviewed P2-07 merge. Historical gates were satisfied
 by recorded evidence, not bypassed; no owner CI-status exception was used.
 

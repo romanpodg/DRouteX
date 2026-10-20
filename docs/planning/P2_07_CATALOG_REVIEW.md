@@ -78,3 +78,33 @@ graph evidence is claimed; all generated graph artifacts remain untracked.
 Q-DOC passed17 tests with missing-D41/source and unfinished-P2-04 negative mutations,
 9 negative validator cases/265 links, preserving88 tasks/61 MVP/188 requirements,
 17 ADRs/2 Accepted and source specifications unchanged.
+
+
+## Actual implementation review and CI security gate
+
+Implementation971b32661dacf9435f765ebf625c3e663b4744e0 passed linked-account
+read-only/never Code Review01a15ad2-7b4f-7180-8673-c7299c92518e, exit0, no confirmed
+defect. Formatting and14 tests in existing binaries passed; full rebuild/Clippy/
+cargo test were denied by the read-only lock. Actual parent and CI checks remain
+separate evidence, not inferred successes.
+
+CI39485189479 completed FAILURE: nine jobs succeeded, Rust dependencies/coverage
+failed and the dependent Codecov upload was skipped. Workspace Windows/Linux
+and existing qualifier jobs passed. Dependency failure is the fresh official
+RUSTSEC-2026-0382 advisory in the existing test-only TLS qualification lockfile,
+rustls-webpki0.103.15. Production workspace has no Rustls dependency, but the gate
+still blocks merge. Coverage was NOT generated/uploaded at this head. Original
+failed run/logs remain retained, no ignore, suppression or status exception.
+The official stable0.103.16 ISC archive/checksum/MSRV were inspected read-only;
+owner decision was pending at that failed head. D42 now authorizes exact0.103.16
+qualification/conditional adoption; [security evidence](../operations/WEBPKI_SECURITY_UPDATE.md)
+records the minimal candidate lock/inventory update, actual Windows/upstream tests
+and full artifact/license checks. Linux/current-head CI and independent review
+remain required; the original failed run is not retroactively passed.
+
+CodeScene8044833 FAILED all3 maintenance gates. Source findings policy/catalog.rs8.96,
+config/catalog/store.rs9.39 and streaming scan.rs9.39 were assessed against actual
+source invariants and regression/review evidence. Explicit minor impact/rationale/
+P2-05/grammar/budget/pairing revisit triggers are recorded in
+[OPEN_DECISIONS](OPEN_DECISIONS.md); tests/auxiliary findings remain outside the
+owner's independent metric scope. No score-only split or successful CodeScene claim.

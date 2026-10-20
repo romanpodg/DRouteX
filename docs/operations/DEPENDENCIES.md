@@ -209,3 +209,13 @@ The [review](../planning/P2_01_DOMAIN_REVIEW.md) records malformed-ACE refusal v
 same-library roundtrip, CDN compatibility, selected Unicode17 fixture scope and
 failed exploratory16/18 repertoire comparisons. Production implementation acceptance
 remains pending; no URL/TLS/destination authority follows from DNS normalization.
+
+## P2-07 bounded security correction
+
+Owner D42 approved qualification/conditional adoption of exactly rustls-webpki0.103.16
+for RUSTSEC-2026-0382 in this existing standalone TLS inventory. The current
+[inventory](DEPENDENCY_INVENTORY.csv) updates only that version/checksum; the other106
+registry artifacts and original qualification history remain unchanged. Actual
+checks and outstanding acceptance gates are recorded in the
+[security qualification](WEBPKI_SECURITY_UPDATE.md). This does not adopt TLS into
+the production workspace or distribute any additional target.
