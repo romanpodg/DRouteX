@@ -1,8 +1,8 @@
 # P2-03 publication validation evidence
 
-Status: D39 implementation accepted at5fa3a37a797b6aeebea0068f707dc0a3fd9bdcb7;
-[PR14](https://github.com/romanpodg/DRouteX/pull/14) final-head review/checks and normal
-merge remain required. No next implementation begins before that gate.
+Status: completed in [PR14](https://github.com/romanpodg/DRouteX/pull/14), normally
+merged at a50c6a432c08e1a4422ae625a25b392e54a62d42 after final review/checks.
+All11 exact-main jobs39476373259 passed and both Codecov reports processed.
 PR13/P2-02 merged normally at ecc8a9e9cc903b6264b502cfdc407eb4fd70d5ab; all11
 exact-main jobs39296627839 passed and Codecov processed both reports (Rust3638/3828)
 BEFORE this implementation began. See the [accepted contract](P2_03_PUBLICATION_CONTRACT.md).
@@ -113,3 +113,25 @@ and linked-account final review must verify the supplemental test/evidence diff.
 The owner accepted [D40 strict actions](P2_04_ACTION_CONTRACT.md) after reviewed
 PR14 normal merge and exact-main checks. That is planning authority, not current
 P2-04 implementation or a successful test. Later backlog tasks remain planned.
+
+## Final review, normal merge and exact-main acceptance
+
+Final head9516517741e75bc9c6d52edce3b215096a115b0b adds only the supplemental
+fixture test and four evidence/planning documents; application source, manifests and
+workflows are byte-identical to5fa3a37. All11 jobs39300467355 passed, with actual
+Windows120/Linux147 tests per default/no-default profile. Both Codecov reports
+processed: Rust4071/4274 and exact-base Rust patch444/462 (96.10%). CodeScene8023237
+remained failed with the disclosed application findings plus the supplemental
+test's Large Method9.57, within the P2-03-CS-AUX scope/disposition. No suppression.
+
+The first final linked-account attempt exited1 on quota; no successful review was
+claimed. A PR-body update was also interrupted by automatic approval quota review
+without execution. After owner continuation, a fresh normally approved request and
+read-only/never final review completed: session01a15a98-5e07-7d20-b353-7a25b59703da,
+exit0, no confirmed defect. Formatting and three existing binary groups passed;
+read-only rebuild limitations are separate from actual parent and CI evidence.
+
+PR14 merged normally2026-10-20T18:37:24Z at a50c6a4, without force/admin merge or
+check/protection changes. Exact-main run39476373259 passed all11 jobs; Codecov
+processed both reports, Rust4071/4274. These gates completed before D40/P2-04 code
+began. The owner choice to wait for ordinary statuses was honored throughout.

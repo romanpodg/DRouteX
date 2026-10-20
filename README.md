@@ -11,8 +11,9 @@ P1-07 secrets and P1-05 authenticated snapshots are merged. The P1-06 local
 activation/recovery completed in PR #11 with exact-main Windows/Linux CI verified.
 P2-01 domain normalization/matching merged in PR #12 with exact-main CI verified.
 P2-02 deterministic scoped selection merged in PR #13 with exact-main CI verified.
-P2-03 implements owner-accepted publication conflict/resource validation components;
-implementation review and final acceptance are pending. No DRouteX DNS/gateway listener exists yet.
+P2-03 publication conflict/resource validation merged in PR #14 with exact-main CI verified.
+P2-04 implements owner-accepted separate DNS/TCP/local-answer intents and strict failure
+resolution; implementation review and final acceptance are pending. No DRouteX DNS/gateway listener exists yet.
 
 - [Development roadmap](docs/planning/DEVELOPMENT_ROADMAP.md)
 - [Current execution boundary and repository handoff](docs/planning/EXECUTION_STATUS.md)
@@ -36,7 +37,7 @@ implementation review and final acceptance are pending. No DRouteX DNS/gateway l
 Windows PowerShell development environment: `. ./tools/activate.ps1`.
 This uses local Rust tooling and existing Visual Studio without persistent PATH edits.
 Read AGENTS.md before work. The user authorized starting MVP roadmap work on 2026-10-15;
-P0-01 is accepted; the current execution boundary is P2-01 with its recorded gates.
+P0-01 is accepted; the current execution boundary is P2-04 with its recorded gates.
 See [Rust workspace posture](docs/agents/rust.md) for build commands and scope.
 
 Original DRouteX code is licensed under [Apache-2.0](LICENSE), selected by the owner

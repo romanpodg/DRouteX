@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1 and P2-01/02 complete and merged; PR13 exact-main verified; P2-03 D39 publication validation implementation under review; later tasks planned.**
+**P0/P1 and P2-01/02/03 complete and merged; PR14 exact-main verified; P2-04 D40 strict action resolution implementation under review; later tasks planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -230,7 +230,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P2-03: Detect policy conflicts and dependencies
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,17.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,17.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -238,23 +238,23 @@ Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifi
 | Prerequisites | P2-02 |
 | Expected files/modules | crates/droutex-policy/src/validate; crates/droutex-config/src/publication.rs |
 | Acceptance criteria | Irreconcilable conflict prevents publication with actionable rule IDs |
-| Tests | Exact/wildcard conflicts, removed node and cycles |
+| Tests | D39 symbolic conflict quotient/differential and resource/cycle/current-reference tests passed. PR14 a50c6a4 merged normally after linked-account implementation/final reviews and all11 head/main jobs; exact-main39476373259 passed, Codecov both reports Rust4071/4274, patch444/462. CodeScene maintenance failures remain recorded; docs/planning/P2_03_PUBLICATION_REVIEW.md. |
 | Security considerations | No arbitrary map iteration or warning-only unsafe acceptance |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
 | Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |
 
 ### P2-04: Resolve actions and failure policies
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§6,7,8,20.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§6,7,8,20.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Keep DNS BYPASS/BLOCK/local overrides and compatible SmartDNS REDIRECT distinct from VPS_DIRECT/protected proxy outbounds; safety checks and strict failures remain mandatory |
 | Prerequisites | P2-03 |
-| Expected files/modules | crates/droutex-policy/src/decision |
+| Expected files/modules | crates/droutex-policy/src/decision; crates/droutex-config/src/actions.rs |
 | Acceptance criteria | DIRECT decision point explicit; unsupported tunnel/node/UDP capabilities reject; strict proxy failures block |
 | Tests | Unavailable proxy, explicit direct opt-in, DNS-only limits and deferred tunnel/node action negatives |
-| Security considerations | Fail-open requires explicit profile permission and audit |
+| Security considerations | D40 strict refusal; direct only explicitly selected VPS_DIRECT. Future automatic fail-open requires separately accepted Profile permission and real audit; none implemented. |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
 | Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |
 

@@ -1,6 +1,11 @@
 //! Bounded configuration import and validation against accepted policy contracts.
 
+mod actions;
 mod publication;
+pub use actions::{
+    ActionPreparationError, DnsActionResolution, InvalidActionScope, OutboundObservation,
+    TcpActionResolution, resolve_dns_action, resolve_tcp_action,
+};
 mod revisions;
 pub use publication::PublicationResourceError;
 mod schema;

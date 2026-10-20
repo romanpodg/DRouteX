@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "P0/P1 and P2-01/02 complete and merged; PR13 exact-main verified; P2-03 D39 publication validation implementation under review; later tasks planned",
-  "date": "2026-10-20",
+  "status": "P0/P1 and P2-01/02/03 complete and merged; PR14 exact-main verified; P2-04 D40 strict action resolution implementation under review; later tasks planned",
+  "date": "2026-10-21",
   "phases": {
     "P0": "Foundation",
     "P1": "Domain and configuration",
@@ -457,11 +457,11 @@
         "crates/droutex-config/src/publication.rs"
       ],
       "acceptance": "Irreconcilable conflict prevents publication with actionable rule IDs",
-      "tests": "Exact/wildcard conflicts, removed node and cycles",
+      "tests": "D39 symbolic conflict quotient/differential and resource/cycle/current-reference tests passed. PR14 a50c6a4 merged normally after linked-account implementation/final reviews and all11 head/main jobs; exact-main39476373259 passed, Codecov both reports Rust4071/4274, patch444/462. CodeScene maintenance failures remain recorded; docs/planning/P2_03_PUBLICATION_REVIEW.md.",
       "security": "No arbitrary map iteration or warning-only unsafe acceptance",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_progress",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -483,14 +483,15 @@
       ],
       "scope": "Keep DNS BYPASS/BLOCK/local overrides and compatible SmartDNS REDIRECT distinct from VPS_DIRECT/protected proxy outbounds; safety checks and strict failures remain mandatory",
       "files": [
-        "crates/droutex-policy/src/decision"
+        "crates/droutex-policy/src/decision",
+        "crates/droutex-config/src/actions.rs"
       ],
       "acceptance": "DIRECT decision point explicit; unsupported tunnel/node/UDP capabilities reject; strict proxy failures block",
       "tests": "Unavailable proxy, explicit direct opt-in, DNS-only limits and deferred tunnel/node action negatives",
-      "security": "Fail-open requires explicit profile permission and audit",
+      "security": "D40 strict refusal; direct only explicitly selected VPS_DIRECT. Future automatic fail-open requires separately accepted Profile permission and real audit; none implemented.",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2609,10 +2610,10 @@
   ],
   "scope_amendment": "CR-0001",
   "execution_authorization": {
-    "date": "2026-10-19",
-    "source": "Direct owner reply accepting complete .setup/p2-03/publication-design-proposal.md after reviewed PR13 merge; docs/planning/P2_03_PUBLICATION_CONTRACT.md",
-    "scope": "D39 P2-03 pure publication validation components after reviewed PR13 normal merge ecc8a9e and all11 exact-main CI39296627839 plus processed Codecov. No new dependencies, catalog importer, full compiler or runtime admission; later implementation tasks planned until reviewed P2-03 merge.",
-    "through_task": "P2-03"
+    "date": "2026-10-20",
+    "source": "Direct owner reply accepting complete .setup/p2-04/action-design-proposal.md after reviewed PR14 merge; docs/planning/P2_04_ACTION_CONTRACT.md",
+    "scope": "D40 pure separate DNS/TCP/local-answer intents and strict failures after PR14 normal merge a50c6a4 and all11 exact-main CI39476373259 plus both processed Codecov reports. No automatic fail-open, new dependency/config field, connector or runtime admission. Later implementation stays planned until reviewed P2-04 merge.",
+    "through_task": "P2-04"
   },
   "design_proposals": [
     {
@@ -2814,5 +2815,11 @@
     "date": "2026-10-19",
     "source": "Direct owner reply accepting complete .setup/p2-03/publication-design-proposal.md after PR13 merge; docs/planning/P2_03_PUBLICATION_CONTRACT.md",
     "profile": "D39 reachable highest-rank contradictions only; fully shadowed permitted; canonical Profile-private CNAME/RRset/TTL validation with external targets unresolved; trusted catalog pin/hash/license/provenance/dependency facts required; current references/scope rechecked; existing aggregate bounds, no new dependency/compiler/importer/network authority"
+  },
+  "action_resolution_decision": {
+    "status": "accepted",
+    "date": "2026-10-20",
+    "source": "Direct owner reply accepting complete strict profile after PR14; docs/planning/P2_04_ACTION_CONTRACT.md",
+    "profile": "D40 distinct DNS/TCP/local-answer intents; explicit direct decision point; native VPS_DIRECT/HTTP CONNECT over verified TLS only; explicit trusted facts with missing/unknown/disabled/unavailable/unsupported refusal; no automatic fail-open, new dependency or config field; P2-05/P3/P4 retain generation/authentication/response/network gates"
   }
 }
