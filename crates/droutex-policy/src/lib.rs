@@ -2,7 +2,13 @@
 
 use droutex_common::RuleLayer;
 
+mod decision;
 mod domain;
+pub use decision::{
+    ActionInventoryError, ActionRefusal, ActionResolver, DecisionPoint, DnsIntent,
+    GatewayReadiness, LocalAnswerIntent, OutboundFacts, RequestTransport, TcpCapability, TcpIntent,
+    local_answer_intent,
+};
 mod evaluate;
 mod validate;
 pub use domain::{

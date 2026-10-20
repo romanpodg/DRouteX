@@ -1,9 +1,9 @@
 # P2-04 action and failure decision contract
 
 Status: D40 owner-accepted2026-10-20 by direct reply accepting the complete local
-strict profile after PR14 merge. Implementation must wait for reviewed normal
-PR14 merge and exact-main checks. This does not advance current authorization
-beyond P2-03 or accept all proposed technical ADRs.
+strict profile after PR14 merge. The prerequisite was satisfied by normal PR14 merge a50c6a4, all11 exact-main
+CI39476373259 jobs and both processed Codecov reports before implementation.
+D40 authorizes P2-04 only; later technical choices retain their owning gates.
 
 ## Accepted foundations
 
