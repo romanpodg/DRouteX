@@ -1,5 +1,5 @@
 //! D38 pure selection over prepared data; no catalog compiler or admission proof.
-mod ordering;
+pub(crate) mod ordering;
 mod scope;
 
 use crate::DomainMatcher;
@@ -45,11 +45,11 @@ pub struct RuleMetadata {
 /// One validated domain condition with an opaque, comparable selection effect.
 /// Actions stay in their owning DNS/traffic type; this crate never executes them.
 pub struct DomainRule<A> {
-    source: RuleSource,
-    state: AdministrativeState,
-    matcher: DomainMatcher,
-    action: A,
-    rank: ordering::RuleRank,
+    pub(crate) source: RuleSource,
+    pub(crate) state: AdministrativeState,
+    pub(crate) matcher: DomainMatcher,
+    pub(crate) action: A,
+    pub(crate) rank: ordering::RuleRank,
 }
 
 impl<A> DomainRule<A> {
@@ -67,8 +67,8 @@ impl<A> DomainRule<A> {
 /// Inclusive nonzero TCP ports. No missing-port or protocol inference is performed.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct TcpPortRange {
-    first: u16,
-    last: u16,
+    pub(crate) first: u16,
+    pub(crate) last: u16,
 }
 
 impl TcpPortRange {
@@ -90,8 +90,8 @@ pub enum TcpPortScope {
 /// entries with the same source/effect, still subject to the aggregate entry cap.
 /// Interval width never adds a hidden priority or expands individual ports.
 pub struct TcpRule<A> {
-    rule: DomainRule<A>,
-    ports: TcpPortScope,
+    pub(crate) rule: DomainRule<A>,
+    pub(crate) ports: TcpPortScope,
 }
 
 impl<A> TcpRule<A> {
@@ -120,7 +120,7 @@ pub struct GatewayProfileAssignment {
 /// Immutable, bounded policy associations. Inputs and public IDs alone cannot
 /// authenticate a client or authorize a gateway destination; P3/P4 own admission.
 pub struct PolicySet<D, T> {
-    profiles: BTreeMap<ProfileId, PreparedProfile<D, T>>,
+    pub(crate) profiles: BTreeMap<ProfileId, PreparedProfile<D, T>>,
     endpoints: BTreeMap<EndpointId, DnsEndpointAssignment>,
     groups: BTreeMap<NetworkGroupId, ProfileId>,
 }

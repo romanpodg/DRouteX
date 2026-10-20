@@ -1,8 +1,9 @@
 # P2-02 deterministic scoped selection evidence
 
-Status: D38 implementation accepted at d275d3fcd58d50e88b1e31f38eed61ce127702f8;
-[PR13](https://github.com/romanpodg/DRouteX/pull/13) final-head review/checks and normal
-merge remain required. No next implementation begins before that gate.
+Status: P2-02 completed; [PR13](https://github.com/romanpodg/DRouteX/pull/13) merged
+normally at ecc8a9e9cc903b6264b502cfdc407eb4fd70d5ab. All11 exact-main jobs39296627839
+passed; both Codecov reports processed (Rust3638/3828). Candidate holds below are
+historical observations; no approval alone satisfied a test/review gate.
 [PR12/P2-01](https://github.com/romanpodg/DRouteX/pull/12) merged normally at
 6fa475976df6a9194dcab3ccdbc3c759308cd7b0. All11 exact-main jobs39291553252 succeeded
 and both exact-merge Codecov reports processed before this implementation started.
@@ -101,3 +102,20 @@ The owner separately accepted D39 [publication validation](P2_03_PUBLICATION_CON
 after reviewed PR13 normal merge and exact-main checks. That is planning authority,
 not current P2-03 implementation or a successful test. Later backlog tasks remain
 planned; final evidence review/current-head checks and normal merge are pending.
+
+## Final acceptance and ordinary merge
+
+Final documentation-only head e2d2a19 passed linked-account read-only/never final
+Code Review, session01a1553d-900f-7cf1-9c21-a1a0c79c6a9e, exit0/no confirmed defect.
+The reviewer independently checked246 links and9 negative planning cases; external
+results were separately verified by the parent. Source/tests/manifests/workflows
+remained byte-identical to implementation d275d3f. All11 final-head jobs39295759968
+passed; both Codecov reports processed, Rust3638/3828. CodeScene8022709 repeated
+8022611 summary/findings exactly after result-URL normalization; its failed
+auxiliary/test-only maintenance disposition P2-02-CS-AUX remains disclosed.
+
+PR13 merged normally at ecc8a9e9cc903b6264b502cfdc407eb4fd70d5ab on
+2026-10-19T17:43:55Z, without admin/force/check bypass or protection changes. All11
+exact-main jobs39296627839 passed, Codecov complete with2 reports/Rust3638/3828.
+This satisfies the accepted D39 prerequisite. It does not implement live networking,
+P2-03 publication checks, actual catalog imports or full snapshot compilation.

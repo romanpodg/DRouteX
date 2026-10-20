@@ -65,3 +65,27 @@ or cloning actions. Actual authorization, capabilities, failure handling and
 snapshot generation remain at their owning gates. See the
 [accepted evaluation contract](../../docs/planning/P2_02_EVALUATION_CONTRACT.md) and
 [evidence](../../docs/planning/P2_02_EVALUATION_REVIEW.md).
+
+## Offline publication validation (D39)
+
+PolicySet.validate_conflicts checks reachable highest-rank contradictions across
+the complete prepared DNS/TCP set; entirely shadowed contradictions are allowed.
+Canonical suffix-trie atoms cover exact names and possible unlisted descendants,
+including finite name bounds and qualified-parser bidi checks near the byte cap.
+TCP uses interval events and opaque Eq effect classes without enumerating ports.
+Errors preserve Profile/plane/source IDs; no effect or private name is formatted.
+
+validate_private_records consumes PreparedPrivateRecord values, checks canonical
+Profile-private RRsets/TTL and CNAME coexistence/targets/cycles with iterative graph
+traversal. Absent targets remain external without looking in other Profiles.
+validate_catalog_dependencies requires typed hash pins and explicit trusted
+license/provenance/validation facts for every selected transitive revision. Actual
+data import, hashing, retained provenance and license evidence remain P2-07; these
+public facts cannot authenticate themselves or approve a dataset. Existing10000
+entry bounds apply before graph construction, including supplied dependency edges.
+
+The config crate separately rechecks CURRENT references and private/catalog inputs.
+P2-05 must bind both component checks and the complete compiled policy to the SAME
+verified generation. No Result here is signing, network or publication authority.
+See [D39](../../docs/planning/P2_03_PUBLICATION_CONTRACT.md) and
+[evidence](../../docs/planning/P2_03_PUBLICATION_REVIEW.md).

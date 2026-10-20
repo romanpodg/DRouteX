@@ -3,7 +3,9 @@
 Status: D38 owner-accepted2026-10-19 by direct reply accepting the complete local
 proposal after PR12 merge. PR12 merged normally at6fa4759, all11 exact-main jobs
 39291553252 passed and both Codecov reports processed before implementation began.
-Implementation/final reviews and actual P2-02 Windows/Linux acceptance remain pending.
+P2-02 merged normally at ecc8a9e after linked-account implementation/final reviews,
+all11 final-head39295759968 and exact-main39296627839 jobs. Both Codecov reports
+processed; no owner exception, admin/force or check bypass.
 
 ## Accepted foundations and reference
 

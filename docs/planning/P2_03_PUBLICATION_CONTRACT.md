@@ -1,8 +1,9 @@
 # P2-03 publication validation contract
 
-Status: D39 owner-accepted2026-10-19 by direct reply accepting the complete local proposal after PR13 merge. Planning only while P2-02/PR13 is open.
-Implementation must wait for reviewed normal PR13 merge and exact-main checks.
-This does not advance backlog/validator authorization beyond P2-02.
+Status: D39 owner-accepted2026-10-19 by direct reply accepting the complete local
+proposal after PR13 merge. PR13 merged normally at ecc8a9e; all11 exact-main
+jobs39296627839 and processed Codecov were verified before P2-03 implementation.
+Implementation/final reviews and actual P2-03 Windows/Linux checks remain required.
 
 ## Existing authority and gap
 
@@ -88,3 +89,38 @@ Windows/Linux default/no-default Q-RUST, dependency/license checks, linked-accou
 independent implementation/final Code Reviews, actual scoped Codecov/CodeScene and
 normal PR merge remain required. No approval is a passed test. Serious unresolved
 findings block merge. Later work and changed consequential choices retain their gates.
+
+## Staged component representation
+
+PolicySet.validate_conflicts checks its entire bounded prepared rule set using
+suffix-trie atoms and TCP interval events. Exact node names and unlisted next-label
+branches partition the canonical namespace; the253-byte/127-label constraints can
+make descendant atoms empty. With room for three bytes,26^3 ordinary lowercase LTR
+labels exceed all10000 possible listed children. With room for only one/two bytes,
+the finite ASCII label alphabet is exhausted and the qualified D37 parser checks
+bidi/context validity; no sampled-name absence or handwritten IDNA is used.
+Private immutable D38 ranks are reused, with the query evaluator's highest-rank
+logic shared rather than replacing its accepted comparison semantics.
+
+PreparedPrivateRecord uses parsed canonical names and explicit A/AAAA/CNAME values.
+validate_private_records checks RRsets and a Profile-local graph; Profile existence
+is separately rechecked at the config boundary. The existing10000 records bound
+also bounds derived graph nodes/edges. CatalogPin contains a typed revision and
+expected32-byte hash; CatalogRevisionFacts carries caller-trusted actual hash,
+license/provenance/validation state and dependency pins. Supplied pins/facts/edges
+share the existing10000-entry ceiling before maps are built. Identity kind is part
+of lookup; duplicate facts are refused. Each expected hash is checked even for an
+already reached identity. Only selected transitive data is admitted; unselected
+unavailable license facts grant nothing. Actual hashing/import/license evidence
+and retained provenance construction remain P2-07; public fact fields do not
+authenticate themselves or approve a dataset license.
+
+CheckedConfiguration.validate_publication_resources rechecks existing resources,
+scope assignments and references against CURRENT inventory, requires pins for all
+selected service/filter revisions and gateway service grants (including disabled
+selections), then checks catalog dependencies and canonical private records.
+It does not invent catalog conditions or compile policy. P2-05 MUST bind this
+config/resource check AND validate_conflicts on the COMPLETE prepared generation
+to its actual verified P2-07 data. Neither standalone Result is publication,
+signature or runtime authority. Existing D11 bytes and serialized config remain
+unchanged. Error variants carry bounded typed IDs and context, not names/effects.

@@ -1,18 +1,19 @@
 # DRouteX project instructions
 
-Current gate2026-10-19: P2-01/PR12 merged normally at6fa475976df6a9194dcab3ccdbc3c759308cd7b0.
-All11 exact-main jobs39291553252 passed; both exact-merge Codecov reports processed
-(Rust3406/3589). Ordinary final-head runs39282692111/39283680050 also passed all11;
-previous queued metadata resolved, no owner exception, force or check bypass.
-Implementation and final-evidence linked-account read-only/never reviews passed;
-CodeScene minor maintenance dispositions remain disclosed in the task review.
-The owner explicitly accepted D38 after PR12 merge: see
-docs/planning/P2_02_EVALUATION_CONTRACT.md and .setup/p2-02/evaluation-design-proposal.md.
-P2-02 bounded pure scoped selection is current; actual Windows/Linux tests,
-independent implementation/final reviews and normal merge are still required.
-Catalog imports P2-07, full compilation P2-05 and runtime admission P3/P4 retain
-their own gates. Later implementation tasks stay planned until reviewed P2-02 merge.
-Historical P1/P2-01 holds below were satisfied by recorded evidence, not bypassed.
+Current gate2026-10-19: P2-02/PR13 merged normally at ecc8a9e9cc903b6264b502cfdc407eb4fd70d5ab.
+All11 exact-main jobs39296627839 passed; both Codecov reports processed (Rust3638/3828).
+Linked-account read-only/never implementation01a15533-a43b-73d2-8a54-1236ffa87a30 and
+final01a1553d-900f-7cf1-9c21-a1a0c79c6a9e reviews found no confirmed defect; all11
+final-head39295759968 jobs passed. Failed CodeScene auxiliary/test-only maintenance
+findings remain disclosed, no suppression/check bypass. See P2_02_EVALUATION_REVIEW.md.
+The owner accepted complete D39 after reviewed PR13 merge and exact-main checks:
+see docs/planning/P2_03_PUBLICATION_CONTRACT.md. P2-03 pure validation components
+are current; actual Windows/Linux tests, independent implementation/final reviews
+and normal merge remain required. P2-05 binds config/resource and COMPLETE prepared
+policy checks to one generation; P2-07 constructs actual verified catalog facts.
+No standalone validation Result is signing/import/runtime authority. Later tasks
+stay planned until reviewed P2-03 merge. Historical P1/P2 gates were satisfied by
+recorded evidence, not bypassed; no owner CI-status exception was used.
 
 ## Authority and current scope
 

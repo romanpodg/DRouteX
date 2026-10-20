@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "P0/P1 and P2-01 complete and merged; PR12 exact-main verified; P2-02 D38 deterministic scoped selection implementation under review; later tasks planned",
-  "date": "2026-10-19",
+  "status": "P0/P1 and P2-01/02 complete and merged; PR13 exact-main verified; P2-03 D39 publication validation implementation under review; later tasks planned",
+  "date": "2026-10-20",
   "phases": {
     "P0": "Foundation",
     "P1": "Domain and configuration",
@@ -433,7 +433,7 @@
       "security": "Untrusted metadata cannot upgrade identity confidence",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_progress",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -453,14 +453,15 @@
       ],
       "scope": "Reject unresolved layer/match contradictions, missing or unlicensed dataset revisions, invalid private CNAME chains and ambiguous legacy/gateway group assignments",
       "files": [
-        "crates/droutex-policy/src/validate"
+        "crates/droutex-policy/src/validate",
+        "crates/droutex-config/src/publication.rs"
       ],
       "acceptance": "Irreconcilable conflict prevents publication with actionable rule IDs",
       "tests": "Exact/wildcard conflicts, removed node and cycles",
       "security": "No arbitrary map iteration or warning-only unsafe acceptance",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2609,9 +2610,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-19",
-    "source": "Direct owner reply accepting complete .setup/p2-02/evaluation-design-proposal.md after reviewed PR12 merge; docs/planning/P2_02_EVALUATION_CONTRACT.md",
-    "scope": "Owner-accepted D38 P2-02 pure bounded prepared selection only, after reviewed PR12 normal merge6fa4759 and all11 exact-main CI39291553252 plus processed Codecov. No new dependencies, full compiler, catalog importer or network admission; later implementation tasks planned until reviewed P2-02 merge.",
-    "through_task": "P2-02"
+    "source": "Direct owner reply accepting complete .setup/p2-03/publication-design-proposal.md after reviewed PR13 merge; docs/planning/P2_03_PUBLICATION_CONTRACT.md",
+    "scope": "D39 P2-03 pure publication validation components after reviewed PR13 normal merge ecc8a9e and all11 exact-main CI39296627839 plus processed Codecov. No new dependencies, catalog importer, full compiler or runtime admission; later implementation tasks planned until reviewed P2-03 merge.",
+    "through_task": "P2-03"
   },
   "design_proposals": [
     {
@@ -2805,6 +2806,13 @@
     "status": "accepted",
     "date": "2026-10-19",
     "source": "Direct owner reply accepting .setup/p2-02/evaluation-design-proposal.md after PR12 merge; docs/planning/P2_02_EVALUATION_CONTRACT.md",
-    "profile": "D38 fixed layers, larger i32 priority, more domain labels, Exact/SubdomainsOnly/DomainAndSubdomains; stable UUID bytes among equivalent effects only, contradictory top effects error; ports eligibility only; separate endpoint/gateway scopes;10000 aggregate entries; no new registry dependencies"
+    "profile": "D38 fixed layers, larger i32 priority, more domain labels, Exact/SubdomainsOnly/DomainAndSubdomains; stable UUID bytes among equivalent effects only, contradictory top effects error; ports eligibility only; separate endpoint/gateway scopes;10000 aggregate entries; no new registry dependencies",
+    "implementation_status": "P2-02 merged normally at ecc8a9e9cc903b6264b502cfdc407eb4fd70d5ab after linked-account implementation/final reviews and all11 final-head39295759968 and exact-main39296627839 jobs; both exact-merge Codecov reports processed, Rust3638/3828."
+  },
+  "publication_validation_decision": {
+    "status": "accepted",
+    "date": "2026-10-19",
+    "source": "Direct owner reply accepting complete .setup/p2-03/publication-design-proposal.md after PR13 merge; docs/planning/P2_03_PUBLICATION_CONTRACT.md",
+    "profile": "D39 reachable highest-rank contradictions only; fully shadowed permitted; canonical Profile-private CNAME/RRset/TTL validation with external targets unresolved; trusted catalog pin/hash/license/provenance/dependency facts required; current references/scope rechecked; existing aggregate bounds, no new dependency/compiler/importer/network authority"
   }
 }

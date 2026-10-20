@@ -2,7 +2,7 @@ use super::{DomainRule, EvaluationError, PolicyScope, PolicySelection, RuleMetad
 use crate::{DomainMatchMode, DomainMatcher};
 
 #[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd)]
-pub(super) struct RuleRank {
+pub(crate) struct RuleRank {
     layer: u8,
     priority: i32,
     labels: usize,
@@ -31,7 +31,7 @@ impl RuleRank {
     }
 }
 
-fn source_key(source: RuleSource) -> ([u8; 16], Option<[u8; 16]>) {
+pub(crate) fn source_key(source: RuleSource) -> ([u8; 16], Option<[u8; 16]>) {
     match source {
         RuleSource::Custom(id) => (*id.as_bytes(), None),
         RuleSource::Service { rule, revision } => (*rule.as_bytes(), Some(*revision.as_bytes())),
@@ -39,12 +39,9 @@ fn source_key(source: RuleSource) -> ([u8; 16], Option<[u8; 16]>) {
     }
 }
 
-pub(super) fn select<'a, A: Eq>(
-    scope: PolicyScope,
-    profile: droutex_common::ProfileId,
-    fallback: &'a A,
+pub(crate) fn highest<'a, A: Eq>(
     rules: impl Iterator<Item = &'a DomainRule<A>> + Clone,
-) -> Result<PolicySelection<'a, A>, EvaluationError> {
+) -> Result<Option<&'a DomainRule<A>>, EvaluationError> {
     // Clone only the borrowed iterator position for two allocation-free passes.
     // First find the globally highest key; a lower-key conflict cannot win.
     let selected = rules.clone().max_by(|a, b| {
@@ -53,12 +50,7 @@ pub(super) fn select<'a, A: Eq>(
             .then_with(|| source_key(b.source).cmp(&source_key(a.source)))
     });
     let Some(selected) = selected else {
-        return Ok(PolicySelection {
-            scope,
-            profile,
-            source: None,
-            action: fallback,
-        });
+        return Ok(None);
     };
     let conflict = rules
         .filter(|rule| rule.rank == selected.rank && rule.action != selected.action)
@@ -69,10 +61,20 @@ pub(super) fn select<'a, A: Eq>(
             second: conflict.source,
         });
     }
+    Ok(Some(selected))
+}
+
+pub(super) fn select<'a, A: Eq>(
+    scope: PolicyScope,
+    profile: droutex_common::ProfileId,
+    fallback: &'a A,
+    rules: impl Iterator<Item = &'a DomainRule<A>> + Clone,
+) -> Result<PolicySelection<'a, A>, EvaluationError> {
+    let selected = highest(rules)?;
     Ok(PolicySelection {
         scope,
         profile,
-        source: Some(selected.source),
-        action: &selected.action,
+        source: selected.map(|rule| rule.source),
+        action: selected.map_or(fallback, |rule| &rule.action),
     })
 }
