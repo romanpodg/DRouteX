@@ -1,24 +1,21 @@
 # DRouteX project instructions
 
-Current gate2026-10-21: P2-03/PR14 merged normally at
-a50c6a432c08e1a4422ae625a25b392e54a62d42. All11 exact-main jobs39476373259
-passed; both Codecov reports processed (Rust4071/4274). Linked-account read-only/never
-implementation01a15554-9ad7-7932-8118-b80ce4f73375 and final retry
-01a15a98-5e07-7d20-b353-7a25b59703da reviews found no confirmed defect;
-all11 final-head39300467355 jobs passed. Earlier quota failures were not successful
-reviews; fresh successful review completed before merge. Failed CodeScene maintenance
-findings remain disclosed without suppression/check bypass. See P2_03_PUBLICATION_REVIEW.md.
-The owner accepted complete D40 strict actions after that prerequisite:
-see docs/planning/P2_04_ACTION_CONTRACT.md. P2-04 pure intents8a07755 passed
-linked-account read-only/never implementation review01a15aad-c262-7470-8f53-de4bb857b184,
-all11 jobs39479414389 and processed Codecov (Rust4329/4535; patch257/261).
-CodeScene8044281 remains failed with recorded minor maintenance dispositions.
-PR15 final-head review/checks and normal merge remain required. No automatic fail-open, new schema field or network authority.
-P2-05 binds config/resource and COMPLETE prepared policy checks to one generation;
-P2-07 constructs actual verified catalog facts. No standalone validation Result or
-intent is signing/import/runtime authority. Later tasks stay planned until reviewed
-P2-04 merge. Historical P1/P2 gates were satisfied by recorded evidence, not bypassed;
-no owner CI-status exception was used.
+Current gate2026-10-21: P2-04/PR15 merged normally at
+b4c104c8e87acdb388b6ee5455dfc5bd01ab331d. All11 exact-main39481364319 jobs passed;
+both Codecov reports processed (Rust4329/4535; patch257/261). Linked-account
+read-only/never implementation01a15aad-c262-7470-8f53-de4bb857b184 and final
+01a15ab4-500c-7dc0-9a5a-4b868fe12e9a reviews found no confirmed defect; all11
+final-head39480455115 jobs passed. CodeScene8044281/8044386 remain failed with
+explicit minor source/auxiliary maintenance dispositions, no suppression/bypass.
+See P2_04_ACTION_REVIEW.md. The owner accepted complete D41 after that prerequisite:
+see docs/planning/P2_07_CATALOG_CONTRACT.md. P2-07 bounded local catalogs are current;
+actual Windows/Linux tests, independent implementation/final reviews and normal
+merge remain required. No automatic feed download, new dependency/current config
+field or network/publication authority. P2-05 binds actual verified catalog bytes,
+config/resources and COMPLETE prepared policies to one generation; P2-06 Explain
+and P3/P4 retain their gates. No standalone Result/facts/intent is admission authority.
+Later tasks stay planned until reviewed P2-07 merge. Historical gates were satisfied
+by recorded evidence, not bypassed; no owner CI-status exception was used.
 
 ## Authority and current scope
 

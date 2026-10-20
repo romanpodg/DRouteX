@@ -1,8 +1,8 @@
 # P2-04 strict action resolution evidence
 
-Status: D40 implementation8a07755 accepted after actual linked-account review,
-all11 current-head CI jobs and external coverage/health assessment. Final-head
-review/checks and normal merge remain required. Later tasks remain planned.
+Status: completed in [PR15](https://github.com/romanpodg/DRouteX/pull/15), normally
+merged at b4c104c8e87acdb388b6ee5455dfc5bd01ab331d after implementation/final reviews
+and all11 final-head/main jobs. Both exact-main Codecov reports processed.
 The prerequisite [PR14](https://github.com/romanpodg/DRouteX/pull/14) merged normally
 at a50c6a432c08e1a4422ae625a25b392e54a62d42; all11 exact-main39476373259 jobs passed
 and both Codecov reports processed (Rust4071/4274) before implementation began.
@@ -112,3 +112,21 @@ maintenance dispositions and generated planning-verification links. Application
 source, tests, manifests and workflows remain byte-identical to8a07755. Current-head
 CI/Codecov/CodeScene and separate linked-account final review must verify this diff;
 no next implementation starts before normal merge and exact-main acceptance.
+
+
+## Final-head, normal merge and exact-main acceptance
+
+Final ff732adbf52d6c2bcae101d2e8ee13c8a6abd96e changed only four evidence/instruction
+files. Source/tests/manifests/workflows stayed byte-identical to8a07755. Linked-account
+read-only/never final review01a15ab4-500c-7dc0-9a5a-4b868fe12e9a completed exit0,
+no confirmed defect;259 local links and diff checks passed. All11 current-head
+jobs39480455115 passed; actual logs confirm133 Windows/160 Linux tests per
+default/no-default and five successful four-category deny summaries. Both Codecov
+reports processed, Rust4329/4535 and patch257/261. CodeScene8044386 repeated the
+identical recorded findings and stayed failed, without suppression/score-only edits.
+
+PR15 merged normally2026-10-20T19:11:47Z at b4c104c with exact expected head,
+without admin/force/check/protection bypass. Its tree exactly matches reviewed
+final head. All11 exact-main39481364319 jobs passed and both Codecov reports
+processed (Rust4329/4535). D41 P2-07 local catalog profile was separately accepted
+by direct owner reply; implementation began only AFTER all these prerequisites.

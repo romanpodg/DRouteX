@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-21. Current stage: **P2-03/PR14 merged and exact-main verified; P2-04 D40 strict action resolution implementation under review**.
+Date: 2026-10-21. Current stage: **P2-04/PR15 merged and exact-main verified; P2-07 D41 local catalog import implementation under review**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -12,7 +12,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P2-04 is the current stage; technical choices retain their owning gates.
+P2-07 is the current stage; technical choices retain their owning gates.
 PR9 merged at521bfa76fbc27e14cd4981638af775ba92c6299f after independent
 implementation/final-evidence reviews and all11 final-head jobs. All11 exact-main
 jobs39148795165 passed and both Codecov reports processed. The owner then accepted
@@ -37,9 +37,13 @@ that gate. P2-03 merged normally at a50c6a432c08e1a4422ae625a25b392e54a62d42 aft
 linked-account implementation/final reviews and all11 final-head jobs. All11 exact-main
 jobs39476373259 passed and both Codecov reports processed (Rust4071/4274).
 See [completed evidence](P2_03_PUBLICATION_REVIEW.md). D40 owner-accepted
-[strict actions](P2_04_ACTION_CONTRACT.md) are now implemented under review; full
-compiler/catalog import/runtime admission and later implementation retain their gates.
-See [candidate evidence](P2_04_ACTION_REVIEW.md).
+[strict actions](P2_04_ACTION_CONTRACT.md) subsequently merged normally at
+b4c104c8e87acdb388b6ee5455dfc5bd01ab331d after linked-account implementation/final
+reviews and all11 current-head jobs. All11 exact-main39481364319 jobs passed,
+both Codecov reports processed (Rust4329/4535); [evidence](P2_04_ACTION_REVIEW.md).
+Owner accepted [D41 local catalog imports](P2_07_CATALOG_CONTRACT.md) after this gate;
+P2-07 components are under review. Full compiler, Explain and runtime admission
+retain their gates; see [candidate evidence](P2_07_CATALOG_REVIEW.md).
 P1-06's candidate passed independent Codex re-review and all11 jobs of39153071723;
 actual Codecov processed both reports. See [evidence](P1_06_ACTIVATION_REVIEW.md)
 for the retained first Linux failure, resolved review findings,94.01% Rust patch

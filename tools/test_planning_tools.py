@@ -132,6 +132,12 @@ class ValidatorTests(unittest.TestCase):
         unaccepted_actions['action_resolution_decision']['status'] = 'proposed'
         missing_actions_source = copy.deepcopy(plan)
         missing_actions_source['action_resolution_decision']['source'] = ''
+        unfinished_actions = copy.deepcopy(plan)
+        next(t for t in unfinished_actions['tasks'] if t['id'] == 'P2-04')['status'] = 'in_review'
+        unaccepted_catalogs = copy.deepcopy(plan)
+        unaccepted_catalogs['catalog_import_decision']['status'] = 'proposed'
+        missing_catalog_source = copy.deepcopy(plan)
+        missing_catalog_source['catalog_import_decision']['source'] = ''
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
         missing_native = copy.deepcopy(plan)
@@ -149,7 +155,8 @@ class ValidatorTests(unittest.TestCase):
                      missing_domain_source, unfinished_activation, unfinished_domain,
                      unaccepted_evaluation, missing_evaluation_source, unfinished_evaluation,
                      unaccepted_publication, missing_publication_source, unfinished_publication,
-                     unaccepted_actions, missing_actions_source):
+                     unaccepted_actions, missing_actions_source, unfinished_actions,
+                     unaccepted_catalogs, missing_catalog_source):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
 

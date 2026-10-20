@@ -41,7 +41,7 @@ pub(super) fn objects<'de, D: de::Deserializer<'de>, T: Deserialize<'de>>(
 }
 
 /// Bounded intermediate input, never exported or logged.
-pub(super) struct BoundedValue(pub Value);
+pub(crate) struct BoundedValue(pub Value);
 
 impl<'de> Deserialize<'de> for BoundedValue {
     fn deserialize<D: de::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {

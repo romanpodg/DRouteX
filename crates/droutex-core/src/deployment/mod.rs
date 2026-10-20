@@ -23,7 +23,7 @@ use std::{
 };
 use store::Store;
 
-pub const MAX_RESOURCE_BYTES: usize = 64 * 1024 * 1024;
+pub const MAX_RESOURCE_BYTES: usize = droutex_common::MAX_GENERATION_RESOURCE_BYTES;
 pub const MAX_MANIFEST_BYTES: usize = 16 * 1024;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
