@@ -1,4 +1,4 @@
-# Immutable snapshot candidate v1
+# Immutable snapshot candidates v1/v2
 
 Owner-accepted D11 profile, with D35 strict verification. P1-05 produces a checked
 candidate, not an active runtime generation. P1-06 owns durable replay state,
@@ -13,7 +13,7 @@ Pure Ed25519 signature. Integers are unsigned, big-endian. Header fields in orde
 | Field | Bytes |
 |---|---:|
 | Magic/version `DXSNAP\0\x01` | 8 |
-| Payload schema1 | 4 |
+| Payload schema1 or2, matching configuration.schemaVersion | 4 |
 | Signature suite1 (Pure Ed25519) | 1 |
 | SigningKeyId | 16 |
 | NodeScopeId | 16 |
@@ -75,3 +75,14 @@ removing a trusted key rejects subsequent candidates signed by that key. Coheren
 handling of an already active generation and operator recovery remain P1-06 work.
 No in-memory check proves durable anti-replay, live DNS/proxy admission, RBAC or
 multi-node enrollment.
+
+## D46 payload schema2 and retained schema1
+
+[Accepted D46](../../../docs/planning/P4_01_BINDING_CONTRACT.md) introduces signed
+manual leases in strict configuration2 and authenticated payload-schema2. The
+existing magic, header layout, signature suite/context and hash remain unchanged;
+the authenticated discriminator prevents mixed-version substitution. Old readers
+reject2. New readers retain exact v1 canonical/signature/restore compatibility for
+associations and diagnostics, but v1 never grants runtime admission. Expiry does
+not renew on rollback/republication. Journal2's independent clock floor is durable
+local state, not a resettable field in a signed snapshot. No replay/key floor resets.

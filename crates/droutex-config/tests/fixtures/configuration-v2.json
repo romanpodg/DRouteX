@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 2,
+  "profiles": [{"id":"10000000-0000-4000-8000-000000000010","name":"Shared DNS","defaultDnsAction":{"kind":"block"},"defaultTrafficAction":{"kind":"deny"}}],
+  "listeners": [{"id":"10000000-0000-4000-8000-000000000020","name":"UDP","enabled":true,"bind":"127.0.0.1:5353","transport":"dns_udp"}],
+  "endpoints": [{"id":"10000000-0000-4000-8000-000000000030","name":"Legacy","enabled":true,"profile":"10000000-0000-4000-8000-000000000010","access":[{"transport":"udp","listener":"10000000-0000-4000-8000-000000000020","grants":["10000000-0000-4000-8000-000000000040"]}]}],
+  "networkGroups": [{"id":"10000000-0000-4000-8000-000000000050","name":"Network","trafficProfile":"10000000-0000-4000-8000-000000000010"}],
+  "legacyGrants": [{"id":"10000000-0000-4000-8000-000000000040","source":"203.0.113.7","listener":"10000000-0000-4000-8000-000000000020","group":"10000000-0000-4000-8000-000000000050","endpoint":"10000000-0000-4000-8000-000000000030","lease":{"cause":"manual","issuedAt":100,"expiresAt":1000}}]
+}

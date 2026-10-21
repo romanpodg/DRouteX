@@ -178,6 +178,12 @@ pub struct NetworkGroup {
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct LegacyGrant {
+    #[serde(
+        default,
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "super::lease::optional_lease"
+    )]
+    pub lease: Option<super::GrantLease>,
     #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: LegacyNetworkGrantId,
     pub source: IpAddr,
@@ -193,6 +199,12 @@ pub struct LegacyGrant {
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct GatewayGrant {
+    #[serde(
+        default,
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "super::lease::optional_lease"
+    )]
+    pub lease: Option<super::GrantLease>,
     #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
     pub id: GatewayNetworkGrantId,
     pub source: IpAddr,

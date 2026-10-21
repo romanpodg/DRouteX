@@ -99,6 +99,12 @@ class ValidatorTests(unittest.TestCase):
         counts, release = planning.validate_release(self.tasks)
         self.assertEqual(len(release), counts['MVP'])
 
+    def test_public_dns_cannot_skip_current_admission(self):
+        tasks = copy.deepcopy(self.tasks)
+        next(t for t in tasks if t['id'] == 'P3-01')['prerequisites'].remove('P4-01')
+        with self.assertRaisesRegex(AssertionError, 'current-admission'):
+            planning.validate_tasks(tasks)
+
     def test_invalid_task_fields_are_rejected(self):
         cases = {'complexity': '?', 'delivery': 'UNKNOWN', 'scope_change': 'UNKNOWN', 'spec': [28], 'status': 'unknown'}
         for field, value in cases.items():
@@ -184,6 +190,16 @@ class ValidatorTests(unittest.TestCase):
         unaccepted_explain['explain_simulation_decision']['status'] = 'proposed'
         missing_explain_source = copy.deepcopy(plan)
         missing_explain_source['explain_simulation_decision']['source'] = ''
+        unfinished_explain = copy.deepcopy(plan)
+        next(t for t in unfinished_explain['tasks'] if t['id'] == 'P2-06')['status'] = 'in_review'
+        unaccepted_order = copy.deepcopy(plan)
+        unaccepted_order['authorization_before_dns_decision']['status'] = 'proposed'
+        missing_order_source = copy.deepcopy(plan)
+        missing_order_source['authorization_before_dns_decision']['source'] = ''
+        unaccepted_binding = copy.deepcopy(plan)
+        unaccepted_binding['runtime_binding_decision']['status'] = 'proposed'
+        missing_binding_source = copy.deepcopy(plan)
+        missing_binding_source['runtime_binding_decision']['source'] = ''
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
         missing_native = copy.deepcopy(plan)
@@ -204,7 +220,8 @@ class ValidatorTests(unittest.TestCase):
                      unaccepted_actions, missing_actions_source, unfinished_actions,
                      unaccepted_catalogs, missing_catalog_source, unfinished_catalogs,
                      unaccepted_compilation, missing_compilation_source, unfinished_compilation,
-                     unaccepted_explain, missing_explain_source):
+                     unaccepted_explain, missing_explain_source, unfinished_explain,
+                     unaccepted_order, missing_order_source, unaccepted_binding, missing_binding_source):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
 

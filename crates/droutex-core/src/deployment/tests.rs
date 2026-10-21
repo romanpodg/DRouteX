@@ -8,6 +8,7 @@ use droutex_config::{
 };
 use droutex_security::{SigningKey, SigningKeyId};
 use std::str::FromStr;
+mod admission_tests;
 mod explain_tests;
 
 fn typed<T: FromStr>(n: usize) -> T

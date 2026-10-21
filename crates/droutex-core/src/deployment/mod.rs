@@ -1,6 +1,11 @@
 //! D36 bounded activation. Storage methods block: async callers must use a blocking context.
 //! A decision pins both consumer views once; never pin separately for DNS and gateway.
+mod admission;
 mod artifacts;
+pub use admission::{
+    AdmissionAttempt, AdmissionCode, AdmissionError, AdmissionScope, AuthorizedRequest,
+    AutomaticLearning,
+};
 mod explain;
 pub use explain::SimulationReport;
 mod state;
@@ -43,6 +48,7 @@ pub enum ErrorCode {
     RecoveryRequired,
     Unavailable,
     UnsupportedPlatform,
+    Admission(AdmissionCode),
 }
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct DeploymentError(ErrorCode);
@@ -129,6 +135,7 @@ struct Published {
 pub struct Deployment {
     writer: Mutex<Writer>,
     published: RwLock<Published>,
+    admission: Mutex<admission::AdmissionState>,
 }
 impl Deployment {
     /// Explicit ephemeral model; never silently substituted for a durable store.
@@ -156,6 +163,13 @@ impl Deployment {
             .as_ref()
             .map(|descriptor| store.restore(descriptor, &trust).map(Arc::new))
             .transpose()?;
+        if active
+            .as_ref()
+            .is_some_and(|g| g.content().configuration().document().schema_version == 2)
+            && journal.authorization_floor().is_none()
+        {
+            return Err(DeploymentError(ErrorCode::State));
+        }
         store.recover(&journal)?;
         Ok(Self::new(journal, trust, store, active))
     }
@@ -166,6 +180,20 @@ impl Deployment {
         active: Option<Arc<Generation>>,
     ) -> Self {
         let admitted = active.is_some();
+        let mut admission = admission::AdmissionState::new(journal.authorization_floor());
+        if let Some(generation) = &active {
+            admission.publish(
+                &journal,
+                &generation
+                    .content()
+                    .configuration()
+                    .document()
+                    .network_groups
+                    .iter()
+                    .map(|g| g.id)
+                    .collect(),
+            );
+        }
         Self {
             writer: Mutex::new(Writer {
                 journal,
@@ -175,6 +203,7 @@ impl Deployment {
                 recovery_required: false,
             }),
             published: RwLock::new(Published { active, admitted }),
+            admission: Mutex::new(admission),
         }
     }
     pub fn pin(&self) -> Result<Decision<'_>> {
@@ -224,11 +253,31 @@ impl Deployment {
             .store
             .stage(candidate, &descriptor, &writer.trust, cancel)?;
         cancel.check()?;
-        let next = writer.journal.next(descriptor);
+        let groups = candidate
+            .content()
+            .configuration()
+            .document()
+            .network_groups
+            .iter()
+            .map(|g| g.id)
+            .collect();
+        let mut next = writer.journal.next(descriptor);
+        let _pause = self.pause_admission(
+            &mut next,
+            candidate
+                .content()
+                .configuration()
+                .document()
+                .schema_version,
+            &groups,
+        )?;
         next.validate(writer.journal.node()?)?;
         if let Err(error) = writer.store.commit(&next, cancel) {
             if error.code() == ErrorCode::UncertainCommit {
                 writer.recovery_required = true;
+                if let Ok(mut admission) = self.admission.lock() {
+                    admission.fail_checkpoint();
+                }
             }
             return Err(error);
         }
@@ -242,6 +291,14 @@ impl Deployment {
             }
         };
         let metadata = candidate.metadata();
+        let mut admission = match self.admission.lock() {
+            Ok(guard) => guard,
+            Err(_) => {
+                writer.recovery_required = true;
+                return Err(DeploymentError(ErrorCode::UncertainCommit));
+            }
+        };
+        admission.publish(&next, &groups);
         let previous = published.active.replace(Arc::new(candidate));
         published.admitted = true;
         drop(published);

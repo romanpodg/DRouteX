@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0/P1 and P2-01/02/03/04/07 complete and merged; PR16 exact-main verified; accepted D43 P2-05 complete generation compilation in progress; P2-06 and later tasks planned. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0/P1/P2 complete and merged; PR106 exact-main verified; D45 P4-01 before P3-01 and complete D46 authorization profile accepted; P4-01 in progress. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 
@@ -51,7 +51,7 @@ flowchart LR
 | P2-05 | MVP | P2-04, P1-05, P2-07 |
 | P2-06 | MVP | P2-05 |
 | P2-07 | MVP | P1-02, P0-05 |
-| P3-01 | MVP | P0-03, P2-05 |
+| P3-01 | MVP | P0-03, P2-05, P4-01 |
 | P3-02 | MVP | P3-01 |
 | P3-03 | MVP | P3-02 |
 | P3-04 | MVP | P3-03 |
@@ -123,11 +123,11 @@ flowchart LR
 
 ## Computed longest MVP prerequisite chain
 
-P0-01 → P0-02 → P1-01 → P1-02 → P2-01 → P2-02 → P2-03 → P2-04 → P2-05 → P2-06 → P6-02 → P6-03 → P6-04 → P6-05 → P6-08 → P10-02 → P4-08 → P10-05 → P10-06 → P10-07 → P7-07 → P11-06
+P0-01 → P0-02 → P1-01 → P1-02 → P2-01 → P2-02 → P2-03 → P2-04 → P2-05 → P4-01 → P3-01 → P3-02 → P3-03 → P3-04 → P3-05 → P3-06 → P3-07 → P4-08 → P10-05 → P10-06 → P10-07 → P7-07 → P11-06
 
 ## Computed longest full-plan prerequisite chain
 
-P0-01 → P0-02 → P1-01 → P1-02 → P2-01 → P2-02 → P2-03 → P2-04 → P2-05 → P2-06 → P6-02 → P6-03 → P6-04 → P6-05 → P6-08 → P10-02 → P4-08 → P10-05 → P10-06 → P10-07 → P7-07 → P11-06 → P5-01 → P5-02 → P5-03 → P5-04 → P5-05 → P5-07 → P5-08 → P5-09 → P5-10 → P8-01 → P8-02 → P8-03 → P8-04 → P8-05 → P8-06 → P9-01 → P9-02 → P9-03 → P9-04 → P9-05 → F-01
+P0-01 → P0-02 → P1-01 → P1-02 → P2-01 → P2-02 → P2-03 → P2-04 → P2-05 → P4-01 → P3-01 → P3-02 → P3-03 → P3-04 → P3-05 → P3-06 → P3-07 → P4-08 → P10-05 → P10-06 → P10-07 → P7-07 → P11-06 → P5-01 → P5-02 → P5-03 → P5-04 → P5-05 → P5-07 → P5-08 → P5-09 → P5-10 → P8-01 → P8-02 → P8-03 → P8-04 → P8-05 → P8-06 → P9-01 → P9-02 → P9-03 → P9-04 → P9-05 → F-01
 
 These count tasks, not elapsed time. Stable workstream numbering does not dictate execution order.
 

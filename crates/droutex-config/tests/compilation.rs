@@ -11,6 +11,8 @@ use droutex_policy::{CatalogRevision, DomainMatchMode, RuleSource};
 use droutex_security::{SigningKey, SigningKeyId, SnapshotTrust};
 use serde_json::{Value, json};
 use std::{num::NonZeroU16, str::FromStr};
+#[path = "compilation/admission.rs"]
+mod admission;
 #[path = "compilation/explain.rs"]
 mod explain;
 

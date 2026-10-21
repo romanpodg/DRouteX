@@ -163,6 +163,8 @@ pub(super) struct Journal {
     version: u8,
     node: [u8; 16],
     floor: u64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    clock_floor: Option<u64>,
     pub(super) active: Option<Descriptor>,
     pub(super) previous: Option<Descriptor>,
 }
@@ -172,6 +174,7 @@ impl Journal {
             version: 1,
             node: *node.as_bytes(),
             floor: 0,
+            clock_floor: None,
             active: None,
             previous: None,
         }
@@ -180,7 +183,12 @@ impl Journal {
         NodeScopeId::from_bytes(self.node).map_err(|_| Error(ErrorCode::State))
     }
     pub(super) fn validate(&self, node: NodeScopeId) -> Result<()> {
-        if self.version != 1 || self.node()? != node {
+        if self.node()? != node
+            || !matches!(
+                (self.version, self.clock_floor),
+                (1, None) | (2, Some(1..=droutex_config::MAX_GRANT_TIMESTAMP))
+            )
+        {
             return Err(Error(ErrorCode::State));
         }
         match &self.active {
@@ -216,11 +224,23 @@ impl Journal {
     }
     pub(super) fn next(&self, active: Descriptor) -> Self {
         Self {
-            version: 1,
+            version: self.version,
             node: self.node,
             floor: active.sequence,
+            clock_floor: self.clock_floor,
             active: Some(active),
             previous: self.active.clone(),
         }
+    }
+    pub(super) fn authorization_floor(&self) -> Option<u64> {
+        self.clock_floor
+    }
+    pub(super) fn advance_clock_floor(&mut self, floor: u64) -> Result<()> {
+        if !(1..=droutex_config::MAX_GRANT_TIMESTAMP).contains(&floor) || self.active.is_none() {
+            return Err(Error(ErrorCode::State));
+        }
+        self.version = 2;
+        self.clock_floor = Some(self.clock_floor.map_or(floor, |old| old.max(floor)));
+        Ok(())
     }
 }

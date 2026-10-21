@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1 and P2-01/02/03/04/07 complete and merged; PR16 exact-main verified; accepted D43 P2-05 complete generation compilation in progress; P2-06 and later tasks planned.**
+**P0/P1/P2 complete and merged; PR106 exact-main verified; D45 P4-01 before P3-01 and complete D46 authorization profile accepted; P4-01 in progress.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -275,7 +275,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P2-06: Provide explain and simulation contracts
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **S**. Specification: §§8,12,18,20.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **S**. Specification: §§8,12,18,20.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -312,7 +312,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Hickory policy handler with restricted bindings, ACL, size/rate/time limits |
-| Prerequisites | P0-03, P2-05 |
+| Prerequisites | P0-03, P2-05, P4-01 |
 | Expected files/modules | crates/droutex-dns/src/listeners |
 | Acceptance criteria | Unauthorized recursion denied; TCP framing and truncation behavior correct |
 | Tests | Real UDP/TCP exchange, malformed/truncated frames and flood limits |
@@ -414,14 +414,14 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specificati
 
 ### P4-01: Specify and enforce authorized destination binding
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,6,10,19.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,6,10,19.
 
 | Field | Deliverable / evidence |
 |---|---|
-| Goal and implementation scope | Enforce independently scoped legacy DNS and gateway exact-address group grants, service/domain/port/outbound binding, manual bootstrap and opt-in secure-observation publication |
+| Goal and implementation scope | Enforce independently scoped legacy DNS and gateway exact-address group grants, service/domain/port/outbound binding, manual bootstrap and opt-in secure-observation publication; D46 manual-first current authorization, secure observation producer remains P3-07 |
 | Prerequisites | P2-05, P0-01 |
-| Expected files/modules | crates/droutex-gateway/src/binding; docs/security/GATEWAY_BINDING.md |
-| Acceptance criteria | No last-DNS-query Profile switch or union of conflicting grants; unknown/mismatched source fails closed; expiry and applied revocation persist during CP loss |
+| Expected files/modules | crates/droutex-core/src/deployment/admission; crates/droutex-config/src/schema; docs/security/GATEWAY_BINDING.md; docs/planning/P4_01_BINDING_CONTRACT.md |
+| Acceptance criteria | No last-DNS-query Profile switch or union of conflicting grants; unknown/mismatched source fails closed; expiry and applied revocation persist during CP loss; D46 v1 association-only/v2 bounded leases, conservative durable clock floor and fixed admission quotas; automatic learning unavailable until P3-07 |
 | Tests | Same-NAT conflicting endpoints, forged SNI, learning from invalid credentials/legacy/untrusted headers, address replacement, source mismatch and lease expiry |
 | Security considerations | SNI identifies a candidate; separate ingress authorization grants access |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |

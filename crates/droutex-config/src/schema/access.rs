@@ -25,7 +25,7 @@ pub(super) fn validate_access(
         validate_endpoint(endpoint, i, tables, catalog)?;
     }
     legacy_grants(&c.legacy_grants, tables)?;
-    gateway_grants(&c.gateway_grants, tables, catalog)
+    gateway_grants(&c.gateway_grants, tables, catalog, c.schema_version == 2)
 }
 
 fn validate_endpoint(
@@ -179,6 +179,7 @@ fn gateway_grants(
     grants: &[GatewayGrant],
     tables: &Tables<'_>,
     catalog: &ReferenceCatalog,
+    reject_duplicates: bool,
 ) -> Result<(), ConfigError> {
     let mut assignments = BTreeMap::new();
     for (i, grant) in grants.iter().enumerate() {
@@ -199,7 +200,7 @@ fn gateway_grants(
         )?;
         let previous = assignments.insert((grant.source, grant.listener), grant.group);
         require(
-            previous.is_none_or(|group| group == grant.group),
+            previous.is_none_or(|group| !reject_duplicates && group == grant.group),
             Code::AmbiguousGrant,
             &path,
         )?;

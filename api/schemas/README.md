@@ -1,4 +1,4 @@
-# Configuration import contract, version 1
+# Configuration import contracts, versions 1 and 2
 
 This is the P1-02 import boundary, implemented by
 [`parse_configuration`](../../crates/droutex-config/src/schema/parser.rs).
@@ -13,7 +13,7 @@ OpenAPI and management endpoints remain P6-02.
 
 ## Encoding and limits
 
-Accept exactly one UTF-8 JSON, YAML or TOML document with `schemaVersion: 1`.
+Accept exactly one UTF-8 JSON, YAML or TOML document with `schemaVersion: 1` or `2`.
 The three formats use the same typed model. Input is limited to 1,048,576 bytes,
 collection nesting to 32 (including the root collection), and resources/rules
 to 10,000 in aggregate. That count includes every top-level resource plus each
@@ -105,3 +105,14 @@ acceptance retain their roadmap gates.
 The [immutable snapshot candidate v1 contract](snapshot/README.md) records the
 accepted D11/D35 framing, canonicalization, strict trust and sequence boundary.
 Candidate verification does not imply durable publication or runtime activation.
+
+## D46 bounded manual leases (schema2)
+
+The [accepted P4-01 contract](../../docs/planning/P4_01_BINDING_CONTRACT.md) adds
+strict schema2. Each legacy/gateway grant requires lease with explicit manual cause,
+integer issuedAt/expiresAt UTC seconds and a60..86400-second lifetime. Absent/null,
+unknown cause, strings/floats, unknown fields, overflow and unsupported versions
+refuse. schema1 cannot contain leases or authorize runtime admission; exact prior
+canonical/signature vectors remain unchanged. v2 JSON/YAML/TOML fixtures in the
+configuration test fixtures show the new shape. This remains input intent; current
+core source/lease/clock/revocation/quota checks are separate from parsing/signing.

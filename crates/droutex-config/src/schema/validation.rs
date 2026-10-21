@@ -31,11 +31,29 @@ impl<'a> Tables<'a> {
 
 pub(super) fn validate(c: &Configuration, catalog: &ReferenceCatalog) -> Result<(), ConfigError> {
     require(
-        c.schema_version == 1,
+        matches!(c.schema_version, 1 | 2),
         Code::UnsupportedVersion,
         "$.schemaVersion",
     )?;
     count_resources(c)?;
+    for (kind, leases) in [
+        (
+            "legacyGrants",
+            c.legacy_grants.iter().map(|g| g.lease).collect::<Vec<_>>(),
+        ),
+        (
+            "gatewayGrants",
+            c.gateway_grants.iter().map(|g| g.lease).collect::<Vec<_>>(),
+        ),
+    ] {
+        for (index, lease) in leases.into_iter().enumerate() {
+            require(
+                lease.is_some() == (c.schema_version == 2),
+                Code::InvalidValue,
+                &format!("$.{kind}[{index}].lease"),
+            )?;
+        }
+    }
     let tables = Tables::new(c)?;
     unique(&c.gateway_grants, |g| g.id, "gatewayGrants")?;
     unique(&c.private_records, |r| r.id, "privateRecords")?;
