@@ -57,6 +57,40 @@ class RendererTests(TemporaryProject):
 
 
 class ValidatorTests(unittest.TestCase):
+    def test_pure_simulation_output_contract_preserves_honesty_and_redaction(self):
+        folder = ROOT / 'api/schemas/explain'
+        schema = json.loads((folder / 'simulation-v1.schema.json').read_text(encoding='utf-8'))
+        report = json.loads((folder / 'simulation-v1.example.json').read_text(encoding='utf-8'))
+        examples = json.loads((folder / 'selection-examples.json').read_text(encoding='utf-8'))
+        self.assertIs(schema['properties']['network_test_performed']['const'], False)
+        self.assertEqual(schema['properties']['effective_route']['type'], 'null')
+        self.assertIs(schema['additionalProperties'], False)
+        self.assertEqual(set(report), set(schema['required']))
+        self.assertEqual(set(report), set(schema['properties']))
+        self.assertIs(report['network_test_performed'], False)
+        self.assertIsNone(report['effective_route'])
+        definitions = schema['$defs']
+        self.assertEqual(set(definitions['private_owner']['properties']), {'id', 'record_type'})
+        self.assertIs(definitions['private_owner']['additionalProperties'], False)
+        self.assertEqual(len(definitions['entry']['properties']['source']['oneOf']), 3)
+        for value in [report['selection'], *examples.values()]:
+            self.assertEqual(set(value), set(definitions['selection']['properties']))
+            self.assertEqual(value['inspected_entries'], len(value['trace']))
+            self.assertEqual(value['emitted_entries'], len(value['trace']))
+            self.assertLessEqual(len(value['trace']), 10000)
+            for entry in value['trace']:
+                self.assertEqual(set(entry), set(definitions['entry']['properties']))
+                self.assertNotEqual(entry['source']['kind'], 'default')
+                if entry['source']['kind'] in {'filter', 'service'}:
+                    self.assertRegex(entry['source']['resource_hash'], r'^[0-9a-f]{64}$')
+            if value['private_owners']:
+                self.assertEqual(value['private_response_precedence'], 'pending_p3')
+                for owner in value['private_owners']:
+                    self.assertEqual(set(owner), {'id', 'record_type'})
+        self.assertEqual(examples['tcp_udp']['resolved_intent']['code'], 'unsupported_transport')
+        self.assertIn('ipv6_authorization_not_established', examples['tcp_ipv4_ech_nat']['limitations'])
+        self.assertIn('ipv4_authorization_not_established', examples['tcp_ipv6']['limitations'])
+
     def setUp(self):
         self.tasks = json.loads((ROOT / 'docs/planning/backlog.json').read_text(encoding='utf-8'))['tasks']
 
@@ -81,7 +115,7 @@ class ValidatorTests(unittest.TestCase):
         missing_evidence = copy.deepcopy(plan)
         missing_evidence['foundation_review']['source'] = ''
         later_work = copy.deepcopy(plan)
-        next(t for t in later_work['tasks'] if t['id'] == 'P2-06')['status'] = 'in_progress'
+        next(t for t in later_work['tasks'] if t['id'] == 'P3-01')['status'] = 'in_progress'
         unfinished_dependencies = copy.deepcopy(plan)
         next(t for t in unfinished_dependencies['tasks'] if t['id'] == 'P0-05')['status'] = 'in_review'
         unfinished_identity = copy.deepcopy(plan)
@@ -144,6 +178,12 @@ class ValidatorTests(unittest.TestCase):
         unaccepted_compilation['compilation_decision']['status'] = 'proposed'
         missing_compilation_source = copy.deepcopy(plan)
         missing_compilation_source['compilation_decision']['source'] = ''
+        unfinished_compilation = copy.deepcopy(plan)
+        next(t for t in unfinished_compilation['tasks'] if t['id'] == 'P2-05')['status'] = 'in_review'
+        unaccepted_explain = copy.deepcopy(plan)
+        unaccepted_explain['explain_simulation_decision']['status'] = 'proposed'
+        missing_explain_source = copy.deepcopy(plan)
+        missing_explain_source['explain_simulation_decision']['source'] = ''
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
         missing_native = copy.deepcopy(plan)
@@ -163,7 +203,8 @@ class ValidatorTests(unittest.TestCase):
                      unaccepted_publication, missing_publication_source, unfinished_publication,
                      unaccepted_actions, missing_actions_source, unfinished_actions,
                      unaccepted_catalogs, missing_catalog_source, unfinished_catalogs,
-                     unaccepted_compilation, missing_compilation_source):
+                     unaccepted_compilation, missing_compilation_source, unfinished_compilation,
+                     unaccepted_explain, missing_explain_source):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
 

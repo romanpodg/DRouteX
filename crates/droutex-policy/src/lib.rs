@@ -15,6 +15,8 @@ pub use decision::{
     local_answer_intent,
 };
 mod evaluate;
+mod explain;
+pub use explain::{PolicyTrace, TraceDisposition, TraceEntry};
 mod validate;
 pub use domain::{
     CanonicalDomain, DomainError, DomainMatchMode, DomainMatcher, MAX_DOMAIN_INPUT_BYTES,

@@ -1,0 +1,778 @@
+{
+  "dns_filter": {
+    "canonical_domain": "blocked.example.test",
+    "context": {
+      "ech": "unknown",
+      "quic": "unknown"
+    },
+    "destination_port": null,
+    "emitted_entries": 5,
+    "inspected_entries": 5,
+    "limitations": [
+      "no_network_test",
+      "ingress_not_authenticated",
+      "destination_not_checked_or_pinned",
+      "individual_device_not_authenticated",
+      "dns_only_ech_quic_bypass_route_not_guaranteed",
+      "no_ip_family_authorization_assumed"
+    ],
+    "observation_basis": "caller_supplied_simulation_assumptions",
+    "plane": "dns",
+    "predicted_action": {
+      "kind": "dns_block"
+    },
+    "predicted_decision_point": null,
+    "private_owners": [],
+    "private_response_precedence": "not_applicable",
+    "profile": "10000000-0000-4000-8000-000000000001",
+    "resolved_intent": {
+      "kind": "dns_block"
+    },
+    "scope": "10000000-0000-4000-8000-00000000000a",
+    "selected_source": {
+      "kind": "filter",
+      "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+      "revision": "10000000-0000-4000-8000-0000000000c8"
+    },
+    "trace": [
+      {
+        "disposition": "domain_mismatch",
+        "domain": "allow.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "custom",
+        "mode": "exact",
+        "port_matches": null,
+        "port_range": null,
+        "priority": -1,
+        "source": {
+          "kind": "custom",
+          "rule": "10000000-0000-4000-8000-000000000064"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "own.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "subdomains_only",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 70,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000065"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "service.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "domain_and_subdomains",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 70,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000065"
+        }
+      },
+      {
+        "disposition": "selected",
+        "domain": "blocked.example.test",
+        "domain_matches": true,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "dep-only.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      }
+    ],
+    "transport": "not_applicable"
+  },
+  "dns_private": {
+    "canonical_domain": "private.example.test",
+    "context": {
+      "ech": "unknown",
+      "quic": "unknown"
+    },
+    "destination_port": null,
+    "emitted_entries": 5,
+    "inspected_entries": 5,
+    "limitations": [
+      "no_network_test",
+      "ingress_not_authenticated",
+      "destination_not_checked_or_pinned",
+      "individual_device_not_authenticated",
+      "dns_only_ech_quic_bypass_route_not_guaranteed",
+      "no_ip_family_authorization_assumed",
+      "private_owner_present_effective_answer_not_determined"
+    ],
+    "observation_basis": "caller_supplied_simulation_assumptions",
+    "plane": "dns",
+    "predicted_action": {
+      "kind": "dns_resolve",
+      "upstream": "10000000-0000-4000-8000-00000000003c"
+    },
+    "predicted_decision_point": "client_origin",
+    "private_owners": [
+      {
+        "id": "10000000-0000-4000-8000-000000000046",
+        "record_type": "a"
+      }
+    ],
+    "private_response_precedence": "pending_p3",
+    "profile": "10000000-0000-4000-8000-000000000001",
+    "resolved_intent": {
+      "kind": "resolve",
+      "upstream": "10000000-0000-4000-8000-00000000003c"
+    },
+    "scope": "10000000-0000-4000-8000-00000000000a",
+    "selected_source": {
+      "kind": "default"
+    },
+    "trace": [
+      {
+        "disposition": "domain_mismatch",
+        "domain": "allow.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "custom",
+        "mode": "exact",
+        "port_matches": null,
+        "port_range": null,
+        "priority": -1,
+        "source": {
+          "kind": "custom",
+          "rule": "10000000-0000-4000-8000-000000000064"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "own.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "subdomains_only",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 70,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000065"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "service.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "domain_and_subdomains",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 70,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000065"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "blocked.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "dep-only.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      }
+    ],
+    "transport": "not_applicable"
+  },
+  "dns_service": {
+    "canonical_domain": "service.example.test",
+    "context": {
+      "ech": "unknown",
+      "quic": "unknown"
+    },
+    "destination_port": null,
+    "emitted_entries": 5,
+    "inspected_entries": 5,
+    "limitations": [
+      "no_network_test",
+      "ingress_not_authenticated",
+      "destination_not_checked_or_pinned",
+      "individual_device_not_authenticated",
+      "dns_only_ech_quic_bypass_route_not_guaranteed",
+      "no_ip_family_authorization_assumed"
+    ],
+    "observation_basis": "caller_supplied_simulation_assumptions",
+    "plane": "dns",
+    "predicted_action": {
+      "kind": "dns_gateway",
+      "outbound": "10000000-0000-4000-8000-000000000033"
+    },
+    "predicted_decision_point": null,
+    "private_owners": [],
+    "private_response_precedence": "not_applicable",
+    "profile": "10000000-0000-4000-8000-000000000001",
+    "resolved_intent": {
+      "code": "disabled_outbound",
+      "kind": "refused",
+      "reference": "10000000-0000-4000-8000-000000000033"
+    },
+    "scope": "10000000-0000-4000-8000-00000000000a",
+    "selected_source": {
+      "kind": "service",
+      "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+      "revision": "10000000-0000-4000-8000-0000000000c9",
+      "rule": "10000000-0000-4000-8000-000000000065"
+    },
+    "trace": [
+      {
+        "disposition": "domain_mismatch",
+        "domain": "allow.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "custom",
+        "mode": "exact",
+        "port_matches": null,
+        "port_range": null,
+        "priority": -1,
+        "source": {
+          "kind": "custom",
+          "rule": "10000000-0000-4000-8000-000000000064"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "own.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "subdomains_only",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 70,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000065"
+        }
+      },
+      {
+        "disposition": "selected",
+        "domain": "service.example.test",
+        "domain_matches": true,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "domain_and_subdomains",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 70,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000065"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "blocked.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "dep-only.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      }
+    ],
+    "transport": "not_applicable"
+  },
+  "tcp_ipv4_ech_nat": {
+    "canonical_domain": "allowed.example.test",
+    "context": {
+      "ech": "present",
+      "quic": "absent"
+    },
+    "destination_port": 443,
+    "emitted_entries": 5,
+    "inspected_entries": 5,
+    "limitations": [
+      "no_network_test",
+      "ingress_not_authenticated",
+      "destination_not_checked_or_pinned",
+      "individual_device_not_authenticated",
+      "network_group_scope_not_individual_device",
+      "ech_destination_recovery_not_proven",
+      "udp_quic_tcp_proxy_route_not_supported",
+      "ipv6_authorization_not_established"
+    ],
+    "observation_basis": "caller_supplied_simulation_assumptions",
+    "plane": "tcp",
+    "predicted_action": {
+      "kind": "tcp_outbound",
+      "outbound": "10000000-0000-4000-8000-000000000032"
+    },
+    "predicted_decision_point": "gateway_vps",
+    "private_owners": [],
+    "private_response_precedence": "not_applicable",
+    "profile": "10000000-0000-4000-8000-000000000002",
+    "resolved_intent": {
+      "kind": "gateway_direct",
+      "outbound": "10000000-0000-4000-8000-000000000032"
+    },
+    "scope": "10000000-0000-4000-8000-00000000001e",
+    "selected_source": {
+      "kind": "default"
+    },
+    "trace": [
+      {
+        "disposition": "domain_mismatch",
+        "domain": "blocked.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "custom",
+        "mode": "exact",
+        "port_matches": true,
+        "port_range": [
+          443,
+          443
+        ],
+        "priority": -10,
+        "source": {
+          "kind": "custom",
+          "rule": "10000000-0000-4000-8000-000000000066"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "own.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "subdomains_only",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 1,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000067"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "service.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "domain_and_subdomains",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 1,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000067"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "blocked.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "dep-only.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      }
+    ],
+    "transport": "tcp"
+  },
+  "tcp_ipv6": {
+    "canonical_domain": "allowed.example.test",
+    "context": {
+      "ech": "present",
+      "quic": "absent"
+    },
+    "destination_port": 443,
+    "emitted_entries": 5,
+    "inspected_entries": 5,
+    "limitations": [
+      "no_network_test",
+      "ingress_not_authenticated",
+      "destination_not_checked_or_pinned",
+      "individual_device_not_authenticated",
+      "network_group_scope_not_individual_device",
+      "ech_destination_recovery_not_proven",
+      "udp_quic_tcp_proxy_route_not_supported",
+      "ipv4_authorization_not_established"
+    ],
+    "observation_basis": "caller_supplied_simulation_assumptions",
+    "plane": "tcp",
+    "predicted_action": {
+      "kind": "tcp_outbound",
+      "outbound": "10000000-0000-4000-8000-000000000032"
+    },
+    "predicted_decision_point": "gateway_vps",
+    "private_owners": [],
+    "private_response_precedence": "not_applicable",
+    "profile": "10000000-0000-4000-8000-000000000002",
+    "resolved_intent": {
+      "kind": "gateway_direct",
+      "outbound": "10000000-0000-4000-8000-000000000032"
+    },
+    "scope": "10000000-0000-4000-8000-00000000001e",
+    "selected_source": {
+      "kind": "default"
+    },
+    "trace": [
+      {
+        "disposition": "domain_mismatch",
+        "domain": "blocked.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "custom",
+        "mode": "exact",
+        "port_matches": true,
+        "port_range": [
+          443,
+          443
+        ],
+        "priority": -10,
+        "source": {
+          "kind": "custom",
+          "rule": "10000000-0000-4000-8000-000000000066"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "own.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "subdomains_only",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 1,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000067"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "service.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "domain_and_subdomains",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 1,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000067"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "blocked.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "dep-only.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      }
+    ],
+    "transport": "tcp"
+  },
+  "tcp_udp": {
+    "canonical_domain": "allowed.example.test",
+    "context": {
+      "ech": "present",
+      "quic": "present"
+    },
+    "destination_port": 443,
+    "emitted_entries": 5,
+    "inspected_entries": 5,
+    "limitations": [
+      "no_network_test",
+      "ingress_not_authenticated",
+      "destination_not_checked_or_pinned",
+      "individual_device_not_authenticated",
+      "network_group_scope_not_individual_device",
+      "ech_destination_recovery_not_proven",
+      "udp_quic_tcp_proxy_route_not_supported",
+      "ipv6_authorization_not_established"
+    ],
+    "observation_basis": "caller_supplied_simulation_assumptions",
+    "plane": "tcp",
+    "predicted_action": {
+      "kind": "tcp_outbound",
+      "outbound": "10000000-0000-4000-8000-000000000032"
+    },
+    "predicted_decision_point": null,
+    "private_owners": [],
+    "private_response_precedence": "not_applicable",
+    "profile": "10000000-0000-4000-8000-000000000002",
+    "resolved_intent": {
+      "code": "unsupported_transport",
+      "kind": "refused",
+      "reference": null
+    },
+    "scope": "10000000-0000-4000-8000-00000000001e",
+    "selected_source": {
+      "kind": "default"
+    },
+    "trace": [
+      {
+        "disposition": "domain_mismatch",
+        "domain": "blocked.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "custom",
+        "mode": "exact",
+        "port_matches": true,
+        "port_range": [
+          443,
+          443
+        ],
+        "priority": -10,
+        "source": {
+          "kind": "custom",
+          "rule": "10000000-0000-4000-8000-000000000066"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "own.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "subdomains_only",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 1,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000067"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "service.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "service",
+        "mode": "domain_and_subdomains",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 1,
+        "source": {
+          "kind": "service",
+          "resource_hash": "67134989ed36e355447f6ecea5a47bf7a26e0c01300572524a48db3ed0e688d6",
+          "revision": "10000000-0000-4000-8000-0000000000c9",
+          "rule": "10000000-0000-4000-8000-000000000067"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "blocked.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      },
+      {
+        "disposition": "domain_mismatch",
+        "domain": "dep-only.example.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 3,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": true,
+        "port_range": null,
+        "priority": 900,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "bf8ddf0ea87e35439778a1ac7b15c3145f917d27afa9f025d01034ef8515d8fa",
+          "revision": "10000000-0000-4000-8000-0000000000c8"
+        }
+      }
+    ],
+    "transport": "udp"
+  }
+}

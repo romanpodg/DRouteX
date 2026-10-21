@@ -8,6 +8,7 @@ use droutex_config::{
 };
 use droutex_security::{SigningKey, SigningKeyId};
 use std::str::FromStr;
+mod explain_tests;
 
 fn typed<T: FromStr>(n: usize) -> T
 where
@@ -110,6 +111,10 @@ fn compiled_candidate(
             {"id":typed::<droutex_common::RuleId>(101).to_string(),"enabled":true,"priority":0,
              "matcher":{"mode":"exact","value":"private.test"},"action":{"plane":"traffic","action":{"kind":"outbound","outbound":typed::<droutex_common::ProxyOutboundId>(90).to_string()}}}
         ]) } else { serde_json::json!([]) }}],
+        "listeners":[{"id":typed::<droutex_common::ListenerId>(79).to_string(),"name":"legacy diagnostic fixture","enabled":true,"bind":"127.0.0.1:5353","transport":"dns_udp"}],
+        "endpoints":[{"id":typed::<droutex_common::EndpointId>(78).to_string(),"name":"private DNS metadata","enabled":true,"profile":typed::<droutex_common::ProfileId>(77).to_string(),"access":[{"transport":"udp","listener":typed::<droutex_common::ListenerId>(79).to_string(),"grants":[typed::<droutex_common::LegacyNetworkGrantId>(81).to_string()]}]}],
+        "networkGroups":[{"id":typed::<droutex_common::NetworkGroupId>(80).to_string(),"name":"private network metadata","trafficProfile":typed::<droutex_common::ProfileId>(77).to_string()}],
+        "legacyGrants":[{"id":typed::<droutex_common::LegacyNetworkGrantId>(81).to_string(),"source":"203.0.113.7","listener":typed::<droutex_common::ListenerId>(79).to_string(),"group":typed::<droutex_common::NetworkGroupId>(80).to_string(),"endpoint":typed::<droutex_common::EndpointId>(78).to_string()}],
         "outbounds":[{"id":typed::<droutex_common::ProxyOutboundId>(90).to_string(),"name":"explicit direct","enabled":true,"transport":{"kind":"vps_direct"}}],
         "privateRecords":if private_record { serde_json::json!([{"id":typed::<droutex_common::PrivateDnsRecordId>(91).to_string(),
             "profile":typed::<droutex_common::ProfileId>(77).to_string(),"name":"retained.test","ttl":60,"record":{"kind":"a","address":"192.0.2.7"}}]) } else { serde_json::json!([]) }});

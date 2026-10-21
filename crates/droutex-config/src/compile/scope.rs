@@ -36,6 +36,15 @@ impl GatewayScope {
         port: NonZeroU16,
         outbound: ProxyOutboundId,
     ) -> bool {
+        self.matches_request_scope(identity, name, port) && self.outbounds.contains(&outbound)
+    }
+    /// Internal diagnostic request scope, without inferring a selected outbound.
+    pub(crate) fn matches_request_scope(
+        &self,
+        identity: &GatewayNetworkIdentity,
+        name: &CanonicalDomain,
+        port: NonZeroU16,
+    ) -> bool {
         self.enabled_listener
             && self.id == identity.grant
             && self.group == identity.group
@@ -46,7 +55,6 @@ impl GatewayScope {
                 .ports
                 .iter()
                 .any(|(first, last)| (*first..=*last).contains(&port.get()))
-            && self.outbounds.contains(&outbound)
     }
 }
 impl fmt::Debug for GatewayScope {

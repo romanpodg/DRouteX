@@ -119,11 +119,11 @@ impl<D, T> PolicySet<D, T> {
     }
 }
 
-fn applicable<A>(rule: &DomainRule<A>, query: &CanonicalDomain) -> bool {
+pub(crate) fn applicable<A>(rule: &DomainRule<A>, query: &CanonicalDomain) -> bool {
     rule.state == AdministrativeState::Enabled && rule.matcher.matches(query)
 }
 
-fn port_matches(scope: TcpPortScope, port: NonZeroU16) -> bool {
+pub(crate) fn port_matches(scope: TcpPortScope, port: NonZeroU16) -> bool {
     match scope {
         TcpPortScope::Any => true,
         TcpPortScope::Range(range) => (range.first..=range.last).contains(&port.get()),

@@ -1,0 +1,789 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:droutex:simulation:1",
+  "title": "DRouteX generation-bound pure simulation v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "node",
+    "snapshot",
+    "source_revision",
+    "generation",
+    "content_hash",
+    "network_test_performed",
+    "effective_route",
+    "selection"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "node": {
+      "$ref": "#/$defs/uuid"
+    },
+    "snapshot": {
+      "$ref": "#/$defs/uuid"
+    },
+    "source_revision": {
+      "$ref": "#/$defs/uuid"
+    },
+    "generation": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 18446744073709551615
+    },
+    "content_hash": {
+      "$ref": "#/$defs/hash"
+    },
+    "network_test_performed": {
+      "type": "boolean",
+      "const": false
+    },
+    "effective_route": {
+      "type": "null"
+    },
+    "selection": {
+      "$ref": "#/$defs/selection"
+    }
+  },
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "default"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "rule"
+          ],
+          "properties": {
+            "kind": {
+              "const": "custom"
+            },
+            "rule": {
+              "$ref": "#/$defs/uuid"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "rule",
+            "revision",
+            "resource_hash"
+          ],
+          "properties": {
+            "kind": {
+              "const": "service"
+            },
+            "rule": {
+              "$ref": "#/$defs/uuid"
+            },
+            "revision": {
+              "$ref": "#/$defs/uuid"
+            },
+            "resource_hash": {
+              "$ref": "#/$defs/hash"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "revision",
+            "resource_hash"
+          ],
+          "properties": {
+            "kind": {
+              "const": "filter"
+            },
+            "revision": {
+              "$ref": "#/$defs/uuid"
+            },
+            "resource_hash": {
+              "$ref": "#/$defs/hash"
+            }
+          }
+        }
+      ]
+    },
+    "predicted_action": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "dns_block"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "upstream"
+          ],
+          "properties": {
+            "kind": {
+              "const": "dns_resolve"
+            },
+            "upstream": {
+              "$ref": "#/$defs/uuid"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "outbound"
+          ],
+          "properties": {
+            "kind": {
+              "const": "dns_gateway"
+            },
+            "outbound": {
+              "$ref": "#/$defs/uuid"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "tcp_deny"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "outbound"
+          ],
+          "properties": {
+            "kind": {
+              "const": "tcp_outbound"
+            },
+            "outbound": {
+              "$ref": "#/$defs/uuid"
+            }
+          }
+        }
+      ]
+    },
+    "intent": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "const": "dns_block"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "upstream"
+          ],
+          "properties": {
+            "kind": {
+              "const": "resolve"
+            },
+            "upstream": {
+              "$ref": "#/$defs/uuid"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "outbound"
+          ],
+          "properties": {
+            "kind": {
+              "const": "gateway"
+            },
+            "outbound": {
+              "$ref": "#/$defs/uuid"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "outbound"
+          ],
+          "properties": {
+            "kind": {
+              "const": "gateway_direct"
+            },
+            "outbound": {
+              "$ref": "#/$defs/uuid"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "outbound"
+          ],
+          "properties": {
+            "kind": {
+              "const": "protected_proxy"
+            },
+            "outbound": {
+              "$ref": "#/$defs/uuid"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "code",
+            "reference"
+          ],
+          "properties": {
+            "kind": {
+              "const": "refused"
+            },
+            "code": {
+              "enum": [
+                "unknown_upstream",
+                "unknown_outbound",
+                "disabled_outbound",
+                "unavailable_outbound",
+                "unknown_availability",
+                "unsupported_capability",
+                "unknown_capability",
+                "connection_failed"
+              ]
+            },
+            "reference": {
+              "$ref": "#/$defs/uuid"
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "kind",
+            "code",
+            "reference"
+          ],
+          "properties": {
+            "kind": {
+              "const": "refused"
+            },
+            "code": {
+              "enum": [
+                "policy_denied",
+                "unsupported_transport",
+                "gateway_not_ready",
+                "private_profile_mismatch",
+                "private_name_mismatch"
+              ]
+            },
+            "reference": {
+              "type": "null"
+            }
+          }
+        }
+      ]
+    },
+    "context": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ech",
+        "quic"
+      ],
+      "properties": {
+        "ech": {
+          "enum": [
+            "present",
+            "absent",
+            "unknown"
+          ]
+        },
+        "quic": {
+          "enum": [
+            "present",
+            "absent",
+            "unknown"
+          ]
+        }
+      }
+    },
+    "private_owner": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "record_type"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/uuid"
+        },
+        "record_type": {
+          "enum": [
+            "a",
+            "aaaa",
+            "cname"
+          ]
+        }
+      }
+    },
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source",
+        "layer",
+        "priority",
+        "labels",
+        "domain",
+        "mode",
+        "enabled",
+        "domain_matches",
+        "port_matches",
+        "port_range",
+        "disposition"
+      ],
+      "properties": {
+        "source": {
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "rule"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "custom"
+                },
+                "rule": {
+                  "$ref": "#/$defs/uuid"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "rule",
+                "revision",
+                "resource_hash"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "service"
+                },
+                "rule": {
+                  "$ref": "#/$defs/uuid"
+                },
+                "revision": {
+                  "$ref": "#/$defs/uuid"
+                },
+                "resource_hash": {
+                  "$ref": "#/$defs/hash"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "kind",
+                "revision",
+                "resource_hash"
+              ],
+              "properties": {
+                "kind": {
+                  "const": "filter"
+                },
+                "revision": {
+                  "$ref": "#/$defs/uuid"
+                },
+                "resource_hash": {
+                  "$ref": "#/$defs/hash"
+                }
+              }
+            }
+          ]
+        },
+        "layer": {
+          "enum": [
+            "custom",
+            "service",
+            "filter"
+          ]
+        },
+        "priority": {
+          "type": "integer",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "labels": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 127
+        },
+        "domain": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 253
+        },
+        "mode": {
+          "enum": [
+            "exact",
+            "domain_and_subdomains",
+            "subdomains_only"
+          ]
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "domain_matches": {
+          "type": "boolean"
+        },
+        "port_matches": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "port_range": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 65535
+                },
+                {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 65535
+                }
+              ],
+              "items": false,
+              "minItems": 2,
+              "maxItems": 2
+            }
+          ]
+        },
+        "disposition": {
+          "enum": [
+            "disabled",
+            "domain_mismatch",
+            "port_mismatch",
+            "selected",
+            "equivalent_tie",
+            "lower_rank"
+          ]
+        }
+      }
+    },
+    "selection": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "plane",
+        "scope",
+        "profile",
+        "canonical_domain",
+        "destination_port",
+        "transport",
+        "selected_source",
+        "predicted_action",
+        "resolved_intent",
+        "predicted_decision_point",
+        "observation_basis",
+        "context",
+        "limitations",
+        "private_owners",
+        "private_response_precedence",
+        "inspected_entries",
+        "emitted_entries",
+        "trace"
+      ],
+      "properties": {
+        "plane": {
+          "enum": [
+            "dns",
+            "tcp"
+          ]
+        },
+        "scope": {
+          "$ref": "#/$defs/uuid"
+        },
+        "profile": {
+          "$ref": "#/$defs/uuid"
+        },
+        "canonical_domain": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 253
+        },
+        "destination_port": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "transport": {
+          "enum": [
+            "not_applicable",
+            "tcp",
+            "udp",
+            "unknown"
+          ]
+        },
+        "selected_source": {
+          "$ref": "#/$defs/source"
+        },
+        "predicted_action": {
+          "$ref": "#/$defs/predicted_action"
+        },
+        "resolved_intent": {
+          "$ref": "#/$defs/intent"
+        },
+        "predicted_decision_point": {
+          "enum": [
+            null,
+            "client_origin",
+            "gateway_vps",
+            "protected_proxy_exit"
+          ]
+        },
+        "observation_basis": {
+          "const": "caller_supplied_simulation_assumptions"
+        },
+        "context": {
+          "$ref": "#/$defs/context"
+        },
+        "limitations": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "no_network_test",
+              "ingress_not_authenticated",
+              "destination_not_checked_or_pinned",
+              "individual_device_not_authenticated",
+              "dns_only_ech_quic_bypass_route_not_guaranteed",
+              "no_ip_family_authorization_assumed",
+              "private_owner_present_effective_answer_not_determined",
+              "network_group_scope_not_individual_device",
+              "ech_destination_recovery_not_proven",
+              "udp_quic_tcp_proxy_route_not_supported",
+              "ipv6_authorization_not_established",
+              "ipv4_authorization_not_established"
+            ]
+          },
+          "uniqueItems": true
+        },
+        "private_owners": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/private_owner"
+          },
+          "maxItems": 10000
+        },
+        "private_response_precedence": {
+          "enum": [
+            "pending_p3",
+            "not_applicable"
+          ]
+        },
+        "inspected_entries": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "emitted_entries": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "trace": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/entry"
+          },
+          "maxItems": 10000
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "plane": {
+                "const": "dns"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "transport": {
+                "const": "not_applicable"
+              },
+              "destination_port": {
+                "type": "null"
+              },
+              "predicted_action": {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "dns_block",
+                      "dns_resolve",
+                      "dns_gateway"
+                    ]
+                  }
+                }
+              },
+              "resolved_intent": {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "dns_block",
+                      "resolve",
+                      "gateway",
+                      "refused"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "transport": {
+                "enum": [
+                  "tcp",
+                  "udp",
+                  "unknown"
+                ]
+              },
+              "destination_port": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 65535
+              },
+              "predicted_action": {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "tcp_deny",
+                      "tcp_outbound"
+                    ]
+                  }
+                }
+              },
+              "resolved_intent": {
+                "properties": {
+                  "kind": {
+                    "enum": [
+                      "gateway_direct",
+                      "protected_proxy",
+                      "refused"
+                    ]
+                  }
+                }
+              },
+              "private_owners": {
+                "maxItems": 0
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "private_owners": {
+                "minItems": 1
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "private_response_precedence": {
+                "const": "pending_p3"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "private_response_precedence": {
+                "const": "not_applicable"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

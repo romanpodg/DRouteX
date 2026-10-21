@@ -1,11 +1,11 @@
 # P2-05 complete generation compilation evidence
 
-Status: D43 implementation97914dc passed independent linked-account Code Review,
-all11 Windows/Linux CI39550625494 jobs and both processed Codecov reports. CodeScene
-8050420 failed; concrete minor maintenance dispositions are recorded below and in
-OPEN_DECISIONS. Final evidence review/checks, normal merge and exact-main checks
-remain required. P2-06 and live
-DNS/proxy/admission behavior are not implemented by this task.
+Status: complete. PR105 merged normally at445f847e74d0b04d32d619be02865c36268648dc
+on2026-10-21T05:54:18Z after implementation/final linked-account reviews and all11
+final-head39551575011 jobs. All11 exact-main39552210853 jobs passed; both exact-merge
+Codecov reports processed. CodeScene8050420/8050501 remain failed with concrete
+minor maintenance dispositions, no suppression/bypass. Live DNS/proxy/admission
+behavior is outside this task.
 The [accepted contract](P2_05_COMPILATION_CONTRACT.md) records the complete owner
 decision and verified PR16 prerequisite before code: merge e8c5e61, all11 exact-main
 39546838691 jobs, both processed reports and D42 advisory correction.
@@ -172,3 +172,17 @@ maintenance dispositions, not successful CodeScene gates or deferred serious
 review defects. See P2-05-CS-* in [OPEN_DECISIONS](OPEN_DECISIONS.md).
 Final evidence documentation recheck passed17 planning tests and9 negative
 validator cases/282 local links, with unchanged source specifications and task set.
+
+## Final reviewed merge and exact-main verification
+
+Documentation-only final head61da1fb0070e5d38f0eff2806cd3fa9acf1b1750 received completed
+linked-account read-only/never review01a15d00-9cfb-7823-9e12-28218b10608b: exit0, no
+confirmed defect. Fmt/diff and7 existing compilation binary tests passed; the
+read-only Cargo rebuild limitation remains explicit. All11 final-head39551575011
+jobs completed successfully; both processed reports retained Rust5507/5759 and
+patch553/586. CodeScene8050501 repeated the exact8050420 findings/scores above.
+
+Normal match-head merge produced445f847e74d0b04d32d619be02865c36268648dc. All11
+exact-main39552210853 jobs completed successfully and both Codecov reports are
+complete(Rust5507/5759). This verified prerequisite preceded D44/P2-06 source work.
+No required check, branch protection or review was bypassed; no CI-status exception.

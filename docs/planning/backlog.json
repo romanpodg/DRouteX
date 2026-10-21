@@ -523,7 +523,7 @@
       "security": "Compile validates ingress-target binding and authorized resolver scope",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_progress",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -545,7 +545,9 @@
       ],
       "scope": "Explain endpoint/profile, layer/rule/dataset revision, distinct DNS/gateway identity scope, decision point and generation without invented connectivity or attribution",
       "files": [
-        "crates/droutex-policy/src/explain",
+        "crates/droutex-policy/src/explain.rs",
+        "crates/droutex-config/src/explain",
+        "crates/droutex-core/src/deployment/explain.rs",
         "api/schemas/explain"
       ],
       "acceptance": "Simulation reports network_test_performed=false and distinguishes predicted/effective routes",
@@ -553,7 +555,7 @@
       "security": "Redact secrets and restrict diagnostic profile visibility",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "S",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2613,9 +2615,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-21",
-    "source": "Direct owner reply2026-10-21 accepting complete D43 compiler profile after checked PR16; actual prerequisite satisfied at e8c5e61/all11 main39546838691 and both Codecov reports before code",
-    "scope": "D43 complete same-generation CP/DP compilation after reviewed PR16 merge e8c5e61, all11 exact-main39546838691 and both Codecov reports. Existing D11/D36/D38-D42 contracts, service non-inheritance, separate filter DNS Block/TCP Deny and preflight aggregate expansion bounds. No new dependency, network execution, live grant/admission authority or later implementation.",
-    "through_task": "P2-05"
+    "source": "Direct owner reply accepting complete D44 after verified PR105; docs/planning/P2_06_EXPLAIN_CONTRACT.md",
+    "scope": "D44 bounded pure same-generation Explain/simulation after PR105 normal merge445f847/all11 main39552210853 and both reports. Reuse D38/D40/D43; no new dependency/config field/network execution/public diagnostic endpoint or live/RBAC authority.",
+    "through_task": "P2-06"
   },
   "design_proposals": [
     {
@@ -2835,5 +2837,11 @@
     "date": "2026-10-21",
     "source": "Direct owner selection: accept complete P2-05 profile after checked PR16; docs/planning/P2_05_COMPILATION_CONTRACT.md",
     "profile": "D43 exact immutable source/resources/complete D39 policy compilation, CP approved catalog builder and DP CP-authenticated canonical resource decoding, deterministic shared generation tables, no service dependency inheritance, separate filter DNS/TCP denial, existing aggregate preallocation bounds and unchanged D11 codec"
+  },
+  "explain_simulation_decision": {
+    "status": "accepted",
+    "date": "2026-10-21",
+    "source": "Direct owner reply: accept full .setup/p2-06/explain-design-proposal.md after PR105; docs/planning/P2_06_EXPLAIN_CONTRACT.md",
+    "profile": "D44 actual pinned generation, full bounded deterministic trace, distinct scopes and pinned resource hashes; predicted action/D40 intent/refusal separate, network_test_performed=false/effective_route=null, honest ECH/QUIC/NAT/IPv6/private-precedence limitations, redacted in-process output only; actual checks/reviews required"
   }
 }

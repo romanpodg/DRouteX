@@ -260,7 +260,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P2-05: Compile policies into snapshots
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§5,8,11.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§5,8,11.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -275,13 +275,13 @@ Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifi
 
 ### P2-06: Provide explain and simulation contracts
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **S**. Specification: §§8,12,18,20.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **S**. Specification: §§8,12,18,20.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Explain endpoint/profile, layer/rule/dataset revision, distinct DNS/gateway identity scope, decision point and generation without invented connectivity or attribution |
 | Prerequisites | P2-05 |
-| Expected files/modules | crates/droutex-policy/src/explain; api/schemas/explain |
+| Expected files/modules | crates/droutex-policy/src/explain.rs; crates/droutex-config/src/explain; crates/droutex-core/src/deployment/explain.rs; api/schemas/explain |
 | Acceptance criteria | Simulation reports network_test_performed=false and distinguishes predicted/effective routes |
 | Tests | Golden explain outputs for precedence, ECH/QUIC/NAT/IPv6 |
 | Security considerations | Redact secrets and restrict diagnostic profile visibility |

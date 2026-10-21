@@ -1,0 +1,70 @@
+{
+  "content_hash": "81631bd31a13a20fe1be392036f064b78f605ee219098eca1276b4276361beac",
+  "effective_route": null,
+  "generation": 1,
+  "network_test_performed": false,
+  "node": "10000000-0000-4000-8000-000000000001",
+  "schema_version": 1,
+  "selection": {
+    "canonical_domain": "retained.test",
+    "context": {
+      "ech": "unknown",
+      "quic": "unknown"
+    },
+    "destination_port": null,
+    "emitted_entries": 1,
+    "inspected_entries": 1,
+    "limitations": [
+      "no_network_test",
+      "ingress_not_authenticated",
+      "destination_not_checked_or_pinned",
+      "individual_device_not_authenticated",
+      "dns_only_ech_quic_bypass_route_not_guaranteed",
+      "no_ip_family_authorization_assumed",
+      "private_owner_present_effective_answer_not_determined"
+    ],
+    "observation_basis": "caller_supplied_simulation_assumptions",
+    "plane": "dns",
+    "predicted_action": {
+      "kind": "dns_block"
+    },
+    "predicted_decision_point": null,
+    "private_owners": [
+      {
+        "id": "10000000-0000-4000-8000-00000000005b",
+        "record_type": "a"
+      }
+    ],
+    "private_response_precedence": "pending_p3",
+    "profile": "10000000-0000-4000-8000-00000000004d",
+    "resolved_intent": {
+      "kind": "dns_block"
+    },
+    "scope": "10000000-0000-4000-8000-00000000004e",
+    "selected_source": {
+      "kind": "default"
+    },
+    "trace": [
+      {
+        "disposition": "domain_mismatch",
+        "domain": "catalog.test",
+        "domain_matches": false,
+        "enabled": true,
+        "labels": 2,
+        "layer": "filter",
+        "mode": "domain_and_subdomains",
+        "port_matches": null,
+        "port_range": null,
+        "priority": 0,
+        "source": {
+          "kind": "filter",
+          "resource_hash": "d3effa44206bf4bffc785d14f6dd2fa385ee5ce3e723f5097a9226a8260371b9",
+          "revision": "10000000-0000-4000-8000-00000000005c"
+        }
+      }
+    ],
+    "transport": "not_applicable"
+  },
+  "snapshot": "10000000-0000-4000-8000-000000000002",
+  "source_revision": "10000000-0000-4000-8000-000000000003"
+}

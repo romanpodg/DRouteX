@@ -1,6 +1,8 @@
 //! D36 bounded activation. Storage methods block: async callers must use a blocking context.
 //! A decision pins both consumer views once; never pin separately for DNS and gateway.
 mod artifacts;
+mod explain;
+pub use explain::SimulationReport;
 mod state;
 mod store;
 

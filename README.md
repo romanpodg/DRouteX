@@ -14,9 +14,10 @@ P2-02 deterministic scoped selection merged in PR #13 with exact-main CI verifie
 P2-03 publication conflict/resource validation merged in PR #14 with exact-main CI verified.
 P2-04 separate DNS/TCP/local-answer intents and strict failures merged in PR #15
 with exact-main CI verified. P2-07 local catalog imports and D42 TLS-qualification
-security correction merged in PR #16 with exact-main CI verified. P2-05 now implements
-owner-accepted complete same-generation compilation; implementation review and
-final acceptance remain pending. No DRouteX DNS/gateway listener exists yet.
+security correction merged in PR #16 with exact-main CI verified. P2-05 complete
+same-generation compilation merged in PR #105 with exact-main CI verified.
+P2-06 implements owner-accepted generation-bound Explain/simulation; review and
+actual Windows/Linux acceptance remain pending. No DRouteX DNS/gateway listener exists yet.
 
 - [Development roadmap](docs/planning/DEVELOPMENT_ROADMAP.md)
 - [Current execution boundary and repository handoff](docs/planning/EXECUTION_STATUS.md)

@@ -3,8 +3,12 @@
 mod actions;
 pub mod catalog;
 mod compile;
+mod explain;
 pub use compile::{
     CompilationError, CompiledConfiguration, CompletePublication, GatewayScope, ResourceData,
+};
+pub use explain::{
+    DiagnosticContext, Evidence, SelectionExplanation, SimulationError, SimulationRequest,
 };
 mod publication;
 pub use actions::{
