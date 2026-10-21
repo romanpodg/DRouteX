@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1 and P2-01/02/03 complete and merged; PR14 exact-main verified; P2-04 D40 strict action resolution implementation under review; later tasks planned.**
+**P0/P1 and P2-01/02/03/04 complete and merged; PR15 exact-main verified; P2-07 D41 local catalog import implementation under review; P2-05/06 and later tasks planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -245,7 +245,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P2-04: Resolve actions and failure policies
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§6,7,8,20.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§6,7,8,20.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -253,7 +253,7 @@ Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifi
 | Prerequisites | P2-03 |
 | Expected files/modules | crates/droutex-policy/src/decision; crates/droutex-config/src/actions.rs |
 | Acceptance criteria | DIRECT decision point explicit; unsupported tunnel/node/UDP capabilities reject; strict proxy failures block |
-| Tests | Unavailable proxy, explicit direct opt-in, DNS-only limits and deferred tunnel/node action negatives |
+| Tests | D40 strict action/scope/capability/negative matrix and borrowed lifetime passed. PR15 b4c104c merged normally after linked-account implementation/final reviews and all11 exact-head/main jobs39481364319; processed Codecov Rust4329/4535, patch257/261. Failed CodeScene maintenance findings retained; docs/planning/P2_04_ACTION_REVIEW.md. |
 | Security considerations | D40 strict refusal; direct only explicitly selected VPS_DIRECT. Future automatic fail-open requires separately accepted Profile permission and real audit; none implemented. |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
 | Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |
@@ -290,14 +290,14 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **S**. Specificati
 
 ### P2-07: Import versioned filter and service catalogs
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,9,12,19,22.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,9,12,19,22.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Bounded local domain/hosts list and service-bundle imports with source/license/hash metadata and last-known-good preservation |
 | Prerequisites | P1-02, P0-05 |
-| Expected files/modules | crates/droutex-policy/src/catalog; configs/catalogs; tests/fixtures/catalogs |
-| Acceptance criteria | Valid local revisions normalize deterministically and can be pinned; malformed/oversized/unsupported or unapproved-license input cannot replace accepted data; no silent empty protection |
+| Expected files/modules | crates/droutex-policy/src/catalog.rs; crates/droutex-config/src/catalog; tests/fixtures/catalogs |
+| Acceptance criteria | D41 explicit bounded local formats/modes; actual verified immutable source/resource hash and license/provenance/dependency data can be pinned; malformed/oversized/unsupported/unapproved or empty inputs leave accepted data intact. No automatic publish or network fetch. |
 | Tests | Real local format fixtures, Unicode/hosts entries, malformed/oversized lists, revision/hash pinning, failed update rollback and cross-profile isolation |
 | Security considerations | No arbitrary URL fetch or proprietary Control D feed import; retain provenance/license and bounded parser limits |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |

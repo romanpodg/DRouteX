@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0/P1 and P2-01/02/03 complete and merged; PR14 exact-main verified; P2-04 D40 strict action resolution implementation under review; actual fork test deferred.**
+Status: **P0/P1 and P2-01/02/03/04 complete and merged; PR15 exact-main verified; P2-07 D41 local catalog import implementation under review; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -35,8 +35,11 @@ P2-02 is authorized under the owner-accepted [D38 profile](P2_02_EVALUATION_CONT
 and merged normally at ecc8a9e after reviews, all11 final-head/main jobs and processed
 Codecov. P2-03 accepted [D39 validation](P2_03_PUBLICATION_CONTRACT.md) merged at a50c6a4
 after reviews and all11 final-head/main jobs; exact-main Codecov processed both reports.
-P2-04 now implements accepted [D40 strict actions](P2_04_ACTION_CONTRACT.md);
-see [evidence](P2_04_ACTION_REVIEW.md). Later tasks remain planned.
+P2-04 accepted [D40 strict actions](P2_04_ACTION_CONTRACT.md) merged at b4c104c
+after reviews and all11 final-head/main jobs; Codecov processed both exact-main reports.
+See [evidence](P2_04_ACTION_REVIEW.md). P2-07 now implements accepted
+[D41 local catalogs](P2_07_CATALOG_CONTRACT.md); see [evidence](P2_07_CATALOG_REVIEW.md).
+Catalog data precedes complete P2-05 compilation; P2-06 Explain follows. Later tasks remain planned.
 See [P1-05 evidence](P1_05_SNAPSHOT_REVIEW.md).
 See [P1-07 evidence](P1_07_SECRET_REVIEW.md).
 Further technical choices retain their owning gates.

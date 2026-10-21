@@ -1,0 +1,5 @@
+# Original synthetic fixtures; Apache-2.0
+0.0.0.0 ads.example tracker.example # aliases
+127.0.0.1 BÜCHER.Example.
+:: ipv6.example
+::1 local-test.example

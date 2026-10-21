@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "kind": "service",
+  "entries": [
+    {
+      "domain": "video.example",
+      "mode": "exact"
+    },
+    {
+      "domain": "assets.example",
+      "mode": "subdomains_only"
+    },
+    {
+      "domain": "cdn.example",
+      "mode": "domain_and_subdomains"
+    }
+  ],
+  "dependencies": [
+    {
+      "kind": "filter",
+      "revision": "10000000-0000-4000-8000-00000000012c",
+      "hash": "c51d5eada3cfa3a9faf8238531646ac00fd9693fa7abe9c56bea2e12648d309b"
+    }
+  ]
+}

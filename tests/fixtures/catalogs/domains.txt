@@ -1,0 +1,4 @@
+# DRouteX original synthetic test entries; Apache-2.0
+BÜCHER.Example.
+xn--bcher-kva.example
+cdn--edge.example

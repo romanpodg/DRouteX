@@ -2,6 +2,11 @@
 
 mod domain;
 
+/// Existing D24/D41 local untrusted input budget, shared across parsers.
+pub const MAX_LOCAL_INPUT_BYTES: usize = 1_048_576;
+/// Existing D36 resource payload budget per generation, shared by catalog import.
+pub const MAX_GENERATION_RESOURCE_BYTES: usize = 64 * 1024 * 1024;
+
 pub use domain::{
     AdministrativeState, AmbiguousLegacyAssignment, ConfigurationRevisionId, CorrelationId,
     DeploymentId, DeviceId, DnsBindingError, DnsEndpointAssignment, DnsProfileBinding,

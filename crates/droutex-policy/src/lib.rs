@@ -2,6 +2,11 @@
 
 use droutex_common::RuleLayer;
 
+mod catalog;
+pub use catalog::{
+    BlocklistFormat, CatalogConditions, CatalogParseCode, CatalogParseError, blocklist_entry_count,
+    normalize_catalog_conditions, parse_blocklist,
+};
 mod decision;
 mod domain;
 pub use decision::{

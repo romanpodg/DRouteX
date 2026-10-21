@@ -1,6 +1,7 @@
 //! Bounded configuration import and validation against accepted policy contracts.
 
 mod actions;
+pub mod catalog;
 mod publication;
 pub use actions::{
     ActionPreparationError, DnsActionResolution, InvalidActionScope, OutboundObservation,
