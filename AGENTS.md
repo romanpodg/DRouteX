@@ -13,8 +13,15 @@ original RUSTSEC-2026-0382 failure; production TLS was not adopted. See
 P2_07_CATALOG_REVIEW.md and WEBPKI_SECURITY_UPDATE.md.
 Owner accepted complete D43 conditional on that checked PR16 prerequisite, fulfilled
 before P2-05 code. See docs/planning/P2_05_COMPILATION_CONTRACT.md. P2-05 complete
-same-generation CP/DP compilation is current. Actual Windows/Linux checks,
-independent implementation/final reviews and normal merge remain required.
+same-generation CP/DP compilation is current in PR105. Implementation97914dc passed
+all11 CI39550625494 jobs (Windows159/Linux187 default and no-default), both Codecov
+reports (Rust5507/5759; patch553/586) and linked-account read-only/never review
+01a15cfa-55e2-7382-a5fd-b34660707cf8 with no confirmed defect. CodeScene8050420 failed;
+minor concrete maintenance dispositions are in P2_05_COMPILATION_REVIEW.md and
+OPEN_DECISIONS. Final evidence review/checks, normal merge and exact-main remain
+required. Owner accepted complete D44 Explain/simulation profile after that checked
+PR105 prerequisite; P2-06 stays planned until then. See local accepted profile
+.setup/p2-06/accepted-profile.md and D44 in OPEN_DECISIONS.
 D11 codec/source bytes remain unchanged; service dependencies validate without
 implicit inheritance; filters compile separate DNS Block/TCP Deny in independently
 selected Profiles. CP requires real approved catalogs, DP CP-authenticated actual

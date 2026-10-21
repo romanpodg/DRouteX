@@ -1,8 +1,10 @@
 # P2-05 complete generation compilation evidence
 
-Status: D43 implemented and locally checked; independent linked-account review,
-actual current-head Windows/Linux CI, external coverage/health assessment, final
-review/checks, normal merge and exact-main checks remain required. P2-06 and live
+Status: D43 implementation97914dc passed independent linked-account Code Review,
+all11 Windows/Linux CI39550625494 jobs and both processed Codecov reports. CodeScene
+8050420 failed; concrete minor maintenance dispositions are recorded below and in
+OPEN_DECISIONS. Final evidence review/checks, normal merge and exact-main checks
+remain required. P2-06 and live
 DNS/proxy/admission behavior are not implemented by this task.
 The [accepted contract](P2_05_COMPILATION_CONTRACT.md) records the complete owner
 decision and verified PR16 prerequisite before code: merge e8c5e61, all11 exact-main
@@ -83,7 +85,7 @@ through the low-level codec. Fresh/retained compilation refusals preserve LKG/fl
 held compiled decisions remain immutable across a successful update. A new Linux
 durable test reopens after removing CP/backup directories and refuses a signed
 malformed catalog while preserving the same pinned view; actual Linux execution
-is still pending CI and is not inferred from Windows.
+passed in CI39550625494 and is not inferred from Windows.
 
 Eight deliberate behavioral mutations were detected: omitted filters (including
 the differential oracle), dropped scope identity guard, bypassed real approval,
@@ -103,8 +105,7 @@ These passes do not substitute for required linked-account Code Review.
 Inherited P2-03/P2-07 maintenance invariants were rechecked at this integration:
 complete graph/hash checks, shared preallocation scanner, immutable import commit,
 canonical writer bound/golden and symbolic conflict semantics remain. No score-only
-cleanup, suppression or successful external health/coverage claim is made.
-Current-head CI/linked-account and external results will be recorded when observed.
+cleanup or suppression is made. The actual external results follow.
 
 Q-DOC passed17 tests and9 negative validator cases/280 local links, preserving
 88 tasks/61 MVP/188 requirements and source-spec hashes. New negative boundary
@@ -112,3 +113,62 @@ cases reject unaccepted/missing-source D43, unfinished P2-07 and premature P2-06
 AST-only graph update completed4122 nodes/8785 edges. Missing SQL parser and
 zero-node Cargo.toml warnings remain explicit; no semantic/API backend or complete
 graph proof is claimed, and graph artifacts remain untracked.
+
+## Actual implementation review, CI and external reports
+
+Implementation97914dc03e6c6377d964fee5d5ff73a1dc16b235 received completed independent
+linked-account review01a15cfa-55e2-7382-a5fd-b34660707cf8 using approval=never and
+sandbox=read-only. Exit0, no confirmed defect. Reviewer fmt and diff checks passed;
+its attempted Clippy/test rebuild could not write Cargo's build lock in read-only
+mode. This limitation is recorded, not counted as a successful rebuild; parent
+local checks and actual CI provide separate execution evidence.
+
+[CI39550625494](https://github.com/romanpodg/DRouteX/actions/runs/39550625494)
+completed successfully with all11 jobs, including both actual platform workspaces,
+planning, protected-secret and SQLite qualification, Linux DNS/TLS qualification,
+locked dependency/coverage checks and isolated OIDC report upload. No workflow,
+manifest, feature, lockfile, advisory exception or check protection changed.
+Windows passed159 workspace tests and Linux187 in each default/no-default run.
+The actual Linux compiled-table reopen/CP-loss/refused-candidate regression passed
+in both workspace runs and coverage; all5 dependency policy bundles passed.
+
+Codecov processed both exact-head reports: Rust5507/5759 executable lines(95.62%),
+new Rust553/586(94.37%) against prerequisite e8c5e61. These are actual Rust-only
+backend/compare totals, excluding auxiliary Python metrics. Coverage does not prove
+network admission, connectivity or all failure interleavings.
+
+[CodeScene8050420](https://codescene.io/projects/86145/delta/results/8050420)
+failed all three maintenance gates. Source inspection of every affected production
+function found explicit bounded validation/build/comparison paths, not a confirmed
+functional defect. Independent implementation/spec/standards review and meaningful
+negative, mutation, differential, exact-budget and platform recovery evidence
+support the present contract. Remaining risks are future modification effort:
+
+- decoded.rs8.41: combined canonical/metadata/format guards and complete decoder
+  complexity. Keep the ordered scan/hash/decode/normalize/canonical-byte checks
+  together; revisit before any resource format/approval/metadata change, retaining
+  the license-control red/green regression and correctly signed malformed vectors.
+- build.rs9.08: complete policy method, nested condition expansion and explicit
+  add arguments. Current typed actions and whole-set budget/differential tests
+  protect layer/plane/source association. Revisit when adding a rule source,
+  plane, port expansion or catalog composition, with those invariants rechecked.
+- budget.rs9.54: explicit aggregate counting branches. Its maintenance risk is
+  drift from newly added compiled tables, not current unchecked multiplication;
+  source comparison plus exact10000/10001 and bypass mutation cover the contract.
+  Revisit any table/entry/expansion change before allocation is introduced.
+- scope.rs9.69: five arguments include self and mandatory independent identity,
+  canonical name, nonzero port and typed outbound. Combining them merely for a
+  score would hide required dimensions. Revisit an actual caller ambiguity or
+  P4 admission integration; preserve every-dimension denial regression.
+- resources.rs9.84: nested approval matching makes whole-set pairing maintenance
+  less direct. Exact bytes, missing/duplicate/extraneous typed approvals and the
+  real-approval bypass mutation cover it. Revisit changes to catalog authority,
+  approved-object storage or resource identity/pairing rules.
+
+Large compilation tests7.68 and auxiliary validator/test hotspots9.48/8.90 are
+outside the owner's independent metric scope. Their functional regressions pass;
+no score-only cleanup or suppression is justified. All these are minor explicit
+maintenance dispositions, not successful CodeScene gates or deferred serious
+review defects. See P2-05-CS-* in [OPEN_DECISIONS](OPEN_DECISIONS.md).
+Final evidence documentation recheck passed17 planning tests and9 negative
+validator cases/282 local links, with unchanged source specifications and task set.
