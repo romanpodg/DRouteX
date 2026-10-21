@@ -16,8 +16,12 @@ strict v2 leases/journal,24h maximum manual lease,2s clock uncertainty and5s dur
 floor window, current-generation checks and fixed group/node quotas. Automatic
 secure learning is unavailable until actual P3-07/P6 evidence. No new dependency,
 listener, connector, public endpoint or privileged operation is authorized. Actual
-Windows/Linux tests, independent implementation/final reviews, external reports,
-normal merge and exact-main verification remain required. Later implementation
+Windows199/Linux230 default/no-default tests and all11 CI39671360399 jobs passed
+on implementation efd3f28. Linked-account read-only/never review
+01a1602b-028d-7192-b217-97743133bb9e completed without confirmed defect. Codecov
+Rust6689/7013, patch717/759; failed CodeScene8066731 has concrete minor source
+and excluded auxiliary dispositions in P4_01_BINDING_REVIEW.md/OPEN_DECISIONS.
+Final evidence review/checks, normal merge and exact-main remain required. Later implementation
 stays planned. No owner CI-status exception was used. D42 WebPKI0.103.16 remains
 qualified in the existing test-only TLS qualifier, resolving RUSTSEC-2026-0382.
 

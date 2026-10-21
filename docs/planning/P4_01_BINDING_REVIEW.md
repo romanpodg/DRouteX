@@ -1,6 +1,7 @@
 # P4-01 current authorization evidence
 
-Status: **implementation in progress; not adopted or merged**. D45 execution order
+Status: **candidate acceptance verified; final evidence review/checks and normal
+merge/exact-main remain required**. D45 execution order
 and the complete [D46 contract](P4_01_BINDING_CONTRACT.md) were directly accepted
 on2026-10-22. Before code, PR106 merged normally at671c9f6154add92486c90f5a620d4dbefa9a510a;
 all11 exact-main39662936089 jobs and both Codecov reports processed(Rust5980/6262).
@@ -66,9 +67,32 @@ generation, checkpoint coverage and gateway attempt rate. Every regression test
 failed behaviorally; exact source bytes were restored. Harness pattern mismatches
 were corrected and are not counted as detected mutations.
 
-New Linux durable tests are written for CP-loss restore/expiry, conservative restart,
-pre-rename checkpoint failure, post-rename uncertain commit/reopen, applied removal
-and initialized-floor corruption. **Actual Linux execution is still unverified**.
-Required linked-account implementation/final reviews, exact
-head/main CI, Codecov and CodeScene are also still unverified. Later P3/P4/P6 runtime
-integration/secure learning remains planned; no score or network result is invented.
+## Implementation CI and account review
+
+Implementation efd3f28962be222911c5fc521581545a584d74b9 passed all11 actual
+[CI39671360399 jobs](https://github.com/romanpodg/DRouteX/actions/runs/39671360399).
+Windows passed199 workspace tests and Linux230 in each default/no-default profile.
+Actual Linux durable tests passed CP-loss restore/expiry, conservative restart,
+pre-rename checkpoint failure, post-rename uncertain commit/reopen, applied removal,
+initialized-floor corruption and admission pause/error cleanup during real commit.
+All existing dependency/TLS/storage/secret/IDNA, planning and coverage jobs passed.
+No real socket/connector, automatic learning or systemd acceptance is claimed.
+
+Linked-account implementation Code Review01a1602b-028d-7192-b217-97743133bb9e
+completed with exit0, read-only sandbox and approval never: no confirmed defect.
+Its fmt and9 validator tests passed. Its18 cached binary tests are supplemental;
+source correspondence was not established. Read-only Cargo rebuilding/Clippy was
+unavailable, so actual exact-source execution evidence comes from the parent
+Windows runs and the independent CI Windows/Linux jobs above, not those binaries.
+
+Codecov processed the exact implementation commit with2 sessions and complete
+state. Rust application coverage is6689/7013 (95.38%); Rust patch717/759 (94.46%).
+Planning coverage is separate. The excluded critical/large test-method metrics do
+not justify rewriting tests. CodeScene8066731 failed all three maintenance gates:
+application admission9.39, quota9.54 and candidate9.69 plus excluded tests/planning.
+Every concrete signal, impact, reason and revisit trigger is recorded in
+[the existing register](OPEN_DECISIONS.md#p4-01-review-dispositions). No suppression,
+score-only rewrite, advisory exception or branch-protection bypass was used.
+
+Required final linked-account evidence review, exact final-head/main CI and normal
+merge are still open. P3/P4/P6 runtime integration/secure learning remains planned.

@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1/P2 complete and merged; PR106 exact-main verified; D45 P4-01 before P3-01 and complete D46 authorization profile accepted; P4-01 in progress.**
+**P0/P1/P2 complete and merged; PR106 exact-main verified; D45/D46 P4-01 candidate passed implementation review/all11 CI39671360399, final evidence/merge/main remain required.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -414,7 +414,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specificati
 
 ### P4-01: Specify and enforce authorized destination binding
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,6,10,19.
+Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,6,10,19.
 
 | Field | Deliverable / evidence |
 |---|---|

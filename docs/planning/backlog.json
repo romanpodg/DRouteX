@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0/P1/P2 complete and merged; PR106 exact-main verified; D45 P4-01 before P3-01 and complete D46 authorization profile accepted; P4-01 in progress",
+  "status": "P0/P1/P2 complete and merged; PR106 exact-main verified; D45/D46 P4-01 candidate passed implementation review/all11 CI39671360399, final evidence/merge/main remain required",
   "date": "2026-10-22",
   "phases": {
     "P0": "Foundation",
@@ -817,7 +817,7 @@
       "security": "SNI identifies a candidate; separate ingress authorization grants access",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_progress",
+      "status": "in_review",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
