@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0/P1 and P2-01/02/03/04/07 complete and merged; PR16 exact-main verified; P2-05 D43 complete generation compilation in progress; actual fork test deferred.**
+Status: **P0/P1 and P2-01/02/03/04/07 complete and merged; PR16 exact-main verified; P2-05/PR105 complete; P2-06 D44 Explain/simulation in progress; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -42,7 +42,9 @@ See [evidence](P2_04_ACTION_REVIEW.md). P2-07 accepted
 exact-main39546838691 jobs and both processed reports passed before P2-05 code.
 See [completed evidence](P2_07_CATALOG_REVIEW.md). P2-05 now implements the accepted
 [D43 complete compiler](P2_05_COMPILATION_CONTRACT.md); [evidence](P2_05_COMPILATION_REVIEW.md).
-P2-06 Explain follows the reviewed compiler merge. Later implementation remains planned.
+P2-05 merged normally at445f847; all11 exact-main39552210853 jobs and both reports passed.
+P2-06 now follows the [accepted D44 contract](P2_06_EXPLAIN_CONTRACT.md);
+[current evidence](P2_06_EXPLAIN_REVIEW.md). Later implementation remains planned.
 See [P1-05 evidence](P1_05_SNAPSHOT_REVIEW.md).
 See [P1-07 evidence](P1_07_SECRET_REVIEW.md).
 Further technical choices retain their owning gates.

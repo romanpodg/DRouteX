@@ -10,6 +10,9 @@ pub(crate) struct RuleRank {
 }
 
 impl RuleRank {
+    pub(crate) fn priority(self) -> i32 {
+        self.priority
+    }
     pub(super) fn new(metadata: RuleMetadata, matcher: &DomainMatcher) -> Self {
         // Explicit CR-0002 ranks, independent of enum declaration order.
         let layer = match metadata.source {

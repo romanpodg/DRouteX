@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-21. Current stage: **P2-07/PR16 merged and exact-main verified; P2-05 D43 complete generation compilation under review**.
+Date: 2026-10-21. Current stage: **P2-05/PR105 merged and exact-main verified; P2-06 D44 Explain/simulation in progress**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -12,7 +12,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P2-05 is the current stage; technical choices retain their owning gates.
+P2-06 is the current stage; technical choices retain their owning gates.
 PR9 merged at521bfa76fbc27e14cd4981638af775ba92c6299f after independent
 implementation/final-evidence reviews and all11 final-head jobs. All11 exact-main
 jobs39148795165 passed and both Codecov reports processed. The owner then accepted
@@ -49,9 +49,13 @@ patch612/642). Owner D42 WebPKI0.103.16 qualification resolved the original advi
 without suppression/production TLS adoption; see [completed evidence](P2_07_CATALOG_REVIEW.md).
 Owner accepted complete [D43 compilation](P2_05_COMPILATION_CONTRACT.md) after that
 checked merge, fulfilled before code. P2-05 binds exact actual resources/source and
-complete policies to one core Generation. [Candidate evidence](P2_05_COMPILATION_REVIEW.md)
-records current work and pending actual Linux/current-head/independent/final/merge gates.
-P2-06 Explain and P3/P4 runtime/admission remain planned.
+complete policies to one core Generation. [Completed evidence](P2_05_COMPILATION_REVIEW.md)
+records both linked-account reviews, normal PR105 merge445f847, all11 exact-main
+39552210853 jobs and both processed reports(Rust5507/5759; patch553/586).
+Owner accepted the full [D44 Explain contract](P2_06_EXPLAIN_CONTRACT.md) after that
+checked prerequisite, fulfilled before P2-06 code. Bounded pure generation-bound
+Explain/simulation is current; actual Windows/Linux checks, independent reviews,
+external reports and normal merge remain required. P3/P4/P6 remain planned.
 P1-06's candidate passed independent Codex re-review and all11 jobs of39153071723;
 actual Codecov processed both reports. See [evidence](P1_06_ACTIVATION_REVIEW.md)
 for the retained first Linux failure, resolved review findings,94.01% Rust patch

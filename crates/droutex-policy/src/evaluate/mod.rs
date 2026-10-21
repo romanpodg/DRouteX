@@ -1,6 +1,6 @@
 //! D38 pure selection over prepared data; no catalog compiler or admission proof.
 pub(crate) mod ordering;
-mod scope;
+pub(crate) mod scope;
 
 use crate::DomainMatcher;
 use droutex_common::{

@@ -17,11 +17,13 @@ fn compiled_tables_restore_without_cp_and_failed_candidates_preserve_the_same_ge
     deployment
         .activate(bytes, artifacts, &Cancellation::default())
         .unwrap();
+    let simulation_before = super::explain_tests::report(&deployment.pin().unwrap());
     drop(deployment);
     fs::remove_dir(fixture.parent.join("cp")).unwrap();
     fs::remove_dir(fixture.parent.join("backups")).unwrap();
     let deployment = fixture.open().unwrap();
     let old = deployment.pin().unwrap();
+    assert_eq!(super::explain_tests::report(&old), simulation_before);
     assert_eq!(
         old.compiled_configuration().private_records()[0]
             .owner
@@ -39,6 +41,7 @@ fn compiled_tables_restore_without_cp_and_failed_candidates_preserve_the_same_ge
         current.compiled_configuration()
     ));
     assert_eq!(current.metadata().sequence.get(), 1);
+    assert_eq!(super::explain_tests::report(&current), simulation_before);
 }
 thread_local! { static HOOK: RefCell<Option<Hook>> = RefCell::new(None); }
 pub(super) fn checkpoint(phase: &str) -> Result<()> {

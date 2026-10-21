@@ -1,36 +1,24 @@
 # DRouteX project instructions
 
-Current gate2026-10-21: P2-07/PR16 merged normally at
-e8c5e6105ffa7426115eda4e7243d8f26eea5d17. All11 exact-main39546838691 jobs passed;
-both Codecov reports processed (Rust4951/5177; patch612/642). Linked-account
-read-only/never implementation01a15ad2-7b4f-7180-8673-c7299c92518e, security-current
-01a15af5-e9e0-7942-89fc-ce5aa6b06394 and final01a15ccd-e1ad-74e1-9220-84ec646323fd
-reviews found no confirmed defect; all11 final-head39546423405 jobs passed.
-CodeScene8044833/8045334/8050013 remain failed with concrete minor source/auxiliary
-maintenance dispositions, no suppression/bypass. D42 exact WebPKI0.103.16 in the
-existing test-only TLS qualifier passed qualification and merged, resolving the
-original RUSTSEC-2026-0382 failure; production TLS was not adopted. See
-P2_07_CATALOG_REVIEW.md and WEBPKI_SECURITY_UPDATE.md.
-Owner accepted complete D43 conditional on that checked PR16 prerequisite, fulfilled
-before P2-05 code. See docs/planning/P2_05_COMPILATION_CONTRACT.md. P2-05 complete
-same-generation CP/DP compilation is current in PR105. Implementation97914dc passed
-all11 CI39550625494 jobs (Windows159/Linux187 default and no-default), both Codecov
-reports (Rust5507/5759; patch553/586) and linked-account read-only/never review
-01a15cfa-55e2-7382-a5fd-b34660707cf8 with no confirmed defect. CodeScene8050420 failed;
-minor concrete maintenance dispositions are in P2_05_COMPILATION_REVIEW.md and
-OPEN_DECISIONS. Final evidence review/checks, normal merge and exact-main remain
-required. Owner accepted complete D44 Explain/simulation profile after that checked
-PR105 prerequisite; P2-06 stays planned until then. See local accepted profile
-.setup/p2-06/accepted-profile.md and D44 in OPEN_DECISIONS.
-D11 codec/source bytes remain unchanged; service dependencies validate without
-implicit inheritance; filters compile separate DNS Block/TCP Deny in independently
-selected Profiles. CP requires real approved catalogs, DP CP-authenticated actual
-canonical resources; complete resource/conflict/expansion checks gate fresh/recovery
-Generation construction. No new registry dependency, live grant, Available permission,
-network execution or admission authority. Re-review P2-03/07 maintenance invariants
-when integrating their source/resource/conflict paths. P2-06/P3/P4 retain their gates;
-later implementation stays planned until reviewed P2-05 merge. Historical gates were
-satisfied by recorded evidence, not bypassed; no owner CI-status exception was used.
+Current gate2026-10-21: P2-05/PR105 merged normally at
+445f847e74d0b04d32d619be02865c36268648dc. All11 exact-main39552210853 jobs passed;
+both Codecov reports processed(Rust5507/5759; patch553/586). Linked-account
+read-only/never implementation01a15cfa-55e2-7382-a5fd-b34660707cf8 and final
+01a15d00-9cfb-7823-9e12-28218b10608b reviews found no confirmed defect; all11
+final-head39551575011 jobs passed. CodeScene8050420/8050501 remain failed with
+concrete minor maintenance dispositions, no suppression/bypass. See
+P2_05_COMPILATION_REVIEW.md. D42 exact WebPKI0.103.16 qualified/merged in PR16,
+resolving RUSTSEC-2026-0382 in the existing test-only TLS qualifier.
+Owner accepted full D44 after that checked PR105 prerequisite, fulfilled before
+P2-06 code. See docs/planning/P2_06_EXPLAIN_CONTRACT.md. P2-06 bounded pure Explain
+and simulation are current: one actual pinned generation, separate DNS/gateway
+scope, real D38 selector and catalog pins; no alternate winner or live admission.
+Every simulation has network_test_performed=false/effective_route=null. Private
+response precedence remains P3; external diagnostic Profile visibility requires
+P6 authorization. No new dependency/current configuration field/public endpoint
+or network execution. Actual Windows/Linux tests, independent implementation/final
+reviews, external reports and normal merge/exact-main remain required. Later work
+stays planned until reviewed P2-06 merge. No owner CI-status exception was used.
 
 ## Authority and current scope
 
