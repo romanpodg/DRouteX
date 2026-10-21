@@ -1,5 +1,6 @@
 //! D41 local import. Verified objects cannot be deserialized from claimed facts.
 mod codec;
+pub(crate) mod decoded;
 mod scan;
 mod store;
 use crate::snapshot::ContentHash;
@@ -9,7 +10,7 @@ use droutex_policy::{
     CatalogProvenance, CatalogRevision, CatalogRevisionFacts, CatalogValidationError,
     CatalogValidationState, DomainMatchMode,
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::{error::Error, fmt};
 pub use store::CatalogStore;
 
@@ -30,8 +31,8 @@ impl CatalogFormat {
 }
 
 /// Trusted operator-supplied provenance, not an authenticity claim read from a feed.
-#[derive(Serialize)]
-#[serde(rename_all = "camelCase")]
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct CatalogMetadata {
     pub source: String,
     pub owner: String,

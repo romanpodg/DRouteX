@@ -29,6 +29,7 @@ pub const MAX_MANIFEST_BYTES: usize = 16 * 1024;
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ErrorCode {
     Snapshot(snapshot::SnapshotErrorCode),
+    Compilation,
     Size,
     Resource,
     State,
@@ -91,6 +92,11 @@ pub struct Decision<'store> {
     _owner: &'store Deployment,
 }
 impl Decision<'_> {
+    /// Both DNS and gateway consumers borrow the tables of this one pinned
+    /// generation. These pure tables still confer no live network admission.
+    pub fn compiled_configuration(&self) -> &droutex_config::CompiledConfiguration {
+        &self.generation.compiled
+    }
     pub fn metadata(&self) -> SnapshotMetadata {
         self.generation.metadata()
     }

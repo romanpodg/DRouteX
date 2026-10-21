@@ -9,7 +9,7 @@ pub const MAX_DOMAIN_INPUT_BYTES: usize = 1024;
 /// This DNS/CDN profile permits underscores and non-strict hyphen positions.
 /// It is not a URL, TLS hostname assertion, socket destination or authorization.
 /// Original configuration text is retained separately in the config schema.
-#[derive(Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[derive(Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct CanonicalDomain(String);
 
 impl CanonicalDomain {
@@ -112,7 +112,7 @@ pub enum DomainMatchMode {
 /// let matcher = DomainMatcher::new(domain, DomainMatchMode::Exact);
 /// matcher.matches("example.com");
 /// ```
-#[derive(Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub struct DomainMatcher {
     domain: CanonicalDomain,
     mode: DomainMatchMode,

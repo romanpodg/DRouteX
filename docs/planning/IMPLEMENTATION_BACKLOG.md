@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1 and P2-01/02/03/04 complete and merged; PR15 exact-main verified; P2-07 D41 local catalog import implementation under review; P2-05/06 and later tasks planned.**
+**P0/P1 and P2-01/02/03/04/07 complete and merged; PR16 exact-main verified; accepted D43 P2-05 complete generation compilation in progress; P2-06 and later tasks planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -260,13 +260,13 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P2-05: Compile policies into snapshots
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§5,8,11.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§5,8,11.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Compile layered endpoint Profiles and pinned catalog hashes into bounded deterministic DNS/gateway generation tables |
 | Prerequisites | P2-04, P1-05, P2-07 |
-| Expected files/modules | crates/droutex-policy/src/compile |
+| Expected files/modules | crates/droutex-config/src/compile; crates/droutex-config/src/catalog; crates/droutex-core/src/deployment |
 | Acceptance criteria | Same revision builds same snapshot; invalid capability never reaches active plan |
 | Tests | Differential interpreter/compiler and hash tests |
 | Security considerations | Compile validates ingress-target binding and authorized resolver scope |
@@ -290,7 +290,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **S**. Specificati
 
 ### P2-07: Import versioned filter and service catalogs
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,9,12,19,22.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§8,9,12,19,22.
 
 | Field | Deliverable / evidence |
 |---|---|

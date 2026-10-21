@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-21. Current stage: **P2-04/PR15 merged and exact-main verified; P2-07 D41 local catalog import implementation under review**.
+Date: 2026-10-21. Current stage: **P2-07/PR16 merged and exact-main verified; P2-05 D43 complete generation compilation under review**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -12,7 +12,7 @@ Review and applicable current-head checks, with no unresolved serious defect.
 Minor deferrals must be recorded; unclear requirements/conditions require an owner
 question. Finish and merge the current implementation PR before the next one.
 The owner subsequently instructed continuation of the accepted DNS/proxy MVP plan.
-P2-07 is the current stage; technical choices retain their owning gates.
+P2-05 is the current stage; technical choices retain their owning gates.
 PR9 merged at521bfa76fbc27e14cd4981638af775ba92c6299f after independent
 implementation/final-evidence reviews and all11 final-head jobs. All11 exact-main
 jobs39148795165 passed and both Codecov reports processed. The owner then accepted
@@ -42,12 +42,16 @@ b4c104c8e87acdb388b6ee5455dfc5bd01ab331d after linked-account implementation/fin
 reviews and all11 current-head jobs. All11 exact-main39481364319 jobs passed,
 both Codecov reports processed (Rust4329/4535); [evidence](P2_04_ACTION_REVIEW.md).
 Owner accepted [D41 local catalog imports](P2_07_CATALOG_CONTRACT.md) after this gate;
-P2-07 candidate3f203a6 passed linked-account review01a15af5-e9e0-7942-89fc-ce5aa6b06394
-and all11 CI39490608943 jobs; both Codecov reports processed (Rust4951/5177,
-patch612/642). Owner D42 WebPKI0.103.16 qualification resolved the original
-RUSTSEC-2026-0382 failure without suppression or production TLS adoption. Final
-review/current-head checks and normal merge remain required. Full compiler, Explain and runtime admission
-retain their gates; see [candidate evidence](P2_07_CATALOG_REVIEW.md).
+P2-07 subsequently completed normally at e8c5e6105ffa7426115eda4e7243d8f26eea5d17
+with implementation/security/final linked-account reviews, all11 final-head39546423405
+and exact-main39546838691 jobs, and both processed Codecov reports (Rust4951/5177,
+patch612/642). Owner D42 WebPKI0.103.16 qualification resolved the original advisory
+without suppression/production TLS adoption; see [completed evidence](P2_07_CATALOG_REVIEW.md).
+Owner accepted complete [D43 compilation](P2_05_COMPILATION_CONTRACT.md) after that
+checked merge, fulfilled before code. P2-05 binds exact actual resources/source and
+complete policies to one core Generation. [Candidate evidence](P2_05_COMPILATION_REVIEW.md)
+records current work and pending actual Linux/current-head/independent/final/merge gates.
+P2-06 Explain and P3/P4 runtime/admission remain planned.
 P1-06's candidate passed independent Codex re-review and all11 jobs of39153071723;
 actual Codecov processed both reports. See [evidence](P1_06_ACTIVATION_REVIEW.md)
 for the retained first Linux failure, resolved review findings,94.01% Rust patch

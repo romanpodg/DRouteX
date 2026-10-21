@@ -1,25 +1,29 @@
 # DRouteX project instructions
 
-Current gate2026-10-21: P2-04/PR15 merged normally at
-b4c104c8e87acdb388b6ee5455dfc5bd01ab331d. All11 exact-main39481364319 jobs passed;
-both Codecov reports processed (Rust4329/4535; patch257/261). Linked-account
-read-only/never implementation01a15aad-c262-7470-8f53-de4bb857b184 and final
-01a15ab4-500c-7dc0-9a5a-4b868fe12e9a reviews found no confirmed defect; all11
-final-head39480455115 jobs passed. CodeScene8044281/8044386 remain failed with
-explicit minor source/auxiliary maintenance dispositions, no suppression/bypass.
-See P2_04_ACTION_REVIEW.md. The owner accepted complete D41 after that prerequisite:
-see docs/planning/P2_07_CATALOG_CONTRACT.md. P2-07 bounded local catalogs are current;
-actual Windows/Linux tests, independent implementation/final reviews and normal
-merge remain required. No automatic feed download, new dependency/current config
-field or network/publication authority. P2-05 binds actual verified catalog bytes,
-config/resources and COMPLETE prepared policies to one generation; P2-06 Explain
-and P3/P4 retain their gates. No standalone Result/facts/intent is admission authority.
-Owner D42 authorizes exact rustls-webpki0.103.16 qualification/conditional adoption
-in the existing TLS qualifier for RUSTSEC-2026-0382; actual Windows/Linux, complete
-dependency/license checks and independent review remain required. No production
-TLS adoption or advisory/check suppression. See WEBPKI_SECURITY_UPDATE.md.
-Later tasks stay planned until reviewed P2-07 merge. Historical gates were satisfied
-by recorded evidence, not bypassed; no owner CI-status exception was used.
+Current gate2026-10-21: P2-07/PR16 merged normally at
+e8c5e6105ffa7426115eda4e7243d8f26eea5d17. All11 exact-main39546838691 jobs passed;
+both Codecov reports processed (Rust4951/5177; patch612/642). Linked-account
+read-only/never implementation01a15ad2-7b4f-7180-8673-c7299c92518e, security-current
+01a15af5-e9e0-7942-89fc-ce5aa6b06394 and final01a15ccd-e1ad-74e1-9220-84ec646323fd
+reviews found no confirmed defect; all11 final-head39546423405 jobs passed.
+CodeScene8044833/8045334/8050013 remain failed with concrete minor source/auxiliary
+maintenance dispositions, no suppression/bypass. D42 exact WebPKI0.103.16 in the
+existing test-only TLS qualifier passed qualification and merged, resolving the
+original RUSTSEC-2026-0382 failure; production TLS was not adopted. See
+P2_07_CATALOG_REVIEW.md and WEBPKI_SECURITY_UPDATE.md.
+Owner accepted complete D43 conditional on that checked PR16 prerequisite, fulfilled
+before P2-05 code. See docs/planning/P2_05_COMPILATION_CONTRACT.md. P2-05 complete
+same-generation CP/DP compilation is current. Actual Windows/Linux checks,
+independent implementation/final reviews and normal merge remain required.
+D11 codec/source bytes remain unchanged; service dependencies validate without
+implicit inheritance; filters compile separate DNS Block/TCP Deny in independently
+selected Profiles. CP requires real approved catalogs, DP CP-authenticated actual
+canonical resources; complete resource/conflict/expansion checks gate fresh/recovery
+Generation construction. No new registry dependency, live grant, Available permission,
+network execution or admission authority. Re-review P2-03/07 maintenance invariants
+when integrating their source/resource/conflict paths. P2-06/P3/P4 retain their gates;
+later implementation stays planned until reviewed P2-05 merge. Historical gates were
+satisfied by recorded evidence, not bypassed; no owner CI-status exception was used.
 
 ## Authority and current scope
 

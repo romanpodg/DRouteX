@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0/P1 and P2-01/02/03/04 complete and merged; PR15 exact-main verified; P2-07 D41 local catalog import implementation under review; P2-05/06 and later tasks planned",
+  "status": "P0/P1 and P2-01/02/03/04/07 complete and merged; PR16 exact-main verified; accepted D43 P2-05 complete generation compilation in progress; P2-06 and later tasks planned",
   "date": "2026-10-21",
   "phases": {
     "P0": "Foundation",
@@ -514,14 +514,16 @@
       ],
       "scope": "Compile layered endpoint Profiles and pinned catalog hashes into bounded deterministic DNS/gateway generation tables",
       "files": [
-        "crates/droutex-policy/src/compile"
+        "crates/droutex-config/src/compile",
+        "crates/droutex-config/src/catalog",
+        "crates/droutex-core/src/deployment"
       ],
       "acceptance": "Same revision builds same snapshot; invalid capability never reaches active plan",
       "tests": "Differential interpreter/compiler and hash tests",
       "security": "Compile validates ingress-target binding and authorized resolver scope",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -584,7 +586,7 @@
       "security": "No arbitrary URL fetch or proprietary Control D feed import; retain provenance/license and bounded parser limits",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_progress",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2611,9 +2613,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-21",
-    "source": "Direct owner reply accepting complete .setup/p2-07/catalog-design-proposal.md after PR15; docs/planning/P2_07_CATALOG_CONTRACT.md",
-    "scope": "D41 bounded local domain/blocking-hosts/strict service JSON imports with explicit modes, actual hashes/provenance/license evidence, immutable revisions and failed-update last-known-good preservation after PR15 reviewed normal merge b4c104c and all11 exact-main39481364319 plus both processed Codecov reports. No new registry dependency, automatic feed download, complete compiler/publication or runtime admission. Later implementation planned until reviewed P2-07 merge.",
-    "through_task": "P2-07"
+    "source": "Direct owner reply2026-10-21 accepting complete D43 compiler profile after checked PR16; actual prerequisite satisfied at e8c5e61/all11 main39546838691 and both Codecov reports before code",
+    "scope": "D43 complete same-generation CP/DP compilation after reviewed PR16 merge e8c5e61, all11 exact-main39546838691 and both Codecov reports. Existing D11/D36/D38-D42 contracts, service non-inheritance, separate filter DNS Block/TCP Deny and preflight aggregate expansion bounds. No new dependency, network execution, live grant/admission authority or later implementation.",
+    "through_task": "P2-05"
   },
   "design_proposals": [
     {
@@ -2827,5 +2829,11 @@
     "date": "2026-10-21",
     "source": "Direct owner reply: accept complete bounded profile after PR15; docs/planning/P2_07_CATALOG_CONTRACT.md",
     "profile": "D41 explicit local domain/blocking-hosts formats and match modes, strict versioned service JSON; reuse1MiB/32depth/10000raw/64MiB bounds, actual source/resource hashes and retained source/license/provenance, trusted exact approval evidence not a payload Boolean, whole-set atomic validation and immutable last-known-good preservation. No network feed/new dependency/current config or signed codec change; P2-05/06/P3/P4 keep their gates."
+  },
+  "compilation_decision": {
+    "status": "accepted",
+    "date": "2026-10-21",
+    "source": "Direct owner selection: accept complete P2-05 profile after checked PR16; docs/planning/P2_05_COMPILATION_CONTRACT.md",
+    "profile": "D43 exact immutable source/resources/complete D39 policy compilation, CP approved catalog builder and DP CP-authenticated canonical resource decoding, deterministic shared generation tables, no service dependency inheritance, separate filter DNS/TCP denial, existing aggregate preallocation bounds and unchanged D11 codec"
   }
 }

@@ -2,6 +2,10 @@
 
 mod actions;
 pub mod catalog;
+mod compile;
+pub use compile::{
+    CompilationError, CompiledConfiguration, CompletePublication, GatewayScope, ResourceData,
+};
 mod publication;
 pub use actions::{
     ActionPreparationError, DnsActionResolution, InvalidActionScope, OutboundObservation,

@@ -13,6 +13,7 @@ enum Authenticated {
 }
 pub(super) struct Generation {
     authenticated: Authenticated,
+    pub(super) compiled: droutex_config::CompiledConfiguration,
     pub(super) envelope: Vec<u8>,
     pub(super) artifacts: Artifacts,
 }
@@ -33,8 +34,12 @@ impl Generation {
         let value = snapshot::verify_snapshot(&envelope, trust, &replay, &artifacts.trusted()?)
             .map_err(Error::snapshot)?;
         artifacts.check_exact(value.content().resource_pins())?;
+        let compiled = value
+            .compile(&artifacts.data())
+            .map_err(|_| Error(ErrorCode::Compilation))?;
         Ok(Self {
             authenticated: Authenticated::Fresh(value),
+            compiled,
             envelope,
             artifacts,
         })
@@ -61,8 +66,12 @@ impl Generation {
         )
         .map_err(Error::snapshot)?;
         artifacts.check_exact(value.content().resource_pins())?;
+        let compiled = value
+            .compile(&artifacts.data())
+            .map_err(|_| Error(ErrorCode::Compilation))?;
         Ok(Self {
             authenticated: Authenticated::Retained(value),
+            compiled,
             envelope,
             artifacts,
         })

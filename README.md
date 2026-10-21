@@ -13,8 +13,10 @@ P2-01 domain normalization/matching merged in PR #12 with exact-main CI verified
 P2-02 deterministic scoped selection merged in PR #13 with exact-main CI verified.
 P2-03 publication conflict/resource validation merged in PR #14 with exact-main CI verified.
 P2-04 separate DNS/TCP/local-answer intents and strict failures merged in PR #15
-with exact-main CI verified. P2-07 local catalog import implements the owner-accepted
-bounded D41 profile; implementation review and final acceptance remain pending. No DRouteX DNS/gateway listener exists yet.
+with exact-main CI verified. P2-07 local catalog imports and D42 TLS-qualification
+security correction merged in PR #16 with exact-main CI verified. P2-05 now implements
+owner-accepted complete same-generation compilation; implementation review and
+final acceptance remain pending. No DRouteX DNS/gateway listener exists yet.
 
 - [Development roadmap](docs/planning/DEVELOPMENT_ROADMAP.md)
 - [Current execution boundary and repository handoff](docs/planning/EXECUTION_STATUS.md)
@@ -38,7 +40,7 @@ bounded D41 profile; implementation review and final acceptance remain pending. 
 Windows PowerShell development environment: `. ./tools/activate.ps1`.
 This uses local Rust tooling and existing Visual Studio without persistent PATH edits.
 Read AGENTS.md before work. The user authorized starting MVP roadmap work on 2026-10-15;
-P0-01 is accepted; the current execution boundary is P2-07 with its recorded gates.
+P0-01 is accepted; the current execution boundary is P2-05 with its recorded gates.
 See [Rust workspace posture](docs/agents/rust.md) for build commands and scope.
 
 Original DRouteX code is licensed under [Apache-2.0](LICENSE), selected by the owner

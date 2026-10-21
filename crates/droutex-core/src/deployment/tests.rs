@@ -53,6 +53,162 @@ fn trust(second: bool) -> SnapshotTrust {
 fn resource() -> SnapshotResource {
     SnapshotResource::Device(typed(99))
 }
+
+fn compiled_candidate(
+    sequence: u64,
+    conflict: bool,
+    private_record: bool,
+    malformed_catalog: bool,
+) -> (Vec<u8>, Artifacts) {
+    use droutex_config::catalog::{
+        CatalogFormat, CatalogInput, CatalogLicenseApproval, CatalogMetadata, CatalogStore,
+    };
+    // Parse/approve a real local catalog, then exercise the complete CP builder
+    // through signed bytes and actual DP Generation construction/recovery.
+    let revision = SnapshotResource::Filter(typed(92)).try_into().unwrap();
+    let source = b"catalog.test\n";
+    let mut catalogs = CatalogStore::default();
+    catalogs
+        .import_batch(
+            vec![CatalogInput {
+                revision,
+                format: CatalogFormat::Domains(
+                    droutex_config::DomainMatch {
+                        mode: droutex_config::MatchMode::Suffix,
+                        value: "catalog.test".into(),
+                    }
+                    .normalized()
+                    .unwrap()
+                    .mode(),
+                ),
+                metadata: CatalogMetadata {
+                    source: "local:core-compile-fixture".into(),
+                    owner: "DRouteX".into(),
+                    license: "Apache-2.0".into(),
+                    notice: "Original synthetic fixture.".into(),
+                },
+                bytes: source,
+            }],
+            vec![
+                CatalogLicenseApproval::new(
+                    revision,
+                    ContentHash::of(source),
+                    "Apache-2.0".into(),
+                    "owner:synthetic-test".into(),
+                )
+                .unwrap(),
+            ],
+        )
+        .unwrap();
+    let document = serde_json::json!({"schemaVersion":1,"profiles":[{
+        "id":typed::<droutex_common::ProfileId>(77).to_string(),"name":"compiled generation",
+        "defaultDnsAction":{"kind":"block"},"defaultTrafficAction":{"kind":"deny"},
+        "filterLists":[{"revision":typed::<droutex_common::FilterListRevisionId>(92).to_string(),"enabled":true,"priority":0}],
+        "customRules":if conflict { serde_json::json!([
+            {"id":typed::<droutex_common::RuleId>(100).to_string(),"enabled":true,"priority":0,
+             "matcher":{"mode":"exact","value":"private.test"},"action":{"plane":"traffic","action":{"kind":"deny"}}},
+            {"id":typed::<droutex_common::RuleId>(101).to_string(),"enabled":true,"priority":0,
+             "matcher":{"mode":"exact","value":"private.test"},"action":{"plane":"traffic","action":{"kind":"outbound","outbound":typed::<droutex_common::ProxyOutboundId>(90).to_string()}}}
+        ]) } else { serde_json::json!([]) }}],
+        "outbounds":[{"id":typed::<droutex_common::ProxyOutboundId>(90).to_string(),"name":"explicit direct","enabled":true,"transport":{"kind":"vps_direct"}}],
+        "privateRecords":if private_record { serde_json::json!([{"id":typed::<droutex_common::PrivateDnsRecordId>(91).to_string(),
+            "profile":typed::<droutex_common::ProfileId>(77).to_string(),"name":"retained.test","ttl":60,"record":{"kind":"a","address":"192.0.2.7"}}]) } else { serde_json::json!([]) }});
+    let artifacts = Artifacts::new(if malformed_catalog {
+        vec![(
+            SnapshotResource::Filter(typed(92)),
+            b"not canonical catalog JSON".to_vec(),
+        )]
+    } else {
+        vec![(
+            SnapshotResource::Filter(typed(92)),
+            catalogs.get(revision).unwrap().resource_bytes().to_vec(),
+        )]
+    })
+    .unwrap();
+    let configuration = parse_configuration(
+        &serde_json::to_vec(&document).unwrap(),
+        InputFormat::Json,
+        &ReferenceCatalog {
+            filter_revisions: [typed(92)].into(),
+            ..Default::default()
+        },
+    )
+    .unwrap();
+    let metadata = SnapshotMetadata {
+        node: typed(1),
+        snapshot: typed(2),
+        source: typed(3),
+        sequence: SnapshotSequence::new(sequence).unwrap(),
+    };
+    let encoded = if conflict || malformed_catalog {
+        // Deliberate low-level signing for negative authenticated-input probes.
+        let content =
+            SnapshotContent::new(configuration, vec![], &artifacts.trusted().unwrap()).unwrap();
+        encode_snapshot(&content, metadata, &signer(false).0).unwrap()
+    } else {
+        droutex_config::CompletePublication::new(
+            configuration,
+            vec![],
+            &artifacts.data(),
+            &catalogs.revisions().collect::<Vec<_>>(),
+        )
+        .unwrap()
+        .encode(metadata, &signer(false).0)
+        .unwrap()
+    };
+    (encoded, artifacts)
+}
+
+#[test]
+fn complete_compilation_gates_fresh_and_retained_candidates_without_advancing_lkg() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    let (bytes, artifacts) = compiled_candidate(1, false, false, false);
+    deployment
+        .activate(bytes, artifacts, &Cancellation::default())
+        .unwrap();
+    let old = deployment.pin().unwrap();
+    for malformed in [false, true] {
+        let (bytes, artifacts) = compiled_candidate(2, !malformed, false, malformed);
+        assert_eq!(
+            failure(deployment.activate(bytes, artifacts, &Cancellation::default())),
+            ErrorCode::Compilation
+        );
+        let current = deployment.pin().unwrap();
+        assert_eq!(current.metadata().sequence.get(), 1);
+        assert!(std::ptr::eq(
+            old.compiled_configuration(),
+            current.compiled_configuration()
+        ));
+    }
+    let (bytes, artifacts) = compiled_candidate(2, false, true, false);
+    deployment
+        .activate(bytes, artifacts, &Cancellation::default())
+        .unwrap();
+    assert!(old.compiled_configuration().private_records().is_empty());
+    assert_eq!(
+        deployment
+            .pin()
+            .unwrap()
+            .compiled_configuration()
+            .private_records()[0]
+            .owner
+            .as_str(),
+        "retained.test"
+    );
+    // A correctly authenticated retained snapshot still must compile. Construct
+    // its independently trusted identity here, rather than failing on a bad hash.
+    let (good, artifacts) = compiled_candidate(1, false, false, false);
+    let generation =
+        Generation::fresh(good, artifacts, &trust(false), &Journal::empty(typed(1))).unwrap();
+    let descriptor = Descriptor::new(&generation, 0);
+    let (bad, artifacts) = compiled_candidate(1, false, false, true);
+    let mut wire = serde_json::to_value(descriptor).unwrap();
+    wire["hash"] = serde_json::json!(ContentHash::of(&bad).as_bytes());
+    let descriptor = serde_json::from_value(wire).unwrap();
+    assert!(
+        matches!(Generation::restore(bad,artifacts,&trust(false),&descriptor),Err(e) if e.code()==ErrorCode::Compilation)
+    );
+}
 fn candidate(sequence: u64, second: bool, value: &[u8]) -> (Vec<u8>, Artifacts) {
     let pins =
         TrustedResources::new(vec![ResourcePin::from_bytes(resource(), value).unwrap()]).unwrap();
