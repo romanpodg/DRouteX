@@ -1,9 +1,10 @@
 # P2-06 generation-bound Explain and simulation evidence
 
-Status: accepted D44 implemented and locally checked. Supplementary independent
-standards/spec reviews found no confirmed defect. Mandatory linked-account
-implementation/final reviews, actual current-head Windows/Linux CI, external
-reports, normal merge and exact-main verification remain required.
+Status: D44 implementation9ed109a passed completed linked-account Code Review,
+all11 Windows/Linux CI39635921414 jobs and both processed Codecov reports. CodeScene
+8063131 failed with concrete minor maintenance dispositions recorded below and in
+OPEN_DECISIONS. Final evidence review/checks, normal merge and exact-main remain
+required; P3/P4/P6 are not implemented by this task.
 
 The complete [accepted contract](P2_06_EXPLAIN_CONTRACT.md) records direct owner
 acceptance and the prerequisite fulfilled BEFORE code: normal PR105 merge
@@ -83,7 +84,7 @@ compare the complete reviewed report. Failed candidates preserve it, a successfu
 new generation changes only its own view, and held old reports stay unchanged.
 Unknown/mismatched scope and invalid domain return no partial report or raw input.
 The existing actual Linux reopen/CP-loss test now also compares complete simulations
-before/reopen/failed-candidate; actual execution is pending CI, not inferred locally.
+before/reopen/failed-candidate; actual execution passed CI39635921414, not inferred locally.
 
 Two real implementation defects were reproduced before their fixes: contradictory
 TCP/QUIC assumptions initially returned a selection; same-source entries differing
@@ -120,4 +121,68 @@ backend. Missing SQL parser/zero-node Cargo.toml and changed community-label war
 remain explicit; graph artifacts stay untracked and are supplementary navigation.
 Planning passed18 tests,9 negative cases and source preservation; final link totals
 are refreshed with this evidence. All88 tasks/61 MVP/188 requirements remain.
-No external Codecov/CodeScene, CI or networking success is claimed before observation.
+Actual CI/coverage/health results follow; no product networking success is claimed.
+
+## Observed implementation CI and external reports
+
+Implementation9ed109a6c5566ca3bcf27b69b8293480fca8be98 passed all11 jobs in
+CI39635921414. Actual Windows workspace default/no-default runs each passed175;
+Linux each passed203. The complete report comparison before/reopen/CP loss and
+after a refused signed candidate passed in both Linux workspace runs and coverage.
+All5 dependency policy bundles passed; both OIDC uploads succeeded.
+
+Both exact-head Codecov reports are processed: Rust5980/6262(95.50%), new Rust
+474/506(93.68%) against445f847. These are actual Rust-only backend/compare totals,
+excluding auxiliary Python. Coverage does not establish network correctness or
+serve as transport/admission evidence.
+
+The first linked-account review attempt ended with quota exit1 and explicit
+"Review was interrupted". It is preserved separately, not a completed review.
+Automatic permission review subsequently also could not run because of that
+account limit; the rejected GitHub read was not executed. After the owner's
+request to continue, ordinary automatic permission review succeeded and the
+mandatory read-only/never Code Review was rerun. Its completed result is recorded
+separately after completion; no quota error or partial review can satisfy the gate.
+
+CodeScene8063131 failed all three maintenance gates. Every affected production
+path was inspected, together with both independent source passes, actual platform
+tests and meaningful mutations. Two application signals remain minor maintenance:
+
+- config/explain/mod.rs9.59, large SnapshotContent.explain_selection: explicit
+  pairing of current references/observations, domain parsing, real selector,
+  static request/outbound scope and resolved intent increases future modification
+  effort. Invalid Profile and denied-flow scope mutations, all identity dimensions,
+  TCP/QUIC red/green and whole-report goldens cover the existing ordering. Revisit
+  before adding a plane/mode, observation provider or external visibility adapter;
+  preserve no-partial-output and same-generation binding. Splitting solely for
+  scoring would obscure this boundary without a demonstrated behavior benefit.
+- output.rs9.69, explicit base/dns/tcp context arguments: their typed compiled
+  table/borrowed trace/query/context/declared action/resolved intent/decision-point
+  roles are distinct. Full golden outputs, pin comparisons, thirteen refusal
+  mappings and generation/false-network/private-Profile mutations verify pairing.
+  Future producer/context changes require care, but no ambiguous current call or
+  confirmed defect was found. Revisit with an actual caller ambiguity or new
+  action/decision point/P3/P4/P6 integration; no score-only wrapper is justified.
+
+Config/policy test fixture groups8.50/9.00 and refusal unit table9.59 are outside
+the owner's independent metric scope. Planning validator/test hotspots8.87/9.30,
+including the critical Bumpy Road Ahead flag, likewise concern excluded auxiliary
+tools. Their functional negative/contract tests pass; no cleanup for scoring.
+The "expected change" DEPENDENCY_MAP signal does not reflect a missing update:
+the renderer was run, graph edges/88 tasks/61-MVP closure did not change, and actual
+CI's stale-generated-file check passed. Do not add a dummy map change to satisfy
+historical co-change statistics. Repository CodeScene status stays failed, with
+no suppression/threshold change, hidden serious defect or check bypass.
+
+Completed retry01a15fe6-fb96-7bd2-a679-ae94ee793d14 on2026-10-22 used the linked
+account, approval=never/sandbox=read-only and exited0: no confirmed defect. Fmt and
+12 cached binary tests passed; rebuilding/Clippy/Cargo tests could not write the
+read-only build state, so the reviewer explicitly did not confirm binary/source
+correspondence. They are not counted as new exact-source tests. Parent local175
+and actual current-head Windows175/Linux203 runs provide separate build evidence.
+
+[Implementation CI](https://github.com/romanpodg/DRouteX/actions/runs/39635921414)
+and [failed CodeScene review](https://codescene.io/projects/86145/delta/results/8063131)
+are actual external runs. See P2-06-CS-* in [OPEN_DECISIONS](OPEN_DECISIONS.md).
+Final evidence documentation recheck passed18 planning tests and9 negative cases,
+with290 local links and unchanged source specifications/task set.

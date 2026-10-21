@@ -1,6 +1,6 @@
 # DRouteX project instructions
 
-Current gate2026-10-21: P2-05/PR105 merged normally at
+Current gate2026-10-22: P2-05/PR105 merged normally at
 445f847e74d0b04d32d619be02865c36268648dc. All11 exact-main39552210853 jobs passed;
 both Codecov reports processed(Rust5507/5759; patch553/586). Linked-account
 read-only/never implementation01a15cfa-55e2-7382-a5fd-b34660707cf8 and final
@@ -16,8 +16,13 @@ scope, real D38 selector and catalog pins; no alternate winner or live admission
 Every simulation has network_test_performed=false/effective_route=null. Private
 response precedence remains P3; external diagnostic Profile visibility requires
 P6 authorization. No new dependency/current configuration field/public endpoint
-or network execution. Actual Windows/Linux tests, independent implementation/final
-reviews, external reports and normal merge/exact-main remain required. Later work
+or network execution. Implementation9ed109a passed linked-account read-only/never
+review01a15fe6-fb96-7bd2-a679-ae94ee793d14, all11 CI39635921414 jobs(Windows175/Linux203
+default and no-default) and both Codecov reports(Rust5980/6262; patch474/506). The
+first quota-interrupted review is retained and not counted. CodeScene8063131 failed
+with explicit minor source/auxiliary dispositions in P2_06_EXPLAIN_REVIEW.md and
+OPEN_DECISIONS. Final evidence review/checks and normal merge/exact-main remain
+required. Later work
 stays planned until reviewed P2-06 merge. No owner CI-status exception was used.
 
 ## Authority and current scope
