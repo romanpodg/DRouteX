@@ -10,6 +10,16 @@ pub struct Artifacts {
     pub(super) entries: BTreeMap<String, (ResourcePin, Vec<u8>)>,
 }
 impl Artifacts {
+    pub(super) fn data(&self) -> Vec<droutex_config::ResourceData<'_>> {
+        // The owning Artifacts constructor already bounded count/total bytes.
+        self.entries
+            .values()
+            .map(|(pin, bytes)| droutex_config::ResourceData {
+                resource: pin.resource(),
+                bytes,
+            })
+            .collect()
+    }
     pub fn new(entries: Vec<(SnapshotResource, Vec<u8>)>) -> Result<Self, Error> {
         if entries.len() > MAX_RESOURCE_PINS {
             return Err(Error(ErrorCode::Size));

@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0/P1 and P2-01/02/03/04 complete and merged; PR15 exact-main verified; P2-07 D41 local catalog import implementation under review; P2-05/06 and later tasks planned. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0/P1 and P2-01/02/03/04/07 complete and merged; PR16 exact-main verified; accepted D43 P2-05 complete generation compilation in progress; P2-06 and later tasks planned. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

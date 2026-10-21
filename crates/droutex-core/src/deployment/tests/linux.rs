@@ -8,6 +8,38 @@ use std::{
     sync::atomic::AtomicU64,
 };
 type Hook = Box<dyn FnMut(&str) -> Result<()>>;
+
+#[test]
+fn compiled_tables_restore_without_cp_and_failed_candidates_preserve_the_same_generation() {
+    let fixture = Fixture::new();
+    let deployment = fixture.provision();
+    let (bytes, artifacts) = compiled_candidate(1, false, true, false);
+    deployment
+        .activate(bytes, artifacts, &Cancellation::default())
+        .unwrap();
+    drop(deployment);
+    fs::remove_dir(fixture.parent.join("cp")).unwrap();
+    fs::remove_dir(fixture.parent.join("backups")).unwrap();
+    let deployment = fixture.open().unwrap();
+    let old = deployment.pin().unwrap();
+    assert_eq!(
+        old.compiled_configuration().private_records()[0]
+            .owner
+            .as_str(),
+        "retained.test"
+    );
+    let (bytes, artifacts) = compiled_candidate(2, false, false, true);
+    assert_eq!(
+        failure(deployment.activate(bytes, artifacts, &Cancellation::default())),
+        ErrorCode::Compilation
+    );
+    let current = deployment.pin().unwrap();
+    assert!(std::ptr::eq(
+        old.compiled_configuration(),
+        current.compiled_configuration()
+    ));
+    assert_eq!(current.metadata().sequence.get(), 1);
+}
 thread_local! { static HOOK: RefCell<Option<Hook>> = RefCell::new(None); }
 pub(super) fn checkpoint(phase: &str) -> Result<()> {
     HOOK.with_borrow_mut(|hook| match hook {

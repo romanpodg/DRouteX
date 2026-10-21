@@ -1,8 +1,8 @@
 # P2-07 local catalog import evidence
 
-Status: accepted D41 local catalog components and D42 security correction passed
-implementation review and actual Windows/Linux CI/coverage. Final review/checks
-and normal merge remain required. P2-05/06 and runtime stay planned.
+Status: complete, normally merged PR16. D41 catalogs and D42 security correction
+passed implementation/security/final reviews and all final-head/exact-main checks.
+P2-05 proceeds only under separately accepted D43; P2-06/runtime retain their gates.
 See [accepted contract](P2_07_CATALOG_CONTRACT.md). PR15 prerequisite completed at
 b4c104c: implementation/final linked-account reviews, all11 exact-main39481364319
 jobs and both Codecov reports (Rust4329/4535) before any P2-07 code.
@@ -144,3 +144,17 @@ merge/exact-main prerequisite. This records the decision only; no compiler
 implementation or next implementation PR has begun. Final AST-only graph update
 completed3974 nodes/8409 edges; SQL parser/zero-node manifest warnings remain
 explicit and generated graph artifacts stay untracked.
+
+## Final reviewed merge and exact-main gate
+
+Final08ff416bbbe35e7aa7b9c891aafdd6aa953954ad (documentation evidence only) passed
+linked-account read-only/never review01a15ccd-e1ad-74e1-9220-84ec646323fd exit0/no
+confirmed defect and all11 CI39546423405 jobs. Both Codecov reports processed,
+Rust4951/5177 and actual Rust patch612/642. CodeScene8050013 repeated the same
+failed3 gates; the explicit source/auxiliary dispositions remain, no suppression.
+PR16 merged normally at e8c5e6105ffa7426115eda4e7243d8f26eea5d17,2026-10-21T04:57:13Z,
+matching the reviewed head without admin/force/protection bypass. All11 exact-main
+CI39546838691 jobs passed; both exact-merge Codecov reports processed (Rust4951/5177)
+before any P2-05 code. P2-07 and D42 are complete. Original failed advisory run
+remains failed/without coverage; no CI-status exception was used. D43 prerequisite
+is now satisfied; complete compiler/Explain/runtime are not claimed by this PR.

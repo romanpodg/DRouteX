@@ -50,8 +50,9 @@ impl fmt::Debug for VerifiedSnapshot {
     }
 }
 
-/// Trusted publisher builds a candidate; publication authorization/sequence allocation
-/// is the caller's P1-06 responsibility, not conferred by possession of this function.
+/// Low-level D11 cryptographic codec, not complete publication authority.
+/// CP publication uses crate::CompletePublication to bind full D43 checks.
+/// Authorization/sequence allocation is not conferred by this primitive.
 pub fn encode_snapshot(
     content: &SnapshotContent,
     metadata: SnapshotMetadata,

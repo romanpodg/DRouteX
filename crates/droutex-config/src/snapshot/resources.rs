@@ -44,6 +44,19 @@ pub enum SnapshotResource {
     Service(ServiceGroupRevisionId),
 }
 
+/// Convert only actual catalog identities; devices/upstreams/secrets never
+/// become catalog revisions through an ID spelling shared with another kind.
+impl TryFrom<SnapshotResource> for droutex_policy::CatalogRevision {
+    type Error = SnapshotError;
+    fn try_from(value: SnapshotResource) -> Result<Self, Self::Error> {
+        match value {
+            SnapshotResource::Filter(id) => Ok(Self::Filter(id)),
+            SnapshotResource::Service(id) => Ok(Self::Service(id)),
+            _ => Err(SnapshotError(Code::Resource)),
+        }
+    }
+}
+
 #[derive(Clone, Copy, Debug, Eq, PartialEq, Ord, PartialOrd, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 enum Kind {
@@ -143,7 +156,7 @@ impl TrustedResources {
         }
         Ok(Self(resources))
     }
-    pub(super) fn catalog(&self) -> ReferenceCatalog {
+    pub(crate) fn catalog(&self) -> ReferenceCatalog {
         let mut catalog = ReferenceCatalog::default();
         for pin in self.0.values() {
             match pin.resource {
@@ -173,7 +186,7 @@ impl TrustedResources {
     pub(super) fn wire(&self) -> Vec<WirePin> {
         self.0.values().map(|pin| pin.wire()).collect()
     }
-    pub(super) fn pins(&self) -> Vec<ResourcePin> {
+    pub(crate) fn pins(&self) -> Vec<ResourcePin> {
         self.0.values().copied().collect()
     }
     pub(super) fn select(&self, pins: &[WirePin]) -> Result<Self, SnapshotError> {

@@ -120,7 +120,7 @@ pub(super) fn service(input: &[u8]) -> Result<(CatalogConditions, Vec<CatalogPin
     dependencies.sort_unstable();
     Ok((conditions, dependencies))
 }
-fn decode_hash(bytes: &[u8]) -> Result<[u8; 32], Error> {
+pub(super) fn decode_hash(bytes: &[u8]) -> Result<[u8; 32], Error> {
     if bytes.len() != 64 {
         return Err(Error::Shape);
     }
@@ -217,11 +217,15 @@ pub(super) fn resource(revision: &PreparedRevision, remaining: usize) -> Result<
             })
             .collect(),
     };
+    canonical_json(&data, remaining)
+}
+
+pub(super) fn canonical_json<T: Serialize>(data: &T, remaining: usize) -> Result<Vec<u8>, Error> {
     let mut output = BoundedOutput {
         bytes: Vec::new(),
         remaining,
     };
-    serde_json::to_writer(&mut output, &data).map_err(|e| {
+    serde_json::to_writer(&mut output, data).map_err(|e| {
         if e.is_io() {
             Error::Size
         } else {
