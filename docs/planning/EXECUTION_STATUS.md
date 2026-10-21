@@ -42,7 +42,11 @@ b4c104c8e87acdb388b6ee5455dfc5bd01ab331d after linked-account implementation/fin
 reviews and all11 current-head jobs. All11 exact-main39481364319 jobs passed,
 both Codecov reports processed (Rust4329/4535); [evidence](P2_04_ACTION_REVIEW.md).
 Owner accepted [D41 local catalog imports](P2_07_CATALOG_CONTRACT.md) after this gate;
-P2-07 components are under review. Full compiler, Explain and runtime admission
+P2-07 candidate3f203a6 passed linked-account review01a15af5-e9e0-7942-89fc-ce5aa6b06394
+and all11 CI39490608943 jobs; both Codecov reports processed (Rust4951/5177,
+patch612/642). Owner D42 WebPKI0.103.16 qualification resolved the original
+RUSTSEC-2026-0382 failure without suppression or production TLS adoption. Final
+review/current-head checks and normal merge remain required. Full compiler, Explain and runtime admission
 retain their gates; see [candidate evidence](P2_07_CATALOG_REVIEW.md).
 P1-06's candidate passed independent Codex re-review and all11 jobs of39153071723;
 actual Codecov processed both reports. See [evidence](P1_06_ACTIVATION_REVIEW.md)

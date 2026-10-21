@@ -73,7 +73,11 @@ and license checks:
 cargo test --manifest-path <isolated-source>/Cargo.toml --locked --lib --features aws-lc-rs distrusted_spki
 ```
 
-Linux/current-head CI and independent implementation/final reviews remain pending.
-The correction is not accepted as complete until that evidence is recorded in the
-[P2-07 review](../planning/P2_07_CATALOG_REVIEW.md). No coverage success is inferred
-from the failed original run or the local qualifier.
+Candidate3f203a6 passed all11 actual Windows/Linux CI39490608943 jobs, including
+the Linux TLS qualifier and all5 owning manifest dependency checks. Independent
+linked-account read-only/never review01a15af5-e9e0-7942-89fc-ce5aa6b06394 completed
+exit0/no confirmed defect. D42 qualification succeeded; the exact test-only lock
+correction is eligible for normal reviewed PR16 merge. Final documentation review,
+current-head CI and exact-main checks remain required, as recorded in the
+[P2-07 review](../planning/P2_07_CATALOG_REVIEW.md). The original failed run is not
+retroactively passed; no production TLS adoption or weakened policy is implied.

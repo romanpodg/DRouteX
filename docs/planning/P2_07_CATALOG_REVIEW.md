@@ -1,8 +1,8 @@
 # P2-07 local catalog import evidence
 
-Status: accepted D41 pure local catalog components implemented; independent reviews,
-actual Windows/Linux current-head CI, external coverage/health assessment, final
-review/checks and normal merge remain required. P2-05/06 and runtime stay planned.
+Status: accepted D41 local catalog components and D42 security correction passed
+implementation review and actual Windows/Linux CI/coverage. Final review/checks
+and normal merge remain required. P2-05/06 and runtime stay planned.
 See [accepted contract](P2_07_CATALOG_CONTRACT.md). PR15 prerequisite completed at
 b4c104c: implementation/final linked-account reviews, all11 exact-main39481364319
 jobs and both Codecov reports (Rust4329/4535) before any P2-07 code.
@@ -108,3 +108,39 @@ source invariants and regression/review evidence. Explicit minor impact/rational
 P2-05/grammar/budget/pairing revisit triggers are recorded in
 [OPEN_DECISIONS](OPEN_DECISIONS.md); tests/auxiliary findings remain outside the
 owner's independent metric scope. No score-only split or successful CodeScene claim.
+
+## Qualified correction and complete candidate checks
+
+Candidate3f203a6f462c68746e2d4ee0f53f444a70b627e8 passed all11 jobs of
+[CI39490608943](https://github.com/romanpodg/DRouteX/actions/runs/39490608943). Actual
+workspace counts: Windows150/Linux177 per default and no-default profile. Linux
+DNS/TLS qualifier passed all3 groups; local exact tracked Windows qualifier passed
+fmt/Clippy/all3 groups. All5 manifest dependency checks passed all4 categories
+against freshly fetched advisory data. D42 qualification is successful with no
+new exception or production TLS adoption; the original failed run stays failed.
+
+Independent current-head linked-account read-only/never Code Review
+01a15af5-e9e0-7942-89fc-ce5aa6b06394 exited0, no confirmed defect. Formatting and16
+existing-binary tests passed; fresh rebuild/Clippy/test remained read-only-lock
+restricted. Parent and actual CI evidence above provides those execution results.
+
+[Exact-head Codecov](https://app.codecov.io/github/romanpodg/droutex/commit/3f203a6f462c68746e2d4ee0f53f444a70b627e8)
+processed both backend/planning reports (complete,2 sessions). Rust-only totals are
+4951/5177 instrumented lines (95.63%); actual backend patch comparison against
+PR15 merge is612/642 Rust lines (95.33%). Auxiliary Python is excluded from those
+application figures; no metric-only tests/refactor was introduced.
+
+CodeScene8045334 again FAILED the same3 gates with identical source/auxiliary
+findings and scores. Current code is unchanged from the assessed implementation;
+OPEN_DECISIONS dispositions remain applicable, with owning P2-05/grammar/budget
+re-review triggers. No suppression, claimed successful health gate or check bypass.
+Q-DOC passed17 tests/9 negative cases/274 links after security evidence additions,
+with the same88 tasks/61 MVP/188 requirements and unchanged source specifications.
+Final documentation commit still requires independent review and current-head CI;
+normal merge and exact-main jobs/processed reports are not yet claimed.
+
+Owner accepted complete D43 P2-05 profile after the still-required reviewed PR16
+merge/exact-main prerequisite. This records the decision only; no compiler
+implementation or next implementation PR has begun. Final AST-only graph update
+completed3974 nodes/8409 edges; SQL parser/zero-node manifest warnings remain
+explicit and generated graph artifacts stay untracked.
