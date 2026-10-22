@@ -19,8 +19,10 @@ same-generation compilation merged in PR #105 with exact-main CI verified.
 P2-06 generation-bound Explain/simulation merged in PR #106; all eleven exact-main
 checks and both coverage reports passed. All seven P2 tasks are complete. The owner
 accepted [authorization before DNS](docs/planning/AUTHORIZATION_BEFORE_DNS.md) and
-the full [P4-01 profile](docs/planning/P4_01_BINDING_CONTRACT.md); its bounded current
-authorization is in progress. No DRouteX DNS/gateway listener exists yet.
+the full [P4-01 profile](docs/planning/P4_01_BINDING_CONTRACT.md), completed in PR107
+with all11 exact-main checks and both reports processed. The accepted
+[P3-01 transport profile](docs/planning/P3_01_LISTENER_CONTRACT.md) is in dependency
+qualification; no DRouteX DNS/gateway listener exists yet.
 
 - [Development roadmap](docs/planning/DEVELOPMENT_ROADMAP.md)
 - [Current execution boundary and repository handoff](docs/planning/EXECUTION_STATUS.md)

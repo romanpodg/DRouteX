@@ -121,7 +121,7 @@ class ValidatorTests(unittest.TestCase):
         missing_evidence = copy.deepcopy(plan)
         missing_evidence['foundation_review']['source'] = ''
         later_work = copy.deepcopy(plan)
-        next(t for t in later_work['tasks'] if t['id'] == 'P3-01')['status'] = 'in_progress'
+        next(t for t in later_work['tasks'] if t['id'] == 'P3-02')['status'] = 'in_progress'
         unfinished_dependencies = copy.deepcopy(plan)
         next(t for t in unfinished_dependencies['tasks'] if t['id'] == 'P0-05')['status'] = 'in_review'
         unfinished_identity = copy.deepcopy(plan)
@@ -200,6 +200,12 @@ class ValidatorTests(unittest.TestCase):
         unaccepted_binding['runtime_binding_decision']['status'] = 'proposed'
         missing_binding_source = copy.deepcopy(plan)
         missing_binding_source['runtime_binding_decision']['source'] = ''
+        unfinished_binding = copy.deepcopy(plan)
+        next(t for t in unfinished_binding['tasks'] if t['id'] == 'P4-01')['status'] = 'in_review'
+        unaccepted_transport = copy.deepcopy(plan)
+        unaccepted_transport['dns_transport_decision']['status'] = 'proposed'
+        missing_transport_source = copy.deepcopy(plan)
+        missing_transport_source['dns_transport_decision']['source'] = ''
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
         missing_native = copy.deepcopy(plan)
@@ -221,7 +227,8 @@ class ValidatorTests(unittest.TestCase):
                      unaccepted_catalogs, missing_catalog_source, unfinished_catalogs,
                      unaccepted_compilation, missing_compilation_source, unfinished_compilation,
                      unaccepted_explain, missing_explain_source, unfinished_explain,
-                     unaccepted_order, missing_order_source, unaccepted_binding, missing_binding_source):
+                     unaccepted_order, missing_order_source, unaccepted_binding, missing_binding_source,
+                     unfinished_binding, unaccepted_transport, missing_transport_source):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
 

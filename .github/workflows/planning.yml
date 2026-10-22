@@ -40,6 +40,12 @@ jobs:
           cargo clippy --manifest-path tests/policy-dependencies/Cargo.toml --all-targets --locked -- -D warnings
           cargo test --manifest-path tests/policy-dependencies/Cargo.toml --locked -- --nocapture
           cargo test --manifest-path tests/policy-dependencies/Cargo.toml --no-default-features --locked
+      - name: Qualify pinned DNS codec and Tokio transport profile in isolation
+        run: |
+          cargo fmt --manifest-path tests/dns-transport-dependencies/Cargo.toml -- --check
+          cargo clippy --manifest-path tests/dns-transport-dependencies/Cargo.toml --all-targets --locked -- -D warnings
+          cargo test --manifest-path tests/dns-transport-dependencies/Cargo.toml --locked
+          cargo test --manifest-path tests/dns-transport-dependencies/Cargo.toml --no-default-features --locked
   qualification:
     name: DNS and TLS dependency qualification / Linux
     runs-on: ubuntu-24.04
@@ -123,6 +129,7 @@ jobs:
           cargo deny --manifest-path tests/storage-dependencies/Cargo.toml --locked check
           cargo deny --manifest-path tests/secret-dependencies/Cargo.toml --locked check
           cargo deny --manifest-path tests/policy-dependencies/Cargo.toml --locked check
+          cargo deny --manifest-path tests/dns-transport-dependencies/Cargo.toml --locked check
       - name: Test and generate Rust coverage
         run: |
           mkdir -p coverage
