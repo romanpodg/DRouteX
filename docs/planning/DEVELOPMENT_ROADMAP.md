@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0/P1/P2 and P4-01 complete and merged; PR107 exact-main verified; full D47 P3-01 accepted, transport dependency qualification in progress; actual fork test deferred.**
+Status: **P0/P1/P2 and P4-01 complete and merged; PR107 exact-main verified; full D47 P3-01 accepted, transport qualification PR108 merged/exact-main verified; actual D47 runtime implementation in progress; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are

@@ -1,7 +1,7 @@
 # P3-01 transport evidence
 
-Status: **qualification candidate verified; final review/head/merge/main still open;
-not adopted into production**. The owner accepted
+Status: **qualification completed in normally merged PR108 with exact-main;
+runtime implementation/reviews in progress, runtime acceptance unverified**. The owner accepted
 complete D47 conditionally on checked PR107. Before qualification code, PR107
 merged normally at02b6695928a64c37de5e073a4bdb5162f1928c54; all11 exact-main39747433154
 jobs and both Codecov sessions processed(Rust6689/7013). See
@@ -11,8 +11,8 @@ jobs and both Codecov sessions processed(Rust6689/7013). See
 
 The standalone tests/dns-transport-dependencies package qualifies exact
 Hickory0.26.3 defaults-off/std and Tokio1.53.3 defaults-off networking/io/macros
-plus existing runtime/sync/time. Root production manifests/lockfile and all six
-production crates remain unchanged. Existing test-only TLS qualification remains
+plus existing runtime/sync/time. At that isolated stage root production manifests/lockfile
+and all six production crates remained unchanged. Existing test-only TLS qualification remains
 separate; no Crypto/TLS/NASM feature is introduced into this isolated package.
 Its lockfile starts from reviewed existing qualification versions and is pruned
 by Cargo offline. All94 registry package name/version/checksum identities are an
@@ -79,3 +79,77 @@ planning hotspot rules; its other two gates passed. The explicit disposition in
 without suppression or score-only cleanup. Production integration, final account
 review, final-head/normal merge/exact-main and full P3-01 runtime acceptance remain
 open; a dependency qualifier is not a DRouteX DNS service.
+
+## Qualification completion before runtime adoption
+
+Final62f2f2712229074d4897514463b7b3b6af763ce6 passed all11
+[CI39752553613 jobs](https://github.com/romanpodg/DRouteX/actions/runs/39752553613).
+Linked-account read-only/never final review01a162da-85ac-73d0-85fd-7d35bee10e7a
+completed exit0 without a confirmed defect. Fmt/9 planning checks passed;
+read-only Rust locks prevented a rebuild. The post-verdict rollout warning is
+retained, not substituted for a review result. Both Codecov sessions processed
+with unchanged Rust6689/7013. Failed CodeScene8075138 has identical finding text
+and numeric tables to8074936; the existing auxiliary disposition applies.
+
+[PR108](https://github.com/romanpodg/DRouteX/pull/108) merged normally at
+d36d7b2c5233822113d1085ac85dc9dd422fa401,2026-10-22T09:10:55Z, exact-head match,
+without admin/force/check bypass. All11
+[exact-main39753424789 jobs](https://github.com/romanpodg/DRouteX/actions/runs/39753424789)
+passed and both Codecov sessions processed(Rust6689/7013). Only after those gates
+did actual runtime work begin. Earlier open qualification statements above are
+historical candidate evidence; full runtime acceptance remains separate.
+
+## Runtime implementation candidate
+
+The real seventh crate consumes a Deployment owner and explicit prebound sockets.
+Node-wide budgets span listeners/generations; no public alternate processor or
+admission path exists. Each UDP datagram/TCP query uses actual source/listener D46
+and D38 selection from one generation, with final current/lease checks. Binding
+replacement cannot reuse an old socket merely by retaining its ID. Default
+processing returns SERVFAIL, RA=false/AD=false. No upstream/network learning,
+private/filter/SmartDNS answer, public deployment or gateway connector is claimed.
+
+All28 newly added root registry name/version/checksum tuples exactly match the
+qualified graph; no old tuple was removed. Fresh current-advisory cargo-deny
+passed advisories/bans/licenses/sources for all six bundles. Root coverage paths
+include the actual DNS source, while upload permissions/isolation remain intact.
+Planning authorization includes directly accepted D48:1500ms processor plus
+remaining500ms inside the original2s total. The owner accepted this clarification
+after independent spec review identified that a full2s processor wait leaves no
+time for the promised timeout SERVFAIL. Total expiry/lost admission drops/closes.
+
+Concrete regressions found and corrected before adoption:
+
+- An over-budget TXT record can make the codec return an error instead of TC.
+  The runtime retries a complete library-truncated response and validates the
+  encoded question/ID/length before sending; no raw packet cutting.
+- The pinned OPT parser silently clears incomplete options. An independent
+  partial-option fixture failed refusal before the fix, then passed after exact
+  original-RDATA accounting. Options are discarded before the processor, including ECS.
+- Tokio Timeout polls its inner future first. Independent probes and an actual
+  expired buffered frame reproduced successful work after deadline. Every resume
+  now checks monotonic time before polling I/O, with timer-first cancellation and
+  explicit stage/final-submit checks. A late-ready operation regression is retained.
+- A compressed root OPT owner takes two bytes. Independent maximum-question/
+  4096-byte option data accepts4379 bytes; the derived query bound includes it.
+- A departed Windows UDP client can surface a connection-reset receive error.
+  Transient peer errors are contained per listener instead of terminating the node.
+
+Current local fmt/check/all-target all-feature warning-free Clippy and default/
+no-default workspace runs excluding the single known-host IPv6 case passed.
+The earlier complete native run had17 DNS successes/one IPv6 failure, so it is
+not a complete platform pass. Mandatory IPv6 remains enabled in clean CI; no
+system/firewall setting or test skip was added. Runtime CI, current production
+coverage/CodeScene, linked-account implementation/final reviews and normal
+merge/exact-main remain unverified at this candidate stage.
+
+Tests use independent wire bytes and actual unprivileged sockets: type/ID/rcode,
+bad compression/counts/trailing/EDNS, TC versus full TCP, split/coalesced pipeline,
+unknown sources/no handler, exact IPv6, same-IP separate Profiles, revocation and
+expiry during processing, changed bind, absolute trickle deadline, shared group
+quota across UDP/TCP, node64 TCP refusal and real release/rebind. The shutdown
+scheduling regression waits the real5s drain, aborts/joins an owned socket task,
+proves permit/rebind release and reports a still-running bounded blocking task.
+It verifies task/outcome scheduling, not a new atomic-store crash qualification.
+Linux adds actual durable-store/CP-directory loss and a real automatic checkpoint
+filesystem failure. Those Linux tests still require their actual platform run.

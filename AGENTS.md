@@ -14,16 +14,21 @@ P2-06 simulation stays pure; automatic secure learning remains unavailable until
 P3-07/P6, actual final origin checks/pinning remain P4-02.
 Owner accepted full D47 conditionally on checked PR107; that prerequisite passed
 before qualification code. See P3_01_LISTENER_CONTRACT.md.
-P3-01 is current: qualify exact std-only Hickory0.26.3 and Tokio1.53.3 net/io/macros,
-then conditionally adopt after actual Windows/Linux, complete dependency/license
-checks and independent reviews. Production graph is unchanged during qualification.
-Qualification083d83d passed all11 CI39750969047 jobs and all9 network/codec tests
-in both Windows/Linux feature profiles, all six deny bundles and linked-account
-read-only/never review01a162d2-a03c-7250-8a6c-1e2545d019ca (no confirmed defect).
-All94 archive checksums match the previously qualified graph. Codecov remains
-Rust6689/7013; CodeScene8074936 failed only excluded auxiliary planning hotspots,
-explicitly recorded in P3_01_LISTENER_REVIEW.md/OPEN_DECISIONS. Final qualification
-review/head/normal merge/exact-main gates remain open before production adoption.
+P3-01 runtime is current after completed D47 qualification PR108. Qualifier candidate
+083d83d and final62f2f27 passed all11 CI39750969047/39752553613 jobs, all9 tests
+in each Windows/Linux feature profile and all six deny bundles. Linked-account
+read-only/never implementation01a162d2-a03c-7250-8a6c-1e2545d019ca and final
+01a162da-85ac-73d0-85fd-7d35bee10e7a reviews completed without confirmed defect.
+Normal merged36d7b2c5233822113d1085ac85dc9dd422fa401 passed all11 exact-main
+39753424789 jobs and both Codecov sessions(Rust6689/7013). All94 archive checksums
+match previously qualified identities; all28 production lock additions match
+that exact qualifier graph, no old registry identity removed. CodeScene8074936/
+8075138 failed only identical excluded auxiliary hotspots, explicitly recorded
+without suppression. Accepted runtime code is in progress, not completed or
+merged: real seven-crate workspace, bounded UDP/TCP and D46 current source gate.
+Actual runtime platform/review/coverage/final-head/normal merge/main gates remain
+open. Owner accepted D48 timeout clarification:1500ms processor/remaining500ms reply
+inside the original2s total; expired/lost admission never gets a fallback.
 Local development-host IPv6 UDP/TCP fails independently in Python; clean CI
 passed mandatory IPv6 tests, and no host networking changes were made.
 D47 includes UDP1232/3x cap, bounded TCP/ingress/buffers/deadlines, actual D46 per-query

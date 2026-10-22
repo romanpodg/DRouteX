@@ -36,4 +36,5 @@ flags:
       - crates/droutex-storage/src/
       - crates/droutex-security/src/
       - crates/droutex-core/src/
+      - crates/droutex-dns/src/
     carryforward: false

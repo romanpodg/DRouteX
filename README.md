@@ -21,8 +21,10 @@ checks and both coverage reports passed. All seven P2 tasks are complete. The ow
 accepted [authorization before DNS](docs/planning/AUTHORIZATION_BEFORE_DNS.md) and
 the full [P4-01 profile](docs/planning/P4_01_BINDING_CONTRACT.md), completed in PR107
 with all11 exact-main checks and both reports processed. The accepted
-[P3-01 transport profile](docs/planning/P3_01_LISTENER_CONTRACT.md) is in dependency
-qualification; no DRouteX DNS/gateway listener exists yet.
+[P3-01 transport profile](docs/planning/P3_01_LISTENER_CONTRACT.md) completed
+dependency qualification in PR108 with exact-main checks. The bounded DNS
+[library](crates/droutex-dns/README.md) is under implementation/review; runtime
+acceptance and merge remain open. No public service is deployed.
 
 - [Development roadmap](docs/planning/DEVELOPMENT_ROADMAP.md)
 - [Current execution boundary and repository handoff](docs/planning/EXECUTION_STATUS.md)

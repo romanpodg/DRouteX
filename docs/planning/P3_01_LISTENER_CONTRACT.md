@@ -75,7 +75,7 @@ benchmarks. D46's shared per-group/node DNS quotas still apply across transports
 | Total owned transport wire buffers | 16MiB/node (not a total-RSS promise) |
 | UDP input/output wire ceiling | 1232 bytes |
 | TCP framed message/output ceiling | 65535 bytes, exactly one 2-byte length prefix |
-| Single query handling / reply write deadline | 2s |
+| Single query handling / reply write deadline | 2s total; processor at most1500ms, remaining500ms reserved for reply(D48) |
 | First TCP frame / non-idle frame completion | 5s absolute; trickle bytes do not extend it |
 | Between TCP queries idle time | 15s |
 | TCP connection lifetime / query count | 120s /100 queries |
@@ -120,6 +120,16 @@ the full bounded response. Do not send more than one reply per datagram/frame.
 Preserve query ID/question and correct QR/opcode/RCODE; do not invent successful
 origin/private answers, authority or effective routing. Timeout/unimplemented
 processing yields bounded SERVFAIL; overload/unauthorized traffic is dropped.
+
+D48 owner clarification accepted2026-10-22: the processor cutoff is1500ms from
+the original query start, retaining500ms within the same two-second total for
+fallback encoding/write. If admission/parsing consumed that allocation, skip
+the processor and attempt SERVFAIL only while total time remains. A late reply
+is dropped and TCP closes; lost/expired/revoked admission never gets a fallback.
+An earlier connection lifetime bound still closes the connection. Deadlines
+are checked on every future resume and before final submission; a ready socket
+operation cannot outrun an already expired timer. Already submitted kernel
+bytes cannot be retracted.
 
 RFC references checked2026-10-22: RFC7766 (TCP framing/reuse/pipelining) and RFC6891
 (EDNS payload/version/options). The limits/strict initial subset above are DRouteX

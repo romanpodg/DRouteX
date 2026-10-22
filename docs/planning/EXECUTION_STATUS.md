@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-22. Current stage: **P0/P1/P2/P4-01 complete; PR107 merged and exact-main verified; D47 P3-01 accepted, dependency qualification in progress**.
+Date: 2026-10-22. Current stage: **P0/P1/P2/P4-01 complete; PR107 merged and exact-main verified; D47 P3-01 accepted, qualifier PR108 merged/exact-main verified; runtime implementation in progress**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -19,7 +19,7 @@ reports(Rust5980/6262), after implementation/final linked-account reviews. See
 P4-01 completed normal PR107 merge02b6695, all11 main39747433154 jobs and both
 reports(Rust6689/7013), after both linked-account reviews. See
 [P4-01 evidence](P4_01_BINDING_REVIEW.md). Full [D47 transport](P3_01_LISTENER_CONTRACT.md)
-was accepted after that checked prerequisite; isolated qualification is current.
+was accepted after that checked prerequisite; isolated qualifier PR108 merged atd36d7b2c5233822113d1085ac85dc9dd422fa401; all11 exact-main39753424789 jobs and both Codecov sessions passed. Actual bounded listener implementation is current.
 Later technical choices retain their owning gates.
 PR9 merged at521bfa76fbc27e14cd4981638af775ba92c6299f after independent
 implementation/final-evidence reviews and all11 final-head jobs. All11 exact-main

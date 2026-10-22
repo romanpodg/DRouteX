@@ -206,6 +206,10 @@ class ValidatorTests(unittest.TestCase):
         unaccepted_transport['dns_transport_decision']['status'] = 'proposed'
         missing_transport_source = copy.deepcopy(plan)
         missing_transport_source['dns_transport_decision']['source'] = ''
+        unaccepted_timeout = copy.deepcopy(plan)
+        unaccepted_timeout['dns_transport_timeout_decision']['status'] = 'proposed'
+        missing_timeout_source = copy.deepcopy(plan)
+        missing_timeout_source['dns_transport_timeout_decision']['source'] = ''
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
         missing_native = copy.deepcopy(plan)
@@ -228,7 +232,8 @@ class ValidatorTests(unittest.TestCase):
                      unaccepted_compilation, missing_compilation_source, unfinished_compilation,
                      unaccepted_explain, missing_explain_source, unfinished_explain,
                      unaccepted_order, missing_order_source, unaccepted_binding, missing_binding_source,
-                     unfinished_binding, unaccepted_transport, missing_transport_source):
+                     unfinished_binding, unaccepted_transport, missing_transport_source,
+                     unaccepted_timeout, missing_timeout_source):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
 
@@ -268,7 +273,8 @@ class ValidatorTests(unittest.TestCase):
         quality.check_active_codecov(config)
         for path in ('crates/droutex-common/src/', 'crates/droutex-config/src/',
                      'crates/droutex-policy/src/', 'crates/droutex-storage/src/',
-                     'crates/droutex-security/src/', 'crates/droutex-core/src/'):
+                     'crates/droutex-security/src/', 'crates/droutex-core/src/',
+                     'crates/droutex-dns/src/'):
             bad = copy.deepcopy(config)
             bad['flags']['backend']['paths'] = [
                 entry for entry in bad['flags']['backend']['paths'] if entry != path]

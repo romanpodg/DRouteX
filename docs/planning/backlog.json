@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0/P1/P2 and P4-01 complete; D47 P3-01 qualification candidate passed implementation review/all11 CI39750969047; final qualifier gates and actual listener implementation remain open",
+  "status": "P0/P1/P2/P4-01 complete; P3-01 transport qualifier PR108 normally merged/exact-main passed; accepted D47 runtime implementation and reviews in progress",
   "date": "2026-10-22",
   "phases": {
     "P0": "Foundation",
@@ -611,7 +611,9 @@
       ],
       "scope": "Hickory policy handler with restricted bindings, ACL, size/rate/time limits",
       "files": [
-        "crates/droutex-dns/src/listeners"
+        "crates/droutex-dns/src",
+        "docs/planning/P3_01_LISTENER_CONTRACT.md",
+        "docs/planning/P3_01_LISTENER_REVIEW.md"
       ],
       "acceptance": "Unauthorized recursion denied; TCP framing and truncation behavior correct",
       "tests": "Real UDP/TCP exchange, malformed/truncated frames and flood limits",
@@ -2864,5 +2866,11 @@
     "date": "2026-10-22",
     "source": "Direct owner reply accepting full .setup/p3-01/listener-design-proposal.md after PR107; docs/planning/P3_01_LISTENER_CONTRACT.md",
     "profile": "D47 D46 admission per query, UDP1232/3x, bounded framed TCP/ingress/owned buffers/deadlines/shutdown; independent same-generation policy, initial SERVFAIL until P3-02 handlers; qualify exact std-only Hickory and Tokio net/io/macros before adoption; no public service deployment"
+  },
+  "dns_transport_timeout_decision": {
+    "status": "accepted",
+    "date": "2026-10-22",
+    "source": "Direct owner reply accepting .setup/p3-01/timeout-budget-proposal.md; docs/planning/P3_01_LISTENER_CONTRACT.md",
+    "profile": "D48 processor at most1500ms from original query start, remaining500ms reserved within2s total for bounded SERVFAIL; total expiry or lost admission drops/closes"
   }
 }
