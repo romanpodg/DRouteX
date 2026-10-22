@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0/P1/P2 complete and merged; PR106 exact-main verified; D45/D46 P4-01 candidate passed implementation review/all11 CI39671360399, final evidence/merge/main remain required. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0/P1/P2 and P4-01 complete; D47 P3-01 qualification candidate passed implementation review/all11 CI39750969047; final qualifier gates and actual listener implementation remain open. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

@@ -1,29 +1,38 @@
 # DRouteX project instructions
 
-Current gate2026-10-22: P0/P1/P2 are complete. P2-06/PR106 merged normally at
-671c9f6154add92486c90f5a620d4dbefa9a510a after linked-account read-only/never
-implementation01a15fe6-fb96-7bd2-a679-ae94ee793d14 and final
-01a15fed-feb6-7a51-b91d-5a06d6fde1e0 reviews, with no confirmed defect. All11 final
-39661629859 and exact-main39662936089 jobs passed; both Codecov reports processed
-(Rust5980/6262; patch474/506). CodeScene8063131/8065616 remain failed with identical
-minor source/auxiliary dispositions in P2_06_EXPLAIN_REVIEW.md, no suppression/bypass.
-P2-06 remains pure: every simulation network_test_performed=false/effective_route=null;
-private answer precedence remains P3 and external diagnostic visibility P6.
-Owner separately accepted D45 P4-01 before P3-01, then the complete D46 manual-first
-runtime authorization profile. See docs/planning/AUTHORIZATION_BEFORE_DNS.md and
-P4_01_BINDING_CONTRACT.md. P4-01 is current: v1 data remains exact association-only;
-strict v2 leases/journal,24h maximum manual lease,2s clock uncertainty and5s durable
-floor window, current-generation checks and fixed group/node quotas. Automatic
-secure learning is unavailable until actual P3-07/P6 evidence. No new dependency,
-listener, connector, public endpoint or privileged operation is authorized. Actual
-Windows199/Linux230 default/no-default tests and all11 CI39671360399 jobs passed
-on implementation efd3f28. Linked-account read-only/never review
-01a1602b-028d-7192-b217-97743133bb9e completed without confirmed defect. Codecov
-Rust6689/7013, patch717/759; failed CodeScene8066731 has concrete minor source
-and excluded auxiliary dispositions in P4_01_BINDING_REVIEW.md/OPEN_DECISIONS.
-Final evidence review/checks, normal merge and exact-main remain required. Later implementation
-stays planned. No owner CI-status exception was used. D42 WebPKI0.103.16 remains
-qualified in the existing test-only TLS qualifier, resolving RUSTSEC-2026-0382.
+Current gate2026-10-22: P0/P1/P2 and P4-01 are complete. PR107 merged normally at
+02b6695928a64c37de5e073a4bdb5162f1928c54 after linked-account read-only/never
+implementation01a1602b-028d-7192-b217-97743133bb9e and final
+01a162ab-81e6-7102-bc79-696105883a15 reviews, no confirmed defect. The initial
+quota-interrupted final attempt was not counted. All11 final39672366016 and
+exact-main39747433154 jobs passed; both Codecov sessions processed(Rust6689/7013;
+patch717/759). CodeScene8066731/8066873 remain failed with identical concrete
+minor source/excluded auxiliary dispositions in P4_01_BINDING_REVIEW.md and
+OPEN_DECISIONS, no suppression/bypass. D46 manual-first v2 current authorization,
+conservative clock floor/quotas are implemented; v1 remains association-only.
+P2-06 simulation stays pure; automatic secure learning remains unavailable until
+P3-07/P6, actual final origin checks/pinning remain P4-02.
+Owner accepted full D47 conditionally on checked PR107; that prerequisite passed
+before qualification code. See P3_01_LISTENER_CONTRACT.md.
+P3-01 is current: qualify exact std-only Hickory0.26.3 and Tokio1.53.3 net/io/macros,
+then conditionally adopt after actual Windows/Linux, complete dependency/license
+checks and independent reviews. Production graph is unchanged during qualification.
+Qualification083d83d passed all11 CI39750969047 jobs and all9 network/codec tests
+in both Windows/Linux feature profiles, all six deny bundles and linked-account
+read-only/never review01a162d2-a03c-7250-8a6c-1e2545d019ca (no confirmed defect).
+All94 archive checksums match the previously qualified graph. Codecov remains
+Rust6689/7013; CodeScene8074936 failed only excluded auxiliary planning hotspots,
+explicitly recorded in P3_01_LISTENER_REVIEW.md/OPEN_DECISIONS. Final qualification
+review/head/normal merge/exact-main gates remain open before production adoption.
+Local development-host IPv6 UDP/TCP fails independently in Python; clean CI
+passed mandatory IPv6 tests, and no host networking changes were made.
+D47 includes UDP1232/3x cap, bounded TCP/ingress/buffers/deadlines, actual D46 per-query
+admission, local clock maintenance and graceful shutdown. Until later upstream/
+policy handlers, valid admitted queries return SERVFAIL; no fabricated DNS success.
+No public service deployment, privileged operation, TLS/recursion/cache/learning or
+management endpoint is authorized here. Later implementation stays planned. No
+owner CI-status exception was used. D42 WebPKI0.103.16 remains qualified only in
+the existing TLS qualifier, resolving RUSTSEC-2026-0382.
 
 ## Authority and current scope
 

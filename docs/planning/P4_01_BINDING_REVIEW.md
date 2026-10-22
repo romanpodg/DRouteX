@@ -1,7 +1,6 @@
 # P4-01 current authorization evidence
 
-Status: **candidate acceptance verified; final evidence review/checks and normal
-merge/exact-main remain required**. D45 execution order
+Status: **completed, normally merged and exact-main verified**. D45 execution order
 and the complete [D46 contract](P4_01_BINDING_CONTRACT.md) were directly accepted
 on2026-10-22. Before code, PR106 merged normally at671c9f6154add92486c90f5a620d4dbefa9a510a;
 all11 exact-main39662936089 jobs and both Codecov reports processed(Rust5980/6262).
@@ -94,5 +93,23 @@ Every concrete signal, impact, reason and revisit trigger is recorded in
 [the existing register](OPEN_DECISIONS.md#p4-01-review-dispositions). No suppression,
 score-only rewrite, advisory exception or branch-protection bypass was used.
 
-Required final linked-account evidence review, exact final-head/main CI and normal
-merge are still open. P3/P4/P6 runtime integration/secure learning remains planned.
+## Final review, normal merge and exact main
+
+Final head fecb869aa0538e1eecf87bfdce8b92b612327c5b passed all11 CI39672366016
+jobs and processed both Codecov sessions with the same Rust/patch totals. Final
+CodeScene8066873 failed with exactly identical finding text and numeric tables;
+all four recorded dispositions remain applicable without suppression.
+
+The first final review was interrupted by a quota error and was not counted.
+After the owner continued, linked-account read-only/never final review
+01a162ab-81e6-7102-bc79-696105883a15 completed with exit0/no confirmed defect.
+Fmt and9 planning checks passed; read-only build-lock restrictions prevented Rust
+rebuild/Clippy. An after-verdict rollout-record warning is retained. Actual Rust
+execution comes from the independently successful current-head CI, not the review.
+
+[PR107](https://github.com/romanpodg/DRouteX/pull/107) merged normally on2026-10-22
+at02b6695928a64c37de5e073a4bdb5162f1928c54 with an exact-head match, no admin/force
+or protection bypass. All11 [exact-main39747433154 jobs](https://github.com/romanpodg/DRouteX/actions/runs/39747433154)
+passed and Codecov processed both sessions(Rust6689/7013). The owner accepted full D47 P3-01 conditionally on this prerequisite, fulfilled
+before qualification code. P3/P4/P6 runtime integration/secure
+learning remains at its owning stages; manual/current authorization is complete.

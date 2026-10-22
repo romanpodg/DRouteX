@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1/P2 complete and merged; PR106 exact-main verified; D45/D46 P4-01 candidate passed implementation review/all11 CI39671360399, final evidence/merge/main remain required.**
+**P0/P1/P2 and P4-01 complete; D47 P3-01 qualification candidate passed implementation review/all11 CI39750969047; final qualifier gates and actual listener implementation remain open.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -307,7 +307,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P3-01: Add bounded DNS UDP/TCP listeners
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,19,22.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,19,22.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -414,7 +414,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **L**. Specificati
 
 ### P4-01: Specify and enforce authorized destination binding
 
-Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,6,10,19.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,6,10,19.
 
 | Field | Deliverable / evidence |
 |---|---|

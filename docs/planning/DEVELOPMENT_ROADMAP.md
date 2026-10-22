@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0/P1/P2 complete and merged; PR106 exact-main verified; D45 authorization before DNS and full D46 P4-01 profile accepted; P4-01 in progress; actual fork test deferred.**
+Status: **P0/P1/P2 and P4-01 complete and merged; PR107 exact-main verified; full D47 P3-01 accepted, transport dependency qualification in progress; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -48,7 +48,10 @@ P2-06 now follows the [accepted D44 contract](P2_06_EXPLAIN_CONTRACT.md);
 exact-main39662936089 jobs and both reports passed. The owner accepted
 [D45 authorization before DNS](AUTHORIZATION_BEFORE_DNS.md) and the full
 [D46 P4-01 contract](P4_01_BINDING_CONTRACT.md). Current authorization precedes
-P3-01 listeners; actual secure learning remains P3-07. Later implementation stays planned.
+P3-01 listeners; actual secure learning remains P3-07. PR107 merged normally at
+02b6695, all11 main39747433154 jobs and both reports passed. The owner accepted
+[D47 transport](P3_01_LISTENER_CONTRACT.md); P3-01 dependency qualification is current.
+Later tasks stay planned.
 See [P1-05 evidence](P1_05_SNAPSHOT_REVIEW.md).
 See [P1-07 evidence](P1_07_SECRET_REVIEW.md).
 Further technical choices retain their owning gates.

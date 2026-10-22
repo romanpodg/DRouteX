@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0/P1/P2 complete and merged; PR106 exact-main verified; D45/D46 P4-01 candidate passed implementation review/all11 CI39671360399, final evidence/merge/main remain required",
+  "status": "P0/P1/P2 and P4-01 complete; D47 P3-01 qualification candidate passed implementation review/all11 CI39750969047; final qualifier gates and actual listener implementation remain open",
   "date": "2026-10-22",
   "phases": {
     "P0": "Foundation",
@@ -618,7 +618,7 @@
       "security": "No open resolver; limited concurrency and amplification surface",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -817,7 +817,7 @@
       "security": "SNI identifies a candidate; separate ingress authorization grants access",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_review",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2618,9 +2618,9 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-22",
-    "source": "Direct owner D45 order and full D46 profile acceptance after verified PR106; docs/planning/P4_01_BINDING_CONTRACT.md",
-    "scope": "Bounded P4-01 internal current authorization and manual leases only, actual Windows/Linux durable/platform tests and independent implementation/final linked-account reviews before adoption. No public listeners, connector or automatic learning.",
-    "through_task": "P4-01"
+    "source": "Direct owner D47 full profile acceptance conditional on checked PR107, fulfilled before qualification code; docs/planning/P3_01_LISTENER_CONTRACT.md",
+    "scope": "Bounded internal UDP/TCP library and exact Hickory0.26.3/Tokio1.53.3 feature qualification/conditional adoption after actual Windows/Linux, dependency/license and independent reviews. No live public deployment; upstream/policy answers remain owning stages.",
+    "through_task": "P3-01"
   },
   "design_proposals": [
     {
@@ -2858,5 +2858,11 @@
     "date": "2026-10-22",
     "source": "Direct owner reply accepting full .setup/p4-01/binding-design-proposal.md after checks; docs/planning/P4_01_BINDING_CONTRACT.md",
     "profile": "D46 manual-first24h leases, strict v2 config/envelope/journal with exact v1 restore retained, current generation gate, durable5s clock floor/2s uncertainty, bounded group/node quotas; no new dependency or live network, automatic secure learning remains unavailable until P3-07"
+  },
+  "dns_transport_decision": {
+    "status": "accepted",
+    "date": "2026-10-22",
+    "source": "Direct owner reply accepting full .setup/p3-01/listener-design-proposal.md after PR107; docs/planning/P3_01_LISTENER_CONTRACT.md",
+    "profile": "D47 D46 admission per query, UDP1232/3x, bounded framed TCP/ingress/owned buffers/deadlines/shutdown; independent same-generation policy, initial SERVFAIL until P3-02 handlers; qualify exact std-only Hickory and Tokio net/io/macros before adoption; no public service deployment"
   }
 }

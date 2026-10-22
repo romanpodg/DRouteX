@@ -1,6 +1,6 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-22. Current stage: **P0/P1/P2 complete; PR106 merged and exact-main verified; D45 order and full D46 accepted, P4-01 in progress**.
+Date: 2026-10-22. Current stage: **P0/P1/P2/P4-01 complete; PR107 merged and exact-main verified; D47 P3-01 accepted, dependency qualification in progress**.
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -16,7 +16,11 @@ P2-06 completed normal merge671c9f6, all11 main39662936089 jobs and both process
 reports(Rust5980/6262), after implementation/final linked-account reviews. See
 [P2-06 evidence](P2_06_EXPLAIN_REVIEW.md). The owner accepted
 [D45 order](AUTHORIZATION_BEFORE_DNS.md) and full [D46 profile](P4_01_BINDING_CONTRACT.md);
-P4-01 is current. Later technical choices retain their owning gates.
+P4-01 completed normal PR107 merge02b6695, all11 main39747433154 jobs and both
+reports(Rust6689/7013), after both linked-account reviews. See
+[P4-01 evidence](P4_01_BINDING_REVIEW.md). Full [D47 transport](P3_01_LISTENER_CONTRACT.md)
+was accepted after that checked prerequisite; isolated qualification is current.
+Later technical choices retain their owning gates.
 PR9 merged at521bfa76fbc27e14cd4981638af775ba92c6299f after independent
 implementation/final-evidence reviews and all11 final-head jobs. All11 exact-main
 jobs39148795165 passed and both Codecov reports processed. The owner then accepted
