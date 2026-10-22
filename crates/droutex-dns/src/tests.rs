@@ -811,5 +811,39 @@ async fn pending_submission_rechecks_actual_authority_before_resuming_io() {
     server.close().await;
 }
 
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn public_node_replies_from_the_explicit_nondefault_destination() {
+    let udp = UdpSocket::bind("127.0.0.2:0").await.unwrap();
+    let address = udp.local_addr().unwrap();
+    let tcp = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let mut doc = document(address, tcp.local_addr().unwrap());
+    for grant in doc["legacyGrants"].as_array_mut().unwrap() {
+        grant["source"] = json!("127.0.0.1");
+    }
+    let node = DnsNode::new(Deployment::in_memory(typed(1), keys().1));
+    apply(node.deployment(), &doc, 1);
+    let (stop, shutdown) = watch::channel(false);
+    let handle = tokio::spawn(node.serve(
+        vec![ListenerSocket::Udp {
+            id: typed(20),
+            socket: udp,
+        }],
+        shutdown,
+    ));
+    sleep(Duration::from_millis(40)).await;
+    let client = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+    client.connect(address).await.unwrap();
+    client.send(QUERY).await.unwrap();
+    let mut bytes = [0; 1232];
+    let received = timeout(Duration::from_secs(1), client.recv(&mut bytes)).await;
+    stop.send_replace(true);
+    let report = handle.await.unwrap().unwrap();
+    let length = received.unwrap().unwrap();
+    let reply = Message::from_vec(&bytes[..length]).unwrap();
+    assert_eq!(reply.metadata.response_code, ResponseCode::ServFail);
+    assert_eq!(report.answered, 1);
+    let _rebound = UdpSocket::bind(address).await.unwrap();
+}
+
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 mod linux;

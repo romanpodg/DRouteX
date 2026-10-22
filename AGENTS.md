@@ -1,5 +1,17 @@
 # DRouteX project instructions
 
+Latest P3-01 candidate5117e5f passed all11 CI39761170349 jobs:225 Windows/257Linux
+tests per feature profile, no ignored/filtered cases; Codecov Rust7462/7857 and
+patch770/841 processed. Linked-account read-only/never implementation review
+01a16317-f124-7290-aafa-7ca351381e18 completed with a confirmed P2 wildcard UDP
+wrong-source-address defect. Merge is blocked. Owner decision requested in
+.setup/p3-01/wildcard-binding-proposal.md: explicit-only UDP now versus separate
+destination-aware I/O qualification. No restriction/new dependency is accepted
+by asking. Explicit nondefault127.0.0.2 public-API regression passed. CodeScene
+8076431 failed all3 gates; three concrete minor source/auxiliary maintenance
+dispositions are recorded without suppression, separately from the blocking bug.
+See P3_01_LISTENER_REVIEW.md and current local autopilot state before proceeding.
+
 Current gate2026-10-22: P0/P1/P2 and P4-01 are complete. PR107 merged normally at
 02b6695928a64c37de5e073a4bdb5162f1928c54 after linked-account read-only/never
 implementation01a1602b-028d-7192-b217-97743133bb9e and final

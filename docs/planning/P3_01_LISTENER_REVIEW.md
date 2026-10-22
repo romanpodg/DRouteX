@@ -1,7 +1,8 @@
 # P3-01 transport evidence
 
 Status: **qualification completed in normally merged PR108 with exact-main;
-runtime implementation/reviews in progress, runtime acceptance unverified**. The owner accepted
+runtime candidate passed all11 CI, but linked-account review found a confirmed
+wildcard UDP defect; merge blocked pending resolution**. The owner accepted
 complete D47 conditionally on checked PR107. Before qualification code, PR107
 merged normally at02b6695928a64c37de5e073a4bdb5162f1928c54; all11 exact-main39747433154
 jobs and both Codecov sessions processed(Rust6689/7013). See
@@ -153,3 +154,39 @@ proves permit/rebind release and reports a still-running bounded blocking task.
 It verifies task/outcome scheduling, not a new atomic-store crash qualification.
 Linux adds actual durable-store/CP-directory loss and a real automatic checkpoint
 filesystem failure. Those Linux tests still require their actual platform run.
+
+## Actual implementation review and platform evidence
+
+Candidate5117e5f4a60b070a8fdc9f0d5307b9c88c03f802 in
+[draft PR109](https://github.com/romanpodg/DRouteX/pull/109) passed all11
+[CI39761170349 jobs](https://github.com/romanpodg/DRouteX/actions/runs/39761170349).
+Actual workspace counts were225 Windows/257 Linux for each default/no-default
+profile, with zero ignored/filtered cases. DNS26 Windows/27 Linux includes exact
+IPv6 UDP/TCP, pending-processor SERVFAIL and pending-write admission checks. Linux
+also passed actual durable CP-directory loss and automatic checkpoint filesystem
+failure. Both Codecov sessions processed: Rust7462/7857; actual new Rust patch
+770/841(91.56%). No coverage value proves route/security correctness.
+
+Repeated supplementary standards/spec reviews found no confirmed source defect.
+Required linked-account read-only/never review01a16317-f124-7290-aafa-7ca351381e18
+completed exit0 with a confirmed P2 finding: wildcard UDP receive loses the local
+destination, so send_to may reply from a different local address. Independent
+Python stdlib reproduced request127.0.0.2/reply127.0.0.1 on this host. A connected
+client may discard that response. Fmt passed; read-only Cargo locks prevented its
+Rust/Clippy rebuild. Rollout-record warnings are retained alongside the actual
+completed verdict. This is a completed review with a defect, never a clean review.
+
+Green CI did not cover wildcard source preservation and does not close the
+finding. The owner has been asked to choose explicit-only UDP addresses for this
+initial runtime, or separate destination-aware I/O qualification before wildcard
+support. No restriction/new I/O dependency is accepted merely by that question.
+The independent positive public-API regression confirms explicit127.0.0.2 replies
+correctly to a connected client on127.0.0.1. Source correction/re-review and final
+current-head/normal merge/exact-main gates remain open.
+
+CodeScene8076431 failed all three gates, including its critical Bumpy Road label
+for runtime lifecycle complexity. Source/independent review supports explicit
+minor maintenance dispositions, not a critical functional defect conclusion;
+see [the register](OPEN_DECISIONS.md#p3-01-review-dispositions). No suppression,
+threshold change, check bypass or score-only refactoring was performed. The
+confirmed wildcard bug remains a separate merge blocker.
