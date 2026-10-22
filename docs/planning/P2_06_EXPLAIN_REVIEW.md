@@ -1,10 +1,10 @@
 # P2-06 generation-bound Explain and simulation evidence
 
-Status: D44 implementation9ed109a passed completed linked-account Code Review,
-all11 Windows/Linux CI39635921414 jobs and both processed Codecov reports. CodeScene
-8063131 failed with concrete minor maintenance dispositions recorded below and in
-OPEN_DECISIONS. Final evidence review/checks, normal merge and exact-main remain
-required; P3/P4/P6 are not implemented by this task.
+Status: **Complete and normally merged as PR106 at671c9f6154add92486c90f5a620d4dbefa9a510a**.
+Both linked-account reviews completed; all11 final39661629859 and exact-main39662936089
+jobs passed. Both processed Codecov reports have Rust5980/6262 and patch474/506.
+CodeScene8063131/8065616 remain failed with the same minor maintenance dispositions
+recorded below and in OPEN_DECISIONS. P3/P4/P6 were not implemented by this task.
 
 The complete [accepted contract](P2_06_EXPLAIN_CONTRACT.md) records direct owner
 acceptance and the prerequisite fulfilled BEFORE code: normal PR105 merge
@@ -186,3 +186,19 @@ and [failed CodeScene review](https://codescene.io/projects/86145/delta/results/
 are actual external runs. See P2-06-CS-* in [OPEN_DECISIONS](OPEN_DECISIONS.md).
 Final evidence documentation recheck passed18 planning tests and9 negative cases,
 with290 local links and unchanged source specifications/task set.
+
+## Completed final review, normal merge and exact-main
+
+Final documentation-only0611da5 passed linked-account read-only/never review
+01a15fed-feb6-7a51-b91d-5a06d6fde1e0 (exit0, no confirmed defect). Fmt/diff,12 cached
+binary tests and8 validator tests passed; read-only Cargo rebuilding was unavailable,
+so cached binaries do not prove exact-source correspondence. Actual final CI39661629859
+passed all11 jobs and both Codecov reports processed with Rust5980/6262(95.50%) and
+patch474/506(93.68%). CodeScene8065616 has identical finding text/numeric tables to
+8063131; all four P2-06-CS-* dispositions apply without suppression.
+
+[PR106](https://github.com/romanpodg/DRouteX/pull/106) merged normally at
+671c9f6154add92486c90f5a620d4dbefa9a510a on2026-10-21T19:35:10Z. All11
+[exact-main jobs](https://github.com/romanpodg/DRouteX/actions/runs/39662936089)
+passed; both exact-merge Codecov reports processed(Rust5980/6262). No force/admin,
+protection bypass or owner CI-status exception. All seven P2 tasks are complete.

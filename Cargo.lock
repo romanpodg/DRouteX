@@ -334,6 +334,7 @@ version = "0.1.0"
 dependencies = [
  "droutex-common",
  "droutex-config",
+ "droutex-policy",
  "droutex-security",
  "serde",
  "serde_json",

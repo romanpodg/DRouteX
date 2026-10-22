@@ -1,6 +1,7 @@
 mod access;
 mod binding;
 mod error;
+mod lease;
 mod model;
 mod parser;
 mod rules;
@@ -9,6 +10,7 @@ mod value;
 pub(crate) use value::BoundedValue;
 
 pub use error::{ConfigError, ConfigErrorCode};
+pub use lease::{GrantLease, InvalidGrantLease, MAX_GRANT_TIMESTAMP};
 pub use model::*;
 pub use parser::{CheckedConfiguration, InputFormat, parse_configuration};
 

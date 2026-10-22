@@ -1,29 +1,29 @@
 # DRouteX project instructions
 
-Current gate2026-10-22: P2-05/PR105 merged normally at
-445f847e74d0b04d32d619be02865c36268648dc. All11 exact-main39552210853 jobs passed;
-both Codecov reports processed(Rust5507/5759; patch553/586). Linked-account
-read-only/never implementation01a15cfa-55e2-7382-a5fd-b34660707cf8 and final
-01a15d00-9cfb-7823-9e12-28218b10608b reviews found no confirmed defect; all11
-final-head39551575011 jobs passed. CodeScene8050420/8050501 remain failed with
-concrete minor maintenance dispositions, no suppression/bypass. See
-P2_05_COMPILATION_REVIEW.md. D42 exact WebPKI0.103.16 qualified/merged in PR16,
-resolving RUSTSEC-2026-0382 in the existing test-only TLS qualifier.
-Owner accepted full D44 after that checked PR105 prerequisite, fulfilled before
-P2-06 code. See docs/planning/P2_06_EXPLAIN_CONTRACT.md. P2-06 bounded pure Explain
-and simulation are current: one actual pinned generation, separate DNS/gateway
-scope, real D38 selector and catalog pins; no alternate winner or live admission.
-Every simulation has network_test_performed=false/effective_route=null. Private
-response precedence remains P3; external diagnostic Profile visibility requires
-P6 authorization. No new dependency/current configuration field/public endpoint
-or network execution. Implementation9ed109a passed linked-account read-only/never
-review01a15fe6-fb96-7bd2-a679-ae94ee793d14, all11 CI39635921414 jobs(Windows175/Linux203
-default and no-default) and both Codecov reports(Rust5980/6262; patch474/506). The
-first quota-interrupted review is retained and not counted. CodeScene8063131 failed
-with explicit minor source/auxiliary dispositions in P2_06_EXPLAIN_REVIEW.md and
-OPEN_DECISIONS. Final evidence review/checks and normal merge/exact-main remain
-required. Later work
-stays planned until reviewed P2-06 merge. No owner CI-status exception was used.
+Current gate2026-10-22: P0/P1/P2 are complete. P2-06/PR106 merged normally at
+671c9f6154add92486c90f5a620d4dbefa9a510a after linked-account read-only/never
+implementation01a15fe6-fb96-7bd2-a679-ae94ee793d14 and final
+01a15fed-feb6-7a51-b91d-5a06d6fde1e0 reviews, with no confirmed defect. All11 final
+39661629859 and exact-main39662936089 jobs passed; both Codecov reports processed
+(Rust5980/6262; patch474/506). CodeScene8063131/8065616 remain failed with identical
+minor source/auxiliary dispositions in P2_06_EXPLAIN_REVIEW.md, no suppression/bypass.
+P2-06 remains pure: every simulation network_test_performed=false/effective_route=null;
+private answer precedence remains P3 and external diagnostic visibility P6.
+Owner separately accepted D45 P4-01 before P3-01, then the complete D46 manual-first
+runtime authorization profile. See docs/planning/AUTHORIZATION_BEFORE_DNS.md and
+P4_01_BINDING_CONTRACT.md. P4-01 is current: v1 data remains exact association-only;
+strict v2 leases/journal,24h maximum manual lease,2s clock uncertainty and5s durable
+floor window, current-generation checks and fixed group/node quotas. Automatic
+secure learning is unavailable until actual P3-07/P6 evidence. No new dependency,
+listener, connector, public endpoint or privileged operation is authorized. Actual
+Windows199/Linux230 default/no-default tests and all11 CI39671360399 jobs passed
+on implementation efd3f28. Linked-account read-only/never review
+01a1602b-028d-7192-b217-97743133bb9e completed without confirmed defect. Codecov
+Rust6689/7013, patch717/759; failed CodeScene8066731 has concrete minor source
+and excluded auxiliary dispositions in P4_01_BINDING_REVIEW.md/OPEN_DECISIONS.
+Final evidence review/checks, normal merge and exact-main remain required. Later implementation
+stays planned. No owner CI-status exception was used. D42 WebPKI0.103.16 remains
+qualified in the existing test-only TLS qualifier, resolving RUSTSEC-2026-0382.
 
 ## Authority and current scope
 

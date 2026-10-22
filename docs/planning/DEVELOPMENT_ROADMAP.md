@@ -1,6 +1,6 @@
 # Development roadmap
 
-Status: **P0/P1 and P2-01/02/03/04/07 complete and merged; PR16 exact-main verified; P2-05/PR105 complete; P2-06 D44 Explain/simulation in progress; actual fork test deferred.**
+Status: **P0/P1/P2 complete and merged; PR106 exact-main verified; D45 authorization before DNS and full D46 P4-01 profile accepted; P4-01 in progress; actual fork test deferred.**
 Authorization to start is recorded in the [foundation review](P0_01_FOUNDATION_REVIEW.md).
 Concrete technical ADRs are not automatically accepted by that authorization.
 The user's bounded execution goal and repository publication/PR-monitoring steps are
@@ -44,7 +44,11 @@ See [completed evidence](P2_07_CATALOG_REVIEW.md). P2-05 now implements the acce
 [D43 complete compiler](P2_05_COMPILATION_CONTRACT.md); [evidence](P2_05_COMPILATION_REVIEW.md).
 P2-05 merged normally at445f847; all11 exact-main39552210853 jobs and both reports passed.
 P2-06 now follows the [accepted D44 contract](P2_06_EXPLAIN_CONTRACT.md);
-[current evidence](P2_06_EXPLAIN_REVIEW.md). Later implementation remains planned.
+[completed evidence](P2_06_EXPLAIN_REVIEW.md). PR106 merged normally at671c9f6; all11
+exact-main39662936089 jobs and both reports passed. The owner accepted
+[D45 authorization before DNS](AUTHORIZATION_BEFORE_DNS.md) and the full
+[D46 P4-01 contract](P4_01_BINDING_CONTRACT.md). Current authorization precedes
+P3-01 listeners; actual secure learning remains P3-07. Later implementation stays planned.
 See [P1-05 evidence](P1_05_SNAPSHOT_REVIEW.md).
 See [P1-07 evidence](P1_07_SECRET_REVIEW.md).
 Further technical choices retain their owning gates.
@@ -135,13 +139,18 @@ The owner reaffirmed the following order on 2026-10-18 after the project rename.
 This orders existing tasks; it does not change their dependency DAG, accept a new
 security solution or waive any task gate. P1-05 subsequently passed its D35 gates;
 PR9 merged at521bfa7 and all11 exact-main jobs passed. The owner then accepted D36
-for P1-06. P2 remains planned until reviewed P1-06 merge.
+for P1-06. Those prerequisites and all seven P2 tasks subsequently completed;
+PR106 merge/main evidence is in [P2-06 review](P2_06_EXPLAIN_REVIEW.md).
 
 | Order | Work and acceptance boundary |
 |---|---|
 | 1. Finish P1-05 | First obtain separate authorization for a weak-key resolution and qualify it. Preserve the failing weak-key regression. Then verify signature/key refusal, tampered authenticated metadata/payload, wrong node/resource pins, incompatible/noncanonical/oversized input, equivalent-format golden bytes, replay/equal/lower sequences, rotation and rollback with a fresh sequence. Require actual Windows/Linux checks and independent implementation/final-head Code Review before merging PR #9. Initial primitive qualification alone does not pass this task. |
 | 2. Complete P1-06 | Implement staged validation/activation, durable journal and replay high-water, complete old/new generation recovery and last-known-good operation without CP/database access. Inject crashes at every transition, disk-full, cancellation and restart; key changes and rollback must never reset the sequence floor. Use controlled DNS/gateway consumers to prove one generation per decision; actual DNS/proxy services are later P3/P4 work, and their end-to-end evidence remains there. Exact persistence/activation choices retain their owning approval gate. |
 | 3. Implement P2 | P2-01 normalization and explicit apex/subdomain modes; P2-02 deterministic scoped precedence; P2-03 conflict rejection; P2-04 distinct DNS/gateway actions and strict failures; P2-07 bounded versioned local filter/service imports; P2-05 compilation with pinned catalogs; P2-06 explain/simulation. Catalog imports precede compilation. Require permutation/conflict/negative cases, compiler/interpreter equivalence and honest simulation output without claimed network execution. |
+
+The owner accepted D45 on2026-10-22: P4-01 current authorization now precedes
+P3-01 public transport. The DAG includes that real prerequisite, with its full
+[D46 profile](P4_01_BINDING_CONTRACT.md) separately accepted before implementation.
 
 Finish and merge each authorized implementation PR before starting the next.
 P2-01/P2-07 have earlier prerequisites in the DAG, but this execution order does

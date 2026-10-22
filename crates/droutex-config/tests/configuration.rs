@@ -371,7 +371,7 @@ fn diagnostics_never_echo_values_arbitrary_keys_or_parser_sources() {
 #[test]
 fn versions_unknown_fields_and_future_capabilities_fail_closed() {
     reject(
-        &json!({"schemaVersion":2}),
+        &json!({"schemaVersion":3}),
         Code::UnsupportedVersion,
         "$.schemaVersion",
     );

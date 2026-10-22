@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "P0/P1 and P2-01/02/03/04/07 complete and merged; PR16 exact-main verified; accepted D43 P2-05 complete generation compilation in progress; P2-06 and later tasks planned",
-  "date": "2026-10-21",
+  "status": "P0/P1/P2 complete and merged; PR106 exact-main verified; D45/D46 P4-01 candidate passed implementation review/all11 CI39671360399, final evidence/merge/main remain required",
+  "date": "2026-10-22",
   "phases": {
     "P0": "Foundation",
     "P1": "Domain and configuration",
@@ -555,7 +555,7 @@
       "security": "Redact secrets and restrict diagnostic profile visibility",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "S",
-      "status": "in_progress",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -606,7 +606,8 @@
       ],
       "prerequisites": [
         "P0-03",
-        "P2-05"
+        "P2-05",
+        "P4-01"
       ],
       "scope": "Hickory policy handler with restricted bindings, ACL, size/rate/time limits",
       "files": [
@@ -793,7 +794,7 @@
       "id": "P4-01",
       "phase": "P4",
       "title": "Specify and enforce authorized destination binding",
-      "goal": "Enforce independently scoped legacy DNS and gateway exact-address group grants, service/domain/port/outbound binding, manual bootstrap and opt-in secure-observation publication",
+      "goal": "D46 manual-first current legacy DNS/gateway exact-address authorization, bounded leases/clock/quotas and refusal of untrusted learning; verified automatic secure observation producer remains P3-07",
       "spec": [
         3,
         6,
@@ -804,17 +805,19 @@
         "P2-05",
         "P0-01"
       ],
-      "scope": "Enforce independently scoped legacy DNS and gateway exact-address group grants, service/domain/port/outbound binding, manual bootstrap and opt-in secure-observation publication",
+      "scope": "Enforce independently scoped legacy DNS and gateway exact-address group grants, service/domain/port/outbound binding, manual bootstrap and opt-in secure-observation publication; D46 manual-first current authorization, secure observation producer remains P3-07",
       "files": [
-        "crates/droutex-gateway/src/binding",
-        "docs/security/GATEWAY_BINDING.md"
+        "crates/droutex-core/src/deployment/admission",
+        "crates/droutex-config/src/schema",
+        "docs/security/GATEWAY_BINDING.md",
+        "docs/planning/P4_01_BINDING_CONTRACT.md"
       ],
-      "acceptance": "No last-DNS-query Profile switch or union of conflicting grants; unknown/mismatched source fails closed; expiry and applied revocation persist during CP loss",
+      "acceptance": "No last-DNS-query Profile switch or union of conflicting grants; unknown/mismatched source fails closed; expiry and applied revocation persist during CP loss; D46 v1 association-only/v2 bounded leases, conservative durable clock floor and fixed admission quotas; automatic learning unavailable until P3-07",
       "tests": "Same-NAT conflicting endpoints, forged SNI, learning from invalid credentials/legacy/untrusted headers, address replacement, source mismatch and lease expiry",
       "security": "SNI identifies a candidate; separate ingress authorization grants access",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_review",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2614,10 +2617,10 @@
   ],
   "scope_amendment": "CR-0001",
   "execution_authorization": {
-    "date": "2026-10-21",
-    "source": "Direct owner reply accepting complete D44 after verified PR105; docs/planning/P2_06_EXPLAIN_CONTRACT.md",
-    "scope": "D44 bounded pure same-generation Explain/simulation after PR105 normal merge445f847/all11 main39552210853 and both reports. Reuse D38/D40/D43; no new dependency/config field/network execution/public diagnostic endpoint or live/RBAC authority.",
-    "through_task": "P2-06"
+    "date": "2026-10-22",
+    "source": "Direct owner D45 order and full D46 profile acceptance after verified PR106; docs/planning/P4_01_BINDING_CONTRACT.md",
+    "scope": "Bounded P4-01 internal current authorization and manual leases only, actual Windows/Linux durable/platform tests and independent implementation/final linked-account reviews before adoption. No public listeners, connector or automatic learning.",
+    "through_task": "P4-01"
   },
   "design_proposals": [
     {
@@ -2843,5 +2846,17 @@
     "date": "2026-10-21",
     "source": "Direct owner reply: accept full .setup/p2-06/explain-design-proposal.md after PR105; docs/planning/P2_06_EXPLAIN_CONTRACT.md",
     "profile": "D44 actual pinned generation, full bounded deterministic trace, distinct scopes and pinned resource hashes; predicted action/D40 intent/refusal separate, network_test_performed=false/effective_route=null, honest ECH/QUIC/NAT/IPv6/private-precedence limitations, redacted in-process output only; actual checks/reviews required"
+  },
+  "authorization_before_dns_decision": {
+    "status": "accepted",
+    "date": "2026-10-22",
+    "source": "Direct owner reply accepting P4-01 before P3-01 after PR106; docs/planning/AUTHORIZATION_BEFORE_DNS.md",
+    "profile": "D45 public listener depends on current scoped authorization, expiry, clock and quotas"
+  },
+  "runtime_binding_decision": {
+    "status": "accepted",
+    "date": "2026-10-22",
+    "source": "Direct owner reply accepting full .setup/p4-01/binding-design-proposal.md after checks; docs/planning/P4_01_BINDING_CONTRACT.md",
+    "profile": "D46 manual-first24h leases, strict v2 config/envelope/journal with exact v1 restore retained, current generation gate, durable5s clock floor/2s uncertainty, bounded group/node quotas; no new dependency or live network, automatic secure learning remains unavailable until P3-07"
   }
 }

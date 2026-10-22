@@ -16,8 +16,11 @@ P2-04 separate DNS/TCP/local-answer intents and strict failures merged in PR #15
 with exact-main CI verified. P2-07 local catalog imports and D42 TLS-qualification
 security correction merged in PR #16 with exact-main CI verified. P2-05 complete
 same-generation compilation merged in PR #105 with exact-main CI verified.
-P2-06 implements owner-accepted generation-bound Explain/simulation; review and
-actual Windows/Linux acceptance remain pending. No DRouteX DNS/gateway listener exists yet.
+P2-06 generation-bound Explain/simulation merged in PR #106; all eleven exact-main
+checks and both coverage reports passed. All seven P2 tasks are complete. The owner
+accepted [authorization before DNS](docs/planning/AUTHORIZATION_BEFORE_DNS.md) and
+the full [P4-01 profile](docs/planning/P4_01_BINDING_CONTRACT.md); its bounded current
+authorization is in progress. No DRouteX DNS/gateway listener exists yet.
 
 - [Development roadmap](docs/planning/DEVELOPMENT_ROADMAP.md)
 - [Current execution boundary and repository handoff](docs/planning/EXECUTION_STATUS.md)
@@ -41,7 +44,7 @@ actual Windows/Linux acceptance remain pending. No DRouteX DNS/gateway listener 
 Windows PowerShell development environment: `. ./tools/activate.ps1`.
 This uses local Rust tooling and existing Visual Studio without persistent PATH edits.
 Read AGENTS.md before work. The user authorized starting MVP roadmap work on 2026-10-15;
-P0-01 is accepted; the current execution boundary is P2-05 with its recorded gates.
+P0-01 is accepted; the current execution boundary is P4-01 with its recorded gates.
 See [Rust workspace posture](docs/agents/rust.md) for build commands and scope.
 
 Original DRouteX code is licensed under [Apache-2.0](LICENSE), selected by the owner

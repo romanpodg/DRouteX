@@ -73,6 +73,35 @@ fn empty_content() -> SnapshotContent {
 }
 
 #[test]
+fn leased_v2_three_format_fixture_has_one_canonical_signed_vector() {
+    let formats = [
+        (
+            include_bytes!("../../tests/fixtures/configuration-v2.json").as_slice(),
+            InputFormat::Json,
+        ),
+        (
+            include_bytes!("../../tests/fixtures/configuration-v2.yaml").as_slice(),
+            InputFormat::Yaml,
+        ),
+        (
+            include_bytes!("../../tests/fixtures/configuration-v2.toml").as_slice(),
+            InputFormat::Toml,
+        ),
+    ];
+    let mut encoded = Vec::new();
+    for (bytes, format) in formats {
+        let checked = parse_configuration(bytes, format, &ReferenceCatalog::default()).unwrap();
+        let content = SnapshotContent::new(checked, vec![], &empty_resources()).unwrap();
+        encoded.push(encode_snapshot(&content, metadata(1), &signer(false).0).unwrap());
+    }
+    assert!(encoded.windows(2).all(|p| p[0] == p[1]));
+    assert_eq!(
+        encoded[0],
+        hex(include_str!("../../tests/fixtures/snapshot-v2.hex"))
+    );
+}
+
+#[test]
 fn signed_domain_text_is_preserved_while_matching_uses_canonical_names() {
     let document = json!({"schemaVersion":1,"profiles":[{
         "id":typed::<ProfileId>(1).to_string(),"name":"p",

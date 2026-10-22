@@ -64,7 +64,13 @@ pub fn encode_snapshot(
     }
     let mut bytes = Vec::with_capacity(OVERHEAD + content.as_bytes().len());
     bytes.extend_from_slice(MAGIC);
-    bytes.extend_from_slice(&1_u32.to_be_bytes());
+    bytes.extend_from_slice(
+        &content
+            .configuration()
+            .document()
+            .schema_version
+            .to_be_bytes(),
+    );
     bytes.push(1);
     bytes.extend_from_slice(key.id().as_bytes());
     bytes.extend_from_slice(metadata.node.as_bytes());
@@ -150,7 +156,8 @@ fn authenticate_snapshot(
     if bytes.len() < OVERHEAD || &bytes[..8] != MAGIC {
         return Err(SnapshotError(Code::Format));
     }
-    if bytes[8..12] != 1_u32.to_be_bytes() || bytes[12] != 1 {
+    let schema = u32::from_be_bytes(part(bytes, 8)?);
+    if !matches!(schema, 1 | 2) || bytes[12] != 1 {
         return Err(SnapshotError(Code::Schema));
     }
     let length = u32::from_be_bytes(part(bytes, 85)?) as usize;
@@ -182,6 +189,9 @@ fn authenticate_snapshot(
         return Err(SnapshotError(Code::Authentication));
     }
     let content = SnapshotContent::decode(payload, resources)?;
+    if content.configuration().document().schema_version != schema {
+        return Err(SnapshotError(Code::Schema));
+    }
     Ok(VerifiedSnapshot {
         metadata,
         signing_key,
