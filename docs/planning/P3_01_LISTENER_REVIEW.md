@@ -216,3 +216,33 @@ the outside-sandbox Python stdlib probe and actual Tokio test passed. No network
 firewall/system setting changed. IPv6 remains mandatory in clean Windows/Linux
 CI. Local incremental-cache hardlink fallback warnings were avoided in the
 subsequent process-local CARGO_INCREMENTAL=0 run; no project lint was weakened.
+
+## Corrective implementation evidence
+
+Corrective head d00c054788948c9636199a76385e1e9c60b9fb67 received completed
+linked-account read-only/never review01a1640b-eb5c-77c2-b4d3-21b773595406,
+exit0 with no confirmed defect. Fmt and diff checks passed; read-only Cargo build
+locks prevented its Clippy/test rebuild. Both supplementary standards/spec passes
+also found no confirmed defect. The original wildcard finding above is retained;
+D49 closes it in source, subject to actual platform/final-head/merge evidence.
+
+Codecov processed both exact-head sessions: Rust7489/7860 and actual new Rust
+797/844(94.43%). CodeScene8081708 failed all three gates. Runtime health7.61
+adds Binding.check complexity to the earlier findings: the new explicit UDP
+refusal is one transport/address predicate before signed binding validation,
+not a second admission path. Its bounded refusal mutation and explicit/TCP
+positive regressions support retaining the guard without score-only rewriting.
+Wire remains7.91; auxiliary hotspot scores are9.15/8.75. Updated concrete minor
+dispositions remain in [the register](OPEN_DECISIONS.md#p3-01-review-dispositions),
+with no suppression or check bypass. Actual CI39797242225 and final evidence
+review/current-head/normal merge/exact-main gates remain open.
+
+Actual corrective Workspace logs passed229 Windows/261 Linux tests in each
+default/no-default profile, zero failed/ignored/filtered. DNS30/31 includes both
+exact IPv6 transports, all D49 refusal/supported-path cases and Linux durable
+CP-loss/checkpoint failures. All six dependency bundles passed. GitHub reports
+the run completed/success and ten individual jobs completed/success, but the
+Linux Workspace check still reports in_progress despite its completed successful
+steps/log. Its status is explicitly unconfirmed; no owner CI-status exception
+was requested or used. Final evidence review and the final commit's actual full
+head/main checks remain mandatory before P3-01 completion.

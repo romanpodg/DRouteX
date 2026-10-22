@@ -8,7 +8,16 @@ CI39763152705 jobs. Linked-account read-only/never implementation review
 address defect. Owner now accepted D49: explicit UDP IPv4/IPv6 addresses only;
 refuse0.0.0.0/:: before workers, preserve schema/TCP wildcard, and qualify later
 UDP destination-aware I/O separately. The small correction and negative/positive
-regressions are under checks and independent re-review; no merge yet. Actual
+regressions received clean linked-account corrective review
+01a1640b-eb5c-77c2-b4d3-21b773595406 on d00c054; actual CI39797242225 and final
+evidence review/head/normal merge/main gates remain open. Corrective logs passed
+229 Windows/261 Linux tests per feature profile, none ignored/filtered; Linux
+Workspace metadata still says in_progress although its steps/log completed
+successfully, so the all11-job status gate is unconfirmed. No CI exception used.
+Codecov processed both
+corrective reports: Rust7489/7860, patch797/844. CodeScene8081708 still failed all3
+gates(runtime7.61, wire7.91, auxiliary9.15/8.75); concrete minor dispositions
+remain recorded without suppression. Actual
 local native DNS29passed/1IPv6failed outside sandbox; new D49 cases passed and
 mandatory clean-CI IPv6 remains enabled. CodeScene8076431 failed all3 gates;
 three concrete minor source/auxiliary maintenance dispositions are recorded
