@@ -1,6 +1,7 @@
 # P3-01 transport evidence
 
-Status: **isolated qualification in progress; not adopted**. The owner accepted
+Status: **qualification candidate verified; final review/head/merge/main still open;
+not adopted into production**. The owner accepted
 complete D47 conditionally on checked PR107. Before qualification code, PR107
 merged normally at02b6695928a64c37de5e073a4bdb5162f1928c54; all11 exact-main39747433154
 jobs and both Codecov sessions processed(Rust6689/7013). See
@@ -49,5 +50,32 @@ not a runtime defect or permission relaxation for later work.
 CI reuses both existing Windows/Linux workspace jobs for the isolated profile,
 without new permissions/runners/installers. The existing five dependency bundles
 remain mandatory; the new sixth transport bundle also gets cargo-deny. Production
-adoption, actual DRouteX sockets, independent qualification/implementation/final
-reviews, complete current-head/main evidence and normal merge remain unverified.
+adoption, actual DRouteX sockets, final qualification review/head/main evidence
+and normal merge remain unverified. Current implementation evidence follows.
+
+## Current-head platform and review evidence
+
+Candidate083d83d0f6e7e74926bdd1f5378f75265e7fc21d passed all11 actual
+[CI39750969047 jobs](https://github.com/romanpodg/DRouteX/actions/runs/39750969047).
+The isolated9-case profile passed twice on each Windows/Linux job (default and
+no-default), with zero ignored/filtered tests. Actual IPv6 UDP/TCP and abort/join
+cases passed on clean runners. The earlier8-case head d062b6e also passed all11
+CI39750244190 jobs; it is not substituted for current-source evidence.
+
+All six cargo-deny bundles passed. Independent Python SHA256 checks verified all94
+cached official registry archives against the frozen checksums. License choices
+use existing permitted alternatives; no LLVM/LGPL/Unlicense exception was adopted.
+No root production dependency, TLS/crypto feature or registry version was changed.
+Both supplementary standards/spec passes found no confirmed defect. Required
+linked-account read-only/never implementation review01a162d2-a03c-7250-8a6c-1e2545d019ca
+completed with exit0/no confirmed defect. Its fmt/9 planning checks and lock identity
+review passed; read-only build/advisory locks prevented Rust/Clippy/deny execution,
+so actual platform/dependency evidence comes from parent runs and independent CI.
+
+Codecov processed both sessions with unchanged Rust6689/7013. There is no changed
+production Rust patch to score. CodeScene8074936 failed only the two auxiliary
+planning hotspot rules; its other two gates passed. The explicit disposition in
+[the register](OPEN_DECISIONS.md#p3-01-review-dispositions) preserves the failure
+without suppression or score-only cleanup. Production integration, final account
+review, final-head/normal merge/exact-main and full P3-01 runtime acceptance remain
+open; a dependency qualifier is not a DRouteX DNS service.

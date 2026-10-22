@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0/P1/P2 and P4-01 complete and merged; PR107 exact-main verified; full D47 P3-01 accepted, isolated transport dependency qualification in progress",
+  "status": "P0/P1/P2 and P4-01 complete; D47 P3-01 qualification candidate passed implementation review/all11 CI39750969047; final qualifier gates and actual listener implementation remain open",
   "date": "2026-10-22",
   "phases": {
     "P0": "Foundation",
@@ -2618,7 +2618,7 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-22",
-    "source": "Direct owner D47 full profile acceptance after checked PR107; docs/planning/P3_01_LISTENER_CONTRACT.md",
+    "source": "Direct owner D47 full profile acceptance conditional on checked PR107, fulfilled before qualification code; docs/planning/P3_01_LISTENER_CONTRACT.md",
     "scope": "Bounded internal UDP/TCP library and exact Hickory0.26.3/Tokio1.53.3 feature qualification/conditional adoption after actual Windows/Linux, dependency/license and independent reviews. No live public deployment; upstream/policy answers remain owning stages.",
     "through_task": "P3-01"
   },

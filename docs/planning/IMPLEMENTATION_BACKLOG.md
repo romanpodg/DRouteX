@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1/P2 and P4-01 complete and merged; PR107 exact-main verified; full D47 P3-01 accepted, isolated transport dependency qualification in progress.**
+**P0/P1/P2 and P4-01 complete; D47 P3-01 qualification candidate passed implementation review/all11 CI39750969047; final qualifier gates and actual listener implementation remain open.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 

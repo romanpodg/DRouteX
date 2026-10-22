@@ -17,6 +17,15 @@ before qualification code. See P3_01_LISTENER_CONTRACT.md.
 P3-01 is current: qualify exact std-only Hickory0.26.3 and Tokio1.53.3 net/io/macros,
 then conditionally adopt after actual Windows/Linux, complete dependency/license
 checks and independent reviews. Production graph is unchanged during qualification.
+Qualification083d83d passed all11 CI39750969047 jobs and all9 network/codec tests
+in both Windows/Linux feature profiles, all six deny bundles and linked-account
+read-only/never review01a162d2-a03c-7250-8a6c-1e2545d019ca (no confirmed defect).
+All94 archive checksums match the previously qualified graph. Codecov remains
+Rust6689/7013; CodeScene8074936 failed only excluded auxiliary planning hotspots,
+explicitly recorded in P3_01_LISTENER_REVIEW.md/OPEN_DECISIONS. Final qualification
+review/head/normal merge/exact-main gates remain open before production adoption.
+Local development-host IPv6 UDP/TCP fails independently in Python; clean CI
+passed mandatory IPv6 tests, and no host networking changes were made.
 D47 includes UDP1232/3x cap, bounded TCP/ingress/buffers/deadlines, actual D46 per-query
 admission, local clock maintenance and graceful shutdown. Until later upstream/
 policy handlers, valid admitted queries return SERVFAIL; no fabricated DNS success.
