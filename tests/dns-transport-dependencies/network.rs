@@ -1,8 +1,10 @@
 use super::*;
+use std::sync::Arc;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::{TcpListener, TcpStream, UdpSocket},
-    sync::Semaphore,
+    sync::{Semaphore, oneshot},
+    task::JoinSet,
     time::timeout,
 };
 
@@ -56,43 +58,45 @@ async fn frame(stream: &mut TcpStream) -> TestResult<Vec<u8>> {
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn tcp_split_prefix_payload_and_coalesced_pipelined_frames_remain_separate() -> TestResult {
     timeout(DEADLINE, async {
-        let listener = TcpListener::bind(("127.0.0.1", 0)).await?;
-        let address = listener.local_addr()?;
-        let serve = async {
-            let (mut stream, peer) = listener.accept().await?;
-            assert!(peer.ip().is_loopback());
-            assert_eq!(stream.local_addr()?, address);
-            for _ in 0..3 {
-                assert_eq!(frame(&mut stream).await?, QUERY);
-                stream.write_u16(FAILURE.len() as u16).await?;
-                stream.write_all(FAILURE).await?;
-            }
-            stream.shutdown().await?;
-            TestResult::Ok(())
-        };
-        let client = async {
-            let mut stream = TcpStream::connect(address).await?;
-            let prefix = (QUERY.len() as u16).to_be_bytes();
-            stream.write_all(&prefix[..1]).await?;
-            tokio::task::yield_now().await;
-            stream.write_all(&prefix[1..]).await?;
-            for part in QUERY.chunks(3) {
-                stream.write_all(part).await?;
+        for host in ["127.0.0.1", "::1"] {
+            let listener = TcpListener::bind((host, 0)).await?;
+            let address = listener.local_addr()?;
+            let serve = async {
+                let (mut stream, peer) = listener.accept().await?;
+                assert_eq!(peer.ip(), address.ip());
+                assert_eq!(stream.local_addr()?, address);
+                for _ in 0..3 {
+                    assert_eq!(frame(&mut stream).await?, QUERY);
+                    stream.write_u16(FAILURE.len() as u16).await?;
+                    stream.write_all(FAILURE).await?;
+                }
+                stream.shutdown().await?;
+                TestResult::Ok(())
+            };
+            let client = async {
+                let mut stream = TcpStream::connect(address).await?;
+                let prefix = (QUERY.len() as u16).to_be_bytes();
+                stream.write_all(&prefix[..1]).await?;
                 tokio::task::yield_now().await;
-            }
-            let mut pipeline = Vec::new();
-            for _ in 0..2 {
-                pipeline.extend_from_slice(&prefix);
-                pipeline.extend_from_slice(QUERY);
-            }
-            stream.write_all(&pipeline).await?;
-            for _ in 0..3 {
-                assert_eq!(frame(&mut stream).await?, FAILURE);
-            }
-            assert_eq!(stream.read(&mut [0; 1]).await?, 0);
-            TestResult::Ok(())
-        };
-        tokio::try_join!(serve, client)?;
+                stream.write_all(&prefix[1..]).await?;
+                for part in QUERY.chunks(3) {
+                    stream.write_all(part).await?;
+                    tokio::task::yield_now().await;
+                }
+                let mut pipeline = Vec::new();
+                for _ in 0..2 {
+                    pipeline.extend_from_slice(&prefix);
+                    pipeline.extend_from_slice(QUERY);
+                }
+                stream.write_all(&pipeline).await?;
+                for _ in 0..3 {
+                    assert_eq!(frame(&mut stream).await?, FAILURE);
+                }
+                assert_eq!(stream.read(&mut [0; 1]).await?, 0);
+                TestResult::Ok(())
+            };
+            tokio::try_join!(serve, client)?;
+        }
         TestResult::Ok(())
     })
     .await??;
@@ -129,6 +133,43 @@ async fn cancelling_partial_frame_closes_its_socket_and_releases_owned_slot() ->
         tokio::try_join!(serve, client)?;
         drop(listener);
         assert_eq!(TcpListener::bind(address).await?.local_addr()?, address);
+        TestResult::Ok(())
+    })
+    .await??;
+    Ok(())
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn abort_and_join_drops_partial_reader_and_owned_reservation() -> TestResult {
+    timeout(DEADLINE, async {
+        let listener = TcpListener::bind(("127.0.0.1", 0)).await?;
+        let mut client = TcpStream::connect(listener.local_addr()?).await?;
+        let (mut stream, _) = listener.accept().await?;
+        // The test and spawned task jointly own the counter; the task owns its permit.
+        let slots = Arc::new(Semaphore::new(1));
+        let task_slots = Arc::clone(&slots);
+        let (entered, observed) = oneshot::channel();
+        let mut tasks = JoinSet::new();
+        tasks.spawn(async move {
+            let _reservation = task_slots.acquire_owned().await?;
+            assert_eq!(stream.read_u8().await?, 0);
+            entered.send(()).map_err(|_| "observer gone")?;
+            stream.read_u8().await?;
+            TestResult::Ok(())
+        });
+        client.write_all(&[0]).await?;
+        observed.await?;
+        assert_eq!(slots.available_permits(), 0);
+        tasks.abort_all();
+        let cancellation = tasks
+            .join_next()
+            .await
+            .ok_or("missing owned task")?
+            .unwrap_err();
+        assert!(cancellation.is_cancelled());
+        assert!(tasks.is_empty());
+        assert_eq!(slots.available_permits(), 1);
+        assert_eq!(client.read(&mut [0; 1]).await?, 0);
         TestResult::Ok(())
     })
     .await??;

@@ -23,7 +23,7 @@ Independent fixed DNS bytes exercise compressed answers, all truncated prefixes,
 malformed pointers/counts, decoder exhaustion (from_vec accepts trailing bytes),
 EDNS versions/unknown options and bounded encoder/TC behavior. Actual loopback
 Tokio tests cover IPv4/IPv6 UDP, split/coalesced/pipelined TCP and cancellation of
-an incomplete prefix with socket/slot release. These fixture peers are not
+an incomplete prefix with socket/slot release and owned-task abort/join cleanup. These fixture peers are not
 DRouteX listeners, source authentication, DNS resolution or runtime acceptance.
 
 ## Actual results and open evidence
@@ -36,6 +36,11 @@ host; it does not establish a Tokio-specific defect. The test remains mandatory,
 not skipped or weakened. No firewall/network/system setting was changed. Actual
 clean Windows and Linux CI and source review must resolve qualification evidence;
 the local failed run is retained and is not recorded as a successful test.
+After extending TCP framing to IPv6, the host also refused connect with Windows10013;
+Python stdlib independently reproduced the same IPv6 TCP PermissionError. Both
+mandatory dual-stack cases remain in CI. The strengthened full run before the
+additional abort/join case had6 passing/2 failing tests. The final9-case local run
+had7 passing/2 failing tests; this is not a successful qualification profile.
 Warning-free isolated all-target Clippy and fmt passed. The execution-boundary
 regression initially used P3-01 as unauthorized future work; it was updated to
 P3-02 after D47 explicitly authorized P3-01. This was a stale test expectation,
