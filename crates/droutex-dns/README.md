@@ -10,6 +10,10 @@ Every query uses actual peer/listener/current D46 admission and one immutable
 policy generation, with another current/lease check before submission. Socket
 addresses/transport must still match that generation. New bindings need explicit
 restart/rebind. Unknown, expired, revoked or unavailable peers get no reply.
+Under accepted D49, UDP requires an explicit local IPv4/IPv6 address:0.0.0.0/::
+are refused before workers start. This avoids a wildcard reply with the wrong
+source address until destination-aware UDP I/O is separately qualified. TCP
+wildcard retains its kernel-established destination and remains supported.
 
 The current handler returns SERVFAIL with RA/AD clear. It performs no upstream
 resolution, private override, filtering answer, DNSSEC validation, learning or

@@ -44,6 +44,16 @@ learning or bind during config import. Tests use unprivileged loopback ports.
 Production port53 packaging/socket activation/capabilities remain P10; this change
 does not install a service, alter firewall/routes or bind a live public service.
 
+D49 owner decision accepted2026-10-22 after the linked-account wildcard finding:
+this initial UDP runtime requires an explicit local IPv4/IPv6 address. Startup
+refuses0.0.0.0 and:: with a configuration error before starting a worker; a later
+wildcard publication cannot reuse an existing explicit UDP socket. The schema
+remains unchanged for future destination-aware I/O qualification. TCP wildcard
+is supported because accepted connections retain the kernel-established local
+destination. Tests prebind disposable wildcard sockets only for refusal and
+TCP loopback checks; no public service is deployed. No new dependency/unsafe I/O
+or automatic interface selection is adopted by this decision.
+
 Use actual socket peer and the bound ListenerId. No forwarded header, query label,
 EndpointId, EDNS ECS or last DNS query supplies authority. Exact IPv4/IPv6 remains
 separate; mapped IPv6 is refused by D46. Unknown/unavailable/revoked/expired peers

@@ -39,6 +39,11 @@ struct Binding {
 }
 impl Binding {
     fn check(&self, decision: &Decision<'_>) -> Result<()> {
+        // D49: recv_from/send_to cannot preserve a wildcard datagram's local
+        // destination. Refuse this unavailable capability before starting I/O.
+        if !self.tcp && self.local.ip().is_unspecified() {
+            return Err(DnsError(ErrorCode::Configuration));
+        }
         let document = decision.dns_configuration().document();
         let transport = if self.tcp {
             ListenerTransport::DnsTcp

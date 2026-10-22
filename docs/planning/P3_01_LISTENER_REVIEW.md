@@ -2,7 +2,8 @@
 
 Status: **qualification completed in normally merged PR108 with exact-main;
 runtime candidate passed all11 CI, but linked-account review found a confirmed
-wildcard UDP defect; merge blocked pending resolution**. The owner accepted
+wildcard UDP defect; owner accepted D49 explicit-only UDP and correction is
+under checks/re-review before merge**. The owner accepted
 complete D47 conditionally on checked PR107. Before qualification code, PR107
 merged normally at02b6695928a64c37de5e073a4bdb5162f1928c54; all11 exact-main39747433154
 jobs and both Codecov sessions processed(Rust6689/7013). See
@@ -190,3 +191,28 @@ minor maintenance dispositions, not a critical functional defect conclusion;
 see [the register](OPEN_DECISIONS.md#p3-01-review-dispositions). No suppression,
 threshold change, check bypass or score-only refactoring was performed. The
 confirmed wildcard bug remains a separate merge blocker.
+
+## Owner-accepted wildcard correction (D49)
+
+The owner selected explicit UDP addresses now by direct reply2026-10-22.
+`Binding::check` refuses actual UDP wildcard0.0.0.0/:: before workers start;
+unchanged actual-bind equality also refuses an old explicit socket after a
+wildcard republication. Configuration import/schema and TCP wildcard remain
+unchanged. No destination-aware I/O dependency, unsafe wrapper or interface
+enumeration is adopted. The original review finding remains preserved above;
+its correction still needs actual independent current-source/platform evidence.
+
+New bounded startup regressions check both IPv4/IPv6 wildcard refusal and socket
+release/rebind, a publication-to-wildcard refusal without a handler call, and TCP
+wildcard correct reply to a connected nondefault127.0.0.2 destination. Removing
+the production refusal made its startup test fail at the bounded timeout;
+restoring the exact source made it pass. The public explicit-UDP127.0.0.2
+regression remains a separate successful supported-path test.
+
+The full local native DNS run outside sandbox had29 successes/one known IPv6
+receive failure, with zero ignored/filtered cases. All three new D49 cases passed,
+including TCP wildcard; its ordinary sandbox connect had Windows10013, while
+the outside-sandbox Python stdlib probe and actual Tokio test passed. No network/
+firewall/system setting changed. IPv6 remains mandatory in clean Windows/Linux
+CI. Local incremental-cache hardlink fallback warnings were avoided in the
+subsequent process-local CARGO_INCREMENTAL=0 run; no project lint was weakened.

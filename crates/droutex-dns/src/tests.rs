@@ -845,5 +845,94 @@ async fn public_node_replies_from_the_explicit_nondefault_destination() {
     let _rebound = UdpSocket::bind(address).await.unwrap();
 }
 
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn wildcard_udp_is_refused_before_startup_and_releases_each_socket() {
+    for (bind, peer) in [("0.0.0.0", "127.0.0.1"), ("::", "::1")] {
+        let bind: IpAddr = bind.parse().unwrap();
+        let peer: IpAddr = peer.parse().unwrap();
+        let udp = UdpSocket::bind((bind, 0)).await.unwrap();
+        let address = udp.local_addr().unwrap();
+        let tcp = TcpListener::bind((peer, 0)).await.unwrap();
+        let mut doc = document(address, tcp.local_addr().unwrap());
+        for grant in doc["legacyGrants"].as_array_mut().unwrap() {
+            grant["source"] = json!(peer.to_string());
+        }
+        let node = DnsNode::new(Deployment::in_memory(typed(1), keys().1));
+        apply(node.deployment(), &doc, 1);
+        let (_stop, shutdown) = watch::channel(false);
+        assert_eq!(
+            timeout(
+                Duration::from_secs(1),
+                node.serve(
+                    vec![ListenerSocket::Udp {
+                        id: typed(20),
+                        socket: udp
+                    }],
+                    shutdown
+                )
+            )
+            .await
+            .unwrap()
+            .unwrap_err()
+            .code(),
+            ErrorCode::Configuration
+        );
+        let _released = UdpSocket::bind(address).await.unwrap();
+    }
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn wildcard_republication_cannot_reuse_an_existing_explicit_udp_socket() {
+    let probe = Arc::new(Probe::default());
+    let mut server = Server::start(v4(), Arc::clone(&probe)).await;
+    server.doc["listeners"][0]["bind"] =
+        json!(SocketAddr::new("0.0.0.0".parse().unwrap(), server.udp.port()).to_string());
+    apply(&server.owner, &server.doc, 2);
+    let client = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+    client.send_to(QUERY, server.udp).await.unwrap();
+    let mut bytes = [0; 1232];
+    assert!(
+        timeout(Duration::from_millis(150), client.recv_from(&mut bytes))
+            .await
+            .is_err()
+    );
+    assert_eq!(probe.calls.load(Ordering::Relaxed), 0);
+    assert_eq!(server.close().await.answered, 0);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn tcp_wildcard_keeps_the_kernel_established_nondefault_destination() {
+    let udp = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+    let tcp = TcpListener::bind("0.0.0.0:0").await.unwrap();
+    let address = tcp.local_addr().unwrap();
+    let doc = document(udp.local_addr().unwrap(), address);
+    let node = DnsNode::new(Deployment::in_memory(typed(1), keys().1));
+    apply(node.deployment(), &doc, 1);
+    let (stop, shutdown) = watch::channel(false);
+    let handle = tokio::spawn(node.serve(
+        vec![ListenerSocket::Tcp {
+            id: typed(21),
+            socket: tcp,
+        }],
+        shutdown,
+    ));
+    sleep(Duration::from_millis(40)).await;
+    let mut stream = TcpStream::connect(SocketAddr::new(
+        "127.0.0.2".parse().unwrap(),
+        address.port(),
+    ))
+    .await
+    .unwrap();
+    frame(&mut stream, QUERY).await;
+    assert_eq!(
+        read_reply(&mut stream).await.metadata.response_code,
+        ResponseCode::ServFail
+    );
+    drop(stream);
+    stop.send_replace(true);
+    assert_eq!(handle.await.unwrap().unwrap().answered, 1);
+    let _released = TcpListener::bind(address).await.unwrap();
+}
+
 #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
 mod linux;

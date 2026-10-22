@@ -2872,5 +2872,11 @@
     "date": "2026-10-22",
     "source": "Direct owner reply accepting .setup/p3-01/timeout-budget-proposal.md; docs/planning/P3_01_LISTENER_CONTRACT.md",
     "profile": "D48 processor at most1500ms from original query start, remaining500ms reserved within2s total for bounded SERVFAIL; total expiry or lost admission drops/closes"
+  },
+  "dns_transport_binding_decision": {
+    "status": "accepted",
+    "date": "2026-10-22",
+    "source": "Direct owner reply selecting explicit UDP addresses now; .setup/p3-01/wildcard-binding-proposal.md; docs/planning/P3_01_LISTENER_CONTRACT.md",
+    "profile": "D49 explicit local IPv4/IPv6 UDP; refuse wildcard0.0.0.0/:: before workers and old socket after changed publication; preserve schema/TCP wildcard, no new dependency or unsafe I/O"
   }
 }
