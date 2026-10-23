@@ -20,6 +20,7 @@ use hickory_proto::{
 };
 use serde_json::{Value, json};
 use std::{
+    future::{Future, poll_fn},
     net::{IpAddr, Ipv4Addr, SocketAddr},
     str::FromStr,
     sync::{
@@ -31,7 +32,7 @@ use std::{
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::{TcpSocket, TcpStream},
-    sync::Notify,
+    sync::{Notify, oneshot},
     task::JoinHandle,
     time::{Instant, sleep, timeout},
 };
@@ -154,6 +155,13 @@ struct Server {
 }
 impl Server {
     async fn start<P: Processor>(ip: IpAddr, processor: P) -> Self {
+        Self::start_after(ip, processor, std::future::ready(())).await
+    }
+    async fn start_after<P: Processor>(
+        ip: IpAddr,
+        processor: P,
+        ready: impl Future<Output = ()> + Send + 'static,
+    ) -> Self {
         let udp = UdpSocket::bind((ip, 0)).await.unwrap();
         let tcp = TcpListener::bind((ip, 0)).await.unwrap();
         let udp_addr = udp.local_addr().unwrap();
@@ -163,21 +171,41 @@ impl Server {
         apply(node.deployment(), &doc, 1);
         let owner = Arc::clone(node.deployment());
         let (stop, shutdown) = watch::channel(false);
-        let handle = tokio::spawn(runtime::serve(
-            node.deployment,
-            vec![
-                ListenerSocket::Udp {
-                    id: typed(20),
-                    socket: udp,
-                },
-                ListenerSocket::Tcp {
-                    id: typed(21),
-                    socket: tcp,
-                },
-            ],
-            shutdown,
-            processor,
-        ));
+        let (started, observed) = oneshot::channel();
+        let handle = tokio::spawn(async move {
+            ready.await;
+            let serving = runtime::serve(
+                node.deployment,
+                vec![
+                    ListenerSocket::Udp {
+                        id: typed(20),
+                        socket: udp,
+                    },
+                    ListenerSocket::Tcp {
+                        id: typed(21),
+                        socket: tcp,
+                    },
+                ],
+                shutdown,
+                processor,
+            );
+            tokio::pin!(serving);
+            let mut started = Some(started);
+            poll_fn(|context| {
+                let outcome = serving.as_mut().poll(context);
+                if let Some(started) = started.take() {
+                    let _ = started.send(());
+                }
+                outcome
+            })
+            .await
+        });
+        timeout(Duration::from_secs(3), observed)
+            .await
+            .expect("DNS fixture runtime did not start")
+            .expect("DNS fixture runtime ended before its first poll");
+        // Empty-start rate buckets begin inside serve's first poll. Warm them
+        // only after that poll, independent of when the spawned task was scheduled.
         sleep(Duration::from_millis(40)).await;
         Self {
             owner,
@@ -440,6 +468,28 @@ async fn tcp_split_prefix_payload_and_coalesced_pipeline_keep_ids() {
     }
     drop(stream);
     assert_eq!(server.close().await.answered, 4);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn fixture_waits_for_runtime_start_before_warming_rate_buckets() {
+    let (release, delayed) = oneshot::channel();
+    let startup = Server::start_after(v4(), wire::UnavailableProcessor, async {
+        delayed.await.unwrap();
+    });
+    tokio::pin!(startup);
+    assert!(
+        timeout(Duration::from_millis(100), &mut startup)
+            .await
+            .is_err(),
+        "fixture returned before the server task was allowed to start"
+    );
+    release.send(()).unwrap();
+    let server = startup.await;
+    let mut stream = TcpStream::connect(server.tcp).await.unwrap();
+    frame(&mut stream, QUERY).await;
+    assert_eq!(read_reply(&mut stream).await.metadata.id, 1234);
+    drop(stream);
+    assert_eq!(server.close().await.answered, 1);
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]

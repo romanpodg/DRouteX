@@ -1,9 +1,8 @@
 # P3-01 transport evidence
 
-Status: **qualification completed in normally merged PR108 with exact-main;
-runtime candidate passed all11 CI, but linked-account review found a confirmed
-wildcard UDP defect; owner accepted D49 explicit-only UDP and correction is
-under checks/re-review before merge**. The owner accepted
+Status: **qualification PR108 completed; runtime PR109 merged normally, but its
+first exact-main Windows run failed a TCP fixture case. A bounded fixture-start
+correction is under validation; P3-01 remains in progress**. The owner accepted
 complete D47 conditionally on checked PR107. Before qualification code, PR107
 merged normally at02b6695928a64c37de5e073a4bdb5162f1928c54; all11 exact-main39747433154
 jobs and both Codecov sessions processed(Rust6689/7013). See
@@ -246,3 +245,51 @@ Linux Workspace check still reports in_progress despite its completed successful
 steps/log. Its status is explicitly unconfirmed; no owner CI-status exception
 was requested or used. Final evidence review and the final commit's actual full
 head/main checks remain mandatory before P3-01 completion.
+
+## Continuation and exact-main failure, 2026-10-23
+
+Fresh GitHub reads confirmed all11 final-head39800100143 jobs completed/success
+on1f94fe4d5bdf454f269eaeb8bd9d15f5be7f0469. Both Codecov sessions processed
+(Rust7478/7860, new Rust786/844). Completed linked-account final review
+01a1641d-1bd3-70a2-985c-0c0abe711453 exited0 without confirmed defects; fmt/diff
+passed, read-only Cargo locks prevented a fresh rebuild and six existing-binary
+tests were supplementary only. Its post-verdict rollout warning is retained.
+CodeScene8082054 failed with the same finding text/numeric tables as8081708;
+the existing concrete minor dispositions apply. The service remains failed.
+GitHub reported no protected main branch or active ruleset. No protection,
+threshold, service finding or workflow check was changed or bypassed.
+
+[PR109](https://github.com/romanpodg/DRouteX/pull/109) merged normally at
+4890609f20839516fbb346505b70a2c208986912 on2026-10-23T03:17:04Z, matching the
+reviewed head. The first [exact-main39894180552 attempt](https://github.com/romanpodg/DRouteX/actions/runs/39894180552/attempts/1)
+passed ten jobs but failed Windows Workspace: tcp_split_prefix_payload_and_coalesced_pipeline_keep_ids
+received UnexpectedEof while reading a reply prefix. DNS29/30 passed, including
+actual IPv6. Both exact-merge Codecov reports processed(Rust7489/7860); that
+does not make the failed platform run pass. Only the failed Windows job was
+re-run to gather further evidence; the original failure remains part of this record.
+
+The TCP case passed100 isolated local repetitions. Five full diagnostic DNS
+runs each passed29 cases and failed only the existing local-host IPv6 case.
+Temporary admission diagnostics were removed and exact production source bytes
+restored. These results do not establish the cause of the original CI refusal.
+
+Source inspection found a separate reproducible fixture startup race: Server::start
+slept40ms from spawning the server, although node intake rate buckets are created
+inside serve's first poll. A delayed first poll could therefore return a fixture
+before its rate warmup even started. The fixture now awaits a bounded one-shot
+first-poll acknowledgement before the same40ms rate warmup. Production admission,
+quota values, deadlines and transport behavior are unchanged. A controlled delayed
+start regression fails with the specific premature-start assertion when the
+barrier is removed and passes after exact restoration. It then exchanges a real
+TCP query and verifies reply identity and socket release/rebind. This proves the
+fixture correction, not that it was the sole cause of the earlier CI failure.
+
+Local corrected fmt and warning-free workspace all-target/all-feature Clippy
+passed. Full default/no-default workspace attempts each reached DNS30 successes
+and the one existing host IPv6 receive failure, zero ignored/filtered DNS cases;
+neither is recorded as a complete passing workspace profile. The delayed-start
+regression and unchanged TCP split/pipeline scenario passed. Clean Windows/Linux
+CI must run the complete profiles, including IPv6, before acceptance.
+
+Corrective current-head checks, independent review, normal merge and exact-main
+gates remain required before P3-01 completion or the accepted next qualification.

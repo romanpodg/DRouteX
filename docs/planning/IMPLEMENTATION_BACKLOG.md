@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1/P2/P4-01 complete; P3-01 transport qualifier PR108 normally merged/exact-main passed; accepted D47 runtime implementation and reviews in progress.**
+**P0/P1/P2/P4-01 complete; P3-01 PR109 normally merged, first exact-main Windows TCP fixture failure under correction; next isolated client qualification remains gated.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
