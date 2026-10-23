@@ -48,6 +48,12 @@ historical checkpoints below; reconcile conflicts before dependent work.
   cursor before each authority check and publishes completion in the blocking
   worker before pending clears. Deterministic red/green regressions cover both
   lost-notification windows; fresh account review and full checks remain required.
+- Correctiveb63eae4 passed all11 CI39901233904 jobs and both reports, but its
+  account review found a second P2: stale pending could request another operation
+  after a failed checkpoint. The new watch model selects one explicit operation
+  identity/outcome and refuses failure or supersession; Unavailable never wakes
+  new maintenance. This correction is under fresh review/check gates; green
+  earlier heads do not close the finding or authorize the next qualification.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

@@ -12,9 +12,29 @@ use tokio::{
     time::{MissedTickBehavior, interval},
 };
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(super) enum Checkpoint {
+    Idle,
+    Running(u64),
+    Succeeded(u64),
+    Failed(u64),
+}
+impl Checkpoint {
+    pub fn sequence(self) -> u64 {
+        match self {
+            Self::Idle => 0,
+            Self::Running(value) | Self::Succeeded(value) | Self::Failed(value) => value,
+        }
+    }
+    pub fn next_sequence(self) -> Result<u64> {
+        self.sequence()
+            .checked_add(1)
+            .ok_or(DnsError(ErrorCode::State))
+    }
+}
 pub(super) struct Refresh {
     pub wake: Notify,
-    status: watch::Sender<bool>,
+    status: watch::Sender<Checkpoint>,
     pub pending: Arc<AtomicBool>,
     pub cancel: Arc<Cancellation>,
 }
@@ -28,12 +48,12 @@ impl Refresh {
     pub fn new() -> Self {
         Self {
             wake: Notify::new(),
-            status: watch::channel(false).0,
+            status: watch::channel(Checkpoint::Idle).0,
             pending: Arc::new(AtomicBool::new(false)),
             cancel: Arc::new(Cancellation::default()),
         }
     }
-    pub fn subscribe(&self) -> watch::Receiver<bool> {
+    pub fn subscribe(&self) -> watch::Receiver<Checkpoint> {
         self.status.subscribe()
     }
     pub async fn perform(
@@ -42,7 +62,9 @@ impl Refresh {
         + Send
         + 'static,
     ) -> Result<bool> {
+        let sequence = self.status.borrow().next_sequence()?;
         self.pending.store(true, Ordering::Release);
+        self.status.send_replace(Checkpoint::Running(sequence));
         let pending = Pending(Arc::clone(&self.pending));
         let status = self.status.clone();
         let outcome = tokio::task::spawn_blocking(move || {
@@ -51,7 +73,11 @@ impl Refresh {
             // Publish before the worker-owned pending guard drops, even if the
             // async JoinHandle waiter has not resumed or has been cancelled.
             // Completion is only a signal; waiters recheck actual D46 facts.
-            status.send_modify(|value| *value = !*value);
+            status.send_replace(if outcome.is_ok() {
+                Checkpoint::Succeeded(sequence)
+            } else {
+                Checkpoint::Failed(sequence)
+            });
             outcome
         })
         .await

@@ -2,7 +2,7 @@ use crate::{
     DnsError, ErrorCode, ListenerSocket, MAX_LISTENERS, MAX_TCP_BYTES, MAX_UDP_BYTES, Result,
     ShutdownReport,
     budget::Budget,
-    clock::Refresh,
+    clock::{Checkpoint, Refresh},
     wire::{self, Processor},
 };
 use droutex_common::ListenerId;
@@ -349,11 +349,11 @@ async fn prepare<'a>(
             .map_err(|_| DnsError(ErrorCode::Unavailable))?,
     )?;
     let mut completion = refresh.subscribe();
-    let pending = begin_check(refresh, &mut completion);
+    let checkpoint = begin_check(&mut completion);
     let attempt = match deployment.prepare_legacy_dns(binding.id, peer.ip()) {
         Ok(attempt) => Ok(attempt),
         Err(error) => {
-            wait_checkpoint(error.code(), refresh, &mut completion, pending, deadline).await?;
+            wait_checkpoint(error.code(), refresh, &mut completion, checkpoint, deadline).await?;
             deployment
                 .prepare_legacy_dns(binding.id, peer.ip())
                 .map_err(|_| DnsError(ErrorCode::Unavailable))
@@ -362,40 +362,60 @@ async fn prepare<'a>(
     check_deadline(deadline)?;
     Ok(attempt)
 }
-fn begin_check(refresh: &Refresh, completion: &mut watch::Receiver<bool>) -> bool {
+fn begin_check(completion: &mut watch::Receiver<Checkpoint>) -> Checkpoint {
     // Clear only completions older than the authority check. A completion racing
     // with that check or its refusal must remain visible to the waiter.
-    completion.borrow_and_update();
-    refresh.pending.load(Ordering::Acquire)
+    *completion.borrow_and_update()
 }
 async fn wait_checkpoint(
     code: AdmissionCode,
     refresh: &Refresh,
-    completion: &mut watch::Receiver<bool>,
-    pending_before_check: bool,
+    completion: &mut watch::Receiver<Checkpoint>,
+    before_check: Checkpoint,
     deadline: Instant,
 ) -> Result<()> {
     check_deadline(deadline)?;
-    let pending = refresh.pending.load(Ordering::Acquire);
-    let completed = completion
-        .has_changed()
-        .map_err(|_| DnsError(ErrorCode::State))?;
-    if code != AdmissionCode::CheckpointRequired
-        && !(code == AdmissionCode::Unavailable && (pending_before_check || pending || completed))
-    {
+    if !matches!(
+        code,
+        AdmissionCode::CheckpointRequired | AdmissionCode::Unavailable
+    ) {
         return Err(DnsError(ErrorCode::Unavailable));
     }
-    if completed {
-        return Ok(());
-    }
-    if !pending {
-        refresh.wake.notify_one();
-    }
+    let current = *completion.borrow_and_update();
+    let sequence = match before_check {
+        Checkpoint::Failed(_) => return Err(DnsError(ErrorCode::Unavailable)),
+        Checkpoint::Running(sequence) => sequence,
+        _ if current.sequence() != before_check.sequence() => {
+            // Do not silently follow a second operation if the first result was lost.
+            if current.sequence() != before_check.next_sequence()? {
+                return Err(DnsError(ErrorCode::Unavailable));
+            }
+            current.sequence()
+        }
+        _ if code == AdmissionCode::CheckpointRequired
+            && !matches!(current, Checkpoint::Failed(_)) =>
+        {
+            let sequence = current.next_sequence()?;
+            refresh.wake.notify_one();
+            sequence
+        }
+        _ => return Err(DnsError(ErrorCode::Unavailable)),
+    };
     within_deadline(deadline, async {
-        completion
-            .changed()
-            .await
-            .map_err(|_| DnsError(ErrorCode::State))
+        loop {
+            let current = *completion.borrow_and_update();
+            match current {
+                Checkpoint::Succeeded(value) if value == sequence => return Ok(()),
+                Checkpoint::Running(value) if value == sequence => (),
+                Checkpoint::Idle | Checkpoint::Succeeded(_)
+                    if current.sequence().checked_add(1) == Some(sequence) => {}
+                _ => return Err(DnsError(ErrorCode::Unavailable)),
+            }
+            completion
+                .changed()
+                .await
+                .map_err(|_| DnsError(ErrorCode::State))?;
+        }
     })
     .await
 }
@@ -406,11 +426,11 @@ pub(super) async fn consume<'a>(
 ) -> Result<AuthorizedRequest<'a>> {
     check_deadline(deadline)?;
     let mut completion = refresh.subscribe();
-    let pending = begin_check(refresh, &mut completion);
+    let checkpoint = begin_check(&mut completion);
     match attempt.try_consume() {
         AdmissionConsumption::Authorized(auth) => Ok(auth),
         AdmissionConsumption::Refused { attempt, error } => {
-            wait_checkpoint(error.code(), refresh, &mut completion, pending, deadline).await?;
+            wait_checkpoint(error.code(), refresh, &mut completion, checkpoint, deadline).await?;
             check_deadline(deadline)?;
             match attempt.try_consume() {
                 AdmissionConsumption::Authorized(auth) => Ok(auth),
@@ -613,17 +633,17 @@ async fn checked_submit<T>(
             let outcome = poll_fn(|context| {
                 // Keep the original I/O future across the checkpoint wait,
                 // including a partially completed TCP write. Never restart it.
-                let pending = begin_check(refresh, &mut completion);
+                let checkpoint = begin_check(&mut completion);
                 match check() {
-                    Err(error) => Poll::Ready(Err((error, pending))),
+                    Err(error) => Poll::Ready(Err((error, checkpoint))),
                     Ok(()) => operation.as_mut().poll(context).map(Ok),
                 }
             })
             .await;
             match outcome {
                 Ok(result) => return result.map_err(io_error),
-                Err((error, pending)) if !waited => {
-                    wait_checkpoint(error, refresh, &mut completion, pending, deadline).await?;
+                Err((error, checkpoint)) if !waited => {
+                    wait_checkpoint(error, refresh, &mut completion, checkpoint, deadline).await?;
                     waited = true;
                 }
                 Err(_) => return Err(DnsError(ErrorCode::Unavailable)),
@@ -844,13 +864,13 @@ mod tests {
         ] {
             let refresh = Refresh::new();
             let mut completion = refresh.subscribe();
-            let pending = begin_check(&refresh, &mut completion);
+            let checkpoint = begin_check(&mut completion);
             assert_eq!(
                 wait_checkpoint(
                     code,
                     &refresh,
                     &mut completion,
-                    pending,
+                    checkpoint,
                     Instant::now() + QUERY_TIME
                 )
                 .await
@@ -873,7 +893,7 @@ mod tests {
         ] {
             let refresh = Refresh::new();
             let mut completion = refresh.subscribe();
-            let pending = begin_check(&refresh, &mut completion);
+            let checkpoint = begin_check(&mut completion);
             // Model a refusal during this check interval, followed by completion
             // before the waiter starts polling. Authority is still rechecked by
             // the caller; this signal only closes the maintenance wait.
@@ -900,7 +920,7 @@ mod tests {
                 code,
                 &refresh,
                 &mut completion,
-                pending,
+                checkpoint,
                 Instant::now() + QUERY_TIME,
             )
             .await
@@ -910,6 +930,72 @@ mod tests {
             tokio::pin!(wake);
             assert_pending(wake.as_mut()).await;
         }
+    }
+
+    #[tokio::test]
+    async fn failed_or_superseded_checkpoint_never_requests_another_operation() {
+        for (before, after) in [
+            (Checkpoint::Failed(1), Checkpoint::Failed(1)),
+            (Checkpoint::Failed(1), Checkpoint::Succeeded(2)),
+            (Checkpoint::Failed(1), Checkpoint::Running(2)),
+            (Checkpoint::Running(1), Checkpoint::Failed(1)),
+            (Checkpoint::Running(1), Checkpoint::Succeeded(2)),
+            (Checkpoint::Succeeded(1), Checkpoint::Succeeded(3)),
+        ] {
+            for code in [
+                AdmissionCode::Unavailable,
+                AdmissionCode::CheckpointRequired,
+            ] {
+                let refresh = Refresh::new();
+                let (status, mut completion) = watch::channel(before);
+                // This accounting flag may outlive the published failed outcome.
+                // It must never authorize another maintenance request.
+                refresh.pending.store(true, Ordering::Release);
+                let checkpoint = begin_check(&mut completion);
+                status.send_replace(after);
+                refresh.pending.store(false, Ordering::Release);
+                assert_eq!(
+                    wait_checkpoint(
+                        code,
+                        &refresh,
+                        &mut completion,
+                        checkpoint,
+                        Instant::now() + QUERY_TIME,
+                    )
+                    .await
+                    .unwrap_err()
+                    .code(),
+                    ErrorCode::Unavailable,
+                    "{code:?}: {before:?} -> {after:?}"
+                );
+                let wake = refresh.wake.notified();
+                tokio::pin!(wake);
+                assert_pending(wake.as_mut()).await;
+            }
+        }
+    }
+
+    #[tokio::test]
+    async fn checkpoint_wait_never_follows_a_later_success_after_its_own_failure() {
+        let refresh = Refresh::new();
+        let (status, mut completion) = watch::channel(Checkpoint::Running(1));
+        let checkpoint = begin_check(&mut completion);
+        let mut waiting = Box::pin(wait_checkpoint(
+            AdmissionCode::Unavailable,
+            &refresh,
+            &mut completion,
+            checkpoint,
+            Instant::now() + QUERY_TIME,
+        ));
+        assert_pending(waiting.as_mut()).await;
+        // Coalesced watch updates cannot replace the selected operation's result.
+        status.send_replace(Checkpoint::Failed(1));
+        status.send_replace(Checkpoint::Running(2));
+        status.send_replace(Checkpoint::Succeeded(2));
+        assert_eq!(waiting.await.unwrap_err().code(), ErrorCode::Unavailable);
+        let wake = refresh.wake.notified();
+        tokio::pin!(wake);
+        assert_pending(wake.as_mut()).await;
     }
 
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]

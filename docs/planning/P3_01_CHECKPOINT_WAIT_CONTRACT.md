@@ -48,6 +48,8 @@ attempt; it cannot authorize processing or output while unavailable.
   completion racing with the authority check/refusal even if pending has cleared;
   discard only notifications older than that check. Publish completion before
   clearing the worker-owned pending flag, independently of the async waiter.
+  Bind the wait to one operation identity/outcome; an old pending accounting flag
+  cannot start another operation after failure. Unknown/superseded outcomes refuse.
   Never retry a generic Unavailable, unknown source, revocation, retired
   generation, expiry, clock fault, restart wait, quota or persistence failure.
 - Subscribe before requesting maintenance and use its existing bounded worker.

@@ -454,3 +454,42 @@ size/overall complexity. The concrete maintenance dispositions are recorded in
 [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions); raw failure remains.
 The actual notification defect above is corrected separately, not waived by a
 score disposition. No service finding, threshold or required check was suppressed.
+
+## D50 failed-operation identity correction
+
+Correctiveb63eae4ec40b3419e7cf936bb41aa279c1a5c1a9 passed all11
+[CI39901233904 jobs](https://github.com/romanpodg/DRouteX/actions/runs/39901233904),
+with241 Windows/273 Linux workspace tests per default/no-default profile,
+zero failed/ignored/filtered. Both Codecov uploads processed(Rust7820/8203).
+CodeScene8090320 retained the same concrete findings as8090195, with runtime7.07;
+its two failed gates remain failed and the existing maintenance disposition applies.
+
+Completed linked-account read-only/never corrective review
+01a1670c-142f-7ee2-8420-10dd46014341 exited0 and found another concrete P2
+contract defect. A failed completion could be consumed before the worker-owned
+Pending guard dropped; its stale pending sample then requested a new checkpoint
+after the original failure. Reviewer fmt/diff and ten existing-binary cases passed;
+fresh builds/Clippy were blocked by read-only access. No merge followed.
+
+The clock watch now carries explicit Idle/Running/Succeeded/Failed states with
+a checked monotonically increasing operation identity. The atomic pending flag
+remains shutdown accounting only. Each gate snapshots the state before checking
+authority, selects one operation, and accepts only that operation's successful
+completion for an actual authority recheck. Generic Unavailable never requests
+new maintenance. Failed, skipped or superseded outcomes refuse, including a later
+successful operation that replaced the selected failure in a coalesced watch update.
+Only CheckpointRequired with no intervening operation and no failed outcome can
+request the next checkpoint. Observing its start and completion does not add a
+second operation, extend deadlines or change the original admission/I/O ownership.
+
+New regressions cover stale pending after failure, failed/superseded operations,
+absence of an extra maintenance request, and failure followed by coalesced later
+success. Ten focused checkpoint cases passed with the actual TCP/Deployment cases;
+fresh full profiles, account review, final-head/merge/main evidence remain required.
+Supplementary spec review also checked failure already known before the authority
+check: that state now refuses before sequence selection, even after a new success.
+Removing this guard made its regression authorize incorrectly and fail its exact
+assertion; restoring the source passed. Local Clippy passed without warning/lint
+exceptions, and the forced-join/socket-release case passed with worker-owned
+pending accounting. No new dependency, worker, retry queue or public API was added
+by this correction.
