@@ -24,6 +24,12 @@ historical checkpoints below; reconcile conflicts before dependent work.
   regression exposed a race in the fixed40ms warmup; the correction preserves
   production behavior. Its current-head review/checks, merge and exact-main remain
   open. The original CI refusal's exact cause is not established by that regression.
+- Re-running only the original failed Windows job completed all11 exact-main jobs;
+  attempt1 remains failed. Corrective PR110 head81820e0 passed all11 CI39895933186
+  jobs (230 Windows/262 Linux tests per default/no-default profile, zero ignored/
+  filtered), both processed reports and all3 CodeScene8089824 gates. Completed
+  linked-account implementation review found no confirmed defect. Final evidence
+  head review/checks, normal merge and exact-main remain open.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

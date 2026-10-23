@@ -293,3 +293,39 @@ CI must run the complete profiles, including IPv6, before acceptance.
 
 Corrective current-head checks, independent review, normal merge and exact-main
 gates remain required before P3-01 completion or the accepted next qualification.
+
+## Fixture correction review and platform evidence
+
+The second attempt of original exact-main39894180552 completed all11 jobs
+successfully after re-running only Windows Workspace. Attempt1 remains failed;
+the retry does not prove the cause of its UnexpectedEof. The independently
+reproduced startup correction is delivered in [PR110](https://github.com/romanpodg/DRouteX/pull/110).
+Its separate documentation commit publishes the previously owner-approved
+guidance/security maintenance; no new runtime or dependency behavior is bundled.
+
+Head81820e0599a9b60dbd8139deed6a6493471da8c6 passed all11
+[CI39895933186 jobs](https://github.com/romanpodg/DRouteX/actions/runs/39895933186).
+Actual workspace logs passed230 Windows/262 Linux tests in each default/no-default
+profile, zero failed/ignored/filtered. DNS31/32 includes the delayed-start regression,
+unchanged split/coalesced pipeline, mandatory actual IPv6, and Linux CP-loss and
+checkpoint-failure cases. All six dependency bundles passed. Both Codecov sessions
+processed(Rust7478/7860); this test/documentation patch has no new production Rust
+coverage claim. CodeScene8089824 passed all three gates for this delta. That does
+not change the historical failed runtime analyses or their recorded dispositions.
+
+Required linked-account read-only/never review01a166d4-4e4b-74a1-b024-ddeabc36d036
+completed exit0 without confirmed defects. Fmt, diff and read-only planning/source
+checks passed; Cargo's read-only build lock prevented a fresh Clippy/test rebuild.
+Two targeted cases passed from the existing corrected binary as supplementary
+evidence. The post-verdict rollout warning is retained. Separate standards/spec
+passes also found no confirmed defect; they do not substitute for that account review.
+
+Local AST-only graph refresh completed without an API/LLM backend:4956 nodes,
+10488 edges. Its warnings retain the empty Cargo.toml extraction and four SQL
+files without an installed SQL parser. The separate historical document semantic
+baseline issue remains deferred; graph outputs stay local and sources remain
+authoritative. No parser installation, paid backend or forced shrink was used.
+
+Final evidence head review/checks, normal exact-head PR110 merge and exact-main
+checks/report processing remain mandatory. No P3-02 qualification implementation
+or production forwarding has begun.
