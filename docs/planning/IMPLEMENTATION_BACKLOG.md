@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1/P2 and P4-01 complete; D47 P3-01 qualification candidate passed implementation review/all11 CI39750969047; final qualifier gates and actual listener implementation remain open.**
+**P0/P1/P2/P4-01 complete; P3-01 transport qualifier PR108 normally merged/exact-main passed; accepted D47 runtime implementation and reviews in progress.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -313,7 +313,7 @@ Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifi
 |---|---|
 | Goal and implementation scope | Hickory policy handler with restricted bindings, ACL, size/rate/time limits |
 | Prerequisites | P0-03, P2-05, P4-01 |
-| Expected files/modules | crates/droutex-dns/src/listeners |
+| Expected files/modules | crates/droutex-dns/src; docs/planning/P3_01_LISTENER_CONTRACT.md; docs/planning/P3_01_LISTENER_REVIEW.md |
 | Acceptance criteria | Unauthorized recursion denied; TCP framing and truncation behavior correct |
 | Tests | Real UDP/TCP exchange, malformed/truncated frames and flood limits |
 | Security considerations | No open resolver; limited concurrency and amplification surface |

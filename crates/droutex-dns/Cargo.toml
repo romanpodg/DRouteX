@@ -1,0 +1,22 @@
+[package]
+name = "droutex-dns"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+publish.workspace = true
+license.workspace = true
+
+[dependencies]
+droutex-common.workspace = true
+droutex-config.workspace = true
+droutex-core = { path = "../droutex-core", version = "=0.1.0" }
+droutex-policy.workspace = true
+hickory-proto.workspace = true
+tokio = { workspace = true, features = ["net", "io-util", "macros"] }
+
+[dev-dependencies]
+droutex-security.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true

@@ -1,5 +1,29 @@
 # DRouteX project instructions
 
+P3-01/PR109 remains current. Candidate5117e5f passed all11 CI39761170349 jobs:
+225 Windows/257 Linux tests per feature profile, no ignored/filtered cases;
+Codecov Rust7462/7857, patch770/841. Evidence/test head9e7ff15 also passed all11
+CI39763152705 jobs. Linked-account read-only/never implementation review
+01a16317-f124-7290-aafa-7ca351381e18 found a confirmed wildcard UDP wrong-source
+address defect. Owner now accepted D49: explicit UDP IPv4/IPv6 addresses only;
+refuse0.0.0.0/:: before workers, preserve schema/TCP wildcard, and qualify later
+UDP destination-aware I/O separately. The small correction and negative/positive
+regressions received clean linked-account corrective review
+01a1640b-eb5c-77c2-b4d3-21b773595406 on d00c054; actual CI39797242225 and final
+evidence review/head/normal merge/main gates remain open. Corrective logs passed
+229 Windows/261 Linux tests per feature profile, none ignored/filtered; Linux
+Workspace metadata still says in_progress although its steps/log completed
+successfully, so the all11-job status gate is unconfirmed. No CI exception used.
+Codecov processed both
+corrective reports: Rust7489/7860, patch797/844. CodeScene8081708 still failed all3
+gates(runtime7.61, wire7.91, auxiliary9.15/8.75); concrete minor dispositions
+remain recorded without suppression. Actual
+local native DNS29passed/1IPv6failed outside sandbox; new D49 cases passed and
+mandatory clean-CI IPv6 remains enabled. CodeScene8076431 failed all3 gates;
+three concrete minor source/auxiliary maintenance dispositions are recorded
+without suppression, separately from the wildcard correction gate. See
+P3_01_LISTENER_REVIEW.md/current local autopilot state before proceeding.
+
 Current gate2026-10-22: P0/P1/P2 and P4-01 are complete. PR107 merged normally at
 02b6695928a64c37de5e073a4bdb5162f1928c54 after linked-account read-only/never
 implementation01a1602b-028d-7192-b217-97743133bb9e and final
@@ -14,16 +38,21 @@ P2-06 simulation stays pure; automatic secure learning remains unavailable until
 P3-07/P6, actual final origin checks/pinning remain P4-02.
 Owner accepted full D47 conditionally on checked PR107; that prerequisite passed
 before qualification code. See P3_01_LISTENER_CONTRACT.md.
-P3-01 is current: qualify exact std-only Hickory0.26.3 and Tokio1.53.3 net/io/macros,
-then conditionally adopt after actual Windows/Linux, complete dependency/license
-checks and independent reviews. Production graph is unchanged during qualification.
-Qualification083d83d passed all11 CI39750969047 jobs and all9 network/codec tests
-in both Windows/Linux feature profiles, all six deny bundles and linked-account
-read-only/never review01a162d2-a03c-7250-8a6c-1e2545d019ca (no confirmed defect).
-All94 archive checksums match the previously qualified graph. Codecov remains
-Rust6689/7013; CodeScene8074936 failed only excluded auxiliary planning hotspots,
-explicitly recorded in P3_01_LISTENER_REVIEW.md/OPEN_DECISIONS. Final qualification
-review/head/normal merge/exact-main gates remain open before production adoption.
+P3-01 runtime is current after completed D47 qualification PR108. Qualifier candidate
+083d83d and final62f2f27 passed all11 CI39750969047/39752553613 jobs, all9 tests
+in each Windows/Linux feature profile and all six deny bundles. Linked-account
+read-only/never implementation01a162d2-a03c-7250-8a6c-1e2545d019ca and final
+01a162da-85ac-73d0-85fd-7d35bee10e7a reviews completed without confirmed defect.
+Normal merged36d7b2c5233822113d1085ac85dc9dd422fa401 passed all11 exact-main
+39753424789 jobs and both Codecov sessions(Rust6689/7013). All94 archive checksums
+match previously qualified identities; all28 production lock additions match
+that exact qualifier graph, no old registry identity removed. CodeScene8074936/
+8075138 failed only identical excluded auxiliary hotspots, explicitly recorded
+without suppression. Accepted runtime code is in progress, not completed or
+merged: real seven-crate workspace, bounded UDP/TCP and D46 current source gate.
+Actual runtime platform/review/coverage/final-head/normal merge/main gates remain
+open. Owner accepted D48 timeout clarification:1500ms processor/remaining500ms reply
+inside the original2s total; expired/lost admission never gets a fallback.
 Local development-host IPv6 UDP/TCP fails independently in Python; clean CI
 passed mandatory IPv6 tests, and no host networking changes were made.
 D47 includes UDP1232/3x cap, bounded TCP/ingress/buffers/deadlines, actual D46 per-query

@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/droutex-common", "crates/droutex-config", "crates/droutex-policy", "crates/droutex-storage", "crates/droutex-security", "crates/droutex-core"]
+members = ["crates/droutex-common", "crates/droutex-config", "crates/droutex-policy", "crates/droutex-storage", "crates/droutex-security", "crates/droutex-core", "crates/droutex-dns"]
 exclude = ["vendor/sqlx-sqlite"]
 resolver = "3"
 
@@ -22,6 +22,7 @@ serde-saphyr = { version = "=2.0.0", default-features = false, features = ["dese
 serde_path_to_error = "=0.1.20"
 sqlx = { version = "=0.9.0", default-features = false, features = ["runtime-tokio", "sqlite-bundled", "migrate"] }
 tokio = { version = "=1.53.3", default-features = false, features = ["rt-multi-thread", "sync", "time"] }
+hickory-proto = { version = "=0.26.3", default-features = false, features = ["std"] }
 droutex-common = { path = "crates/droutex-common", version = "=0.1.0" }
 droutex-config = { path = "crates/droutex-config", version = "=0.1.0" }
 droutex-policy = { path = "crates/droutex-policy", version = "=0.1.0" }

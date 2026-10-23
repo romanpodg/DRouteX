@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0/P1/P2 and P4-01 complete; D47 P3-01 qualification candidate passed implementation review/all11 CI39750969047; final qualifier gates and actual listener implementation remain open. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0/P1/P2/P4-01 complete; P3-01 transport qualifier PR108 normally merged/exact-main passed; accepted D47 runtime implementation and reviews in progress. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 
