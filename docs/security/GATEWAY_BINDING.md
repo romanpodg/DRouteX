@@ -1,7 +1,11 @@
 # Current legacy DNS and gateway authorization
 
-Status: D46 implementation in progress; actual platform/review/merge gates remain
-open. The [accepted profile](../planning/P4_01_BINDING_CONTRACT.md) is authoritative.
+Status: **P4-01/D46 completed in PR107 with normal merge and exact-main checks**;
+[evidence](../planning/P4_01_BINDING_REVIEW.md). Status reviewed 2026-10-23.
+The [accepted profile](../planning/P4_01_BINDING_CONTRACT.md) is authoritative.
+P3-01 transport integration merged in PR109; its first exact-main Windows run
+failed, and a fixture correction retains separate [completion gates](../planning/P3_01_LISTENER_REVIEW.md).
+P4-02 origin dial safety and P3-07 secure learning are not implemented by D46.
 P2-06 completed in PR106 before this work. The owner separately accepted
 [P4-01 before public DNS transport](../planning/AUTHORIZATION_BEFORE_DNS.md).
 
@@ -32,8 +36,9 @@ grant. verify_gateway_destination checks that target and current authority again
 
 The result does not resolve/check an origin address or connect. P4-02 must use the
 current gate again at final connect admission and pin only checked safe addresses;
-P3-01 must integrate current admission per request. Actual socket races, deadlines,
-DNS amplification bounds and TCP stream lifetime remain owning-stage evidence.
+P3-01's candidate integrates current admission per request; its acceptance remains
+in the runtime review. Actual socket races, deadlines, DNS amplification bounds
+and TCP stream lifetime require that owning-stage evidence.
 Already admitted bounded requests may finish; old evidence never admits a new one.
 
 ## Data compatibility and time

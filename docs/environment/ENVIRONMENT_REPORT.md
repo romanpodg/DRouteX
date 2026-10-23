@@ -11,7 +11,11 @@ Current scope revision: user accepted DNS/proxy MVP first (CR-0001/ADR-0016); tu
 managed engines and custom privileged networking helper are post-MVP. Environment setup
 results below are unchanged by this planning-only revision.
 
-## Host, repository and capabilities
+The following installation/capability observations are historical checkpoints,
+not current task or remote-account status. Use the current execution card and
+[Rust guide](../agents/rust.md); do not repeat completed initialization or publication.
+
+## Host, repository and capabilities (initial setup snapshot)
 
 | Item | Verified result |
 |---|---|

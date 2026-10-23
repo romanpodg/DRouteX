@@ -1,6 +1,13 @@
 # CodeScene integration
 
-Current P1-01 evidence (2026-10-16):
+This document records integration setup and historical service results. Use the
+[current execution card](../planning/EXECUTION_STATUS.md) and owning task review
+for actual-head results; use [the disposition process](QUALITY_STRATEGY.md#external-findings-and-merge-decisions)
+for minor findings. A recorded deferral does not turn failed green or bypass a
+required check. Setup actions below are historical, not instructions to repeat
+activation or alter account permissions.
+
+Historical P1-01 evidence (2026-10-16):
 [review 7987296](https://codescene.io/projects/86145/delta/results/7987296) on
 implementation head `4d79b7a95f094851bd2b73c4c924a85c7231de44` passed all three
 quality gates for PR #4 against main `a77ed5adce184ffe3214452af0b1e6d83db2cd92`.

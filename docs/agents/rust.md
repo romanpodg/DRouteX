@@ -1,39 +1,44 @@
-# Rust workspace posture (P0-02 foundation, P1-01 domain model)
+# Rust workspace development
 
-Owner-approved on 2026-10-15: Rust toolchain/MSRV **1.99.0**, Edition **2024**,
-resolver 3, initially no third-party dependencies and a minimal common/config/policy workspace.
-The toolchain is pinned in rust-toolchain.toml; package metadata requires Rust 1.99.
-MSRV is the oldest compiler verified here, not a claim about older compilers.
+Rust toolchain/MSRV **1.99.0**, Edition **2024**, resolver 3 are owner-approved.
+[rust-toolchain.toml](../../rust-toolchain.toml) and [Cargo.toml](../../Cargo.toml)
+are the build authority. MSRV means the oldest compiler verified here.
+All packages inherit workspace metadata/lints and are non-publishable libraries.
+Unsafe code is forbidden and warnings are denied; Clippy uses `-D warnings`.
+Do not weaken these rules through generic skill defaults.
 
-All packages inherit workspace metadata and lints. Unsafe code is forbidden and
-warnings are denied. Clippy uses its standard lint set with `-D warnings`; no
-blanket lint suppression, panic-on-input path, external engine or network service
-is introduced. There are no optional/default features; default, no-default and
-all-features checks currently address the same code.
+## Workspace and dependency boundaries
 
-Dependency direction is config → policy → common (config also uses common's types).
-Common defines RuleLayer and P1-01 resource identity/state types; pure policy owns the accepted layer order; config rejects
-missing/duplicate/reordered/extra layers with a typed error. This is a useful
-foundation contract, not rule matching, config parsing or a running resolver.
-P1-01's [domain review](../planning/P1_01_DOMAIN_REVIEW.md) separates model evidence
-from later verifier/crypto/schema/runtime acceptance. P1/P2 retain those owning gates.
+The workspace contains seven crates; manifests define exact dependency direction.
 
-Cargo.lock is tracked. Internal path dependencies have exact workspace versions;
-the production registry dependency is owner-approved uuid 1.28.0, std parse/format
-only. It introduces no Windows/Linux runtime dependency beyond uuid itself.
-The all-target lock records 19 registry artifacts; exact provenance is in
-[UUID_INVENTORY](../operations/UUID_INVENTORY.csv). No ID/token RNG feature,
-project build script or executable package is added.
-All packages have publish=false. The owner selected Apache-2.0 for original DRouteX
-code during P0-02. LICENSE contains the official text; package metadata inherits it.
-P0-05 owner approval expanded deny.toml for third-party dependencies to Apache-2.0,
-MIT, ISC, BSD-3-Clause and Unicode-3.0, preserving their texts/notices. Original
-DRouteX code remains Apache-2.0. The standalone tests/dependencies package qualifies
-the proposed network stack; it is not a production workspace dependency. Exact
-versions, audit decisions and test limits are in
-[DEPENDENCIES](../operations/DEPENDENCIES.md). P0-04 owns the full CI policy.
+| Crate | Responsibility |
+|---|---|
+| droutex-common | Domain IDs, shared states and wire-independent primitives |
+| droutex-policy | Pure domain normalization, matching and deterministic policy evaluation |
+| droutex-security | Redacted secret material, envelope encryption and snapshot signatures |
+| droutex-config | Bounded import, compilation, validation and snapshot/config contracts |
+| droutex-storage | SQLite persistence, revision metadata and encrypted-record storage |
+| droutex-core | Local activation/recovery and current generation/lease/quota admission |
+| droutex-dns | Bounded UDP/TCP transport library; acceptance follows the P3-01 gates |
 
-On Windows, dot-source `. ./tools/activate.ps1` before Cargo commands. Run:
+Current acceptance is in [EXECUTION_STATUS](../planning/EXECUTION_STATUS.md).
+Library/socket tests do not establish a deployed resolver, TCP gateway or frontend.
+No daemon/application package is introduced by this guide.
+
+[Cargo.lock](../../Cargo.lock) is tracked. Use the reviewed exact dependency and
+feature profiles in manifests; isolated qualifier packages under tests/ are
+separate from production adoption. Adding a feature, dependency or platform
+provider beyond its accepted profile retains the owning decision/qualification gate.
+The SQLx SQLite patch and its notices remain under
+[vendor provenance](../../vendor/sqlx-sqlite/README.droutex.md).
+Dependency/license inventories and qualification evidence are linked from the
+[decision register](../planning/OPEN_DECISIONS.md) and owning task reviews.
+The original P0-02 dependency-free and P1-01 uuid-only states are historical.
+
+## Commands and platform evidence
+
+On Windows dot-source `. ./tools/activate.ps1` before Cargo commands. This uses
+local Rust/SDK tools and existing MSVC without persistent PATH edits.
 
 ```sh
 cargo fmt --all -- --check
@@ -45,9 +50,15 @@ cargo test --workspace --no-default-features --locked
 cargo deny --locked check
 ```
 
-The Workspace CI job runs format/check/Clippy/tests on Windows and Linux with
-read-only permissions and no secrets or privileged network setup. P0-04 adds an
-Ubuntu cargo-deny/LLVM coverage job and a separate trusted OIDC upload job; exact
-versions, actual runs and deferred evidence are in the
-[CI review](../planning/P0_04_CI_REVIEW.md). Native Debian 13 fixture acceptance
-passed in P0-03; product networking and systemd acceptance remain at later gates.
+Run applicable bundles from [QUALITY_STRATEGY](../quality/QUALITY_STRATEGY.md).
+Manifests define the feature surface; defaults/no-default/all-features are tested
+where compatible, without claiming distinct coverage when they select identical code.
+Do not rerun a full suite without a changed requirement, source change or failure.
+
+The [active workflow](../../.github/workflows/planning.yml) defines the actual
+Windows/Linux workspace, qualifier and coverage jobs. Test jobs run unprivileged,
+without secrets; the trusted OIDC upload job has separate authority.
+The actual fork test remains owner-deferred. Native Debian 13 product/systemd
+acceptance is separate from completed P0-03 fixture runs and hosted Linux CI.
+Keep mandatory IPv6 CI evidence; a development-host network failure is not a skip
+or permission to modify host networking.

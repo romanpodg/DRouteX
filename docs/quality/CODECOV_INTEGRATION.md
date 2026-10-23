@@ -1,5 +1,11 @@
 # Codecov integration
 
+This document records integration configuration and dated activation evidence.
+Use [EXECUTION_STATUS](../planning/EXECUTION_STATUS.md) and owning task reviews for
+current-head reports. Upload acceptance, processed backend reports and meaningful
+base/head comparisons are separate facts; setup/proposal examples below are not
+permission to change authentication, account access or the active workflow.
+
 Status on 2026-10-16: **Main reports and meaningful P1-01 application comparison verified.**
 The user authorized configuring both quality services for
 [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX). GitHub CLI has verified
@@ -8,8 +14,9 @@ The pre-existing Codecov GitHub App covers this repository; its permissions were
 not changed. Root YAML passed the official `https://codecov.io/validate` endpoint
 with `Valid!`. No permanent upload token is stored in this repository.
 The owner made the repository public and approved activating the existing Codecov
-project without changing OIDC, tokens, access or plan. The common/config/policy
-workspace exists; no frontend workspace exists. Planning coverage is separate from application
+project without changing OIDC, tokens, access or plan. At that checkpoint the common/config/policy
+workspace existed; see [the Rust guide](../agents/rust.md) for today's workspace.
+No frontend workspace exists. Planning coverage is separate from application
 coverage; see [execution status](../planning/EXECUTION_STATUS.md).
 
 On [PR #4](https://app.codecov.io/gh/romanpodg/DRouteX/pull/4), exact implementation

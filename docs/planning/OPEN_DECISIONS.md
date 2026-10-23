@@ -4,7 +4,10 @@ Scope: user accepted **DNS/proxy MVP before tunnels**, CR-0001 on 2026-10-15.
 [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md) records the explicit
 override to original §23.2/§24.1/§24.2 ordering. Technical mechanisms remain proposed.
 Private Linux VPS, separate ports, strict proxy fail-closed and owner plus later admins are confirmed.
-The owner accepted P0-01/CR-0002 on 2026-10-15 and authorized work through P0-02:
+The owner accepted P0-01/CR-0002 on 2026-10-15 and initially authorized work through P0-02.
+Later roadmap continuation and current scope are recorded in the
+[current execution card](EXECUTION_STATUS.md); that initial limit is superseded.
+Foundation sources:
 [contracts and design walkthroughs](P0_01_FOUNDATION_REVIEW.md),
 [threat model](../security/THREAT_MODEL.md). No technical ADR was automatically accepted.
 
@@ -297,3 +300,26 @@ below are assessed individually; no finding, failed status or protection is supp
 | Premature engine/helper implementation | Expanded privilege/scope | MVP delivery closure validator; P5/P10-01 gated after P11-06 |
 | Later AWG/TUN/Xray/helper risks | Post-MVP integration/security | Retained P5-10 actual-engine/segmentation/helper acceptance |
 | External quality service unavailable | Missing external evidence | Local gates continue; explicit activation blockers |
+
+## Development guidance maintenance, 2026-10-23
+
+Owner-authorized documentation maintenance implements the seven reviewed proposals.
+AGENTS now contains standing rules, authority navigation and three focused review
+rules; per-PR metrics and superseded holds remain in task evidence/history.
+QUALITY_STRATEGY explicitly records minor external-finding dispositions without
+changing raw failed statuses, mandatory checks, review or branch protections.
+Security documents distinguish completed component evidence from pending product
+acceptance; SECURITY.md defines private reporting and no guaranteed response SLA.
+The owner chose enabling GitHub Private Vulnerability Reporting; the API confirmed
+enabled on 2026-10-23. No base specification, ADR acceptance status, dependency,
+runtime behavior, deployment scope or existing security requirement was changed.
+See [the maintenance record](EXECUTION_STATUS.md#development-guidance-maintenance-2026-10-23).
+
+Concrete navigation-tool limitation: tools/build_doc_graph.py --refresh-planning
+uses a historical AST baseline and proposed reducing the existing 4944-node graph
+to 1381 nodes, including unrelated source nodes. Its safety guard refused the write;
+graph.json remains intact but changed documentation headings may be stale. Defer
+baseline repair to a graph-tooling task before relying on it for these changed docs;
+use current Markdown/source inspection meanwhile. This is supplementary navigation,
+not an application acceptance or security-control failure; no forced overwrite or
+unrelated tool rewrite is part of this documentation change.

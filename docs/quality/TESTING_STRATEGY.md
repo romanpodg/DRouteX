@@ -1,11 +1,16 @@
 # Testing strategy
 
-Status: Proposed. Base specification §22 plus accepted CR-0001 define applicability.
+Status: acceptance matrix for current and future gates; implemented checks are
+recorded in task reviews, not implied by this matrix. Base specification §22 plus
+accepted CR-0001 define applicability. Apply [QUALITY_STRATEGY](QUALITY_STRATEGY.md)
+for mandatory bundles and proportional validation.
 DNS/proxy MVP and later engine/tunnel expansion have separate acceptance gates.
 Accepted [CR-0002](../architecture/adr/ADR-0017-profile-endpoint-dns-product-model.md)
 adds mandatory personal DoH/DoT, layered catalogs/private records and separate
-legacy/gateway access grants to the revised MVP plan. P0-03 now has real WSL
-fixture evidence; no DRouteX transport or native Debian acceptance is implied.
+legacy/gateway access grants to the revised MVP plan. P0-03 has completed WSL
+and native Debian 13 fixture evidence. Component and P3-01 transport
+evidence is linked from [EXECUTION_STATUS](../planning/EXECUTION_STATUS.md);
+fixture success does not establish product/systemd acceptance.
 See [the harness review](../planning/P0_03_NETWORK_HARNESS.md) and
 [manual lab command](../../tests/network/README.md).
 
