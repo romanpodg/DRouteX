@@ -41,6 +41,13 @@ historical checkpoints below; reconcile conflicts before dependent work.
   (D50), retaining original generation/quota and all failure/deadline checks.
   The new source still needs fresh platform/review/head/merge/main evidence;
   no next qualification or production deployment is authorized by this clarification.
+- D50 candidate759afbb passed all11 CI39899998540 jobs and both processed reports
+  (240 Windows/272 Linux tests per feature profile; DNS39/40, including IPv6).
+  Linked-account implementation review found a notification race after refusal;
+  this finding blocks merge despite green CI. The correction aligns the watch
+  cursor before each authority check and publishes completion in the blocking
+  worker before pending clears. Deterministic red/green regressions cover both
+  lost-notification windows; fresh account review and full checks remain required.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

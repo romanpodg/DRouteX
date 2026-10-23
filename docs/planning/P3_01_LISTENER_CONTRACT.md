@@ -143,7 +143,8 @@ bytes cannot be retracted.
 
 D50 owner clarification accepted2026-10-23: a missing next checkpoint, or a
 generic unavailable result while the node's known single maintenance operation
-is pending, may wait for one clock completion and recheck the same held admission.
+is pending across the check (including its racing completion), may wait for one
+clock completion and recheck the same held admission.
 Retain its generation/scope/quota charge; never re-pin or reacquire after refusal.
 All waiting consumes the original deadlines, including D48's reply reserve.
 Completion is not authority: repeat actual current/lease/clock/floor checks before

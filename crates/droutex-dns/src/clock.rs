@@ -44,14 +44,18 @@ impl Refresh {
     ) -> Result<bool> {
         self.pending.store(true, Ordering::Release);
         let pending = Pending(Arc::clone(&self.pending));
+        let status = self.status.clone();
         let outcome = tokio::task::spawn_blocking(move || {
             let _pending = pending;
-            operation()
+            let outcome = operation();
+            // Publish before the worker-owned pending guard drops, even if the
+            // async JoinHandle waiter has not resumed or has been cancelled.
+            // Completion is only a signal; waiters recheck actual D46 facts.
+            status.send_modify(|value| *value = !*value);
+            outcome
         })
         .await
         .map_err(|_| DnsError(ErrorCode::State))?;
-        // Notify completion only; every waiter must recheck actual D46 facts.
-        self.status.send_modify(|value| *value = !*value);
         Ok(outcome.is_ok())
     }
     pub async fn run(

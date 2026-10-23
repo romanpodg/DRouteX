@@ -43,8 +43,11 @@ attempt; it cannot authorize processing or output while unavailable.
 - Retain the original non-Clone reservation, generation, scope and quota charge.
   Add an ownership-preserving consumption operation if needed; leave the
   existing consume API's refusal behavior available to its current callers.
-- Only CheckpointRequired, or Unavailable while this node's known single
-  maintenance operation is still pending, may wait for that operation's outcome.
+- Only CheckpointRequired, or Unavailable during this node's known single
+  maintenance operation, may wait for that operation's outcome. Preserve a
+  completion racing with the authority check/refusal even if pending has cleared;
+  discard only notifications older than that check. Publish completion before
+  clearing the worker-owned pending flag, independently of the async waiter.
   Never retry a generic Unavailable, unknown source, revocation, retired
   generation, expiry, clock fault, restart wait, quota or persistence failure.
 - Subscribe before requesting maintenance and use its existing bounded worker.

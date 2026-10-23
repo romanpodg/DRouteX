@@ -411,3 +411,46 @@ The local AST-only graph refresh completed at4984 nodes/10594 edges without
 an API/LLM backend. Empty Cargo.toml extraction and four missing SQL-parser
 warnings remain; community labels need a separate semantic refresh. No parser,
 paid backend or graph output was added to the repository.
+
+## D50 first implementation review and notification correction
+
+Candidate759afbbe5b2f9ab8490673e50f04fb8b4c6c54cf passed all11
+[CI39899998540 jobs](https://github.com/romanpodg/DRouteX/actions/runs/39899998540).
+Actual logs passed240 Windows/272 Linux workspace tests in each default/no-default
+profile, zero failed/ignored/filtered. DNS39/40 includes mandatory actual IPv6,
+partial TCP output, real next-window consumption and existing Linux durable
+CP-loss/checkpoint failure cases. All six dependency bundles passed. Both Codecov
+uploads processed; actual Rust7752/8135, Rust patch302/310. Excluding Rust test
+files and cfg(test) modules, all91 changed executable production lines were hit;
+this is line evidence, not proof that all interleavings were covered.
+
+Completed linked-account read-only/never implementation review
+01a166ff-8d4f-7923-a7b1-2ac8b1321a59 exited0 and found a concrete P2 race.
+wait_checkpoint cleared a completion that could arrive after the admission
+refusal, then treated pending=false as a terminal generic Unavailable. Green CI
+did not cover that ordering; no merge followed. Reviewer fmt/diff/planning and
+ten existing-binary targeted cases passed, with read-only Cargo rebuild limits.
+
+The correction clears stale completion only before each actual authority check,
+captures pending there, and retains notifications arriving during the check or
+after refusal. Supplementary standards review found the related worker-to-async
+notification gap: blocking work dropped pending before the JoinHandle waiter
+published its completion. Completion now publishes inside that worker before
+its own Pending guard drops, even when the async waiter is cancelled or delayed.
+No completion permits I/O; the caller still rechecks the same original authority.
+The new deterministic regression leaves the async waiter unpolled, observes worker
+completion, then checks that both CheckpointRequired and Unavailable can finish
+their one wait without another maintenance request. Red mutations of both lost
+notification orders failed their intended assertions; exact restoration passed.
+Focused checkpoint cases passed in default/no-default profiles; the unchanged
+forced-join/socket-release case and warning-free Clippy also passed. Separate
+standards/spec passes found no remaining defect in the correction. Fresh account
+review and current-head platform/report/final/merge/main evidence remain open.
+
+CodeScene8090195 failed two gates and passed one on759afbb: auxiliary Complex
+Method(verify8.75->8.72, test9.15->9.13), test Bumpy Road(10.00->9.38) and
+checked_submit Bumpy Road(runtime7.61->7.29). It also reports improved Job.run
+size/overall complexity. The concrete maintenance dispositions are recorded in
+[OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions); raw failure remains.
+The actual notification defect above is corrected separately, not waived by a
+score disposition. No service finding, threshold or required check was suppressed.
