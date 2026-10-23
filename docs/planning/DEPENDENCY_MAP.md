@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0/P1/P2/P4-01 complete; P3-01 PR109 normally merged, first exact-main Windows TCP fixture failure under correction; next isolated client qualification remains gated. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0/P1/P2/P4-01 complete; P3-01 PR109 merged with exact-main retry; PR110 D50 bounded checkpoint wait implementation under review/check gates. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

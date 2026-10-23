@@ -11,7 +11,9 @@ historical checkpoints below; reconcile conflicts before dependent work.
   P4-01/PR107; their normal merge and exact-main evidence is linked below.
 - Active completion: P3-01 bounded DNS transport under accepted D47/D48/D49.
   PR108 dependency qualification is complete; runtime PR109 merged normally, but
-  its first exact-main Windows run failed. A fixture correction is under validation.
+  corrective PR110 remains unmerged after a final Windows failure. The owner
+  accepted [D50 bounded checkpoint wait](P3_01_CHECKPOINT_WAIT_CONTRACT.md);
+  its narrow implementation is under validation/review.
   Read [the contract](P3_01_LISTENER_CONTRACT.md) and
   [the runtime review](P3_01_LISTENER_REVIEW.md).
 - Fresh GitHub verification on 2026-10-23 confirmed all11 final-head jobs and
@@ -30,6 +32,15 @@ historical checkpoints below; reconcile conflicts before dependent work.
   filtered), both processed reports and all3 CodeScene8089824 gates. Completed
   linked-account implementation review found no confirmed defect. Final evidence
   head review/checks, normal merge and exact-main remain open.
+- Final PR110 head8027b4f received completed linked-account review without confirmed
+  defects and passed CodeScene8089881. CI39896580361 failed Windows pending-processor
+  TCP reply with UnexpectedEof; the other ten jobs passed. The earlier split/pipeline
+  case and IPv6 passed. No-default Windows was not reached. A local probe reproduced
+  a temporary CheckpointRequired refusal before I/O and validity of the same held
+  reservation after refresh. The owner subsequently selected bounded wait/recheck
+  (D50), retaining original generation/quota and all failure/deadline checks.
+  The new source still needs fresh platform/review/head/merge/main evidence;
+  no next qualification or production deployment is authorized by this clarification.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

@@ -93,9 +93,12 @@ P4-01 current authorization precedes P3-01 public transport in the dependency DA
 
 P3-01 bounded DNS transport is the active completion gate. Its dependency qualifier
 PR108 is complete; runtime PR109 merged normally after reviewed final-head checks.
-Its first exact-main Windows run failed a TCP fixture case; the bounded startup
-fixture correction retains its own review/head/merge/main checks. The accepted
-[D47 contract with D48/D49 clarifications](P3_01_LISTENER_CONTRACT.md) and
+Its first exact-main Windows run failed a TCP fixture case; PR110 contains the
+bounded startup correction. A later Windows reply failure led to the owner's
+accepted [D50 checkpoint wait](P3_01_CHECKPOINT_WAIT_CONTRACT.md), retaining the
+original reservation, generation, quota and deadlines. That implementation remains
+under fresh review/head/merge/main checks. The accepted
+[D47 contract with D48/D49/D50 clarifications](P3_01_LISTENER_CONTRACT.md) and
 [P3-01 evidence](P3_01_LISTENER_REVIEW.md) define that boundary. Recheck actual
 external state before a merge. Do not infer runtime completion from qualification.
 

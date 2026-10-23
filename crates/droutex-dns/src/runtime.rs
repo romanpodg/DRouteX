@@ -7,7 +7,9 @@ use crate::{
 };
 use droutex_common::ListenerId;
 use droutex_config::ListenerTransport;
-use droutex_core::deployment::{AdmissionAttempt, AdmissionCode, Decision, Deployment};
+use droutex_core::deployment::{
+    AdmissionAttempt, AdmissionCode, AdmissionConsumption, AuthorizedRequest, Decision, Deployment,
+};
 use std::{
     collections::BTreeSet,
     future::{Future, poll_fn},
@@ -349,23 +351,59 @@ async fn prepare<'a>(
     let mut completion = refresh.subscribe();
     let attempt = match deployment.prepare_legacy_dns(binding.id, peer.ip()) {
         Ok(attempt) => Ok(attempt),
-        Err(error) if error.code() == AdmissionCode::CheckpointRequired => {
-            refresh.wake.notify_one();
-            within_deadline(deadline, async {
-                completion
-                    .changed()
-                    .await
-                    .map_err(|_| DnsError(ErrorCode::State))
-            })
-            .await?;
+        Err(error) => {
+            wait_checkpoint(error.code(), refresh, &mut completion, deadline).await?;
             deployment
                 .prepare_legacy_dns(binding.id, peer.ip())
                 .map_err(|_| DnsError(ErrorCode::Unavailable))
         }
-        Err(_) => Err(DnsError(ErrorCode::Unavailable)),
     }?;
     check_deadline(deadline)?;
     Ok(attempt)
+}
+async fn wait_checkpoint(
+    code: AdmissionCode,
+    refresh: &Refresh,
+    completion: &mut watch::Receiver<bool>,
+    deadline: Instant,
+) -> Result<()> {
+    check_deadline(deadline)?;
+    // Earlier periodic completions must not satisfy this new checkpoint wait.
+    completion.borrow_and_update();
+    let pending = refresh.pending.load(Ordering::Acquire);
+    if code != AdmissionCode::CheckpointRequired && !(code == AdmissionCode::Unavailable && pending)
+    {
+        return Err(DnsError(ErrorCode::Unavailable));
+    }
+    if !pending {
+        refresh.wake.notify_one();
+    }
+    within_deadline(deadline, async {
+        completion
+            .changed()
+            .await
+            .map_err(|_| DnsError(ErrorCode::State))
+    })
+    .await
+}
+pub(super) async fn consume<'a>(
+    attempt: AdmissionAttempt<'a>,
+    refresh: &Refresh,
+    deadline: Instant,
+) -> Result<AuthorizedRequest<'a>> {
+    check_deadline(deadline)?;
+    let mut completion = refresh.subscribe();
+    match attempt.try_consume() {
+        AdmissionConsumption::Authorized(auth) => Ok(auth),
+        AdmissionConsumption::Refused { attempt, error } => {
+            wait_checkpoint(error.code(), refresh, &mut completion, deadline).await?;
+            check_deadline(deadline)?;
+            match attempt.try_consume() {
+                AdmissionConsumption::Authorized(auth) => Ok(auth),
+                AdmissionConsumption::Refused { .. } => Err(DnsError(ErrorCode::Unavailable)),
+            }
+        }
+    }
 }
 impl Job {
     async fn run<P: Processor>(
@@ -388,17 +426,16 @@ impl Job {
                 let deadline = received + QUERY_TIME;
                 within_deadline(deadline, async {
                     check_deadline(deadline)?;
-                    let auth = prepare(&deployment, binding, peer, &refresh, deadline)
-                        .await?
-                        .consume()
-                        .map_err(|_| DnsError(ErrorCode::Unavailable))?;
+                    let attempt = prepare(&deployment, binding, peer, &refresh, deadline).await?;
+                    let auth = consume(attempt, &refresh, deadline).await?;
                     binding.check(auth.decision())?;
                     let request = wire::parse(&bytes)?;
                     let reply =
                         process_reply(&request, &auth, processor.as_ref(), &budget, deadline)
                             .await?;
                     let output = wire::encode(&request, &reply, bytes.len(), false)?;
-                    let sent = submit(&auth, deadline, socket.send_to(&output, peer)).await?;
+                    let sent =
+                        submit(&auth, &refresh, deadline, socket.send_to(&output, peer)).await?;
                     if sent != output.len() {
                         return Err(DnsError(ErrorCode::Io));
                     }
@@ -435,9 +472,7 @@ impl Job {
                     let deadline = (Instant::now() + QUERY_TIME).min(lifetime);
                     within_deadline(deadline, async {
                         check_deadline(deadline)?;
-                        let auth = attempt
-                            .consume()
-                            .map_err(|_| DnsError(ErrorCode::Unavailable))?;
+                        let auth = consume(attempt, &refresh, deadline).await?;
                         binding.check(auth.decision())?;
                         let request = wire::parse(&bytes)?;
                         let reply =
@@ -447,8 +482,8 @@ impl Job {
                         let prefix = u16::try_from(output.len())
                             .map_err(|_| DnsError(ErrorCode::State))?
                             .to_be_bytes();
-                        submit(&auth, deadline, socket.write_all(&prefix)).await?;
-                        submit(&auth, deadline, socket.write_all(&output)).await?;
+                        submit(&auth, &refresh, deadline, socket.write_all(&prefix)).await?;
+                        submit(&auth, &refresh, deadline, socket.write_all(&output)).await?;
                         budget.answered.fetch_add(1, Ordering::Relaxed);
                         Ok(())
                     })
@@ -537,25 +572,49 @@ async fn within_deadline<T>(
     }
 }
 pub(super) async fn submit<T>(
-    auth: &droutex_core::deployment::AuthorizedRequest<'_>,
+    auth: &AuthorizedRequest<'_>,
+    refresh: &Refresh,
+    deadline: Instant,
+    operation: impl Future<Output = std::io::Result<T>>,
+) -> Result<T> {
+    checked_submit(
+        || auth.verify_current().map_err(|error| error.code()),
+        refresh,
+        deadline,
+        operation,
+    )
+    .await
+}
+async fn checked_submit<T>(
+    mut check: impl FnMut() -> std::result::Result<(), AdmissionCode>,
+    refresh: &Refresh,
     deadline: Instant,
     operation: impl Future<Output = std::io::Result<T>>,
 ) -> Result<T> {
     tokio::pin!(operation);
-    within_deadline(
-        deadline,
-        poll_fn(|context| {
-            // Pending I/O has not submitted bytes. Recheck actual current authority
-            // on each resume, including between TCP prefix and payload writes.
-            if auth.verify_current().is_err() {
-                return Poll::Ready(Err(DnsError(ErrorCode::Unavailable)));
+    let mut completion = refresh.subscribe();
+    within_deadline(deadline, async {
+        let mut waited = false;
+        loop {
+            let outcome = poll_fn(|context| {
+                // Keep the original I/O future across the checkpoint wait,
+                // including a partially completed TCP write. Never restart it.
+                match check() {
+                    Err(error) => Poll::Ready(Err(error)),
+                    Ok(()) => operation.as_mut().poll(context).map(Ok),
+                }
+            })
+            .await;
+            match outcome {
+                Ok(result) => return result.map_err(io_error),
+                Err(error) if !waited => {
+                    wait_checkpoint(error, refresh, &mut completion, deadline).await?;
+                    waited = true;
+                }
+                Err(_) => return Err(DnsError(ErrorCode::Unavailable)),
             }
-            operation
-                .as_mut()
-                .poll(context)
-                .map(|result| result.map_err(io_error))
-        }),
-    )
+        }
+    })
     .await
 }
 fn check_deadline(deadline: Instant) -> Result<()> {
@@ -581,6 +640,248 @@ fn transient(error: &std::io::Error) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::cell::Cell;
+
+    async fn assert_pending<F: Future>(mut future: std::pin::Pin<&mut F>) {
+        poll_fn(|context| {
+            assert!(future.as_mut().poll(context).is_pending());
+            Poll::Ready(())
+        })
+        .await;
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn checkpoint_wait_preserves_partial_io_and_rechecks_before_resuming() {
+        let refresh = Refresh::new();
+        let refusal = Cell::new(None);
+        let progress = Cell::new(0);
+        let resume = tokio::sync::Notify::new();
+        let operation = async {
+            progress.set(progress.get() + 1);
+            resume.notified().await;
+            progress.set(progress.get() + 1);
+            Ok::<_, std::io::Error>(2)
+        };
+        let mut guarded = Box::pin(checked_submit(
+            || refusal.get().map_or(Ok(()), Err),
+            &refresh,
+            Instant::now() + QUERY_TIME,
+            operation,
+        ));
+        assert_pending(guarded.as_mut()).await;
+        assert_eq!(progress.get(), 1);
+        // A prior periodic refresh can complete while the socket is pending.
+        // That old notification must not stand in for the newly required floor.
+        assert!(refresh.perform(|| Ok(())).await.unwrap());
+        refusal.set(Some(AdmissionCode::CheckpointRequired));
+        resume.notify_one();
+        assert_pending(guarded.as_mut()).await;
+        assert_eq!(progress.get(), 1, "ready I/O ran without a checkpoint");
+        refusal.set(None);
+        assert!(refresh.perform(|| Ok(())).await.unwrap());
+        assert_eq!(guarded.await.unwrap(), 2);
+        assert_eq!(progress.get(), 2, "partial I/O was restarted");
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn checkpoint_wait_preserves_an_actual_partial_tcp_frame() {
+        tokio::time::timeout(Duration::from_secs(3), async {
+            let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+            let mut client = TcpStream::connect(listener.local_addr().unwrap())
+                .await
+                .unwrap();
+            let (mut server, _) = listener.accept().await.unwrap();
+            let refresh = Refresh::new();
+            let refusal = Cell::new(None);
+            let first_sent = Cell::new(false);
+            let resume = tokio::sync::Notify::new();
+            let frame = b"\x00\x04\x12\x34\x81\x82";
+            let mut guarded = Box::pin(checked_submit(
+                || refusal.get().map_or(Ok(()), Err),
+                &refresh,
+                Instant::now() + QUERY_TIME,
+                async {
+                    // Stop after the prefix and first payload byte reached TCP.
+                    server.write_all(&frame[..3]).await?;
+                    first_sent.set(true);
+                    resume.notified().await;
+                    server.write_all(&frame[3..]).await
+                },
+            ));
+            poll_fn(|context| {
+                assert!(guarded.as_mut().poll(context).is_pending());
+                if first_sent.get() {
+                    Poll::Ready(())
+                } else {
+                    Poll::Pending
+                }
+            })
+            .await;
+            let mut received = [0; 3];
+            client.read_exact(&mut received).await.unwrap();
+            assert_eq!(&received, &frame[..3]);
+            refusal.set(Some(AdmissionCode::CheckpointRequired));
+            resume.notify_one();
+            assert_pending(guarded.as_mut()).await;
+            let mut rest = [0; 3];
+            assert_eq!(
+                client.try_read(&mut rest).unwrap_err().kind(),
+                std::io::ErrorKind::WouldBlock
+            );
+            refusal.set(None);
+            assert!(refresh.perform(|| Ok(())).await.unwrap());
+            guarded.await.unwrap();
+            drop(server);
+            let mut remainder = Vec::new();
+            client.read_to_end(&mut remainder).await.unwrap();
+            assert_eq!(remainder, &frame[3..], "TCP bytes were lost or repeated");
+        })
+        .await
+        .unwrap();
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn checkpoint_completion_never_overrides_a_new_refusal_or_retries_twice() {
+        for failure in [
+            AdmissionCode::Retired,
+            AdmissionCode::Lease,
+            AdmissionCode::Clock,
+            AdmissionCode::Unavailable,
+            AdmissionCode::CheckpointRequired,
+        ] {
+            let refresh = Refresh::new();
+            let refusal = Cell::new(AdmissionCode::CheckpointRequired);
+            let submitted = Cell::new(false);
+            let mut guarded = Box::pin(checked_submit(
+                || Err(refusal.get()),
+                &refresh,
+                Instant::now() + QUERY_TIME,
+                async {
+                    submitted.set(true);
+                    Ok::<_, std::io::Error>(())
+                },
+            ));
+            assert_pending(guarded.as_mut()).await;
+            refusal.set(failure);
+            assert!(refresh.perform(|| Ok(())).await.unwrap());
+            assert_eq!(
+                guarded.await.unwrap_err().code(),
+                ErrorCode::Unavailable,
+                "{failure:?}"
+            );
+            assert!(!submitted.get(), "completion authorized {failure:?}");
+        }
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn checkpoint_completion_and_ready_io_after_deadline_never_submit() {
+        let refresh = Refresh::new();
+        let refusal = Cell::new(Some(AdmissionCode::CheckpointRequired));
+        let submitted = Cell::new(false);
+        let mut guarded = Box::pin(checked_submit(
+            || refusal.get().map_or(Ok(()), Err),
+            &refresh,
+            Instant::now() + Duration::from_millis(100),
+            async {
+                submitted.set(true);
+                Ok::<_, std::io::Error>(())
+            },
+        ));
+        assert_pending(guarded.as_mut()).await;
+        tokio::time::sleep(Duration::from_millis(120)).await;
+        refusal.set(None);
+        assert!(refresh.perform(|| Ok(())).await.unwrap());
+        assert_eq!(guarded.await.unwrap_err().code(), ErrorCode::Timeout);
+        assert!(!submitted.get());
+    }
+
+    #[tokio::test]
+    async fn dropping_a_checkpoint_wait_never_polls_its_owned_io() {
+        let refresh = Refresh::new();
+        let submitted = Cell::new(false);
+        let mut guarded = Box::pin(checked_submit(
+            || Err(AdmissionCode::CheckpointRequired),
+            &refresh,
+            Instant::now() + QUERY_TIME,
+            async {
+                submitted.set(true);
+                Ok::<_, std::io::Error>(())
+            },
+        ));
+        assert_pending(guarded.as_mut()).await;
+        drop(guarded);
+        assert!(refresh.perform(|| Ok(())).await.unwrap());
+        assert!(!submitted.get());
+    }
+
+    #[tokio::test]
+    async fn non_checkpoint_refusals_never_wait_without_known_pending_maintenance() {
+        for code in [
+            AdmissionCode::Unavailable,
+            AdmissionCode::UnknownSource,
+            AdmissionCode::Scope,
+            AdmissionCode::Lease,
+            AdmissionCode::Clock,
+            AdmissionCode::RestartWait,
+            AdmissionCode::Quota,
+            AdmissionCode::Retired,
+            AdmissionCode::State,
+        ] {
+            let refresh = Refresh::new();
+            let mut completion = refresh.subscribe();
+            assert_eq!(
+                wait_checkpoint(code, &refresh, &mut completion, Instant::now() + QUERY_TIME)
+                    .await
+                    .unwrap_err()
+                    .code(),
+                ErrorCode::Unavailable,
+                "{code:?}"
+            );
+            let wake = refresh.wake.notified();
+            tokio::pin!(wake);
+            assert_pending(wake.as_mut()).await;
+        }
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn unavailable_waits_only_for_the_already_pending_operation() {
+        let refresh = Refresh::new();
+        let (release, blocked) = std::sync::mpsc::channel();
+        let entered = Arc::new(std::sync::atomic::AtomicBool::new(false));
+        let signal = Arc::clone(&entered);
+        let upkeep = refresh.perform(move || {
+            signal.store(true, Ordering::Release);
+            blocked.recv_timeout(Duration::from_secs(2)).unwrap();
+            Ok(())
+        });
+        tokio::pin!(upkeep);
+        assert_pending(upkeep.as_mut()).await;
+        tokio::time::timeout(Duration::from_secs(1), async {
+            while !entered.load(Ordering::Acquire) {
+                tokio::task::yield_now().await;
+            }
+        })
+        .await
+        .unwrap();
+        let refusal = Cell::new(Some(AdmissionCode::Unavailable));
+        let submitted = Cell::new(false);
+        let mut guarded = Box::pin(checked_submit(
+            || refusal.get().map_or(Ok(()), Err),
+            &refresh,
+            Instant::now() + QUERY_TIME,
+            async {
+                submitted.set(true);
+                Ok::<_, std::io::Error>(())
+            },
+        ));
+        assert_pending(guarded.as_mut()).await;
+        assert!(!submitted.get());
+        refusal.set(None);
+        release.send(()).unwrap();
+        assert!(upkeep.await.unwrap());
+        guarded.await.unwrap();
+        assert!(submitted.get());
+    }
     #[tokio::test]
     async fn buffered_frame_cannot_outlive_an_already_expired_absolute_deadline() {
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();

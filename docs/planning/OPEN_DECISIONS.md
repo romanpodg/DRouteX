@@ -107,6 +107,7 @@ IPv6/QUIC/application enforcement.
 | D47 | Owner accepted full bounded legacy DNS transport profile after checked PR107: D46 per-query admission, UDP1232/3x, framed TCP/ingress/buffer/deadline/shutdown limits and initial SERVFAIL until real handlers. Qualify exact Hickory0.26.3 std and Tokio1.53.3 networking/io/macros before conditional production adoption. No public deployment or new license exception. | P3-01 | Direct owner reply2026-10-22 accepting .setup/p3-01/listener-design-proposal.md; [contract](P3_01_LISTENER_CONTRACT.md) |
 | D48 | Owner clarified D47 timeout fallback: processor at most1500ms from query start, remaining500ms reserved inside the original two-second total for SERVFAIL encoding/write; total expiry or lost admission drops/closes. No extra two-second write phase. | P3-01 | Direct owner reply2026-10-22 accepting .setup/p3-01/timeout-budget-proposal.md; [contract](P3_01_LISTENER_CONTRACT.md) |
 | D49 | Owner selected explicit UDP addresses now: refuse0.0.0.0/:: before workers start, and refuse an old explicit socket after wildcard republication. Preserve schema and TCP wildcard; qualify destination-aware UDP I/O separately before later support. No new dependency/unsafe I/O/interface enumeration. | P3-01 | Direct owner reply2026-10-22: explicit UDP addresses now; .setup/p3-01/wildcard-binding-proposal.md and [contract](P3_01_LISTENER_CONTRACT.md) |
+| D50 | Owner accepted one bounded checkpoint completion wait/recheck per gate within the original deadlines. Retain the original reservation/generation/scope/quota; no ready I/O until actual authority is checked again. Generic unavailable waits only for known pending maintenance; other/second refusals remain closed. | P3-01 | Direct owner reply2026-10-23 selecting bounded checkpoint wait; [contract](P3_01_CHECKPOINT_WAIT_CONTRACT.md) |
 
 ## P2-06 review dispositions
 
@@ -278,6 +279,14 @@ below are assessed individually; no finding, failed status or protection is supp
 | P4-01-CS-EXCLUDED | Two auxiliary planning hotspots9.30->9.24/8.87->8.82 and three test files9.40/9.57/9.84 flag large methods or Bumpy Road Ahead. These cover complete failed-checkpoint/reopen/revocation, service-scope and aggregate quota scenarios. Explicit cases increase maintenance effort but keep each end-to-end contract visible. Tests and auxiliary tools are outside the owner's independent metric scope; no concrete functional defect was found. The critical test-method score remains failed and disclosed. | Concrete test/validator defect or a relevant owning contract change; no score-only cleanup or metric suppression. |
 
 ## P3-01 review dispositions
+
+Resolved behavior decision D50: final PR110 CI39896580361 failed a pending-processor TCP
+reply after a clean earlier head. The actual held-admission/checkpoint-gap probe
+and options are in [the accepted contract](P3_01_CHECKPOINT_WAIT_CONTRACT.md).
+The owner selected bounded checkpoint wait/recheck, retaining the original
+reservation and all current authority checks. Its implementation requires fresh
+review/platform evidence. No CI retry, earlier clean review or score disposition
+closes those gates.
 
 | Item | Finding, impact and rationale | Owning task / revisit trigger |
 |---|---|---|

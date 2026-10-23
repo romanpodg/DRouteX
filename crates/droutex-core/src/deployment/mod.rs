@@ -3,8 +3,8 @@
 mod admission;
 mod artifacts;
 pub use admission::{
-    AdmissionAttempt, AdmissionCode, AdmissionError, AdmissionScope, AuthorizedRequest,
-    AutomaticLearning,
+    AdmissionAttempt, AdmissionCode, AdmissionConsumption, AdmissionError, AdmissionScope,
+    AuthorizedRequest, AutomaticLearning,
 };
 mod explain;
 pub use explain::SimulationReport;

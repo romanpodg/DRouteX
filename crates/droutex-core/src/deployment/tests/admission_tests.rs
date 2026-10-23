@@ -258,6 +258,80 @@ fn expiry_clock_fault_and_missing_checkpoint_are_independent_denials() {
 }
 
 #[test]
+fn consumption_retry_retains_one_original_generation_and_quota_reservation() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    apply_document(&deployment, &document(), 1);
+    time(&deployment, 1001, 1);
+    let attempt = deployment.prepare_legacy_dns(typed(20), peer()).unwrap();
+    time(&deployment, 1004, 4);
+    let AdmissionConsumption::Refused { attempt, error } = attempt.try_consume() else {
+        panic!("missing checkpoint authorized an attempt");
+    };
+    assert_eq!(error.code(), AdmissionCode::CheckpointRequired);
+    deployment
+        .refresh_authorization_clock(&Cancellation::default())
+        .unwrap();
+    let mut others = Vec::new();
+    for _ in 0..63 {
+        others.push(deployment.prepare_legacy_dns(typed(21), peer()).unwrap());
+    }
+    assert_eq!(
+        deployment
+            .prepare_legacy_dns(typed(21), peer())
+            .unwrap_err()
+            .code(),
+        AdmissionCode::Quota
+    );
+    let AdmissionConsumption::Authorized(auth) = attempt.try_consume() else {
+        panic!("successful refresh did not permit the same reservation");
+    };
+    assert_eq!(auth.decision().metadata().sequence.get(), 1);
+    assert!(
+        matches!(auth.scope(), AdmissionScope::LegacyDns(binding) if binding.profile == typed(10))
+    );
+    drop(auth);
+    assert!(deployment.prepare_legacy_dns(typed(21), peer()).is_ok());
+}
+
+#[test]
+fn retained_consumption_never_reacquires_after_revocation_expiry_or_checkpoint_failure() {
+    for failure in [
+        AdmissionCode::Retired,
+        AdmissionCode::Lease,
+        AdmissionCode::Unavailable,
+    ] {
+        let deployment = Deployment::in_memory(typed(1), trust(false));
+        start(&deployment, 1000);
+        apply_document(&deployment, &document(), 1);
+        time(&deployment, 1001, 1);
+        let attempt = deployment.prepare_legacy_dns(typed(20), peer()).unwrap();
+        time(&deployment, 1004, 4);
+        let AdmissionConsumption::Refused { attempt, error } = attempt.try_consume() else {
+            panic!("missing checkpoint authorized an attempt");
+        };
+        assert_eq!(error.code(), AdmissionCode::CheckpointRequired);
+        match failure {
+            AdmissionCode::Retired => apply_document(&deployment, &document(), 2),
+            AdmissionCode::Lease => time(&deployment, 1498, 498),
+            AdmissionCode::Unavailable => (),
+            _ => unreachable!(),
+        }
+        deployment
+            .refresh_authorization_clock(&Cancellation::default())
+            .unwrap();
+        if failure == AdmissionCode::Unavailable {
+            deployment.admission.lock().unwrap().fail_checkpoint();
+        }
+        let AdmissionConsumption::Refused { attempt, error } = attempt.try_consume() else {
+            panic!("refresh bypassed {failure:?}");
+        };
+        assert_eq!(error.code(), failure);
+        drop(attempt);
+    }
+}
+
+#[test]
 fn shared_group_quotas_survive_renewal_and_release_on_drop() {
     let deployment = Deployment::in_memory(typed(1), trust(false));
     start(&deployment, 1000);

@@ -1,8 +1,9 @@
 # P3-01 transport evidence
 
-Status: **qualification PR108 completed; runtime PR109 merged normally, but its
-first exact-main Windows run failed a TCP fixture case. A bounded fixture-start
-correction is under validation; P3-01 remains in progress**. The owner accepted
+Status: **qualification PR108 completed; runtime PR109 merged normally with a
+successful exact-main retry. Corrective PR110 remains unmerged: its final Windows
+run failed a different TCP reply case. Owner-accepted D50 bounded checkpoint wait
+is implemented locally under fresh review/check gates. P3-01 remains in progress**. The owner accepted
 complete D47 conditionally on checked PR107. Before qualification code, PR107
 merged normally at02b6695928a64c37de5e073a4bdb5162f1928c54; all11 exact-main39747433154
 jobs and both Codecov sessions processed(Rust6689/7013). See
@@ -329,3 +330,84 @@ authoritative. No parser installation, paid backend or forced shrink was used.
 Final evidence head review/checks, normal exact-head PR110 merge and exact-main
 checks/report processing remain mandatory. No P3-02 qualification implementation
 or production forwarding has begun.
+
+## Final-head failure and reproduced checkpoint gap
+
+Final8027b4f938bdf88813d32e6aa67d30c0bacab96f received completed linked-account
+read-only/never review01a166db-d672-70e3-b481-5c76fee9127c, exit0 without confirmed
+defects. Fmt/diff/planning passed; read-only Cargo locks prevented a fresh rebuild,
+and two existing-binary targeted cases were supplementary. The post-verdict
+rollout warning is retained. CodeScene8089881 passed all three gates.
+
+[CI39896580361](https://github.com/romanpodg/DRouteX/actions/runs/39896580361)
+completed/failure: ten jobs passed, Windows Workspace failed the default-profile
+pending_processor_gets_servfail_within_the_original_query_budget case with TCP
+UnexpectedEof at03:47:38.056Z. DNS30/31 passed, including the earlier split/pipeline
+case, delayed startup and actual IPv6. No-default Windows was not reached; it is
+unverified on this head. No merge, CI-status exception or next qualification follows.
+
+A bounded local actual-Deployment probe reproduced CheckpointRequired when a
+held valid request crosses the five-second floor boundary, refusal before a ready
+I/O future is polled, and successful verification of that same held reservation
+after the bounded blocking clock refresh. This behavior currently preserves
+fail-closed admission. The probe changed no publication, lease, quota, system
+clock or host network; its temporary test was removed and exact source restored.
+The matching CI boundary times support this mechanism, but their logs lack the
+original AdmissionCode, so exact attribution of each CI failure remains an inference.
+
+The [checkpoint-gap contract](P3_01_CHECKPOINT_WAIT_CONTRACT.md) made the new
+behavior choice reviewable: bounded wait/recheck of the same reservation within
+existing deadlines, or preserve immediate refusal and separate valid-floor and
+missing-floor fixture expectations. The owner explicitly selected bounded wait
+on2026-10-23 (D50) before implementation. PR110 remains draft/unmerged pending
+the correction's fresh checks/review and normal merge/main gates.
+
+## D50 implementation candidate and local evidence
+
+The owner's direct reply selected bounded checkpoint wait before this source
+change. AdmissionConsumption returns ownership of the original non-Clone
+AdmissionAttempt on refusal; try_consume never re-pins or refunds/reacquires its
+quota. The existing consume API still drops refused attempts. DNS preparation,
+consumption and submission each allow at most one eligible wait/recheck within
+the original deadline. Generic Unavailable waits only while the known serialized
+maintenance operation is pending. Completion is a notification, never authority.
+Every consumption and I/O resume rechecks the current reservation. Submission
+retains its pinned future, including partial TCP progress; no operation restarts.
+Earlier periodic completion notifications cannot satisfy a newly required floor.
+
+New deterministic core regressions preserve the single generation/quota charge
+and deny after publication, expiry or latched checkpoint failure. DNS regressions
+cover controlled partial-I/O progress, stale completion, second/new refusals,
+deadline/I/O readiness together, cancellation and known pending maintenance.
+A separate actual TCP loopback test sends a prefix and partial payload, waits for
+the controlled checkpoint, then checks exact remaining bytes and EOF without
+loss/duplication. Its authority inputs are controlled; it does not claim a real
+clock transition in that socket case. A bounded actual-Deployment composition
+test observes the next real checkpoint window with two original reservations:
+one resumes after real clock refresh, while publication retires the other before
+its recheck. Existing real UDP/TCP, IPv6 and Linux failure cases remain mandatory.
+
+Local fmt, workspace/all-target checks in default/no-default profiles,
+warning-free all-target/all-feature Clippy and workspace rustdoc passed. Full
+native Windows workspace attempts in both profiles passed all new cases and
+37/38 DNS cases at that point, with zero ignored/filtered cases; each still
+failed the previously reproduced development-host IPv6 receive case. They are
+failed full-profile attempts, not complete passes. The subsequently added
+actual partial-TCP test passed separately; clean CI must run the full final set.
+Two red mutations failed the intended assertions: authorizing CheckpointRequired
+at consumption, and letting an earlier completion satisfy a new wait. Exact
+source restoration preceded the passing checks. No host/network setting changed.
+
+Planning/source-preservation checks and nine negative validator cases passed;
+all19 planning-tool tests passed with the existing pinned YAML environment and
+a process-local workspace temporary directory. Separate standards/spec reviews
+found no confirmed defect in D50. These are supplementary to the still-required
+fresh linked-account implementation/final reviews, current-head Windows/Linux
+profiles, dependency/report checks, normal merge and exact-main evidence.
+No new dependency, feature, lockfile, production deployment or next qualifier
+is included. The earlier failed CI runs remain failed in this record.
+
+The local AST-only graph refresh completed at4984 nodes/10594 edges without
+an API/LLM backend. Empty Cargo.toml extraction and four missing SQL-parser
+warnings remain; community labels need a separate semantic refresh. No parser,
+paid backend or graph output was added to the repository.

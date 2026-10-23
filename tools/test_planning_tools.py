@@ -214,6 +214,10 @@ class ValidatorTests(unittest.TestCase):
         unaccepted_udp_binding['dns_transport_binding_decision']['status'] = 'proposed'
         missing_udp_binding_source = copy.deepcopy(plan)
         missing_udp_binding_source['dns_transport_binding_decision']['source'] = ''
+        unaccepted_checkpoint = copy.deepcopy(plan)
+        unaccepted_checkpoint['dns_transport_checkpoint_wait_decision']['status'] = 'proposed'
+        missing_checkpoint_source = copy.deepcopy(plan)
+        missing_checkpoint_source['dns_transport_checkpoint_wait_decision']['source'] = ''
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
         missing_native = copy.deepcopy(plan)
@@ -237,7 +241,7 @@ class ValidatorTests(unittest.TestCase):
                      unaccepted_explain, missing_explain_source, unfinished_explain,
                      unaccepted_order, missing_order_source, unaccepted_binding, missing_binding_source,
                      unfinished_binding, unaccepted_transport, missing_transport_source,
-                     unaccepted_timeout, missing_timeout_source,
+                     unaccepted_timeout, missing_timeout_source, unaccepted_checkpoint, missing_checkpoint_source,
                      unaccepted_udp_binding, missing_udp_binding_source):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)

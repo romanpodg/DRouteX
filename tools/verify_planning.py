@@ -251,6 +251,8 @@ def validate_review_boundary(plan):
     assert timeout['status'] == 'accepted' and timeout['source'], 'Missing owner DNS timeout allocation decision'
     binding = plan['dns_transport_binding_decision']
     assert binding['status'] == 'accepted' and binding['source'], 'Missing owner UDP binding decision'
+    checkpoint = plan['dns_transport_checkpoint_wait_decision']
+    assert checkpoint['status'] == 'accepted' and checkpoint['source'], 'Missing owner checkpoint wait decision'
     signature = plan['snapshot_auth_qualification_decision']
     assert signature['status'] == 'accepted' and signature['source'], 'Missing owner signature qualification decision'
     assert plan['secret_storage_decision']['status'] == 'accepted' and plan['secret_storage_decision']['source'], 'Missing owner secret storage decision'

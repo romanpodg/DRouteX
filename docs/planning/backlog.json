@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0/P1/P2/P4-01 complete; P3-01 PR109 normally merged, first exact-main Windows TCP fixture failure under correction; next isolated client qualification remains gated",
+  "status": "P0/P1/P2/P4-01 complete; P3-01 PR109 merged with exact-main retry; PR110 D50 bounded checkpoint wait implementation under review/check gates",
   "date": "2026-10-23",
   "phases": {
     "P0": "Foundation",
@@ -2878,5 +2878,11 @@
     "date": "2026-10-22",
     "source": "Direct owner reply selecting explicit UDP addresses now; .setup/p3-01/wildcard-binding-proposal.md; docs/planning/P3_01_LISTENER_CONTRACT.md",
     "profile": "D49 explicit local IPv4/IPv6 UDP; refuse wildcard0.0.0.0/:: before workers and old socket after changed publication; preserve schema/TCP wildcard, no new dependency or unsafe I/O"
+  },
+  "dns_transport_checkpoint_wait_decision": {
+    "status": "accepted",
+    "date": "2026-10-23",
+    "source": "Direct owner reply selecting bounded checkpoint wait (request call_e86e81e88434420ab5c93daca7a9ec67); docs/planning/P3_01_CHECKPOINT_WAIT_CONTRACT.md",
+    "profile": "D50 at most one clock completion wait/recheck per gate within original deadlines; retain original reservation/generation/quota; no I/O until actual authority recheck; all other refusals remain closed"
   }
 }

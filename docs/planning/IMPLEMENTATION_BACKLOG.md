@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1/P2/P4-01 complete; P3-01 PR109 normally merged, first exact-main Windows TCP fixture failure under correction; next isolated client qualification remains gated.**
+**P0/P1/P2/P4-01 complete; P3-01 PR109 merged with exact-main retry; PR110 D50 bounded checkpoint wait implementation under review/check gates.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 

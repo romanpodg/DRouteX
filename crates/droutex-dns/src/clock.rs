@@ -50,6 +50,8 @@ impl Refresh {
         })
         .await
         .map_err(|_| DnsError(ErrorCode::State))?;
+        // Notify completion only; every waiter must recheck actual D46 facts.
+        self.status.send_modify(|value| *value = !*value);
         Ok(outcome.is_ok())
     }
     pub async fn run(
@@ -78,8 +80,6 @@ impl Refresh {
             if !successful {
                 budget.clock_failures.fetch_add(1, Ordering::Relaxed);
             }
-            // This is only a completion signal; every waiter rechecks actual D46.
-            self.status.send_modify(|value| *value = !*value);
         }
         Ok(())
     }

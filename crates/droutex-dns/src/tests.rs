@@ -822,6 +822,93 @@ async fn pending_processor_gets_servfail_within_the_original_query_budget() {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn consumption_waits_for_the_actual_next_checkpoint_without_repinning() {
+    use droutex_core::deployment::AdmissionCode;
+    use std::{future::poll_fn, task::Poll};
+    let owner = Arc::new(Deployment::in_memory(typed(1), keys().1));
+    apply(
+        &owner,
+        &document(
+            "127.0.0.1:5353".parse().unwrap(),
+            "127.0.0.1:5354".parse().unwrap(),
+        ),
+        1,
+    );
+    sleep(Duration::from_millis(40)).await;
+    let refresh = crate::clock::Refresh::new();
+    let setup_end = Instant::now() + Duration::from_secs(6);
+    let mut attempts = Vec::with_capacity(2);
+    while attempts.len() < 2 {
+        match owner.prepare_legacy_dns(typed(20), v4()) {
+            Ok(attempt) => attempts.push(attempt),
+            Err(error) if error.code() == AdmissionCode::CheckpointRequired => {
+                assert!(Instant::now() < setup_end);
+                let upkeep = Arc::clone(&owner);
+                assert!(
+                    refresh
+                        .perform(
+                            move || upkeep.refresh_authorization_clock(&Cancellation::default())
+                        )
+                        .await
+                        .unwrap()
+                );
+            }
+            Err(error) => panic!("unexpected setup refusal: {error:?}"),
+        }
+    }
+    let attempt = attempts.pop().unwrap();
+    let retained = attempts.pop().unwrap();
+    let end = Instant::now() + Duration::from_secs(6);
+    loop {
+        match owner.prepare_legacy_dns(typed(20), v4()) {
+            Err(error) if error.code() == AdmissionCode::CheckpointRequired => break,
+            Ok(temporary) => drop(temporary),
+            Err(error) => panic!("unexpected refusal before the next checkpoint: {error:?}"),
+        }
+        assert!(
+            Instant::now() < end,
+            "no next checkpoint window within the bounded probe"
+        );
+        sleep(Duration::from_millis(20)).await;
+    }
+    let mut consuming = Box::pin(runtime::consume(
+        attempt,
+        &refresh,
+        Instant::now() + Duration::from_secs(2),
+    ));
+    let mut retired = Box::pin(runtime::consume(
+        retained,
+        &refresh,
+        Instant::now() + Duration::from_secs(2),
+    ));
+    poll_fn(|context| {
+        assert!(consuming.as_mut().poll(context).is_pending());
+        assert!(retired.as_mut().poll(context).is_pending());
+        Poll::Ready(())
+    })
+    .await;
+    let upkeep = Arc::clone(&owner);
+    assert!(
+        refresh
+            .perform(move || upkeep.refresh_authorization_clock(&Cancellation::default()))
+            .await
+            .unwrap()
+    );
+    let auth = consuming.await.unwrap();
+    assert_eq!(auth.decision().metadata().sequence.get(), 1);
+    assert!(auth.verify_current().is_ok());
+    apply(
+        &owner,
+        &document(
+            "127.0.0.1:5353".parse().unwrap(),
+            "127.0.0.1:5354".parse().unwrap(),
+        ),
+        2,
+    );
+    assert_eq!(retired.await.unwrap_err().code(), ErrorCode::Unavailable);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn pending_submission_rechecks_actual_authority_before_resuming_io() {
     use std::{
         future::{Future, poll_fn},
@@ -841,8 +928,10 @@ async fn pending_submission_rechecks_actual_authority_before_resuming_io() {
         submitted.store(true, Ordering::Relaxed);
         Ok::<_, std::io::Error>(1)
     };
+    let refresh = crate::clock::Refresh::new();
     let mut guarded = Box::pin(runtime::submit(
         &auth,
+        &refresh,
         Instant::now() + Duration::from_secs(2),
         operation,
     ));

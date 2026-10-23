@@ -141,6 +141,16 @@ are checked on every future resume and before final submission; a ready socket
 operation cannot outrun an already expired timer. Already submitted kernel
 bytes cannot be retracted.
 
+D50 owner clarification accepted2026-10-23: a missing next checkpoint, or a
+generic unavailable result while the node's known single maintenance operation
+is pending, may wait for one clock completion and recheck the same held admission.
+Retain its generation/scope/quota charge; never re-pin or reacquire after refusal.
+All waiting consumes the original deadlines, including D48's reply reserve.
+Completion is not authority: repeat actual current/lease/clock/floor checks before
+consumption and every I/O resume. Other refusals and a second refusal drop/close;
+expiry never receives a fallback. Preserve the same partially completed I/O future.
+See [the accepted complete D50 profile](P3_01_CHECKPOINT_WAIT_CONTRACT.md).
+
 RFC references checked2026-10-22: RFC7766 (TCP framing/reuse/pipelining) and RFC6891
 (EDNS payload/version/options). The limits/strict initial subset above are DRouteX
 proposals; they are not claimed to be mandated by those documents or by Control D.
