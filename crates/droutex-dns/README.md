@@ -1,6 +1,6 @@
 # Bounded legacy DNS library
 
-P3-01 implements the accepted [D47/D48 contract](../../docs/planning/P3_01_LISTENER_CONTRACT.md).
+P3-01 implements the accepted [D47/D48/D49/D50 contract](../../docs/planning/P3_01_LISTENER_CONTRACT.md).
 The caller owns a Tokio runtime, an initialized `Deployment`, explicit prebound
 UDP/TCP sockets and a shutdown watch channel. `DnsNode::new` consumes the deployment;
 `deployment()` allows the host to share it with publication/gateway consumers.
@@ -26,6 +26,11 @@ remain shared with every DNS transport. UDP is1232 bytes and at most3x the query
 TCP uses one u16 big-endian frame prefix. Large responses use a valid encoder TC
 fallback. Strict parsing accounts for all original EDNS bytes and discards client
 options before processing. No ECS/header/query field supplies identity.
+
+A missing next checkpoint may wait for one identified maintenance outcome inside
+the original deadline. Completion never authorizes output: the same held admission
+is checked again. Failed or superseded outcomes refuse, and generic unavailability
+never requests another operation. Partial I/O keeps its original future.
 
 A query/reply has2s total: at most1500ms for processing, remaining500ms for bounded
 SERVFAIL/write. Absolute deadlines are checked at every future resume. TCP frame,

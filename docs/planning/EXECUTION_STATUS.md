@@ -7,28 +7,29 @@ Reviewed 2026-10-24. This card is the current work/authorization entry point;
 Task reviews hold exact acceptance evidence. Later dated evidence supersedes
 historical checkpoints below; reconcile conflicts before dependent work.
 
-- Completed: P0, P1 (including P1-05/PR9 and P1-06/PR11), all seven P2 tasks and
-  P4-01/PR107; their normal merge and exact-main evidence is linked below.
-- Active completion: P3-01 bounded DNS transport. Dependency qualification PR108
-  is complete; runtime PR109 merged at4890609 with a successful exact-main retry.
-  Corrective PR110 implements the independently proven fixture-start correction
-  and owner-accepted [D50 checkpoint wait](P3_01_CHECKPOINT_WAIT_CONTRACT.md)
-  under [D47/D48/D49](P3_01_LISTENER_CONTRACT.md). It remains unmerged pending
-  final-head account review/checks and normal merge/exact-main evidence.
-- Fresh verification on2026-10-24 confirmed all11 CI39902543783 jobs successful
-  onf83b8266368a6a550bce993239c31b337bfccbd6. Actual logs passed243 Windows/275
+- Completed: P0, P1, all seven P2 tasks, P4-01 and P3-01 bounded legacy DNS
+  transport. PR108 qualified the selected transport dependencies; PR109 and its
+  corrective PR110 completed normal merge and exact-main gates. Task evidence
+  remains linked below; historical failed attempts do not become passes.
+- PR110 merged normally on2026-10-24T12:24:39Z at
+  aaaaad96c268c51e8c9770537473bec38dd2563c, matching reviewed final head959233a.
+  All11 exact-main40093808649 jobs passed. Actual logs passed243 Windows/275
   Linux tests per default/no-default profile, zero failed/ignored/filtered;
-  DNS42/43 includes mandatory IPv6 and Linux CP-loss/checkpoint failures. Both
-  Codecov uploads processed(Rust7904/8287; new production lines134/134 hit).
-- Completed linked-account corrective review01a16dd2-9631-7382-8b16-a8e03795bf13
-  found no confirmed defect onf83b826. The earlier quota-interrupted attempt is
-  unverified and does not count as review. The two concrete earlier account
-  findings (lost completion and retry after failed maintenance) were corrected
-  with deterministic negative/red regressions. The watch selects one explicit
-  operation identity/outcome; failure/supersession refuses, and Unavailable never
-  requests new maintenance. See [the complete evidence](P3_01_LISTENER_REVIEW.md).
-  Historical failed CI attempts and review findings remain recorded there;
-  no earlier green head replaces final-head/merge/main gates.
+  DNS42/43 includes mandatory IPv6 and Linux CP-loss/checkpoint failures.
+  Both merge Codecov reports processed(Rust7904/8287).
+- Actual implementation/corrective review01a16dd2-9631-7382-8b16-a8e03795bf13
+  and final whole-PR review01a16dd8-3b5b-7321-acd8-956c5051ab7e completed without
+  confirmed defects. Final-head40093309453 also passed all11 jobs and both reports.
+  Earlier notification/failed-operation findings received source fixes and red
+  regressions; the quota-interrupted attempt remains unverified. See
+  [P3-01 evidence](P3_01_LISTENER_REVIEW.md) and
+  [accepted D50](P3_01_CHECKPOINT_WAIT_CONTRACT.md).
+- Next authorized scope is the previously accepted isolated hickory-net0.26.3
+  defaults-off/tokio qualification after checked P3-01 completion. This prerequisite
+  is now fulfilled; the qualifier has not started. P3-02 application resources,
+  upstream/fallback policy and production adoption still need their owning contract.
+  The recorded execution boundary remains through completed P3-01; no forwarding
+  implementation, new crate, deployment or infrastructure begins in this update.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.
@@ -40,10 +41,6 @@ historical checkpoints below; reconcile conflicts before dependent work.
   actual origin connector is authorized by P3-01. Admitted valid DNS queries return
   SERVFAIL until their later handlers. Development-host IPv6 failure does not
   waive mandatory clean-CI IPv6 or authorize host-network changes.
-- The owner already accepted isolated hickory-net0.26.3 defaults-off/tokio
-  qualification after checked P3-01 completion in the previous continuation chat.
-  No client qualification implementation or production adoption has begun.
-  Upstream resources, fallback and application limits retain their separate gate.
 
 ## Development guidance maintenance, 2026-10-23
 
