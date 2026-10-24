@@ -20,6 +20,7 @@ use hickory_proto::{
 };
 use serde_json::{Value, json};
 use std::{
+    future::{Future, poll_fn},
     net::{IpAddr, Ipv4Addr, SocketAddr},
     str::FromStr,
     sync::{
@@ -31,7 +32,7 @@ use std::{
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
     net::{TcpSocket, TcpStream},
-    sync::Notify,
+    sync::{Notify, oneshot},
     task::JoinHandle,
     time::{Instant, sleep, timeout},
 };
@@ -154,6 +155,13 @@ struct Server {
 }
 impl Server {
     async fn start<P: Processor>(ip: IpAddr, processor: P) -> Self {
+        Self::start_after(ip, processor, std::future::ready(())).await
+    }
+    async fn start_after<P: Processor>(
+        ip: IpAddr,
+        processor: P,
+        ready: impl Future<Output = ()> + Send + 'static,
+    ) -> Self {
         let udp = UdpSocket::bind((ip, 0)).await.unwrap();
         let tcp = TcpListener::bind((ip, 0)).await.unwrap();
         let udp_addr = udp.local_addr().unwrap();
@@ -163,21 +171,41 @@ impl Server {
         apply(node.deployment(), &doc, 1);
         let owner = Arc::clone(node.deployment());
         let (stop, shutdown) = watch::channel(false);
-        let handle = tokio::spawn(runtime::serve(
-            node.deployment,
-            vec![
-                ListenerSocket::Udp {
-                    id: typed(20),
-                    socket: udp,
-                },
-                ListenerSocket::Tcp {
-                    id: typed(21),
-                    socket: tcp,
-                },
-            ],
-            shutdown,
-            processor,
-        ));
+        let (started, observed) = oneshot::channel();
+        let handle = tokio::spawn(async move {
+            ready.await;
+            let serving = runtime::serve(
+                node.deployment,
+                vec![
+                    ListenerSocket::Udp {
+                        id: typed(20),
+                        socket: udp,
+                    },
+                    ListenerSocket::Tcp {
+                        id: typed(21),
+                        socket: tcp,
+                    },
+                ],
+                shutdown,
+                processor,
+            );
+            tokio::pin!(serving);
+            let mut started = Some(started);
+            poll_fn(|context| {
+                let outcome = serving.as_mut().poll(context);
+                if let Some(started) = started.take() {
+                    let _ = started.send(());
+                }
+                outcome
+            })
+            .await
+        });
+        timeout(Duration::from_secs(3), observed)
+            .await
+            .expect("DNS fixture runtime did not start")
+            .expect("DNS fixture runtime ended before its first poll");
+        // Empty-start rate buckets begin inside serve's first poll. Warm them
+        // only after that poll, independent of when the spawned task was scheduled.
         sleep(Duration::from_millis(40)).await;
         Self {
             owner,
@@ -440,6 +468,28 @@ async fn tcp_split_prefix_payload_and_coalesced_pipeline_keep_ids() {
     }
     drop(stream);
     assert_eq!(server.close().await.answered, 4);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn fixture_waits_for_runtime_start_before_warming_rate_buckets() {
+    let (release, delayed) = oneshot::channel();
+    let startup = Server::start_after(v4(), wire::UnavailableProcessor, async {
+        delayed.await.unwrap();
+    });
+    tokio::pin!(startup);
+    assert!(
+        timeout(Duration::from_millis(100), &mut startup)
+            .await
+            .is_err(),
+        "fixture returned before the server task was allowed to start"
+    );
+    release.send(()).unwrap();
+    let server = startup.await;
+    let mut stream = TcpStream::connect(server.tcp).await.unwrap();
+    frame(&mut stream, QUERY).await;
+    assert_eq!(read_reply(&mut stream).await.metadata.id, 1234);
+    drop(stream);
+    assert_eq!(server.close().await.answered, 1);
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
@@ -772,6 +822,93 @@ async fn pending_processor_gets_servfail_within_the_original_query_budget() {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn consumption_waits_for_the_actual_next_checkpoint_without_repinning() {
+    use droutex_core::deployment::AdmissionCode;
+    use std::{future::poll_fn, task::Poll};
+    let owner = Arc::new(Deployment::in_memory(typed(1), keys().1));
+    apply(
+        &owner,
+        &document(
+            "127.0.0.1:5353".parse().unwrap(),
+            "127.0.0.1:5354".parse().unwrap(),
+        ),
+        1,
+    );
+    sleep(Duration::from_millis(40)).await;
+    let refresh = crate::clock::Refresh::new();
+    let setup_end = Instant::now() + Duration::from_secs(6);
+    let mut attempts = Vec::with_capacity(2);
+    while attempts.len() < 2 {
+        match owner.prepare_legacy_dns(typed(20), v4()) {
+            Ok(attempt) => attempts.push(attempt),
+            Err(error) if error.code() == AdmissionCode::CheckpointRequired => {
+                assert!(Instant::now() < setup_end);
+                let upkeep = Arc::clone(&owner);
+                assert!(
+                    refresh
+                        .perform(
+                            move || upkeep.refresh_authorization_clock(&Cancellation::default())
+                        )
+                        .await
+                        .unwrap()
+                );
+            }
+            Err(error) => panic!("unexpected setup refusal: {error:?}"),
+        }
+    }
+    let attempt = attempts.pop().unwrap();
+    let retained = attempts.pop().unwrap();
+    let end = Instant::now() + Duration::from_secs(6);
+    loop {
+        match owner.prepare_legacy_dns(typed(20), v4()) {
+            Err(error) if error.code() == AdmissionCode::CheckpointRequired => break,
+            Ok(temporary) => drop(temporary),
+            Err(error) => panic!("unexpected refusal before the next checkpoint: {error:?}"),
+        }
+        assert!(
+            Instant::now() < end,
+            "no next checkpoint window within the bounded probe"
+        );
+        sleep(Duration::from_millis(20)).await;
+    }
+    let mut consuming = Box::pin(runtime::consume(
+        attempt,
+        &refresh,
+        Instant::now() + Duration::from_secs(2),
+    ));
+    let mut retired = Box::pin(runtime::consume(
+        retained,
+        &refresh,
+        Instant::now() + Duration::from_secs(2),
+    ));
+    poll_fn(|context| {
+        assert!(consuming.as_mut().poll(context).is_pending());
+        assert!(retired.as_mut().poll(context).is_pending());
+        Poll::Ready(())
+    })
+    .await;
+    let upkeep = Arc::clone(&owner);
+    assert!(
+        refresh
+            .perform(move || upkeep.refresh_authorization_clock(&Cancellation::default()))
+            .await
+            .unwrap()
+    );
+    let auth = consuming.await.unwrap();
+    assert_eq!(auth.decision().metadata().sequence.get(), 1);
+    assert!(auth.verify_current().is_ok());
+    apply(
+        &owner,
+        &document(
+            "127.0.0.1:5353".parse().unwrap(),
+            "127.0.0.1:5354".parse().unwrap(),
+        ),
+        2,
+    );
+    assert_eq!(retired.await.unwrap_err().code(), ErrorCode::Unavailable);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn pending_submission_rechecks_actual_authority_before_resuming_io() {
     use std::{
         future::{Future, poll_fn},
@@ -791,8 +928,10 @@ async fn pending_submission_rechecks_actual_authority_before_resuming_io() {
         submitted.store(true, Ordering::Relaxed);
         Ok::<_, std::io::Error>(1)
     };
+    let refresh = crate::clock::Refresh::new();
     let mut guarded = Box::pin(runtime::submit(
         &auth,
+        &refresh,
         Instant::now() + Duration::from_secs(2),
         operation,
     ));

@@ -1,11 +1,31 @@
 # DNS/proxy MVP threat model
 
-Date: 2026-10-15. Status: **Foundation accepted at P0-01 on 2026-10-15; controls await implementation**.
+Foundation accepted at P0-01 on 2026-10-15; evidence index reviewed 2026-10-23.
+Status: **partial implementation with completed component gates; full MVP acceptance pending**.
 Scope: [accepted MVP](../planning/MVP_SCOPE.md), specification sections 3/5/10/19/22,
 and [foundation review](../planning/P0_01_FOUNDATION_REVIEW.md).
-No implemented security control or successful penetration test is claimed.
+The control index below distinguishes completed component gates from pending
+runtime/product gates. No successful penetration test or production readiness is claimed.
 Accepted [CR-0002 product model](../architecture/DNS_PRODUCT_MODEL.md) extends this
 review to personal DoH/DoT capabilities, versioned catalogs and opt-in learned grants.
+
+## Control implementation and evidence
+
+[EXECUTION_STATUS](../planning/EXECUTION_STATUS.md) identifies the active task.
+The threat register states required controls; its wording does not imply they
+are all implemented. Preserve exact commit/platform limits in the linked reviews.
+
+| Controls | Implementation and verified scope | Remaining gate |
+|---|---|---|
+| T07 snapshot integrity/replay and local activation | P1-05 and P1-06 completed normal merge/main gates; [signature evidence](../planning/P1_05_SNAPSHOT_REVIEW.md), [activation evidence](../planning/P1_06_ACTIVATION_REVIEW.md) | Full-service DNS/gateway outage/crash acceptance at P10-06 |
+| T10 encrypted records and external key loading | P1-07 component completed; [secret evidence](../planning/P1_07_SECRET_REVIEW.md) and [key contract](KEY_LIFECYCLE.md) | P6 provisioning/auth/export and P6-07/P11-03 complete encrypted backup/restore |
+| T02/T03/T15 current manual source/scope/lease/quota authorization | P4-01/D46 completed; [binding evidence](../planning/P4_01_BINDING_REVIEW.md) | P3-07 secure observation producer after P6; automatic learning remains unavailable |
+| T01/T11 bounded UDP/TCP listener behavior | P3-01 merged in PR109; first exact-main Windows failure and fixture correction in [runtime evidence](../planning/P3_01_LISTENER_REVIEW.md) | Corrective review/CI/merge/main and later forwarding/load acceptance |
+| T04/T08 actual origin safety and protected proxy failure | Required design and admission prerequisites exist; no accepted origin dial/connector implementation | P4-02/P4-05/P4-06 actual resolution/pinning/TLS/egress tests |
+| T09/T13 management authentication and personal secure DNS | Required MVP controls, not passed by current library tests | P6 and P3-07 actor/session/token/transport acceptance |
+
+Security reports use the private channel in [SECURITY.md](../../SECURITY.md).
+A real exploit or functional defect is evaluated regardless of file/metric scope.
 
 ## Assets and actors
 
@@ -62,9 +82,11 @@ containment guarantee; protected backups still need a separately held recovery k
 | Encryption/recovery key | Operator-controlled provisioning outside database/backup payload | Supply separately at startup/restore; document rotation and loss recovery; never commit or include in ordinary backups |
 | Session/CSRF/bootstrap material | Auth subsystem and protected session storage | Short-lived or single-use as applicable; revoke on relevant access changes; no argv, URLs or telemetry exposure |
 
-Cryptographic algorithms, canonical format and exact retention/expiry/resource values
-remain decisions before their owning implementation tasks. No homegrown cryptography,
-origin HTTPS MITM or temporary plaintext credential logging is permitted.
+Accepted cryptographic/canonical profiles are recorded in D11/D30-D35 and their
+completed P1 reviews; D46-D49 define the accepted admission/clock/transport limits.
+Other retention, expiry and resource choices retain their owning decision gates.
+No homegrown cryptography, origin HTTPS MITM or temporary plaintext credential
+logging is permitted.
 
 ## Residual risks and release evidence
 

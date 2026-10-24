@@ -1,6 +1,9 @@
 # Encrypted secret records and key lifecycle
 
-Status: owner-accepted D30-D33 profile; implementation/acceptance in progress.
+Status: **D30-D33 component completed in PR8 with normal merge and exact-main checks**;
+[evidence and platform limits](../planning/P1_07_SECRET_REVIEW.md). Reviewed 2026-10-23.
+P1-05 snapshot signing and P1-06 local activation also completed their separate gates;
+this document does not claim P6 provisioning/auth/export or full backup acceptance.
 First server target: unprivileged Debian 13 x86_64. No production deployment here.
 
 `droutex-security` owns key material and redacted, zeroizing plaintext buffers.
@@ -32,8 +35,9 @@ The expected context is supplied independently by the trusted consumer. Unknown
 version/suite/purpose, invalid IDs/lengths and trailing bytes are rejected before
 cryptography. A structurally valid envelope is not authenticated until decryption.
 AEAD does not prove freshness, prevent DB rollback or verify resolver tokens;
-P1-05/P3-07 retain those gates. Snapshot authentication uses a separate purpose/key
-design; encryption keys are not signing keys.
+[P1-05](../planning/P1_05_SNAPSHOT_REVIEW.md) supplies separate snapshot authentication;
+P3-07 resolver-token verification remains a later gate. Snapshot authentication
+uses a separate purpose/key design; encryption keys are not signing keys.
 
 Logical secret changes create a new SecretRefId. Rotation re-encrypts a record
 under the active key with a new nonce, preserving its reference/purpose. SQLite

@@ -4,7 +4,10 @@ Scope: user accepted **DNS/proxy MVP before tunnels**, CR-0001 on 2026-10-15.
 [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md) records the explicit
 override to original §23.2/§24.1/§24.2 ordering. Technical mechanisms remain proposed.
 Private Linux VPS, separate ports, strict proxy fail-closed and owner plus later admins are confirmed.
-The owner accepted P0-01/CR-0002 on 2026-10-15 and authorized work through P0-02:
+The owner accepted P0-01/CR-0002 on 2026-10-15 and initially authorized work through P0-02.
+Later roadmap continuation and current scope are recorded in the
+[current execution card](EXECUTION_STATUS.md); that initial limit is superseded.
+Foundation sources:
 [contracts and design walkthroughs](P0_01_FOUNDATION_REVIEW.md),
 [threat model](../security/THREAT_MODEL.md). No technical ADR was automatically accepted.
 
@@ -104,6 +107,7 @@ IPv6/QUIC/application enforcement.
 | D47 | Owner accepted full bounded legacy DNS transport profile after checked PR107: D46 per-query admission, UDP1232/3x, framed TCP/ingress/buffer/deadline/shutdown limits and initial SERVFAIL until real handlers. Qualify exact Hickory0.26.3 std and Tokio1.53.3 networking/io/macros before conditional production adoption. No public deployment or new license exception. | P3-01 | Direct owner reply2026-10-22 accepting .setup/p3-01/listener-design-proposal.md; [contract](P3_01_LISTENER_CONTRACT.md) |
 | D48 | Owner clarified D47 timeout fallback: processor at most1500ms from query start, remaining500ms reserved inside the original two-second total for SERVFAIL encoding/write; total expiry or lost admission drops/closes. No extra two-second write phase. | P3-01 | Direct owner reply2026-10-22 accepting .setup/p3-01/timeout-budget-proposal.md; [contract](P3_01_LISTENER_CONTRACT.md) |
 | D49 | Owner selected explicit UDP addresses now: refuse0.0.0.0/:: before workers start, and refuse an old explicit socket after wildcard republication. Preserve schema and TCP wildcard; qualify destination-aware UDP I/O separately before later support. No new dependency/unsafe I/O/interface enumeration. | P3-01 | Direct owner reply2026-10-22: explicit UDP addresses now; .setup/p3-01/wildcard-binding-proposal.md and [contract](P3_01_LISTENER_CONTRACT.md) |
+| D50 | Owner accepted one bounded checkpoint completion wait/recheck per gate within the original deadlines. Retain the original reservation/generation/scope/quota; no ready I/O until actual authority is checked again. Generic unavailable waits only for known pending maintenance; other/second refusals remain closed. | P3-01 | Direct owner reply2026-10-23 selecting bounded checkpoint wait; [contract](P3_01_CHECKPOINT_WAIT_CONTRACT.md) |
 
 ## P2-06 review dispositions
 
@@ -276,9 +280,18 @@ below are assessed individually; no finding, failed status or protection is supp
 
 ## P3-01 review dispositions
 
+Resolved behavior decision D50: final PR110 CI39896580361 failed a pending-processor TCP
+reply after a clean earlier head. The actual held-admission/checkpoint-gap probe
+and options are in [the accepted contract](P3_01_CHECKPOINT_WAIT_CONTRACT.md).
+The owner selected bounded checkpoint wait/recheck, retaining the original
+reservation and all current authority checks. Its implementation requires fresh
+review/platform evidence. No CI retry, earlier clean review or score disposition
+closes those gates.
+
 | Item | Finding, impact and rationale | Owning task / revisit trigger |
 |---|---|---|
 | P3-01-CS-AUX | CodeScene8074936 failed the auxiliary planning hotspots: test_foundation_acceptance_and_execution_limit_are_required9.24->9.20 and validate_review_boundary8.82->8.80. New D47/completed P4 checks increase future editing effort but preserve direct owner acceptance/prerequisite refusal. Nineteen planning tests,9 negative cases and independent standards/spec review passed. No production file changed, no functional validator defect remains and the owner excludes auxiliary tools/tests from independent metric targets; no score-only split or suppression. Other two CodeScene gates passed. | Next actual execution-boundary change or a concrete validator defect, including the later real seventh-crate adoption after qualification. Preserve rejection tests and source-spec protection. |
+| P3-01-CS-D50 | CodeScene8090195 on759afbb failed two gates: auxiliary Complex Method(verify8.75->8.72, test9.15->9.13), test Bumpy Road(10.00->9.38), and checked_submit Bumpy Road(runtime7.61->7.29);8090320 retains those findings with runtime7.07 after the notification correction. 8090428 reports runtime7.16 and adds wait_checkpoint to checked_submit; its identity-selection branches explicitly refuse known failure, skipped operations and later success under the same bounded wait. The nested async/poll loop retains one pinned I/O future across one wait and checks authority before every resume; changing those ownership boundaries only for the score has no demonstrated behavior benefit. The maintainability risk is future modification of deadline/retry paths. Independent inspection and focused negative/real-TCP tests support keeping the explicit structure. Real notification and failed-operation retry defects are corrected separately under mandatory fresh account/platform checks; this disposition does not defer them. Auxiliary/test scores are excluded as independent metric targets. Raw service failure is retained, without suppression. | P3-01 until checked completion; re-evaluate before P3-02 changes submission/processor paths, or immediately for a concrete authority/deadline/cancellation defect. |
 | P3-01-CS-RUNTIME | CodeScene8076431 failed new-file health(runtime7.81) and critical Bumpy Road in serve;8081708 reports7.61 and additionally flags Binding.check. Large/Complex Method, finish branching, overall complexity and worker/job argument counts identify minor future maintenance risk. Source and independent standards/spec inspection confirm one owned JoinSet, bounded channel/permits, common cleanup, per-resume deadline/authority checks and actual5s abort/join/socket-release tests. Binding.check adds only D49's explicit transport/address refusal before signed binding equality; its bounded red/green refusal and explicit UDP/TCP positives preserve this required distinction. No current functional defect follows from those scores; immediate restructuring has no demonstrated behavior benefit and would move already audited ownership paths. All three service gates remain failed; no suppression/score-only split. The separate wildcard defect received the owner-accepted D49 correction and a clean linked-account corrective review; platform/final acceptance remains separate. | Before P3-02 changes runtime lifecycle/processor paths, or immediately on a concrete cancellation/deadline/admission/resource-release defect. Preserve behavior and all negative tests. |
 | P3-01-CS-WIRE | CodeScene8076431/8081708 flags wire7.91 parse Complex Method/Conditional and compound answer/encode guards. Minor maintenance impact when extending accepted protocol boundaries; current guards directly enforce header counts, original OPT-byte accounting, canonical policy names and bounded encoded question/ID/length. Independent fixtures and source review found no current bypass; splitting merely for the score could obscure the security boundary. No immediate functional repair is indicated by this finding; gate failure is retained. | Before expanding opcodes/classes/EDNS/options/response semantics in P3-02..04, or a concrete parser/encoder defect. |
 | P3-01-CS-AUX-RUNTIME | CodeScene8076431 planning hotspots declined test_foundation...9.20->9.18 and validate_review_boundary8.80->8.77 from explicit D48 owner-decision refusal checks;8081708 reports9.15/8.75 after the equivalent D49 refusal checks. These excluded auxiliary tools/tests retain19 passing planning tests and9 negative cases; no concrete validator defect was found. Owner-selected scope excludes independent score cleanup; no suppression or threshold change. | A real authorization/inventory defect or the next execution-boundary change; keep refusal cases and source specifications unchanged. |
@@ -297,3 +310,26 @@ below are assessed individually; no finding, failed status or protection is supp
 | Premature engine/helper implementation | Expanded privilege/scope | MVP delivery closure validator; P5/P10-01 gated after P11-06 |
 | Later AWG/TUN/Xray/helper risks | Post-MVP integration/security | Retained P5-10 actual-engine/segmentation/helper acceptance |
 | External quality service unavailable | Missing external evidence | Local gates continue; explicit activation blockers |
+
+## Development guidance maintenance, 2026-10-23
+
+Owner-authorized documentation maintenance implements the seven reviewed proposals.
+AGENTS now contains standing rules, authority navigation and three focused review
+rules; per-PR metrics and superseded holds remain in task evidence/history.
+QUALITY_STRATEGY explicitly records minor external-finding dispositions without
+changing raw failed statuses, mandatory checks, review or branch protections.
+Security documents distinguish completed component evidence from pending product
+acceptance; SECURITY.md defines private reporting and no guaranteed response SLA.
+The owner chose enabling GitHub Private Vulnerability Reporting; the API confirmed
+enabled on 2026-10-23. No base specification, ADR acceptance status, dependency,
+runtime behavior, deployment scope or existing security requirement was changed.
+See [the maintenance record](EXECUTION_STATUS.md#development-guidance-maintenance-2026-10-23).
+
+Concrete navigation-tool limitation: tools/build_doc_graph.py --refresh-planning
+uses a historical AST baseline and proposed reducing the existing 4944-node graph
+to 1381 nodes, including unrelated source nodes. Its safety guard refused the write;
+graph.json remains intact but changed documentation headings may be stale. Defer
+baseline repair to a graph-tooling task before relying on it for these changed docs;
+use current Markdown/source inspection meanwhile. This is supplementary navigation,
+not an application acceptance or security-control failure; no forced overwrite or
+unrelated tool rewrite is part of this documentation change.

@@ -1,6 +1,81 @@
 # Bounded execution goal and repository handoff
 
-Date: 2026-10-22. Current stage: **P0/P1/P2/P4-01 complete; PR107 merged and exact-main verified; D47 P3-01 accepted, qualifier PR108 merged/exact-main verified; runtime implementation in progress**.
+## Current execution card
+
+Reviewed 2026-10-24. This card is the current work/authorization entry point;
+[backlog.json](backlog.json) is canonical for task status/dependencies/delivery.
+Task reviews hold exact acceptance evidence. Later dated evidence supersedes
+historical checkpoints below; reconcile conflicts before dependent work.
+
+- Completed: P0, P1 (including P1-05/PR9 and P1-06/PR11), all seven P2 tasks and
+  P4-01/PR107; their normal merge and exact-main evidence is linked below.
+- Active completion: P3-01 bounded DNS transport. Dependency qualification PR108
+  is complete; runtime PR109 merged at4890609 with a successful exact-main retry.
+  Corrective PR110 implements the independently proven fixture-start correction
+  and owner-accepted [D50 checkpoint wait](P3_01_CHECKPOINT_WAIT_CONTRACT.md)
+  under [D47/D48/D49](P3_01_LISTENER_CONTRACT.md). It remains unmerged pending
+  final-head account review/checks and normal merge/exact-main evidence.
+- Fresh verification on2026-10-24 confirmed all11 CI39902543783 jobs successful
+  onf83b8266368a6a550bce993239c31b337bfccbd6. Actual logs passed243 Windows/275
+  Linux tests per default/no-default profile, zero failed/ignored/filtered;
+  DNS42/43 includes mandatory IPv6 and Linux CP-loss/checkpoint failures. Both
+  Codecov uploads processed(Rust7904/8287; new production lines134/134 hit).
+- Completed linked-account corrective review01a16dd2-9631-7382-8b16-a8e03795bf13
+  found no confirmed defect onf83b826. The earlier quota-interrupted attempt is
+  unverified and does not count as review. The two concrete earlier account
+  findings (lost completion and retry after failed maintenance) were corrected
+  with deterministic negative/red regressions. The watch selects one explicit
+  operation identity/outcome; failure/supersession refuses, and Unavailable never
+  requests new maintenance. See [the complete evidence](P3_01_LISTENER_REVIEW.md).
+  Historical failed CI attempts and review findings remain recorded there;
+  no earlier green head replaces final-head/merge/main gates.
+- Recorded CodeScene failures and concrete minor dispositions remain failed and
+  documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
+  No suppression, branch-protection bypass or CI-status exception is authorized.
+- D49 allows explicit UDP IPv4/IPv6 bind addresses only; reject 0.0.0.0/:: before
+  workers, preserving schema/TCP wildcard support. D48 allocates 1500ms processing
+  plus the remaining 500ms reply within the original 2s total. Lost/expired
+  admission never receives a fallback.
+- No public deployment, management endpoint, TLS/recursion/cache/secure learning or
+  actual origin connector is authorized by P3-01. Admitted valid DNS queries return
+  SERVFAIL until their later handlers. Development-host IPv6 failure does not
+  waive mandatory clean-CI IPv6 or authorize host-network changes.
+- The owner already accepted isolated hickory-net0.26.3 defaults-off/tokio
+  qualification after checked P3-01 completion in the previous continuation chat.
+  No client qualification implementation or production adoption has begun.
+  Upstream resources, fallback and application limits retain their separate gate.
+
+## Development guidance maintenance, 2026-10-23
+
+The owner authorized implementing all seven documentation-review proposals:
+remove stale holds, shorten AGENTS and define source authority, consolidate
+clarifications, reconcile external-finding dispositions, update security control
+status/evidence, add SECURITY.md and add focused PR review rules. This is maintenance
+of the current project, not a next implementation task or a change to runtime contracts.
+Historical results remain in task reports/Git history; base EN/RU specs and ADR
+acceptance states are preserved. The owner also authorized GitHub-account PR
+comments/Codex review requests and chose GitHub Private Vulnerability Reporting.
+Its API state changed from disabled to enabled and was read back as enabled on
+2026-10-23. No response/remediation SLA is promised.
+Documentation validation: the planning validator and its nine negative cases passed;
+88 tasks, 61-task MVP closure, 188 requirement mappings and 17 ADRs (two Accepted)
+remain consistent, and both source specifications retain their qualified hashes.
+Changed Markdown paths and heading anchors were checked, including new SECURITY.md;
+the full diff and whitespace checks passed. No Cargo/network suite was run for prose
+changes, and no runtime CI/coverage/review pass is claimed by this validation.
+The validator's generated report was restored to its prior bytes to avoid publishing
+an unrelated generated artifact; this maintenance changes Markdown only.
+The local document-graph refresh was refused: the historical AST baseline would
+reduce graph.json from 4944 to 1381 nodes, including unrelated native/source nodes.
+graph.json was preserved without forcing an overwrite. Use current sources for
+changed instructions; repair the graph refresh baseline at a separate tooling task.
+
+## Historical implementation and authorization record
+
+The following records preserve earlier checkpoints, including superseded holds.
+Their then-current words and test counts do not override the execution card,
+completed task evidence or later owner decisions.
+
 Repository: [romanpodg/DRouteX](https://github.com/romanpodg/DRouteX).
 Owner-authorized project maintenance: [DRouteX rename](DROUTEX_RENAME.md).
 Foundation: [PR #1](https://github.com/romanpodg/DRouteX/pull/1) merged on
@@ -223,7 +298,7 @@ See [snapshot review](P1_05_SNAPSHOT_REVIEW.md).
 See D30-D33 and the secret review.
 See D29 and [the revision review](P1_04_REVISION_REVIEW.md).
 
-## Owner decisions and current progress
+## Historical owner decisions and foundation progress
 
 The owner explicitly accepted [P0-01/CR-0002](P0_01_FOUNDATION_REVIEW.md) in this chat
 on 2026-10-15 and instructed continuation through P0-02. Accepted foundation:
@@ -239,23 +314,19 @@ real cargo-deny license failure the owner chose **Apache-2.0** for original DRou
 code, rather than deferring the check. LICENSE and workspace metadata record it;
 third-party licenses are preserved. D14's external notices/inventory work remains.
 
-Current backlog: **11 completed (P0-01 through P0-05, P1-01 through P1-05 and P1-07), 77 planned**.
-Eleven of the 61 MVP tasks have task evidence; P0-04 closes by explicit owner acceptance
-with the deferred evidence below, not by claiming every acceptance test passed.
-The application foundation exists; there is no running DNS resolver, TCP gateway,
-controller, frontend or product network-test evidence. SQLite storage is implemented and reviewed. P1/P2 features are
-not passed by a workspace bootstrap. P1-05 acceptance now has exact implementation
-review and Windows/Linux evidence; PR9 final current-head review/checks and normal
-merge still precede any next implementation PR. P1-06 is planned, not implemented.
+The pre-PR9 checkpoint had 11 completed tasks. PR9, P1-06 and all seven P2 tasks
+subsequently completed their recorded merge/main gates; see the current card and
+task reviews. The earlier PR9-before-P1-06 hold is satisfied and must not restart
+a completed PR loop. Product networking/deployment acceptance remains separate.
 
 On 2026-10-18 the owner reaffirmed continuation under the already renamed DRouteX:
 P1-05 after a separately authorized weak-key resolution, then P1-06, then P2.
 The [roadmap continuation order](DEVELOPMENT_ROADMAP.md#current-continuation-order-under-droutex)
 records acceptance boundaries, including P2-07 before P2-05 and later real-service
 DNS/gateway evidence. No security resolution or new dependency is authorized by
-this ordering. Read-only GitHub verification confirmed rename PR #10 merged at
-`9f1aa92b50bd2efd745a96104b0d3c9694764d38` and PR #9 still open/draft at
-`0c3084daf16d54288791461c83f15573c191ae23`; local prototype changes are preserved.
+this ordering. At that historical checkpoint, read-only GitHub verification confirmed rename
+PR #10 merged at `9f1aa92b50bd2efd745a96104b0d3c9694764d38` and PR #9 open/draft
+at `0c3084daf16d54288791461c83f15573c191ae23`. PR9's later merge supersedes that status.
 
 Prepared work includes preserved EN/RU specifications, accepted CR-0001/CR-0002,
 17 ADRs (only ADR-0016/0017 Accepted), threat model, W1-W3/F1-F5 design walkthroughs,
@@ -423,7 +494,7 @@ Copilot's only review reported quota exhaustion, not successful code review.
 [Codecov integration](../quality/CODECOV_INTEGRATION.md) preserve service activation
 and earlier report evidence. No product CodeScene/Codecov pass is inferred from setup.
 
-## Stopping condition and continuation
+## Historical stopping conditions and continuation
 
 P0-02 is closed after full-diff review, local checks and actual Windows/Linux build
 results. The owner subsequently authorized P0-03 and the WSL lab variant. P0-03
@@ -444,21 +515,9 @@ Reuse that heartbeat for authorized roadmap continuation; preserve its cadence a
 notification policy. It must not repeat the completed PR #1 loop or send routine
 unchanged-state updates. Await owner answers for consequential unresolved choices.
 
-P1-05 continuation hold2026-10-18: all11 qualification jobs39063908865 and independent
-read-only/never review completed on0c3084d. The owner accepted D11, then chose to
-leave the subsequent weak-key security gate open. PR9 remains draft; implementation
-prototype is local/uncommitted/unreviewed. Do not qualify/adopt ed25519-dalek, merge,
-repeat the answered question or start another implementation PR without a new owner
-authorization. See P1-05-WEAK-TRUST and `.setup/roadmap-autopilot-state.json`.
-
-D35 update2026-10-18: the owner subsequently approved ed25519-dalek3.0.0
-qualification and conditional adoption after successful Windows/Linux tests,
-dependency/license checks and independent review. This supersedes the earlier
-no-qualification hold; production acceptance and PR merge remain evidence-gated.
-
-P1-05 acceptance2026-10-18: weak/noncanonical trust is fixed; qualifier3bd7db9 and
-implementationcd0e2c5 passed independent read-only/never reviews and all11 jobs on
-each exact head. Codecov Rust patch597/621 is actual base9f1aa92 comparison;
-backend2582/2719. CodeScene8006231 remains failed with source-based minor
-maintenance dispositions. See P1_05_SNAPSHOT_REVIEW.md and OPEN_DECISIONS.md.
-No P1-06 durable activation, P2 policy compiler or runtime DNS/gateway is claimed.
+The historical 2026-10-18 P1-05 weak-key hold was superseded by owner-approved
+D35 qualification/adoption, completed implementation/final reviews and normal
+PR9 merge. P1-06 then completed under D36. The original defect, qualification,
+597/621 patch result and failed maintenance checks are preserved in
+[P1-05 evidence](P1_05_SNAPSHOT_REVIEW.md), [P1-06 evidence](P1_06_ACTIVATION_REVIEW.md)
+and OPEN_DECISIONS. Those old holds are not current commands or new approvals.

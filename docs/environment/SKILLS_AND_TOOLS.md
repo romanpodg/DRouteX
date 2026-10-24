@@ -1,6 +1,9 @@
 # Skills and developer tool usage
 
-Date: 2026-10-15. Product spec and user requirements outrank generic skill preferences.
+Installation/provenance snapshot: 2026-10-15. Product spec and user requirements
+outrank generic skill preferences. Historical availability/setup observations below
+are not current implementation status; use [EXECUTION_STATUS](../planning/EXECUTION_STATUS.md)
+and the [Rust guide](../agents/rust.md) for active work and commands.
 
 ## Installed capabilities and invocation
 
@@ -66,7 +69,8 @@ unrelated setup/router skills were not installed without need.
 
 Read-only availability task: app-server skills/list forceReload discovered all 21 expected
 entrypoints without starting a model turn or touching application logic. Installed files and
-resource hashes matched upstream. No actual Rust application review/test is possible yet.
+resource hashes matched upstream. That discovery-only run did not review or test
+application behavior; subsequent implementation/review evidence is in owning task reports.
 
 ## Instruction conflict resolutions
 
@@ -79,7 +83,8 @@ resource hashes matched upstream. No actual Rust application review/test is poss
   required for the later protocol expansion; they are not current MVP prerequisites.
 - Unsafe skill Miri guidance does not cause automatic nightly installation; isolated justified
   investigation requires separate evidence and does not replace FFI/network tests.
-- Setup/pre-commit skills are installed but no active hook/CI workspace is created in this session.
+- Setup/pre-commit skills are user-invoked; installation did not authorize hook execution.
+  Active CI is defined in the tracked workflow, not by this historical setup session.
   No destructive probe commits/resets from generic skill examples are executed.
 - Graphify query-first guidance is scoped navigation assistance; fresh relevant source inspection,
   specification and test evidence remain authoritative. Local graph outputs are never committed.

@@ -158,6 +158,16 @@ pub struct AdmissionAttempt<'store> {
     reservation: Reservation<'store>,
     scope: AdmissionScope,
 }
+/// Consumption either authorizes the original reservation or returns its owner.
+/// A refusal is not permission; retrying must recheck this same reservation.
+#[derive(Debug)]
+pub enum AdmissionConsumption<'store> {
+    Authorized(AuthorizedRequest<'store>),
+    Refused {
+        attempt: AdmissionAttempt<'store>,
+        error: AdmissionError,
+    },
+}
 impl fmt::Debug for AdmissionAttempt<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("AdmissionAttempt")
@@ -192,8 +202,21 @@ impl<'store> AdmissionAttempt<'store> {
     /// Linearization point: current publication read lock plus current lease check.
     /// The result authorizes one bounded attempt, never an origin address or socket.
     pub fn consume(self) -> Result<AuthorizedRequest<'store>> {
-        self.reservation.check_current()?;
-        Ok(AuthorizedRequest { attempt: self })
+        match self.try_consume() {
+            AdmissionConsumption::Authorized(auth) => Ok(auth),
+            AdmissionConsumption::Refused { error, .. } => Err(error),
+        }
+    }
+    /// Check current authority without losing ownership on refusal. This neither
+    /// re-pins a generation nor releases/reacquires or refunds the quota charge.
+    pub fn try_consume(self) -> AdmissionConsumption<'store> {
+        match self.reservation.check_current() {
+            Ok(()) => AdmissionConsumption::Authorized(AuthorizedRequest { attempt: self }),
+            Err(error) => AdmissionConsumption::Refused {
+                attempt: self,
+                error,
+            },
+        }
     }
 }
 impl Drop for Reservation<'_> {
