@@ -4,7 +4,8 @@ Status: **Option A accepted by the owner on 2026-10-23 by direct chat reply.**
 Implementation is authorized under these bounds and remains review/check gated.
 D50 clarifies transport handling under [D47/D48/D49](P3_01_LISTENER_CONTRACT.md).
 The [D46 clock/admission checks](P4_01_BINDING_CONTRACT.md) retain their refusal
-semantics. PR110 remains unmerged.
+semantics. PR110 completed normal merge and exact-main gates; see
+[the recorded completion](P3_01_LISTENER_REVIEW.md#normal-merge-and-exact-main-completion).
 
 ## Evidence and problem
 

@@ -1,10 +1,9 @@
 # P3-01 transport evidence
 
-Status: **qualification PR108 completed; runtime PR109 merged normally with a
-successful exact-main retry. Corrective PR110's D50 implementationf83b826 passed
-fresh platform/report checks and completed account review without confirmed
-defects. Final evidence-head review/checks, normal merge and exact-main remain
-open. P3-01 remains in progress**. The owner accepted
+Status: **P3-01 completed. Qualification PR108, runtime PR109 and corrective
+PR110 completed their normal merge/exact-main gates. Final PR110 head959233a
+received completed whole-PR account review; mergeaaaaad96 passed all11 jobs and
+both processed reports on2026-10-24.** The owner accepted
 complete D47 conditionally on checked PR107. Before qualification code, PR107
 merged normally at02b6695928a64c37de5e073a4bdb5162f1928c54; all11 exact-main39747433154
 jobs and both Codecov sessions processed(Rust6689/7013). See
@@ -527,3 +526,34 @@ defect. The updated [minor disposition](OPEN_DECISIONS.md#p3-01-review-dispositi
 retains the raw failed status and requires re-evaluation before P3-02 changes these
 paths. No finding or protection was suppressed. Final evidence-head account
 review/checks, normal exact-head merge and exact-main gates remain mandatory.
+
+## Normal merge and exact-main completion
+
+Final959233a0bcbe55d83cdbe1566d43676d3b65b475 received completed linked-account
+read-only/never whole-PR review01a16dd8-3b5b-7321-acd8-956c5051ab7e, exit0,
+without confirmed regressions. Fmt/diff passed; Cargo read-only build locks
+prevented reviewer rebuilds. All11 [final-head40093309453 jobs](https://github.com/romanpodg/DRouteX/actions/runs/40093309453)
+passed with243 Windows/275 Linux workspace tests per default/no-default profile,
+zero failed/ignored/filtered. Both Codecov uploads processed(Rust7904/8287).
+CodeScene8109214 failed with identical concrete finding text and numeric tables
+to8090428, apart from the analysis link. Existing recorded minor dispositions
+apply; the raw failed status remains, without suppression or a check exception.
+GitHub reported main unprotected and no active ruleset. No protection or policy
+was changed or bypassed; normal merge matched the exact reviewed head.
+
+[PR110](https://github.com/romanpodg/DRouteX/pull/110) merged at
+aaaaad96c268c51e8c9770537473bec38dd2563c on2026-10-24T12:24:39Z. All11
+[exact-main40093808649 jobs](https://github.com/romanpodg/DRouteX/actions/runs/40093808649)
+completed/success on the first attempt. Actual workspace logs passed243 Windows/
+275 Linux cases in each default/no-default profile, zero failed/ignored/filtered.
+DNS42/43 retains actual IPv6, partial TCP frame preservation, real next-window
+admission, negative/failure/shutdown cases and Linux durable CP-loss/checkpoint
+failures. All six dependency bundles passed. Both exact-merge Codecov uploads
+processed(Rust7904/8287); successful upload alone was not counted as processing.
+
+P3-01 is complete at its accepted bounded-library scope. Earlier failed runs,
+review findings and quota interruption remain recorded; no retrospective pass is
+claimed. Native public deployment, forwarding/cache/secure learning and actual
+origin dialing remain outside this stage. The previously accepted isolated
+P3-02 client qualification is now eligible after this verified prerequisite; its
+implementation and production adoption have not started.
