@@ -171,10 +171,9 @@ impl Server {
         apply(node.deployment(), &doc, 1);
         let owner = Arc::clone(node.deployment());
         let (stop, shutdown) = watch::channel(false);
-        let (started, observed) = oneshot::channel();
-        let handle = tokio::spawn(async move {
-            ready.await;
-            let serving = runtime::serve(
+        let handle = start_runtime(
+            ready,
+            runtime::serve(
                 node.deployment,
                 vec![
                     ListenerSocket::Udp {
@@ -188,25 +187,9 @@ impl Server {
                 ],
                 shutdown,
                 processor,
-            );
-            tokio::pin!(serving);
-            let mut started = Some(started);
-            poll_fn(|context| {
-                let outcome = serving.as_mut().poll(context);
-                if let Some(started) = started.take() {
-                    let _ = started.send(());
-                }
-                outcome
-            })
-            .await
-        });
-        timeout(Duration::from_secs(3), observed)
-            .await
-            .expect("DNS fixture runtime did not start")
-            .expect("DNS fixture runtime ended before its first poll");
-        // Empty-start rate buckets begin inside serve's first poll. Warm them
-        // only after that poll, independent of when the spawned task was scheduled.
-        sleep(Duration::from_millis(40)).await;
+            ),
+        )
+        .await;
         Self {
             owner,
             doc,
@@ -229,6 +212,69 @@ impl Server {
         report
     }
 }
+async fn start_runtime(
+    ready: impl Future<Output = ()> + Send + 'static,
+    serving: impl Future<Output = Result<ShutdownReport>> + Send + 'static,
+) -> JoinHandle<Result<ShutdownReport>> {
+    let (started, observed) = oneshot::channel();
+    let handle = tokio::spawn(async move {
+        ready.await;
+        tokio::pin!(serving);
+        let mut started = Some(started);
+        poll_fn(|context| {
+            let outcome = serving.as_mut().poll(context);
+            if let Some(started) = started.take() {
+                let _ = started.send(());
+            }
+            outcome
+        })
+        .await
+    });
+    timeout(Duration::from_secs(3), observed)
+        .await
+        .expect("DNS fixture runtime did not start")
+        .expect("DNS fixture runtime ended before its first poll");
+    // Intake buckets begin inside serve's first poll; warm up only after it.
+    sleep(Duration::from_millis(40)).await;
+    handle
+}
+async fn exchange_once(server: &Server, bytes: &[u8]) -> Vec<u8> {
+    let client = UdpSocket::bind((server.udp.ip(), 0)).await.unwrap();
+    client.send_to(bytes, server.udp).await.unwrap();
+    let mut response = [0; MAX_UDP_BYTES + 1];
+    let (length, peer) = timeout(Duration::from_secs(3), client.recv_from(&mut response))
+        .await
+        .expect("no reply to the single fixture datagram")
+        .unwrap();
+    assert_eq!(peer, server.udp);
+    response[..length].to_vec()
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn single_datagram_exchange_never_retransmits_a_delayed_authorized_query() {
+    let probe = Arc::new(Probe {
+        blocked: true,
+        ..Probe::default()
+    });
+    let server = Server::start(v4(), Arc::clone(&probe)).await;
+    let release = async {
+        timeout(Duration::from_secs(2), probe.entered.notified())
+            .await
+            .unwrap();
+        // Longer than the general retry helper's 100ms resend interval.
+        sleep(Duration::from_millis(150)).await;
+        assert_eq!(
+            probe.calls.load(Ordering::Relaxed),
+            1,
+            "single exchange retransmitted its query"
+        );
+        probe.release.notify_waiters();
+    };
+    let (response, ()) = tokio::join!(exchange_once(&server, QUERY), release);
+    assert_eq!(Message::from_vec(&response).unwrap().metadata.id, 1234);
+    assert_eq!(server.close().await.answered, 1);
+}
+
 fn v4() -> IpAddr {
     IpAddr::V4(Ipv4Addr::LOCALHOST)
 }

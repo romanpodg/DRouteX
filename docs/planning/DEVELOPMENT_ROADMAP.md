@@ -91,14 +91,15 @@ gates; see the execution card and their task evidence. Their historical weak-key
 and qualification holds do not block completed work. The owner accepted D45:
 P4-01 current authorization precedes P3-01 public transport in the dependency DAG.
 
-P3-01 bounded DNS transport completed normal merge and exact-main gates through
-runtime PR109 and corrective PR110 on2026-10-24. The owner-accepted
-[D47/D48/D49/D50 contract](P3_01_LISTENER_CONTRACT.md) and
-[P3-01 evidence](P3_01_LISTENER_REVIEW.md) define that completed library boundary.
-The next authorized work is isolated hickory-net0.26.3 defaults-off/tokio
-qualification; it has not started. P3-02 forwarding resources/fallback/application
-behavior and production adoption retain their separate owning contract. Library
-completion does not establish product deployment or upstream resolution.
+P3-01 runtime delivery completed normal merge/exact-main gates through PR109
+and corrective PR110 on2026-10-24. A later exact-main run after completion-docs
+PR111 failed the durable Linux fixture's strict answer counter; P3-01 is reopened
+until its single-datagram fixture correction passes fresh review/head/merge/main
+checks. The [D47/D48/D49/D50 contract](P3_01_LISTENER_CONTRACT.md) and
+[P3-01 evidence](P3_01_LISTENER_REVIEW.md) preserve both the checked runtime and
+later failed run. Isolated hickory-net0.26.3 defaults-off/tokio qualification
+remains accepted but paused behind that correction. P3-02 application resources,
+fallback and production adoption still need their separate owning contract.
 
 Finish and merge each authorized implementation PR before starting the next.
 Subsequent work follows the DAG and owning acceptance contracts. P1-06 library

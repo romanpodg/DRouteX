@@ -7,10 +7,22 @@ Reviewed 2026-10-24. This card is the current work/authorization entry point;
 Task reviews hold exact acceptance evidence. Later dated evidence supersedes
 historical checkpoints below; reconcile conflicts before dependent work.
 
-- Completed: P0, P1, all seven P2 tasks, P4-01 and P3-01 bounded legacy DNS
-  transport. PR108 qualified the selected transport dependencies; PR109 and its
-  corrective PR110 completed normal merge and exact-main gates. Task evidence
-  remains linked below; historical failed attempts do not become passes.
+- Completed: P0, P1, all seven P2 tasks and P4-01. P3-01's reviewed runtime
+  delivery passed PR110's normal merge/exact-main gates, but is temporarily
+  reopened after the later PR111 documentation merge's Linux fixture failure.
+- Active: correct the count-sensitive durable Linux fixture before the next
+  qualification. Exact-main40095014751 failed Linux Workspace and coverage at
+  answered=2 versus1; the other eight jobs passed and Codecov upload was skipped.
+  The negative post-checkpoint receive timeout and clock-failure checks passed.
+  A controlled delayed reply reproduces the retrying helper's extra query.
+  Use one datagram and shared bounded startup, preserving the exact counter and
+  persistence-failure assertions. Fresh Linux/head/review/merge/main gates remain.
+- Corrective head eb7cdd1 passed all11 CI40096126267 jobs:244 Windows/276 Linux
+  workspace tests per default/no-default profile, zero failed/ignored/filtered.
+  The real Linux fixture's unchanged strict assertions passed in both profiles
+  and coverage. Both Codecov reports processed; CodeScene8109427 succeeded.
+  Actual account implementation review found no concrete defect. Final evidence
+  head/review/merge/main gates remain open; the original failed run is retained.
 - PR110 merged normally on2026-10-24T12:24:39Z at
   aaaaad96c268c51e8c9770537473bec38dd2563c, matching reviewed final head959233a.
   All11 exact-main40093808649 jobs passed. Actual logs passed243 Windows/275
@@ -25,10 +37,10 @@ historical checkpoints below; reconcile conflicts before dependent work.
   [P3-01 evidence](P3_01_LISTENER_REVIEW.md) and
   [accepted D50](P3_01_CHECKPOINT_WAIT_CONTRACT.md).
 - Next authorized scope is the previously accepted isolated hickory-net0.26.3
-  defaults-off/tokio qualification after checked P3-01 completion. This prerequisite
-  is now fulfilled; the qualifier has not started. P3-02 application resources,
+  defaults-off/tokio qualification after checked P3-01 completion. The qualifier has
+  not started and is paused behind the current fixture correction. P3-02 resources,
   upstream/fallback policy and production adoption still need their owning contract.
-  The recorded execution boundary remains through completed P3-01; no forwarding
+  The recorded execution boundary remains through P3-01; no forwarding
   implementation, new crate, deployment or infrastructure begins in this update.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).

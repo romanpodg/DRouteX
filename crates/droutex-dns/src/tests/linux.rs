@@ -43,21 +43,25 @@ async fn actual_listener_survives_cp_loss_but_checkpoint_failure_closes_admissio
     );
     apply(&owner, &doc, 1);
     let (stop, shutdown) = watch::channel(false);
-    let handle = tokio::spawn(runtime::serve(
-        Arc::clone(&owner),
-        vec![
-            ListenerSocket::Udp {
-                id: typed(20),
-                socket: udp,
-            },
-            ListenerSocket::Tcp {
-                id: typed(21),
-                socket: tcp,
-            },
-        ],
-        shutdown,
-        wire::UnavailableProcessor,
-    ));
+    let handle = start_runtime(
+        std::future::ready(()),
+        runtime::serve(
+            Arc::clone(&owner),
+            vec![
+                ListenerSocket::Udp {
+                    id: typed(20),
+                    socket: udp,
+                },
+                ListenerSocket::Tcp {
+                    id: typed(21),
+                    socket: tcp,
+                },
+            ],
+            shutdown,
+            wire::UnavailableProcessor,
+        ),
+    )
+    .await;
     let server = Server {
         owner,
         doc,
@@ -69,7 +73,7 @@ async fn actual_listener_survives_cp_loss_but_checkpoint_failure_closes_admissio
     fs::remove_dir(fixture.0.join("cp")).unwrap();
     fs::remove_dir(fixture.0.join("backups")).unwrap();
     assert_eq!(
-        Message::from_vec(&exchange(&server, QUERY).await)
+        Message::from_vec(&exchange_once(&server, QUERY).await)
             .unwrap()
             .metadata
             .response_code,
