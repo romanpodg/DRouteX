@@ -593,3 +593,30 @@ passed locally. Full native Windows DNS attempts each passed42/43 cases with zer
 ignored/filtered, failing only the previously reproduced host IPv6 receive case;
 neither is a full-profile pass. Actual new-head Linux/coverage results remain
 required; do not retry the failed run into a pass.
+
+## Single-datagram fixture implementation evidence
+
+Head eb7cdd1506138fc0242470b0327a914d1565cc1e passed all11
+[CI40096126267 jobs](https://github.com/romanpodg/DRouteX/actions/runs/40096126267).
+Actual logs passed244 Windows/276 Linux workspace tests in each default/no-default
+profile, zero failed/ignored/filtered. DNS43/44 includes both the controlled
+delayed-datagram regression and real Linux CP-loss/checkpoint-failure case with
+the unchanged exact answer count. Mandatory actual IPv6, shutdown and all existing
+negative cases passed. All six dependency bundles passed. Both Codecov reports
+processed(Rust7905/8287); this test/documentation delta adds no production Rust
+coverage claim. CodeScene8109427 completed/success; that does not erase historical
+runtime findings or their recorded dispositions.
+
+Completed linked-account read-only/never implementation review
+01a16dfe-6ed2-7573-8db0-7d2edb88e721 exited0 without concrete defects. Fmt/diff
+and the two targeted existing-binary cases passed. Fresh builds/Clippy and native
+Linux were not executed in its read-only environment; the independent actual CI
+above supplies those platform builds. Separate standards/spec passes found no
+defect and retained the distinction between the demonstrated fixture defect and
+the original CI packet-history inference. The local AST-only graph refresh stayed
+untracked at4999 nodes/10642 edges without an API/LLM backend.
+
+Final evidence-head account review/checks, normal exact-head merge and exact-main
+platform/report gates remain required before closing the reopened P3-01 gate or
+starting the accepted isolated client qualification. The failed40095014751 run
+is unchanged and remains failed; no counter or negative assertion was weakened.

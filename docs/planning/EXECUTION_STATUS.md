@@ -17,6 +17,12 @@ historical checkpoints below; reconcile conflicts before dependent work.
   A controlled delayed reply reproduces the retrying helper's extra query.
   Use one datagram and shared bounded startup, preserving the exact counter and
   persistence-failure assertions. Fresh Linux/head/review/merge/main gates remain.
+- Corrective head eb7cdd1 passed all11 CI40096126267 jobs:244 Windows/276 Linux
+  workspace tests per default/no-default profile, zero failed/ignored/filtered.
+  The real Linux fixture's unchanged strict assertions passed in both profiles
+  and coverage. Both Codecov reports processed; CodeScene8109427 succeeded.
+  Actual account implementation review found no concrete defect. Final evidence
+  head/review/merge/main gates remain open; the original failed run is retained.
 - PR110 merged normally on2026-10-24T12:24:39Z at
   aaaaad96c268c51e8c9770537473bec38dd2563c, matching reviewed final head959233a.
   All11 exact-main40093808649 jobs passed. Actual logs passed243 Windows/275
