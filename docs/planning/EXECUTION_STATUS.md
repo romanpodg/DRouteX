@@ -2,58 +2,33 @@
 
 ## Current execution card
 
-Reviewed 2026-10-23. This card is the current work/authorization entry point;
+Reviewed 2026-10-24. This card is the current work/authorization entry point;
 [backlog.json](backlog.json) is canonical for task status/dependencies/delivery.
 Task reviews hold exact acceptance evidence. Later dated evidence supersedes
 historical checkpoints below; reconcile conflicts before dependent work.
 
 - Completed: P0, P1 (including P1-05/PR9 and P1-06/PR11), all seven P2 tasks and
   P4-01/PR107; their normal merge and exact-main evidence is linked below.
-- Active completion: P3-01 bounded DNS transport under accepted D47/D48/D49.
-  PR108 dependency qualification is complete; runtime PR109 merged normally, but
-  corrective PR110 remains unmerged after a final Windows failure. The owner
-  accepted [D50 bounded checkpoint wait](P3_01_CHECKPOINT_WAIT_CONTRACT.md);
-  its narrow implementation is under validation/review.
-  Read [the contract](P3_01_LISTENER_CONTRACT.md) and
-  [the runtime review](P3_01_LISTENER_REVIEW.md).
-- Fresh GitHub verification on 2026-10-23 confirmed all11 final-head jobs and
-  both processed Codecov reports on `1f94fe4d5bdf454f269eaeb8bd9d15f5be7f0469`.
-  Completed linked-account final review found no confirmed defect. PR109 merged
-  normally at `4890609f20839516fbb346505b70a2c208986912`, without bypass.
-- First exact-main39894180552 attempt passed ten jobs but failed Windows TCP
-  split/pipeline reply with UnexpectedEof. Both merge Codecov reports processed;
-  this does not close the failed platform gate. A deterministic fixture-start
-  regression exposed a race in the fixed40ms warmup; the correction preserves
-  production behavior. Its current-head review/checks, merge and exact-main remain
-  open. The original CI refusal's exact cause is not established by that regression.
-- Re-running only the original failed Windows job completed all11 exact-main jobs;
-  attempt1 remains failed. Corrective PR110 head81820e0 passed all11 CI39895933186
-  jobs (230 Windows/262 Linux tests per default/no-default profile, zero ignored/
-  filtered), both processed reports and all3 CodeScene8089824 gates. Completed
-  linked-account implementation review found no confirmed defect. Final evidence
-  head review/checks, normal merge and exact-main remain open.
-- Final PR110 head8027b4f received completed linked-account review without confirmed
-  defects and passed CodeScene8089881. CI39896580361 failed Windows pending-processor
-  TCP reply with UnexpectedEof; the other ten jobs passed. The earlier split/pipeline
-  case and IPv6 passed. No-default Windows was not reached. A local probe reproduced
-  a temporary CheckpointRequired refusal before I/O and validity of the same held
-  reservation after refresh. The owner subsequently selected bounded wait/recheck
-  (D50), retaining original generation/quota and all failure/deadline checks.
-  The new source still needs fresh platform/review/head/merge/main evidence;
-  no next qualification or production deployment is authorized by this clarification.
-- D50 candidate759afbb passed all11 CI39899998540 jobs and both processed reports
-  (240 Windows/272 Linux tests per feature profile; DNS39/40, including IPv6).
-  Linked-account implementation review found a notification race after refusal;
-  this finding blocks merge despite green CI. The correction aligns the watch
-  cursor before each authority check and publishes completion in the blocking
-  worker before pending clears. Deterministic red/green regressions cover both
-  lost-notification windows; fresh account review and full checks remain required.
-- Correctiveb63eae4 passed all11 CI39901233904 jobs and both reports, but its
-  account review found a second P2: stale pending could request another operation
-  after a failed checkpoint. The new watch model selects one explicit operation
-  identity/outcome and refuses failure or supersession; Unavailable never wakes
-  new maintenance. This correction is under fresh review/check gates; green
-  earlier heads do not close the finding or authorize the next qualification.
+- Active completion: P3-01 bounded DNS transport. Dependency qualification PR108
+  is complete; runtime PR109 merged at4890609 with a successful exact-main retry.
+  Corrective PR110 implements the independently proven fixture-start correction
+  and owner-accepted [D50 checkpoint wait](P3_01_CHECKPOINT_WAIT_CONTRACT.md)
+  under [D47/D48/D49](P3_01_LISTENER_CONTRACT.md). It remains unmerged pending
+  final-head account review/checks and normal merge/exact-main evidence.
+- Fresh verification on2026-10-24 confirmed all11 CI39902543783 jobs successful
+  onf83b8266368a6a550bce993239c31b337bfccbd6. Actual logs passed243 Windows/275
+  Linux tests per default/no-default profile, zero failed/ignored/filtered;
+  DNS42/43 includes mandatory IPv6 and Linux CP-loss/checkpoint failures. Both
+  Codecov uploads processed(Rust7904/8287; new production lines134/134 hit).
+- Completed linked-account corrective review01a16dd2-9631-7382-8b16-a8e03795bf13
+  found no confirmed defect onf83b826. The earlier quota-interrupted attempt is
+  unverified and does not count as review. The two concrete earlier account
+  findings (lost completion and retry after failed maintenance) were corrected
+  with deterministic negative/red regressions. The watch selects one explicit
+  operation identity/outcome; failure/supersession refuses, and Unavailable never
+  requests new maintenance. See [the complete evidence](P3_01_LISTENER_REVIEW.md).
+  Historical failed CI attempts and review findings remain recorded there;
+  no earlier green head replaces final-head/merge/main gates.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

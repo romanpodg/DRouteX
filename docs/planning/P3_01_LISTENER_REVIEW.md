@@ -1,9 +1,10 @@
 # P3-01 transport evidence
 
 Status: **qualification PR108 completed; runtime PR109 merged normally with a
-successful exact-main retry. Corrective PR110 remains unmerged: its final Windows
-run failed a different TCP reply case. Owner-accepted D50 bounded checkpoint wait
-is implemented locally under fresh review/check gates. P3-01 remains in progress**. The owner accepted
+successful exact-main retry. Corrective PR110's D50 implementationf83b826 passed
+fresh platform/report checks and completed account review without confirmed
+defects. Final evidence-head review/checks, normal merge and exact-main remain
+open. P3-01 remains in progress**. The owner accepted
 complete D47 conditionally on checked PR107. Before qualification code, PR107
 merged normally at02b6695928a64c37de5e073a4bdb5162f1928c54; all11 exact-main39747433154
 jobs and both Codecov sessions processed(Rust6689/7013). See
@@ -493,3 +494,36 @@ assertion; restoring the source passed. Local Clippy passed without warning/lint
 exceptions, and the forced-join/socket-release case passed with worker-owned
 pending accounting. No new dependency, worker, retry queue or public API was added
 by this correction.
+
+## Reviewed D50 identity implementation, verified 2026-10-24
+
+Headf83b8266368a6a550bce993239c31b337bfccbd6 passed all11
+[CI39902543783 jobs](https://github.com/romanpodg/DRouteX/actions/runs/39902543783).
+Actual workspace logs passed243 Windows/275 Linux tests in each default/no-default
+profile, zero failed/ignored/filtered. DNS42/43 includes actual IPv6 UDP/TCP,
+partial TCP frame preservation, real next-window consumption, failed/superseded
+checkpoint refusals and Linux CP-loss/durable checkpoint failures. All six
+dependency bundles passed. Both Codecov uploads processed(Rust7904/8287;
+actual Rust patch457/465). Excluding test files and cfg(test) modules, all134
+changed executable production lines were hit. This does not exhaust interleavings.
+
+The first review attempt01a16719-7f06-7dd3-b05e-31b6e3ba748a was interrupted by
+an account quota error, exit1; it has no completed verdict and is not a pass.
+On2026-10-24, completed linked-account read-only/never corrective review
+01a16dd2-9631-7382-8b16-a8e03795bf13 againstb63eae4 exited0 without confirmed
+defects. Fmt/diff and13 runtime cases from the existing binary passed; read-only
+Cargo build locks prevented fresh test/Clippy rebuilds. The post-verdict rollout
+warning is retained. Fresh platform CI above supplies independent actual builds.
+Separate standards/spec passes found no remaining defect; their earlier
+known-Failed-before-check finding was fixed and its red mutation failed as recorded.
+
+CodeScene8090428 failed two gates and passed one on this exact head. Auxiliary
+Complex Method and real-window test findings are unchanged. Runtime is7.16:
+Bumpy Road now names wait_checkpoint as well as checked_submit. Inspecting these
+branches confirms explicit refusal for known failure, skipped identities and later
+success, while preserving one operation, original deadline and current-authority
+recheck. This adds future maintenance effort, not a remaining confirmed functional
+defect. The updated [minor disposition](OPEN_DECISIONS.md#p3-01-review-dispositions)
+retains the raw failed status and requires re-evaluation before P3-02 changes these
+paths. No finding or protection was suppressed. Final evidence-head account
+review/checks, normal exact-head merge and exact-main gates remain mandatory.
