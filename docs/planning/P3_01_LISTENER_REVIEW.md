@@ -1,9 +1,10 @@
 # P3-01 transport evidence
 
-Status: **P3-01 completed. Qualification PR108, runtime PR109 and corrective
-PR110 completed their normal merge/exact-main gates. Final PR110 head959233a
-received completed whole-PR account review; mergeaaaaad96 passed all11 jobs and
-both processed reports on2026-10-24.** The owner accepted
+Status: **P3-01 reopened for a strict single-datagram fixture correction.
+Runtime PR110 completed review/normal-merge/exact-main gates; the later PR111
+merge5c7c7a3 failed Linux Workspace/coverage at an aggregate answer counter.
+The original failure is retained, and next qualification is paused pending the
+correction's fresh review/check/merge/main evidence.** The owner accepted
 complete D47 conditionally on checked PR107. Before qualification code, PR107
 merged normally at02b6695928a64c37de5e073a4bdb5162f1928c54; all11 exact-main39747433154
 jobs and both Codecov sessions processed(Rust6689/7013). See
@@ -557,3 +558,38 @@ claimed. Native public deployment, forwarding/cache/secure learning and actual
 origin dialing remain outside this stage. The previously accepted isolated
 P3-02 client qualification is now eligible after this verified prerequisite; its
 implementation and production adoption have not started.
+
+## Later exact-main fixture count failure
+
+Completion-documentation PR111 received completed linked-account read-only review
+01a16de7-a8ac-7983-936a-83831a1aa4fb without concrete defects. Its planning/source
+preservation/links/nine negative cases passed; final-head40094467033 passed all11
+jobs, CodeScene8109311 and both processed reports. Normal merge on2026-10-24T12:42:01Z
+at5c7c7a318487ef24e9f03237d08c3ef43bcdc21c changed documentation/status only.
+
+The later [exact-main40095014751](https://github.com/romanpodg/DRouteX/actions/runs/40095014751)
+failed Linux Workspace and Rust coverage at the same durable DNS test's final
+answered=2 versus1 assertion. DNS42/43 passed in each failed default/coverage
+attempt; Linux no-default was not reached. The post-checkpoint client received
+no reply within its negative timeout, and clock_failures>=1 passed before the
+counter assertion. Windows and the other seven jobs passed; upload was skipped,
+so this merge has no processed-report pass claim. The run remains failed.
+
+The initial positive exchange used a general helper that re-sends UDP every100ms.
+Its first observed response therefore cannot establish that exactly one query was
+sent or answered. A controlled real-loopback regression delays an authorized
+response150ms: substituting that retry helper reproduces two processor calls
+against the exact single-query assertion; restoring the one-send helper passes.
+This proves the fixture precondition defect without claiming a complete packet
+history for the original CI attempt.
+
+The correction uses one datagram for the durable fixture's positive phase and
+shares the existing bounded first-poll acknowledgement/40ms warmup with the
+ordinary server fixture. It keeps answered==1, the real checkpoint failure,
+negative receive timeout, clock-failure count and socket release/rebind checks.
+Production admission, deadlines, clock persistence and dependencies are unchanged.
+Focused default/no-default single-datagram/startup cases and warning-free Clippy
+passed locally. Full native Windows DNS attempts each passed42/43 cases with zero
+ignored/filtered, failing only the previously reproduced host IPv6 receive case;
+neither is a full-profile pass. Actual new-head Linux/coverage results remain
+required; do not retry the failed run into a pass.

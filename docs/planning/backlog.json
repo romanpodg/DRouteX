@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0/P1/P2/P3-01/P4-01 complete; PR110 normal merge and exact-main passed; next isolated DNS-client qualification authorized, not started",
+  "status": "P0/P1/P2/P4-01 complete; P3-01 reopened for later Linux fixture answer-count failure after checked PR110; next DNS-client qualification paused",
   "date": "2026-10-24",
   "phases": {
     "P0": "Foundation",
@@ -620,7 +620,7 @@
       "security": "No open resolver; limited concurrency and amplification surface",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "completed",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
