@@ -201,6 +201,24 @@ def validate_adrs():
     return adrs
 
 
+def validate_client_qualification(plan, by_id):
+    expected = {'kind': 'isolated_dependency_qualification', 'task': 'P3-02',
+                'decision': 'dns_client_qualification_decision'}
+    assert plan['execution_authorization'].get('additional_scope') == expected, 'Unexpected additional execution scope'
+    decision = plan.get('dns_client_qualification_decision', {})
+    assert decision.get('status') == 'accepted' and decision.get('source'), 'Missing owner DNS client qualification decision'
+    assert (decision.get('package'), decision.get('version'), decision.get('features')) == ('hickory-net', '0.26.3', ['tokio']), 'Unexpected client qualification profile'
+    assert decision.get('default_features') is False and decision.get('production_adoption') is False, 'Client qualification must remain isolated'
+    assert by_id['P3-01']['status'] == 'completed', 'DNS transport prerequisite remains open'
+    assert by_id['P3-02']['status'] == 'planned', 'Forwarding application is not authorized'
+    validation = plan.get('dns_client_validation_decision', {})
+    assert validation.get('status') == 'accepted' and validation.get('source'), 'Missing owner client validation decision'
+    assert validation.get('production_adoption') is False, 'Client validation must remain isolated'
+    assert validation.get('profile') == {'max_message_bytes': 4096, 'udp_datagrams': 16,
+        'tcp_received_bytes': 65568, 'io_operations_per_direction': 256, 'written_bytes': 4098,
+        'candidates': 16, 'attempt_ms': 500, 'cleanup_ms': 3000}, 'Unexpected client validation profile'
+
+
 def validate_review_boundary(plan):
     assert plan['foundation_review']['status'] == 'accepted', 'Missing owner acceptance'
     assert plan['foundation_review']['source'], 'Missing owner decision evidence'
@@ -253,6 +271,7 @@ def validate_review_boundary(plan):
     assert binding['status'] == 'accepted' and binding['source'], 'Missing owner UDP binding decision'
     checkpoint = plan['dns_transport_checkpoint_wait_decision']
     assert checkpoint['status'] == 'accepted' and checkpoint['source'], 'Missing owner checkpoint wait decision'
+    validate_client_qualification(plan, by_id)
     signature = plan['snapshot_auth_qualification_decision']
     assert signature['status'] == 'accepted' and signature['source'], 'Missing owner signature qualification decision'
     assert plan['secret_storage_decision']['status'] == 'accepted' and plan['secret_storage_decision']['source'], 'Missing owner secret storage decision'
@@ -281,6 +300,7 @@ def main():
     validate_review_boundary(plan)
     negatives = self_test(plan['tasks']) if '--self-test' in sys.argv else 0
     result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P3-01','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':7,'runtime_implementation_absent':False}
+    result['additional_execution_scope'] = plan['execution_authorization']['additional_scope']
     (ROOT/'docs/environment').mkdir(parents=True, exist_ok=True)
     (ROOT/'docs/environment/planning-verification.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
     print(json.dumps(result))

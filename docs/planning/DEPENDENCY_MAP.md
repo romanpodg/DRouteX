@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0/P1/P2/P4-01 complete; P3-01 reopened for later Linux fixture answer-count failure after checked PR110; next DNS-client qualification paused. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0/P1/P2/P3-01/P4-01 complete after checked PR112; isolated DNS-client qualification authorized/in progress; P3-02 application remains planned. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

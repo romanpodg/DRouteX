@@ -2,46 +2,44 @@
 
 ## Current execution card
 
-Reviewed 2026-10-24. This card is the current work/authorization entry point;
+Reviewed 2026-10-25. This card is the current work/authorization entry point;
 [backlog.json](backlog.json) is canonical for task status/dependencies/delivery.
 Task reviews hold exact acceptance evidence. Later dated evidence supersedes
 historical checkpoints below; reconcile conflicts before dependent work.
 
-- Completed: P0, P1, all seven P2 tasks and P4-01. P3-01's reviewed runtime
-  delivery passed PR110's normal merge/exact-main gates, but is temporarily
-  reopened after the later PR111 documentation merge's Linux fixture failure.
-- Active: correct the count-sensitive durable Linux fixture before the next
-  qualification. Exact-main40095014751 failed Linux Workspace and coverage at
-  answered=2 versus1; the other eight jobs passed and Codecov upload was skipped.
-  The negative post-checkpoint receive timeout and clock-failure checks passed.
-  A controlled delayed reply reproduces the retrying helper's extra query.
-  Use one datagram and shared bounded startup, preserving the exact counter and
-  persistence-failure assertions. Fresh Linux/head/review/merge/main gates remain.
-- Corrective head eb7cdd1 passed all11 CI40096126267 jobs:244 Windows/276 Linux
-  workspace tests per default/no-default profile, zero failed/ignored/filtered.
-  The real Linux fixture's unchanged strict assertions passed in both profiles
-  and coverage. Both Codecov reports processed; CodeScene8109427 succeeded.
-  Actual account implementation review found no concrete defect. Final evidence
-  head/review/merge/main gates remain open; the original failed run is retained.
-- PR110 merged normally on2026-10-24T12:24:39Z at
-  aaaaad96c268c51e8c9770537473bec38dd2563c, matching reviewed final head959233a.
-  All11 exact-main40093808649 jobs passed. Actual logs passed243 Windows/275
-  Linux tests per default/no-default profile, zero failed/ignored/filtered;
-  DNS42/43 includes mandatory IPv6 and Linux CP-loss/checkpoint failures.
-  Both merge Codecov reports processed(Rust7904/8287).
-- Actual implementation/corrective review01a16dd2-9631-7382-8b16-a8e03795bf13
-  and final whole-PR review01a16dd8-3b5b-7321-acd8-956c5051ab7e completed without
-  confirmed defects. Final-head40093309453 also passed all11 jobs and both reports.
-  Earlier notification/failed-operation findings received source fixes and red
-  regressions; the quota-interrupted attempt remains unverified. See
-  [P3-01 evidence](P3_01_LISTENER_REVIEW.md) and
-  [accepted D50](P3_01_CHECKPOINT_WAIT_CONTRACT.md).
-- Next authorized scope is the previously accepted isolated hickory-net0.26.3
-  defaults-off/tokio qualification after checked P3-01 completion. The qualifier has
-  not started and is paused behind the current fixture correction. P3-02 resources,
-  upstream/fallback policy and production adoption still need their owning contract.
-  The recorded execution boundary remains through P3-01; no forwarding
-  implementation, new crate, deployment or infrastructure begins in this update.
+- Completed: P0, P1, all seven P2 tasks, P4-01 and P3-01. PR112 corrected the
+  strict durable fixture without weakening its counter/failure assertions.
+  Its normal merge8f234c44a0c47fc3ef4583e775a591cd90158185 passed all11
+  exact-main40097388131 jobs:244 Windows/276 Linux tests per default/no-default
+  profile, zero failed/ignored/filtered. Both reports processed(Rust7902/8287).
+  The earlier failed40095014751 and skipped upload remain recorded as failed.
+- PR112 actual implementation review01a16dfe-6ed2-7573-8db0-7d2edb88e721 and
+  final whole-PR review01a16e09-7ae3-7c43-a9d3-2c6b36eaffda completed without
+  concrete defects. Final-head40096734289 passed all11 jobs/both reports and
+  all3 CodeScene8109468 gates. A capacity-interrupted final-review attempt is
+  unverified and was not counted. See [P3-01 evidence](P3_01_LISTENER_REVIEW.md).
+- Active additional scope: owner-accepted [D51 isolated DNS-client qualification](P3_02_CLIENT_QUALIFICATION_CONTRACT.md),
+  exactly hickory-net0.26.3 defaults-off/tokio against the existing Proto/Tokio
+  profiles. Its checked P3-01 prerequisite is fulfilled. Only a separate tests
+  workspace/lockfile, mandatory controlled UDP/TCP/platform/bounds/lifecycle and
+  dependency/license checks are authorized. [Qualification evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md)
+  tracks actual results; implementation/final reviews and head/main gates apply.
+- Qualification is incomplete. The owner accepted [D52 bounded ingress/caller-validation profile](P3_02_CLIENT_VALIDATION_CONTRACT.md)
+  on2026-10-24 before dependent adapters. The tests-only composed role now has
+  mandatory question/frame validation, pre-filter I/O budgets, one original500ms
+  deadline and explicit owned cleanup. Local default/no-default each33/37 pass;
+  four mandatory raw/composed IPv6 probes fail on this host, without ignores or
+  filters. Seven removed-check mutations fail as intended; sources are restored.
+  A failed-bind reservation defect has a red/green regression. The earlier UDP
+  fixture timeout remains unattributed; fresh complete CI/review gates stay open.
+  Full graph/archive audit and the local seventh deny bundle passed. Production
+  adoption remains unapproved. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md)
+  distinguishes original raw-library behavior from composed-role proof.
+- P3-02 application stays planned. This qualification approves no upstream
+  resource shape, fallback/address/loop policy, runtime limits, production
+  dependency adoption, public service or infrastructure. Those retain a separate
+  complete owner decision after successful qualification. The canonical library
+  execution boundary stays through P3-01 with this explicit additional scope.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

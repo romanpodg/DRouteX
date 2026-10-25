@@ -1,10 +1,9 @@
 # P3-01 transport evidence
 
-Status: **P3-01 reopened for a strict single-datagram fixture correction.
-Runtime PR110 completed review/normal-merge/exact-main gates; the later PR111
-merge5c7c7a3 failed Linux Workspace/coverage at an aggregate answer counter.
-The original failure is retained, and next qualification is paused pending the
-correction's fresh review/check/merge/main evidence.** The owner accepted
+Status: **P3-01 completed after the strict fixture correction PR112. Its normal
+merge8f234c44 passed all11 exact-main40097388131 jobs and both processed reports;
+actual implementation/final account reviews found no concrete defects. Earlier
+failed runs remain failed in this record.** The owner accepted
 complete D47 conditionally on checked PR107. Before qualification code, PR107
 merged normally at02b6695928a64c37de5e073a4bdb5162f1928c54; all11 exact-main39747433154
 jobs and both Codecov sessions processed(Rust6689/7013). See
@@ -620,3 +619,28 @@ Final evidence-head account review/checks, normal exact-head merge and exact-mai
 platform/report gates remain required before closing the reopened P3-01 gate or
 starting the accepted isolated client qualification. The failed40095014751 run
 is unchanged and remains failed; no counter or negative assertion was weakened.
+
+## Strict fixture correction normal merge and main
+
+Final head5a0a59286dcca16ce22455218b3adbe8e1c42632 passed all11
+[CI40096734289 jobs](https://github.com/romanpodg/DRouteX/actions/runs/40096734289),
+both processed reports(Rust7902/8287) and all3 CodeScene8109468 gates. Its first
+final account review was capacity-interrupted, exit1, without a verdict; that
+attempt is unverified. Completed read-only/never final whole-PR review
+01a16e09-7ae3-7c43-a9d3-2c6b36eaffda exited0 without concrete defects. Fmt/diff,
+planning/source/nine negative cases and two existing-binary targeted cases passed;
+fresh build/Clippy/Linux limits in that environment do not replace actual CI.
+
+[PR112](https://github.com/romanpodg/DRouteX/pull/112) merged normally at
+8f234c44a0c47fc3ef4583e775a591cd90158185 on2026-10-24T13:15:54Z, matching the
+reviewed head without bypass. All11 [exact-main40097388131 jobs](https://github.com/romanpodg/DRouteX/actions/runs/40097388131)
+passed on the first attempt. Actual logs passed244 Windows/276 Linux workspace
+tests in each default/no-default profile, zero failed/ignored/filtered. DNS43/44
+includes the real durable fixture's exact counter, CP-loss/checkpoint failure,
+negative receive check, mandatory IPv6 and controlled delayed-query regression.
+All six dependency bundles passed; both exact-merge reports processed(Rust7902/8287).
+The earlier failed40095014751 and missing reports remain failed/unverified.
+
+This closes the reopened P3-01 library gate. The previously accepted isolated
+DNS-client qualification may now begin. It remains separate from P3-02 application
+behavior and production adoption, with no public deployment implied.
