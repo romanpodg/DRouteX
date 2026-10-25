@@ -124,6 +124,20 @@ standalone role; the composed role must pass every gate. [Evidence](P3_02_CLIENT
 raw failures, host limits, partial probes and supply-chain results. P3-02
 application behavior/resources/adoption remain a later complete owner decision.
 
+## P3-02 qualification review dispositions
+
+CodeScene8117794 on initial qualification headf4a8d8c failed all three gates.
+The raw result remains failed. The following dispositions concern maintainability
+of tests-only code and auxiliary planning checks, not deferred functional defects.
+Actual platform/negative/mutation/review evidence is in the [owning review](P3_02_CLIENT_QUALIFICATION_REVIEW.md).
+There is no suppression, threshold change, required-check waiver or protection bypass.
+
+| Item | Finding, impact and rationale | Owner / revisit trigger |
+|---|---|---|
+| P3-02-CS-GUARD | guarded.rs8.55 flags Complex Method/Conditional and Bumpy Road Ahead in Expected.accepts; Expected.new also has a complex condition. The private tests-only guard explicitly checks header/question, every record section, class, empty data and lossless EDNS parsing. The risk is future parser modification. Standards/spec/account review found no remaining concrete defect; real malformed/foreign frames, exact caps and removed-check mutations support the selected boundaries. Extracting validation merely for the score would distribute these invariants without demonstrated behavior benefit. The owner's metric policy excludes tests as independent targets; production adoption is separately unapproved. | P3-02 before any production guard reuse, new record/EDNS handling or response-policy change; immediately for a concrete integrity/budget defect. |
+| P3-02-CS-FIXTURES | guarded_tests.rs8.87 flags file length, the connection/read/write cancellation method and Bumpy Road Ahead in the read/write operation-boundary fixture. independent.rs9.84 flags Bumpy Road Ahead in udp_probe. The branches represent distinct actual peer/read/write and cancellation cases; both native CI profiles pass without ignored/filtered cases. Remaining maintenance risk is extending shared fixtures incorrectly. Tests/fixtures are outside independent metric scope, and no score-only split or assertion weakening is justified. | Owning qualification when extending a fixture or investigating an actual platform/false-positive failure. |
+| P3-02-CS-PLANNING | The existing authorization-table test declines9.13->9.02 with Complex Method as explicit negative copies are added for D51/D52. The auxiliary validator improves. Nineteen planning tests and nine validator negatives pass; the accepted scope/profile remains enforced. A co-change signal expects AGENTS.md, but D51/D52 belong to their accepted contracts and current execution card. No instruction change or dummy AGENTS diff is required. | Next actual execution-boundary change or concrete validator defect; do not refactor tests/docs solely for the heuristic. |
+
 ## P2-06 review dispositions
 
 CodeScene8063131 failed all three maintenance gates on9ed109a. Actual source

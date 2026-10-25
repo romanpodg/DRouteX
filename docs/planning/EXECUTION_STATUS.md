@@ -35,6 +35,13 @@ historical checkpoints below; reconcile conflicts before dependent work.
   Full graph/archive audit and the local seventh deny bundle passed. Production
   adoption remains unapproved. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md)
   distinguishes original raw-library behavior from composed-role proof.
+- Initial PR113 headf4a8d8c passed all11 CI40190172872 jobs. The isolated client
+  passes37/37 per default/no-default profile on both clean Windows/Linux,
+  including mandatory IPv6; root-workspace244/276 and all seven deny bundles pass.
+  Both reports processed(Rust7902/8287). Completed account implementation review
+  01a172e1-ffa9-7b13-88ab-312f92c93875 found no concrete defect. CodeScene8117794
+  remains failed with [specific test/auxiliary dispositions](OPEN_DECISIONS.md#p3-02-qualification-review-dispositions).
+  Final evidence-head review/checks, normal merge and exact-main proof remain open.
 - P3-02 application stays planned. This qualification approves no upstream
   resource shape, fallback/address/loop policy, runtime limits, production
   dependency adoption, public service or infrastructure. Those retain a separate

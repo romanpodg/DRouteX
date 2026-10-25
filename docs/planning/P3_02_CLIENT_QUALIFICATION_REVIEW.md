@@ -201,6 +201,39 @@ a correct question with the wrong ID and forged A203.0.113.66 before the proper
 ID/A203.0.113.9 response; both frames are received, only one query is sent, and
 cleanup/rebind pass. Follow-up source review closed that finding with no new
 defect. Both37-test profiles retain only the four host IPv6 failures.
-The required owner-linked implementation/final account reviews remain open.
+At this local checkpoint, the required owner-linked account reviews were open.
 No self-review, quota error, request or test run is counted as actual completed
 implementation/final account Code Review.
+
+## Implementation head review and clean platform evidence
+
+Initial qualification headf4a8d8c0451514938bb2ef847391d75a7e3a5df6 is in
+[PR113](https://github.com/romanpodg/DRouteX/pull/113). All11
+[CI40190172872 jobs](https://github.com/romanpodg/DRouteX/actions/runs/40190172872)
+passed on that head. Full actual logs show244 Windows/276 Linux root-workspace
+tests in each default/no-default profile, zero failed/ignored/filtered. The new
+isolated client step passes37/37 in each profile on both platforms, including
+all four mandatory raw/composed IPv6 probes. All seven deny bundles pass.
+Both Codecov uploads have processed state merged; Rust7902/8287 is unchanged
+application coverage, not a coverage claim for tests-only adapter code.
+
+Completed linked-ChatGPT-account read-only/never Code Review
+01a172e1-ffa9-7b13-88ab-312f92c93875 exited0 without concrete defects. It reviewed
+the whole PR from base8f234c44 in a clean managed worktree. Fmt, planning/source/
+links and the changed Python authorization test passed. Fresh Rust tests/Clippy
+could not run successfully in that read-only toolchain environment; the actual
+independent platform results above supply those checks.
+
+CodeScene8117794 on this same head failed all three maintenance gates. It reports
+guarded.rs8.55 (Expected.accepts complexity/Bumpy Road Ahead), guarded_tests.rs8.87
+(length/cancellation/operation fixture), independent.rs9.84 (udp_probe), and the
+auxiliary authorization test9.13->9.02. The concrete findings, risk, rationale and
+owners/triggers are recorded in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-02-qualification-review-dispositions).
+The owner excludes tests/fixtures/auxiliary planning as independent metric targets.
+This disposition does not hide a failed result or authorize a suppression or
+required-check/protection bypass. Functional defects remain blocking.
+
+Final evidence-head whole-PR account review/current-head checks and normal
+exact-head merge/exact-main/report gates are still required before completing
+qualification. Earlier local IPv6 and unattributed UDP failed runs stay failed;
+clean CI establishes the required current platform proof, not their causal history.
