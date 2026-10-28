@@ -688,3 +688,24 @@ this Linux-only code. The redundant expression is removed without changing the
 branch behavior. This failed run did not execute the runtime regressions and
 cannot establish whether the readiness correction fixes the observed timeout.
 Its in-progress account review was interrupted before a verdict and is unverified.
+
+## PR113 corrected readiness head and merge
+
+Head435bc37e906d21c8f45a8b0caad7bd8537e54188 passed all11
+[CI40630686323 jobs](https://github.com/romanpodg/DRouteX/actions/runs/40630686323),
+both processed coverage reports(Rust7902/8287) and completed final account review
+01a180b2-c3c3-7630-89e7-b325ffd4c659 without confirmed defects. Full logs show
+244 Windows/277 Linux workspace tests in each default/no-default profile, zero
+failed/ignored/filtered. The added actual-store regression and unchanged durable
+single-query/sabotage assertions pass in both Linux profiles and coverage.
+The new client qualifier passes37/37 in both profiles on both platforms.
+
+PR113 merged normally atf136ac82d7e6421dbb139f022a98575ea26ca8ff after matching
+that reviewed head. The earlier failed runs remain failed; original receive
+timeout causation remains unproven. CodeScene8161842 retains the documented
+test/auxiliary dispositions; it is not relabelled successful. Exact-main
+40631471007 passed all11 jobs; full logs confirm the same244/277 platform counts,
+both Linux regressions in both profiles and all seven deny bundles. Both exact-merge
+reports processed(Rust7902/8287). This clears the PR113 verification hold. The owning
+[qualification review](P3_02_CLIENT_QUALIFICATION_REVIEW.md#corrected-final-head-and-normal-merge)
+records the final head/review/normal-merge identities and remaining gates.

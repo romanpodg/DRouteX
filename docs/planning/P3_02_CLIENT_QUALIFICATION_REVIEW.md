@@ -259,3 +259,51 @@ fresh current-head account review/checks and normal merge/main gates remain open
 CodeScene8117865 on fcc8ff2 reports the same three failed gates and the same
 concrete test/auxiliary findings as8117794. Existing linked dispositions apply;
 this refresh does not turn either failed result into success.
+
+## Corrected final head and normal merge
+
+Final head435bc37e906d21c8f45a8b0caad7bd8537e54188 passed all11
+[CI40630686323 jobs](https://github.com/romanpodg/DRouteX/actions/runs/40630686323).
+Full logs show244 Windows/277 Linux workspace tests per default/no-default
+profile, zero failed/ignored/filtered. Both platforms pass37/37 isolated client
+tests in each profile, including all four mandatory raw/composed IPv6 probes.
+All seven deny bundles pass. Both Codecov uploads processed as merged;
+Rust7902/8287 measures application code, not the tests-only qualifier.
+
+The new deterministic commit-window regression and real durable fixture pass
+in both Linux profiles and the independent coverage execution. They establish
+the readiness correction and permitted D50 refusal mechanism. They do not
+establish the original fcc8ff2 timeout's exact cause. CI40191024088 and40630402694
+remain failed; the interrupted194ad77 account review remains unverified.
+
+Completed linked-ChatGPT-account read-only/never final whole-PR Code Review
+01a180b2-c3c3-7630-89e7-b325ffd4c659 on435bc37 exited0 without confirmed defects.
+Planning/source/links/nine negative cases, qualifier rustfmt and the changed
+Python test passed. Read-only toolchain restrictions prevented fresh Rust
+builds/Clippy there; current-head independent CI supplies those actual checks.
+Together with implementation review01a172e1-ffa9-7b13-88ab-312f92c93875, this
+satisfies the two account-review requirement for the implementation PR.
+
+CodeScene8161842 on435bc37 failed the same three gates with the same concrete
+test/auxiliary findings as8117794/8117865. The existing
+[specific dispositions](OPEN_DECISIONS.md#p3-02-qualification-review-dispositions)
+apply. Functional defects remain blocking; no suppression or protection/check
+bypass occurred. The local AST-only graph update is untracked at5221 nodes and
+11176 edges. No API/LLM extraction backend or new graph dependency was enabled.
+
+[PR113](https://github.com/romanpodg/DRouteX/pull/113) merged normally at
+f136ac82d7e6421dbb139f022a98575ea26ca8ff on2026-10-28, using the exact reviewed
+head435bc37. Main was unprotected with no rulesets; those settings were not
+changed. All11 [exact-main40631471007 jobs](https://github.com/romanpodg/DRouteX/actions/runs/40631471007)
+passed on the first attempt. Full logs independently confirm244 Windows/277 Linux
+workspace tests per default/no-default profile and client37/37 per profile/platform,
+zero failed/ignored/filtered and all mandatory IPv6 probes. Both new Linux regressions
+pass in both profiles; all seven deny bundles pass. Both exact-merge Codecov uploads
+processed as merged, Rust7902/8287.
+
+This completes only the D51/D52 tests-only composed qualification. The owner
+subsequently accepted the complete [D53 forwarding contract](P3_02_FORWARDING_CONTRACT.md)
+by direct reply on2026-10-28 after these checked prerequisites. P3-02 stays
+planned until implementation starts after current PR114 documentation gates.
+Its application/resources and conditional production adoption require their
+own implementation acceptance proof; qualification alone does not supply it.

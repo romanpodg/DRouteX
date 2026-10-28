@@ -219,3 +219,18 @@ registry artifacts and original qualification history remain unchanged. Actual
 checks and outstanding acceptance gates are recorded in the
 [security qualification](WEBPKI_SECURITY_UPDATE.md). This does not adopt TLS into
 the production workspace or distribute any additional target.
+
+## P3-02 isolated client qualification
+
+Owner D51/D52 qualification of exactly hickory-net0.26.3 defaults-off/tokio
+completed normal PR113 mergef136ac82 and exact-main40631471007 checks/reports.
+Only the composed role with mandatory DRouteX validation, bounded ingress,
+one absolute deadline and explicit TCP abort/join is qualified. Raw TCP question
+matching remains insufficient for the strict standalone role. The separate
+[inventory](DNS_CLIENT_DEPENDENCY_INVENTORY.csv) records103 registry archives
+and notices; the owning [review](../planning/P3_02_CLIENT_QUALIFICATION_REVIEW.md)
+records actual platform, graph/license/advisory and lifecycle evidence.
+Root production dependencies are unchanged at qualification completion. The owner
+separately accepted [D53](../planning/P3_02_FORWARDING_CONTRACT.md) on2026-10-28:
+conditional exact-client production adoption follows its bounded application
+profile and independent implementation proof after PR114 documentation gates.

@@ -110,19 +110,23 @@ IPv6/QUIC/application enforcement.
 | D50 | Owner accepted one bounded checkpoint completion wait/recheck per gate within the original deadlines. Retain the original reservation/generation/scope/quota; no ready I/O until actual authority is checked again. Generic unavailable waits only for known pending maintenance; other/second refusals remain closed. | P3-01 | Direct owner reply2026-10-23 selecting bounded checkpoint wait; [contract](P3_01_CHECKPOINT_WAIT_CONTRACT.md) |
 | D51 | Owner accepted exact hickory-net0.26.3 defaults-off/tokio isolated UDP/TCP client qualification after checked P3-01, preserving selected versions and mandatory matching/bounds/lifecycle/platform/license checks. No production adoption or P3-02 application profile is approved. | P3-02 prerequisite qualification | Direct owner reply2026-10-22, recorded2026-10-24; [contract](P3_02_CLIENT_QUALIFICATION_CONTRACT.md) |
 | D52 | Owner accepted qualification of the exact library with mandatory bounded DRouteX ingress and caller-validation adapters, one absolute500ms attempt and finite3s cleanup. The explicit input/message/candidate/I/O bounds and UDP one-shot/TCP framing limits apply; no production adoption. | P3-02 prerequisite qualification | Direct owner reply2026-10-24 (call_4629a212e9ed46b4ba18deb5d0bcfd02); [contract](P3_02_CLIENT_VALIDATION_CONTRACT.md) |
+| D53 | Owner accepted the complete bounded forwarding profile, including conditional exact-client adoption, immutable numeric public upstream groups, explicit fallback/deadlines, destination/loop checks and owned resource limits. Plaintext-only and unavailable DNSSEC are explicit initial limits. Implementation follows checked PR114 documentation gates. | P3-02 application | Direct owner reply2026-10-28 (call_b35f42de3b6c42afa31321d7242557b7); [contract](P3_02_FORWARDING_CONTRACT.md) |
 
 ## P3-02 client-role decision and open qualification
 
-D51 qualification is incomplete. Actual raw TCP returns a matching-ID answer
-with a foreign question; all local profiles keep that strict test failed.
+D51/D52 tests-only composed qualification completed normal PR113 merge and
+exact-main gates on2026-10-28. The original raw TCP probe returned a matching-ID
+answer with a foreign question; that failed strict-role result remains failed.
 Internal UDP/TCP filtering also makes a delivered-candidate counter insufficient
 to bound all receive work. The [concrete adapter proposal](P3_02_CLIENT_VALIDATION_CONTRACT.md)
 records the owner's accepted security responsibility allocation, with finite
 ingress, message acceptance, absolute attempt and cleanup bounds. D52 was accepted
 before dependent adapter code. The raw library remains unqualified for the strict
-standalone role; the composed role must pass every gate. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md) distinguishes
+standalone role; the composed role passed its owning gates. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md) distinguishes
 raw failures, host limits, partial probes and supply-chain results. P3-02
-application behavior/resources/adoption remain a later complete owner decision.
+application behavior/resources/adoption were separately accepted in complete D53
+on2026-10-28 after this qualification. Finish current PR114 documentation gates
+before dependent implementation and its own application acceptance checks.
 
 ## P3-02 qualification review dispositions
 
