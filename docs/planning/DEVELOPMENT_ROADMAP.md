@@ -95,10 +95,12 @@ P3-01 runtime delivery and its later strict-fixture correction completed normal
 merge/exact-main gates through PR112 on2026-10-24. The
 [D47/D48/D49/D50 contract](P3_01_LISTENER_CONTRACT.md) and
 [P3-01 evidence](P3_01_LISTENER_REVIEW.md) preserve the earlier failed attempts.
-Current additional work is owner-accepted [D51 isolated hickory-net qualification](P3_02_CLIENT_QUALIFICATION_CONTRACT.md).
-It scopes qualification to the exact UDP/TCP client building block and owned/bounded use;
-P3-02 application resources, fallback and production adoption remain planned and
-need their separate complete owning contract.
+The owner-accepted [D51/D52 isolated hickory-net qualification](P3_02_CLIENT_QUALIFICATION_CONTRACT.md)
+completed normal PR113 mergef136ac82 and all11 exact-main40631471007 jobs/both
+processed reports on2026-10-28. Only the bounded composed UDP/TCP client role is
+qualified. P3-02 application resources, fallback and production adoption remain
+planned. The complete [D53 forwarding proposal](P3_02_FORWARDING_PROPOSAL.md)
+requires direct owner acceptance before dependent implementation.
 
 Finish and merge each authorized implementation PR before starting the next.
 Subsequent work follows the DAG and owning acceptance contracts. P1-06 library

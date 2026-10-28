@@ -18,42 +18,43 @@ historical checkpoints below; reconcile conflicts before dependent work.
   concrete defects. Final-head40096734289 passed all11 jobs/both reports and
   all3 CodeScene8109468 gates. A capacity-interrupted final-review attempt is
   unverified and was not counted. See [P3-01 evidence](P3_01_LISTENER_REVIEW.md).
-- Active additional scope: owner-accepted [D51 isolated DNS-client qualification](P3_02_CLIENT_QUALIFICATION_CONTRACT.md),
+- Completed additional scope: owner-accepted [D51 isolated DNS-client qualification](P3_02_CLIENT_QUALIFICATION_CONTRACT.md),
   exactly hickory-net0.26.3 defaults-off/tokio against the existing Proto/Tokio
   profiles. Its checked P3-01 prerequisite is fulfilled. Only a separate tests
   workspace/lockfile, mandatory controlled UDP/TCP/platform/bounds/lifecycle and
   dependency/license checks are authorized. [Qualification evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md)
-  tracks actual results; implementation/final reviews and head/main gates apply.
-- Qualification is incomplete. The owner accepted [D52 bounded ingress/caller-validation profile](P3_02_CLIENT_VALIDATION_CONTRACT.md)
+  tracks actual results. PR113 completed the implementation/final reviews and
+  normal head/merge/exact-main/report gates on2026-10-28.
+- The owner accepted [D52 bounded ingress/caller-validation profile](P3_02_CLIENT_VALIDATION_CONTRACT.md)
   on2026-10-24 before dependent adapters. The tests-only composed role now has
   mandatory question/frame validation, pre-filter I/O budgets, one original500ms
   deadline and explicit owned cleanup. Local default/no-default each33/37 pass;
   four mandatory raw/composed IPv6 probes fail on this host, without ignores or
   filters. Seven removed-check mutations fail as intended; sources are restored.
   A failed-bind reservation defect has a red/green regression. The earlier UDP
-  fixture timeout remains unattributed; fresh complete CI/review gates stay open.
+  fixture timeout remains unattributed; clean mandatory CI now passes both profiles.
   Full graph/archive audit and the local seventh deny bundle passed. Production
   adoption remains unapproved. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md)
   distinguishes original raw-library behavior from composed-role proof.
-- Initial PR113 headf4a8d8c passed all11 CI40190172872 jobs. The isolated client
-  passes37/37 per default/no-default profile on both clean Windows/Linux,
-  including mandatory IPv6; root-workspace244/276 and all seven deny bundles pass.
-  Both reports processed(Rust7902/8287). Completed account implementation review
-  01a172e1-ffa9-7b13-88ab-312f92c93875 found no concrete defect. CodeScene8117794
-  remains failed with [specific test/auxiliary dispositions](OPEN_DECISIONS.md#p3-02-qualification-review-dispositions).
-  Final evidence-head review completed without concrete defects, but CI40191024088
-  failed the Linux durable fixture's first positive single-datagram receive on
-  headfcc8ff2. Ten other jobs passed. PR113 remains blocked pending the test-only
-  checkpoint-readiness correction, fresh current-head review/checks and normal
-  merge/exact-main proof. The failed run remains failed; original causation is
-  unproven. See [fixture evidence](P3_01_LISTENER_REVIEW.md#pr113-checkpoint-readiness-verification-hold).
-  Correction head194ad77 then failed Linux Clippy on a redundant unit expression;
-  its runtime tests were not reached. The expression is removed; fresh proof remains open.
+- PR113 final head435bc37 passed all11 CI40630686323 jobs; normal merge
+  f136ac82d7e6421dbb139f022a98575ea26ca8ff passed all11 exact-main40631471007
+  jobs. Actual full logs show244 Windows/277 Linux tests per default/no-default
+  profile and client37/37 per profile/platform, including mandatory IPv6, with
+  zero failed/ignored/filtered. All seven deny bundles pass and both reports
+  processed(Rust7902/8287). Implementation account review01a172e1-ffa9-7b13-88ab-312f92c93875
+  and final review01a180b2-c3c3-7630-89e7-b325ffd4c659 completed without confirmed
+  defects. CodeScene8161842 remains failed with the existing
+  [specific dispositions](OPEN_DECISIONS.md#p3-02-qualification-review-dispositions).
+  Earlier failed CI40191024088/40630402694 remain failed. The corrected test-only
+  readiness precondition and deterministic commit-window regression pass; original
+  receive-timeout causation remains unproven. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md#corrected-final-head-and-normal-merge).
 - P3-02 application stays planned. This qualification approves no upstream
   resource shape, fallback/address/loop policy, runtime limits, production
   dependency adoption, public service or infrastructure. Those retain a separate
   complete owner decision after successful qualification. The canonical library
   execution boundary stays through P3-01 with this explicit additional scope.
+  [D53 forwarding proposal](P3_02_FORWARDING_PROPOSAL.md) is prepared for direct
+  owner review; it is not accepted and grants no implementation authority.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

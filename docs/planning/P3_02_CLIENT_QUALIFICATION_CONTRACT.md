@@ -5,6 +5,9 @@ The owner selected the complete isolated qualification profile before dependent
 code. Checked P3-01 completion, including PR112 merge8f234c44 and all11
 exact-main40097388131 jobs/both processed reports, now fulfills the prerequisite.
 This authorizes tests-only qualification, not production adoption.
+Qualification completed through normal PR113 mergef136ac82 and all11
+exact-main40631471007 jobs/both processed reports on2026-10-28;
+see the [completed evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md#corrected-final-head-and-normal-merge).
 The later owner-accepted [D52 amendment](P3_02_CLIENT_VALIDATION_CONTRACT.md)
 qualifies only the composed role with mandatory ingress/caller adapters.
 The raw TCP client remains unqualified for the standalone strict role.
