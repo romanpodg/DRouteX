@@ -301,7 +301,9 @@ zero failed/ignored/filtered and all mandatory IPv6 probes. Both new Linux regre
 pass in both profiles; all seven deny bundles pass. Both exact-merge Codecov uploads
 processed as merged, Rust7902/8287.
 
-This completes only the D51/D52 tests-only composed qualification. P3-02
-application/resources and production adoption remain planned. The complete
-[D53 forwarding proposal](P3_02_FORWARDING_PROPOSAL.md) is unaccepted; a direct
-owner decision is required before its dependent implementation.
+This completes only the D51/D52 tests-only composed qualification. The owner
+subsequently accepted the complete [D53 forwarding contract](P3_02_FORWARDING_CONTRACT.md)
+by direct reply on2026-10-28 after these checked prerequisites. P3-02 stays
+planned until implementation starts after current PR114 documentation gates.
+Its application/resources and conditional production adoption require their
+own implementation acceptance proof; qualification alone does not supply it.

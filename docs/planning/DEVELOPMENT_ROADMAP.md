@@ -99,8 +99,10 @@ The owner-accepted [D51/D52 isolated hickory-net qualification](P3_02_CLIENT_QUA
 completed normal PR113 mergef136ac82 and all11 exact-main40631471007 jobs/both
 processed reports on2026-10-28. Only the bounded composed UDP/TCP client role is
 qualified. P3-02 application resources, fallback and production adoption remain
-planned. The complete [D53 forwarding proposal](P3_02_FORWARDING_PROPOSAL.md)
-requires direct owner acceptance before dependent implementation.
+planned until implementation starts. The owner accepted the complete
+[D53 forwarding contract](P3_02_FORWARDING_CONTRACT.md) on2026-10-28 after checked
+qualification. Finish current PR114 documentation gates, then implement P3-02
+under that profile and its own independent application acceptance checks.
 
 Finish and merge each authorized implementation PR before starting the next.
 Subsequent work follows the DAG and owning acceptance contracts. P1-06 library

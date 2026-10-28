@@ -48,13 +48,15 @@ historical checkpoints below; reconcile conflicts before dependent work.
   Earlier failed CI40191024088/40630402694 remain failed. The corrected test-only
   readiness precondition and deterministic commit-window regression pass; original
   receive-timeout causation remains unproven. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md#corrected-final-head-and-normal-merge).
-- P3-02 application stays planned. This qualification approves no upstream
-  resource shape, fallback/address/loop policy, runtime limits, production
-  dependency adoption, public service or infrastructure. Those retain a separate
-  complete owner decision after successful qualification. The canonical library
-  execution boundary stays through P3-01 with this explicit additional scope.
-  [D53 forwarding proposal](P3_02_FORWARDING_PROPOSAL.md) is prepared for direct
-  owner review; it is not accepted and grants no implementation authority.
+- The owner accepted the complete [D53 forwarding contract](P3_02_FORWARDING_CONTRACT.md)
+  by direct reply on2026-10-28 after checked PR113 completion. It authorizes
+  bounded P3-02 implementation and conditional exact-client adoption, including
+  immutable numeric public upstream groups, explicit fallback, current admission,
+  fixed deadlines and owned resource/cleanup limits. No public deployment or
+  infrastructure change is authorized. Finish current PR114 documentation
+  review/merge/main gates first, then start P3-02 and update its canonical task/
+  execution boundary. Until that start P3-02 remains planned; D51/D52 alone still
+  confer no production authority.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

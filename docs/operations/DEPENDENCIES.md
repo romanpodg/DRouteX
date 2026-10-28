@@ -230,6 +230,7 @@ matching remains insufficient for the strict standalone role. The separate
 [inventory](DNS_CLIENT_DEPENDENCY_INVENTORY.csv) records103 registry archives
 and notices; the owning [review](../planning/P3_02_CLIENT_QUALIFICATION_REVIEW.md)
 records actual platform, graph/license/advisory and lifecycle evidence.
-Root production dependencies are unchanged. Production adoption and P3-02
-application resources/fallback/address behavior need their separate owner contract;
-the [D53 proposal](../planning/P3_02_FORWARDING_PROPOSAL.md) is not accepted.
+Root production dependencies are unchanged at qualification completion. The owner
+separately accepted [D53](../planning/P3_02_FORWARDING_CONTRACT.md) on2026-10-28:
+conditional exact-client production adoption follows its bounded application
+profile and independent implementation proof after PR114 documentation gates.
