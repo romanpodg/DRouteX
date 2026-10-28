@@ -2,6 +2,54 @@ use super::super::admission_tests::{apply_document, document, peer, start, time}
 use super::*;
 
 #[test]
+fn successful_checkpoint_can_require_another_floor_when_commit_crosses_a_window() {
+    let fixture = Fixture::new();
+    let deployment = Arc::new(fixture.provision());
+    start(&deployment, 1000);
+    apply_document(&deployment, &document(), 1);
+    time(&deployment, 1001, 1);
+    let retained = deployment.prepare_legacy_dns(typed(20), peer()).unwrap();
+    let during_commit = Arc::clone(&deployment);
+    hook(move |phase| {
+        if phase == "manifest-prepared" {
+            // The transaction already sampled1005. Its actual commit completes
+            // after the conservative clock upper bound requires1010 instead.
+            time(&during_commit, 1004, 4);
+        }
+        Ok(())
+    });
+    deployment
+        .refresh_authorization_clock(&Cancellation::default())
+        .unwrap();
+    clear_hook();
+    assert_eq!(Arc::strong_count(&deployment), 1);
+    let manifest: serde_json::Value =
+        serde_json::from_slice(&fs::read(fixture.root.join("manifest.json")).unwrap()).unwrap();
+    assert_eq!(manifest["clock_floor"], 1005);
+    assert_eq!(
+        deployment
+            .prepare_legacy_dns(typed(20), peer())
+            .unwrap_err()
+            .code(),
+        AdmissionCode::CheckpointRequired
+    );
+    assert_eq!(
+        retained.consume().unwrap_err().code(),
+        AdmissionCode::CheckpointRequired
+    );
+    deployment
+        .refresh_authorization_clock(&Cancellation::default())
+        .unwrap();
+    assert!(
+        deployment
+            .prepare_legacy_dns(typed(20), peer())
+            .unwrap()
+            .consume()
+            .is_ok()
+    );
+}
+
+#[test]
 fn manifest_commit_pauses_acquisitions_and_known_failure_releases_pause() {
     let fixture = Fixture::new();
     // Hook owns a test-only reference while exercising the real commit callback.

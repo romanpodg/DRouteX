@@ -237,3 +237,25 @@ Final evidence-head whole-PR account review/current-head checks and normal
 exact-head merge/exact-main/report gates are still required before completing
 qualification. Earlier local IPv6 and unattributed UDP failed runs stay failed;
 clean CI establishes the required current platform proof, not their causal history.
+
+## Evidence-head failure and checkpoint-readiness correction
+
+Final whole-PR linked-account read-only/never review
+01a172ec-4457-7c71-bd2d-a98a801a2980 exited0 without confirmed defects on
+headfcc8ff2e9a334a8c32c7fd5450e4086cec77d0b6. Planning and lock inventory
+checks passed; its read-only environment did not supply fresh Rust/Linux proof.
+[CI40191024088](https://github.com/romanpodg/DRouteX/actions/runs/40191024088)
+then failed the Linux P3-01 durable fixture's first positive single-datagram
+receive. Ten other jobs passed. The Linux client step was not reached; earlier
+green-head results cannot satisfy this failed current-head gate.
+
+PR113 therefore includes a necessary test-only checkpoint-readiness correction
+and deterministic actual-store regression, described in
+[P3-01 evidence](P3_01_LISTENER_REVIEW.md#pr113-checkpoint-readiness-verification-hold).
+No production admission behavior, deadline, dependency or accepted D50/D52
+contract changes. Original failure causation remains unproven. Qualification,
+fresh current-head account review/checks and normal merge/main gates remain open.
+
+CodeScene8117865 on fcc8ff2 reports the same three failed gates and the same
+concrete test/auxiliary findings as8117794. Existing linked dispositions apply;
+this refresh does not turn either failed result into success.

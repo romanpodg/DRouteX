@@ -2,7 +2,7 @@
 
 ## Current execution card
 
-Reviewed 2026-10-25. This card is the current work/authorization entry point;
+Reviewed 2026-10-28. This card is the current work/authorization entry point;
 [backlog.json](backlog.json) is canonical for task status/dependencies/delivery.
 Task reviews hold exact acceptance evidence. Later dated evidence supersedes
 historical checkpoints below; reconcile conflicts before dependent work.
@@ -41,7 +41,12 @@ historical checkpoints below; reconcile conflicts before dependent work.
   Both reports processed(Rust7902/8287). Completed account implementation review
   01a172e1-ffa9-7b13-88ab-312f92c93875 found no concrete defect. CodeScene8117794
   remains failed with [specific test/auxiliary dispositions](OPEN_DECISIONS.md#p3-02-qualification-review-dispositions).
-  Final evidence-head review/checks, normal merge and exact-main proof remain open.
+  Final evidence-head review completed without concrete defects, but CI40191024088
+  failed the Linux durable fixture's first positive single-datagram receive on
+  headfcc8ff2. Ten other jobs passed. PR113 remains blocked pending the test-only
+  checkpoint-readiness correction, fresh current-head review/checks and normal
+  merge/exact-main proof. The failed run remains failed; original causation is
+  unproven. See [fixture evidence](P3_01_LISTENER_REVIEW.md#pr113-checkpoint-readiness-verification-hold).
 - P3-02 application stays planned. This qualification approves no upstream
   resource shape, fallback/address/loop policy, runtime limits, production
   dependency adoption, public service or infrastructure. Those retain a separate

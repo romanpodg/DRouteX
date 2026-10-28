@@ -644,3 +644,39 @@ The earlier failed40095014751 and missing reports remain failed/unverified.
 This closes the reopened P3-01 library gate. The previously accepted isolated
 DNS-client qualification may now begin. It remains separate from P3-02 application
 behavior and production adoption, with no public deployment implied.
+
+## PR113 checkpoint-readiness verification hold
+
+On qualification evidence headfcc8ff2e9a334a8c32c7fd5450e4086cec77d0b6,
+[CI40191024088](https://github.com/romanpodg/DRouteX/actions/runs/40191024088)
+failed the Linux durable fixture before the new client qualification step.
+The first positive single-datagram receive expired: `no reply to the single
+fixture datagram: Elapsed(())`. DNS passed43/44; ten other jobs passed, including
+Windows and Rust coverage. The original failure remains failed. Its log lacks
+the admission code and checkpoint phase, so exact causation is unproven.
+
+A separate deterministic actual-store regression advances the existing fake
+clock during manifest commit. A successful refresh can publish floor1005 after
+the current conservative bound already requires1010. New and retained admissions
+then correctly return CheckpointRequired until another trusted refresh. This is
+permitted by D50: completion is not authority, and a second refusal must close.
+The regression demonstrates a mechanism, not the original CI packet history.
+
+The test-only correction waits at most8s for the persisted manifest floor to
+exceed actual wall time by5s and for the actual prepare check to succeed before
+the positive wire phase. This allows D46's2s uncertainty,2s clock disagreement
+and1s for the immediate unavailable-handler response. Setup sends no query;
+the positive exchange still sends exactly one datagram. Runtime deadlines and
+one-checkpoint semantics are unchanged. The real checkpoint sabotage, negative
+receive, clock-failure count and answered==1 remain mandatory. A positive timeout
+now closes the server and reports the observed floor, admission code and shutdown
+counters. Fresh Linux execution, current-head review/checks and normal main proof
+remain required before clearing PR113's verification hold.
+
+Fresh Windows fmt/all-target all-feature Clippy and the targeted single-datagram
+regression pass. A full all-feature workspace attempt fails the existing host
+IPv6 DNS receive case:42/43 DNS tests pass, zero ignored/filtered. This is not a
+full-platform pass. Separate standards/spec reviews found one setup-deadline
+return bypass; the success branch now checks the original setup deadline. No
+other concrete defect was found. Linux-only build/execution remains unverified
+locally and must pass actual CI.

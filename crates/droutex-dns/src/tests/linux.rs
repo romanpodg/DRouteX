@@ -23,6 +23,51 @@ impl Drop for Fixture {
     }
 }
 
+async fn current_checkpoint_window(server: &Server, root: PathBuf) -> u64 {
+    use droutex_core::deployment::AdmissionCode;
+    let end = Instant::now() + Duration::from_secs(8);
+    loop {
+        let manifest = root.join("manifest.json");
+        let floor = tokio::task::spawn_blocking(move || {
+            let value: Value = serde_json::from_slice(&fs::read(manifest).unwrap()).unwrap();
+            value["clock_floor"].as_u64().unwrap()
+        })
+        .await
+        .unwrap();
+        let wall = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
+        // D46 allows2s uncertainty and2s wall/monotonic disagreement. Leave
+        // another1s for the immediate SERVFAIL fixture. A two-second start
+        // phase lets the periodic one-second worker publish a fresh floor.
+        // Runtime deadlines and every actual admission check remain unchanged.
+        if Duration::from_secs(floor) > wall + Duration::from_secs(5) {
+            match server.owner.prepare_legacy_dns(typed(20), v4()) {
+                Ok(attempt) => {
+                    drop(attempt);
+                    assert!(
+                        Instant::now() < end,
+                        "checkpoint readiness completed after the setup deadline"
+                    );
+                    return floor;
+                }
+                Err(error)
+                    if matches!(
+                        error.code(),
+                        AdmissionCode::CheckpointRequired | AdmissionCode::Unavailable
+                    ) =>
+                {
+                    ()
+                }
+                Err(error) => panic!("unexpected fixture admission precondition: {error:?}"),
+            }
+        }
+        assert!(
+            Instant::now() < end,
+            "no current checkpoint window before the single-query phase"
+        );
+        sleep(Duration::from_millis(20)).await;
+    }
+}
+
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn actual_listener_survives_cp_loss_but_checkpoint_failure_closes_admission() {
     let fixture = Fixture::new();
@@ -72,11 +117,23 @@ async fn actual_listener_survives_cp_loss_but_checkpoint_failure_closes_admissio
     };
     fs::remove_dir(fixture.0.join("cp")).unwrap();
     fs::remove_dir(fixture.0.join("backups")).unwrap();
+    let ready_floor = current_checkpoint_window(&server, fixture.0.join("dp")).await;
+    let response = match exchange_once(&server, QUERY).await {
+        Ok(response) => response,
+        Err(error) => {
+            let admission = server
+                .owner
+                .prepare_legacy_dns(typed(20), v4())
+                .map(drop)
+                .map_err(|error| error.code());
+            let report = server.close().await;
+            panic!(
+                "single positive reply failed: {error:?}; ready_floor={ready_floor}; admission={admission:?}; report={report:?}"
+            );
+        }
+    };
     assert_eq!(
-        Message::from_vec(&exchange_once(&server, QUERY).await)
-            .unwrap()
-            .metadata
-            .response_code,
+        Message::from_vec(&response).unwrap().metadata.response_code,
         ResponseCode::ServFail
     );
     // A directory at the fixed transaction path makes the real store refuse its
