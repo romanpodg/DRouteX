@@ -680,3 +680,11 @@ full-platform pass. Separate standards/spec reviews found one setup-deadline
 return bypass; the success branch now checks the original setup deadline. No
 other concrete defect was found. Linux-only build/execution remains unverified
 locally and must pass actual CI.
+
+Correction head194ad77ba0400c246abf15a49cca5f4460808433 failed Linux Clippy in
+[CI40630402694](https://github.com/romanpodg/DRouteX/actions/runs/40630402694):
+`unneeded unit expression` in the retryable setup match arm. Windows cfg excludes
+this Linux-only code. The redundant expression is removed without changing the
+branch behavior. This failed run did not execute the runtime regressions and
+cannot establish whether the readiness correction fixes the observed timeout.
+Its in-progress account review was interrupted before a verdict and is unverified.

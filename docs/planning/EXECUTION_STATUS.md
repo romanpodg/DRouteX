@@ -47,6 +47,8 @@ historical checkpoints below; reconcile conflicts before dependent work.
   checkpoint-readiness correction, fresh current-head review/checks and normal
   merge/exact-main proof. The failed run remains failed; original causation is
   unproven. See [fixture evidence](P3_01_LISTENER_REVIEW.md#pr113-checkpoint-readiness-verification-hold).
+  Correction head194ad77 then failed Linux Clippy on a redundant unit expression;
+  its runtime tests were not reached. The expression is removed; fresh proof remains open.
 - P3-02 application stays planned. This qualification approves no upstream
   resource shape, fallback/address/loop policy, runtime limits, production
   dependency adoption, public service or infrastructure. Those retain a separate

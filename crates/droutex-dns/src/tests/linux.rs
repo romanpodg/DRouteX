@@ -53,10 +53,7 @@ async fn current_checkpoint_window(server: &Server, root: PathBuf) -> u64 {
                     if matches!(
                         error.code(),
                         AdmissionCode::CheckpointRequired | AdmissionCode::Unavailable
-                    ) =>
-                {
-                    ()
-                }
+                    ) => {}
                 Err(error) => panic!("unexpected fixture admission precondition: {error:?}"),
             }
         }
