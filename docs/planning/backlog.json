@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "P0/P1/P2/P4-01 complete; P3-01 reopened for later Linux fixture answer-count failure after checked PR110; next DNS-client qualification paused",
-  "date": "2026-10-24",
+  "status": "P0/P1/P2/P3-01/P4-01 complete after checked PR112; isolated DNS-client qualification authorized/in progress; P3-02 application remains planned",
+  "date": "2026-10-25",
   "phases": {
     "P0": "Foundation",
     "P1": "Domain and configuration",
@@ -620,7 +620,7 @@
       "security": "No open resolver; limited concurrency and amplification surface",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_progress",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -2620,9 +2620,14 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-10-22",
-    "source": "Direct owner D47 full profile acceptance conditional on checked PR107, fulfilled before qualification code; docs/planning/P3_01_LISTENER_CONTRACT.md",
-    "scope": "Bounded internal UDP/TCP library and exact Hickory0.26.3/Tokio1.53.3 feature qualification/conditional adoption after actual Windows/Linux, dependency/license and independent reviews. No live public deployment; upstream/policy answers remain owning stages.",
-    "through_task": "P3-01"
+    "source": "Direct owner D47 full profile acceptance conditional on checked PR107, fulfilled before qualification code; docs/planning/P3_01_LISTENER_CONTRACT.md; direct owner2026-10-22 isolated DNS-client qualification acceptance, recorded D51",
+    "scope": "Bounded internal UDP/TCP library and exact Hickory0.26.3/Tokio1.53.3 feature qualification/conditional adoption after actual Windows/Linux, dependency/license and independent reviews. No live public deployment; upstream/policy answers remain owning stages. Additional scope is isolated hickory-net0.26.3 client qualification only after checked P3-01; no P3-02 application/production adoption.",
+    "through_task": "P3-01",
+    "additional_scope": {
+      "kind": "isolated_dependency_qualification",
+      "task": "P3-02",
+      "decision": "dns_client_qualification_decision"
+    }
   },
   "design_proposals": [
     {
@@ -2884,5 +2889,34 @@
     "date": "2026-10-23",
     "source": "Direct owner reply selecting bounded checkpoint wait (request call_e86e81e88434420ab5c93daca7a9ec67); docs/planning/P3_01_CHECKPOINT_WAIT_CONTRACT.md",
     "profile": "D50 at most one clock completion wait/recheck per gate within original deadlines; retain original reservation/generation/quota; no I/O until actual authority recheck; all other refusals remain closed"
+  },
+  "dns_client_qualification_decision": {
+    "status": "accepted",
+    "date": "2026-10-22",
+    "source": "Direct owner reply selecting isolated client qualification after checked P3-01; docs/planning/P3_02_CLIENT_QUALIFICATION_CONTRACT.md",
+    "package": "hickory-net",
+    "version": "0.26.3",
+    "default_features": false,
+    "features": [
+      "tokio"
+    ],
+    "production_adoption": false,
+    "archive_sha256": "c480823ed7c2c5d0f09c41020cb6b7c28029ce60ec42dc942158dcf22f8e0a4d"
+  },
+  "dns_client_validation_decision": {
+    "status": "accepted",
+    "date": "2026-10-24",
+    "source": "Direct owner reply selecting bounded DRouteX adapters (request call_4629a212e9ed46b4ba18deb5d0bcfd02); docs/planning/P3_02_CLIENT_VALIDATION_CONTRACT.md",
+    "production_adoption": false,
+    "profile": {
+      "max_message_bytes": 4096,
+      "udp_datagrams": 16,
+      "tcp_received_bytes": 65568,
+      "io_operations_per_direction": 256,
+      "written_bytes": 4098,
+      "candidates": 16,
+      "attempt_ms": 500,
+      "cleanup_ms": 3000
+    }
   }
 }

@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1/P2/P4-01 complete; P3-01 reopened for later Linux fixture answer-count failure after checked PR110; next DNS-client qualification paused.**
+**P0/P1/P2/P3-01/P4-01 complete after checked PR112; isolated DNS-client qualification authorized/in progress; P3-02 application remains planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -307,7 +307,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P3-01: Add bounded DNS UDP/TCP listeners
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,19,22.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,19,22.
 
 | Field | Deliverable / evidence |
 |---|---|

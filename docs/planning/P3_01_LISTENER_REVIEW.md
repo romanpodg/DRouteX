@@ -1,10 +1,9 @@
 # P3-01 transport evidence
 
-Status: **P3-01 reopened for a strict single-datagram fixture correction.
-Runtime PR110 completed review/normal-merge/exact-main gates; the later PR111
-merge5c7c7a3 failed Linux Workspace/coverage at an aggregate answer counter.
-The original failure is retained, and next qualification is paused pending the
-correction's fresh review/check/merge/main evidence.** The owner accepted
+Status: **P3-01 completed after the strict fixture correction PR112. Its normal
+merge8f234c44 passed all11 exact-main40097388131 jobs and both processed reports;
+actual implementation/final account reviews found no concrete defects. Earlier
+failed runs remain failed in this record.** The owner accepted
 complete D47 conditionally on checked PR107. Before qualification code, PR107
 merged normally at02b6695928a64c37de5e073a4bdb5162f1928c54; all11 exact-main39747433154
 jobs and both Codecov sessions processed(Rust6689/7013). See
@@ -620,3 +619,72 @@ Final evidence-head account review/checks, normal exact-head merge and exact-mai
 platform/report gates remain required before closing the reopened P3-01 gate or
 starting the accepted isolated client qualification. The failed40095014751 run
 is unchanged and remains failed; no counter or negative assertion was weakened.
+
+## Strict fixture correction normal merge and main
+
+Final head5a0a59286dcca16ce22455218b3adbe8e1c42632 passed all11
+[CI40096734289 jobs](https://github.com/romanpodg/DRouteX/actions/runs/40096734289),
+both processed reports(Rust7902/8287) and all3 CodeScene8109468 gates. Its first
+final account review was capacity-interrupted, exit1, without a verdict; that
+attempt is unverified. Completed read-only/never final whole-PR review
+01a16e09-7ae3-7c43-a9d3-2c6b36eaffda exited0 without concrete defects. Fmt/diff,
+planning/source/nine negative cases and two existing-binary targeted cases passed;
+fresh build/Clippy/Linux limits in that environment do not replace actual CI.
+
+[PR112](https://github.com/romanpodg/DRouteX/pull/112) merged normally at
+8f234c44a0c47fc3ef4583e775a591cd90158185 on2026-10-24T13:15:54Z, matching the
+reviewed head without bypass. All11 [exact-main40097388131 jobs](https://github.com/romanpodg/DRouteX/actions/runs/40097388131)
+passed on the first attempt. Actual logs passed244 Windows/276 Linux workspace
+tests in each default/no-default profile, zero failed/ignored/filtered. DNS43/44
+includes the real durable fixture's exact counter, CP-loss/checkpoint failure,
+negative receive check, mandatory IPv6 and controlled delayed-query regression.
+All six dependency bundles passed; both exact-merge reports processed(Rust7902/8287).
+The earlier failed40095014751 and missing reports remain failed/unverified.
+
+This closes the reopened P3-01 library gate. The previously accepted isolated
+DNS-client qualification may now begin. It remains separate from P3-02 application
+behavior and production adoption, with no public deployment implied.
+
+## PR113 checkpoint-readiness verification hold
+
+On qualification evidence headfcc8ff2e9a334a8c32c7fd5450e4086cec77d0b6,
+[CI40191024088](https://github.com/romanpodg/DRouteX/actions/runs/40191024088)
+failed the Linux durable fixture before the new client qualification step.
+The first positive single-datagram receive expired: `no reply to the single
+fixture datagram: Elapsed(())`. DNS passed43/44; ten other jobs passed, including
+Windows and Rust coverage. The original failure remains failed. Its log lacks
+the admission code and checkpoint phase, so exact causation is unproven.
+
+A separate deterministic actual-store regression advances the existing fake
+clock during manifest commit. A successful refresh can publish floor1005 after
+the current conservative bound already requires1010. New and retained admissions
+then correctly return CheckpointRequired until another trusted refresh. This is
+permitted by D50: completion is not authority, and a second refusal must close.
+The regression demonstrates a mechanism, not the original CI packet history.
+
+The test-only correction waits at most8s for the persisted manifest floor to
+exceed actual wall time by5s and for the actual prepare check to succeed before
+the positive wire phase. This allows D46's2s uncertainty,2s clock disagreement
+and1s for the immediate unavailable-handler response. Setup sends no query;
+the positive exchange still sends exactly one datagram. Runtime deadlines and
+one-checkpoint semantics are unchanged. The real checkpoint sabotage, negative
+receive, clock-failure count and answered==1 remain mandatory. A positive timeout
+now closes the server and reports the observed floor, admission code and shutdown
+counters. Fresh Linux execution, current-head review/checks and normal main proof
+remain required before clearing PR113's verification hold.
+
+Fresh Windows fmt/all-target all-feature Clippy and the targeted single-datagram
+regression pass. A full all-feature workspace attempt fails the existing host
+IPv6 DNS receive case:42/43 DNS tests pass, zero ignored/filtered. This is not a
+full-platform pass. Separate standards/spec reviews found one setup-deadline
+return bypass; the success branch now checks the original setup deadline. No
+other concrete defect was found. Linux-only build/execution remains unverified
+locally and must pass actual CI.
+
+Correction head194ad77ba0400c246abf15a49cca5f4460808433 failed Linux Clippy in
+[CI40630402694](https://github.com/romanpodg/DRouteX/actions/runs/40630402694):
+`unneeded unit expression` in the retryable setup match arm. Windows cfg excludes
+this Linux-only code. The redundant expression is removed without changing the
+branch behavior. This failed run did not execute the runtime regressions and
+cannot establish whether the readiness correction fixes the observed timeout.
+Its in-progress account review was interrupted before a verdict and is unverified.

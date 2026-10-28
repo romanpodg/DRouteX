@@ -13,11 +13,16 @@
   "mvp_release_dependency_closure": 61,
   "requirements": 188,
   "source_headings": 149,
-  "local_links_checked": 362,
+  "local_links_checked": 385,
   "adrs": 17,
   "accepted_adrs": 2,
   "negative_validator_cases": 9,
   "source_specs_unchanged": true,
   "workspace_crates": 7,
-  "runtime_implementation_absent": false
+  "runtime_implementation_absent": false,
+  "additional_execution_scope": {
+    "kind": "isolated_dependency_qualification",
+    "task": "P3-02",
+    "decision": "dns_client_qualification_decision"
+  }
 }

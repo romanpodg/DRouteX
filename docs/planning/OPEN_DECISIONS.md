@@ -108,6 +108,35 @@ IPv6/QUIC/application enforcement.
 | D48 | Owner clarified D47 timeout fallback: processor at most1500ms from query start, remaining500ms reserved inside the original two-second total for SERVFAIL encoding/write; total expiry or lost admission drops/closes. No extra two-second write phase. | P3-01 | Direct owner reply2026-10-22 accepting .setup/p3-01/timeout-budget-proposal.md; [contract](P3_01_LISTENER_CONTRACT.md) |
 | D49 | Owner selected explicit UDP addresses now: refuse0.0.0.0/:: before workers start, and refuse an old explicit socket after wildcard republication. Preserve schema and TCP wildcard; qualify destination-aware UDP I/O separately before later support. No new dependency/unsafe I/O/interface enumeration. | P3-01 | Direct owner reply2026-10-22: explicit UDP addresses now; .setup/p3-01/wildcard-binding-proposal.md and [contract](P3_01_LISTENER_CONTRACT.md) |
 | D50 | Owner accepted one bounded checkpoint completion wait/recheck per gate within the original deadlines. Retain the original reservation/generation/scope/quota; no ready I/O until actual authority is checked again. Generic unavailable waits only for known pending maintenance; other/second refusals remain closed. | P3-01 | Direct owner reply2026-10-23 selecting bounded checkpoint wait; [contract](P3_01_CHECKPOINT_WAIT_CONTRACT.md) |
+| D51 | Owner accepted exact hickory-net0.26.3 defaults-off/tokio isolated UDP/TCP client qualification after checked P3-01, preserving selected versions and mandatory matching/bounds/lifecycle/platform/license checks. No production adoption or P3-02 application profile is approved. | P3-02 prerequisite qualification | Direct owner reply2026-10-22, recorded2026-10-24; [contract](P3_02_CLIENT_QUALIFICATION_CONTRACT.md) |
+| D52 | Owner accepted qualification of the exact library with mandatory bounded DRouteX ingress and caller-validation adapters, one absolute500ms attempt and finite3s cleanup. The explicit input/message/candidate/I/O bounds and UDP one-shot/TCP framing limits apply; no production adoption. | P3-02 prerequisite qualification | Direct owner reply2026-10-24 (call_4629a212e9ed46b4ba18deb5d0bcfd02); [contract](P3_02_CLIENT_VALIDATION_CONTRACT.md) |
+
+## P3-02 client-role decision and open qualification
+
+D51 qualification is incomplete. Actual raw TCP returns a matching-ID answer
+with a foreign question; all local profiles keep that strict test failed.
+Internal UDP/TCP filtering also makes a delivered-candidate counter insufficient
+to bound all receive work. The [concrete adapter proposal](P3_02_CLIENT_VALIDATION_CONTRACT.md)
+records the owner's accepted security responsibility allocation, with finite
+ingress, message acceptance, absolute attempt and cleanup bounds. D52 was accepted
+before dependent adapter code. The raw library remains unqualified for the strict
+standalone role; the composed role must pass every gate. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md) distinguishes
+raw failures, host limits, partial probes and supply-chain results. P3-02
+application behavior/resources/adoption remain a later complete owner decision.
+
+## P3-02 qualification review dispositions
+
+CodeScene8117794 on initial qualification headf4a8d8c failed all three gates.
+The raw result remains failed. The following dispositions concern maintainability
+of tests-only code and auxiliary planning checks, not deferred functional defects.
+Actual platform/negative/mutation/review evidence is in the [owning review](P3_02_CLIENT_QUALIFICATION_REVIEW.md).
+There is no suppression, threshold change, required-check waiver or protection bypass.
+
+| Item | Finding, impact and rationale | Owner / revisit trigger |
+|---|---|---|
+| P3-02-CS-GUARD | guarded.rs8.55 flags Complex Method/Conditional and Bumpy Road Ahead in Expected.accepts; Expected.new also has a complex condition. The private tests-only guard explicitly checks header/question, every record section, class, empty data and lossless EDNS parsing. The risk is future parser modification. Standards/spec/account review found no remaining concrete defect; real malformed/foreign frames, exact caps and removed-check mutations support the selected boundaries. Extracting validation merely for the score would distribute these invariants without demonstrated behavior benefit. The owner's metric policy excludes tests as independent targets; production adoption is separately unapproved. | P3-02 before any production guard reuse, new record/EDNS handling or response-policy change; immediately for a concrete integrity/budget defect. |
+| P3-02-CS-FIXTURES | guarded_tests.rs8.87 flags file length, the connection/read/write cancellation method and Bumpy Road Ahead in the read/write operation-boundary fixture. independent.rs9.84 flags Bumpy Road Ahead in udp_probe. The branches represent distinct actual peer/read/write and cancellation cases; both native CI profiles pass without ignored/filtered cases. Remaining maintenance risk is extending shared fixtures incorrectly. Tests/fixtures are outside independent metric scope, and no score-only split or assertion weakening is justified. | Owning qualification when extending a fixture or investigating an actual platform/false-positive failure. |
+| P3-02-CS-PLANNING | The existing authorization-table test declines9.13->9.02 with Complex Method as explicit negative copies are added for D51/D52. The auxiliary validator improves. Nineteen planning tests and nine validator negatives pass; the accepted scope/profile remains enforced. A co-change signal expects AGENTS.md, but D51/D52 belong to their accepted contracts and current execution card. No instruction change or dummy AGENTS diff is required. | Next actual execution-boundary change or concrete validator defect; do not refactor tests/docs solely for the heuristic. |
 
 ## P2-06 review dispositions
 

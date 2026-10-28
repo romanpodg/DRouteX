@@ -238,16 +238,18 @@ async fn start_runtime(
     sleep(Duration::from_millis(40)).await;
     handle
 }
-async fn exchange_once(server: &Server, bytes: &[u8]) -> Vec<u8> {
+async fn exchange_once(
+    server: &Server,
+    bytes: &[u8],
+) -> std::result::Result<Vec<u8>, tokio::time::error::Elapsed> {
     let client = UdpSocket::bind((server.udp.ip(), 0)).await.unwrap();
     client.send_to(bytes, server.udp).await.unwrap();
     let mut response = [0; MAX_UDP_BYTES + 1];
     let (length, peer) = timeout(Duration::from_secs(3), client.recv_from(&mut response))
-        .await
-        .expect("no reply to the single fixture datagram")
+        .await?
         .unwrap();
     assert_eq!(peer, server.udp);
-    response[..length].to_vec()
+    Ok(response[..length].to_vec())
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
@@ -271,6 +273,7 @@ async fn single_datagram_exchange_never_retransmits_a_delayed_authorized_query()
         probe.release.notify_waiters();
     };
     let (response, ()) = tokio::join!(exchange_once(&server, QUERY), release);
+    let response = response.expect("no reply to the single fixture datagram");
     assert_eq!(Message::from_vec(&response).unwrap().metadata.id, 1234);
     assert_eq!(server.close().await.answered, 1);
 }

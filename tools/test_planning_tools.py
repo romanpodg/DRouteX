@@ -218,6 +218,24 @@ class ValidatorTests(unittest.TestCase):
         unaccepted_checkpoint['dns_transport_checkpoint_wait_decision']['status'] = 'proposed'
         missing_checkpoint_source = copy.deepcopy(plan)
         missing_checkpoint_source['dns_transport_checkpoint_wait_decision']['source'] = ''
+        unaccepted_client = copy.deepcopy(plan)
+        unaccepted_client['dns_client_qualification_decision']['status'] = 'proposed'
+        missing_client_source = copy.deepcopy(plan)
+        missing_client_source['dns_client_qualification_decision']['source'] = ''
+        broader_client_scope = copy.deepcopy(plan)
+        broader_client_scope['execution_authorization']['additional_scope']['kind'] = 'production_adoption'
+        changed_client_features = copy.deepcopy(plan)
+        changed_client_features['dns_client_qualification_decision']['features'].append('tls-ring')
+        adopted_client = copy.deepcopy(plan)
+        adopted_client['dns_client_qualification_decision']['production_adoption'] = True
+        unfinished_transport = copy.deepcopy(plan)
+        next(t for t in unfinished_transport['tasks'] if t['id'] == 'P3-01')['status'] = 'in_progress'
+        unaccepted_validation = copy.deepcopy(plan)
+        unaccepted_validation['dns_client_validation_decision']['status'] = 'proposed'
+        adopted_validation = copy.deepcopy(plan)
+        adopted_validation['dns_client_validation_decision']['production_adoption'] = True
+        unbounded_validation = copy.deepcopy(plan)
+        unbounded_validation['dns_client_validation_decision']['profile']['attempt_ms'] = 1000
         missing_lab = copy.deepcopy(plan)
         missing_lab['network_lab_decision']['source'] = ''
         missing_native = copy.deepcopy(plan)
@@ -242,7 +260,10 @@ class ValidatorTests(unittest.TestCase):
                      unaccepted_order, missing_order_source, unaccepted_binding, missing_binding_source,
                      unfinished_binding, unaccepted_transport, missing_transport_source,
                      unaccepted_timeout, missing_timeout_source, unaccepted_checkpoint, missing_checkpoint_source,
-                     unaccepted_udp_binding, missing_udp_binding_source):
+                     unaccepted_udp_binding, missing_udp_binding_source, unaccepted_client,
+                     missing_client_source, broader_client_scope, changed_client_features,
+                     adopted_client, unfinished_transport, unaccepted_validation,
+                     adopted_validation, unbounded_validation):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
 
