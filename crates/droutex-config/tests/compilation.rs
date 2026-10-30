@@ -15,6 +15,10 @@ use std::{num::NonZeroU16, str::FromStr};
 mod admission;
 #[path = "compilation/explain.rs"]
 mod explain;
+#[path = "compilation/upstream.rs"]
+mod upstream;
+
+const UPSTREAM: &[u8] = br#"{"format":"droutex-dns-upstream-v1","fallback":"none","members":[{"transport":"udp_tcp","address":"1.1.1.1:53"}]}"#;
 
 fn id<T: FromStr>(n: usize) -> T
 where
@@ -137,7 +141,7 @@ fn data(store: &CatalogStore) -> Vec<ResourceData<'_>> {
         .collect();
     result.push(ResourceData {
         resource: SnapshotResource::Upstream(id(60)),
-        bytes: b"verified-upstream-descriptor",
+        bytes: UPSTREAM,
     });
     result
 }
@@ -541,8 +545,9 @@ fn correct_signature_does_not_authorize_malformed_or_noncanonical_catalog_resour
 
 #[test]
 fn complete_expansion_budget_includes_private_tables_before_rule_copies() {
-    // 9995 conditions + Profile/Endpoint/group/legacy scope + private record =10000.
-    let entries: Vec<_> = (0..9995)
+    // 9993 conditions plus Profile, Endpoint, network group, legacy scope,
+    // private record, upstream group and its one member =10000.
+    let entries: Vec<_> = (0..9993)
         .map(|n| json!({"domain":format!("n{n}.example.test"),"mode":"exact"}))
         .collect();
     let bytes = serde_json::to_vec(
@@ -568,7 +573,7 @@ fn complete_expansion_budget_includes_private_tables_before_rule_copies() {
         },
         ResourceData {
             resource: SnapshotResource::Upstream(id(60)),
-            bytes: b"upstream",
+            bytes: UPSTREAM,
         },
     ];
     assert!(

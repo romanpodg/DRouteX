@@ -53,10 +53,11 @@ historical checkpoints below; reconcile conflicts before dependent work.
   bounded P3-02 implementation and conditional exact-client adoption, including
   immutable numeric public upstream groups, explicit fallback, current admission,
   fixed deadlines and owned resource/cleanup limits. No public deployment or
-  infrastructure change is authorized. Finish current PR114 documentation
-  review/merge/main gates first, then start P3-02 and update its canonical task/
-  execution boundary. Until that start P3-02 remains planned; D51/D52 alone still
-  confer no production authority.
+  infrastructure change is authorized. PR114 merged normally at3d866cb and all11
+  exact-main40633658696 jobs/both processed reports passed before implementation.
+  P3-02 is now in progress on its own branch under D53; every later task stays
+  planned. [Application evidence](P3_02_FORWARDING_REVIEW.md) tracks its required
+  independent proof. D51/D52 alone still confer no production authority.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

@@ -74,6 +74,80 @@ fn observations() -> Vec<OutboundObservation> {
         tcp: TcpCapability::Supported,
     }]
 }
+
+#[test]
+fn signed_invalid_upstream_candidate_retains_actual_lkg_and_original_admission() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    let mut document = document();
+    document["profiles"][0]["defaultDnsAction"] = json!({"kind":"resolve","upstream":text(60)});
+    let document_bytes = serde_json::to_vec(&document).unwrap();
+    let candidate = |payload: &[u8], sequence, complete| {
+        let configuration = parse_configuration(
+            &document_bytes,
+            InputFormat::Json,
+            &ReferenceCatalog {
+                upstreams: [typed(60)].into(),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+        let artifacts = Artifacts::new(vec![(
+            SnapshotResource::Upstream(typed(60)),
+            payload.to_vec(),
+        )])
+        .unwrap();
+        let metadata = SnapshotMetadata {
+            node: typed(1),
+            snapshot: typed(2),
+            source: typed(3),
+            sequence: SnapshotSequence::new(sequence).unwrap(),
+        };
+        let encoded = if complete {
+            CompletePublication::new(configuration, vec![], &artifacts.data(), &[])
+                .unwrap()
+                .encode(metadata, &signer(false).0)
+                .unwrap()
+        } else {
+            let content =
+                SnapshotContent::new(configuration, vec![], &artifacts.trusted().unwrap()).unwrap();
+            encode_snapshot(&content, metadata, &signer(false).0).unwrap()
+        };
+        (encoded, artifacts)
+    };
+    let valid = br#"{"format":"droutex-dns-upstream-v1","fallback":"none","members":[{"transport":"udp_tcp","address":"1.1.1.1:53"}]}"#;
+    let (bytes, artifacts) = candidate(valid, 1, true);
+    deployment
+        .activate(bytes, artifacts, &Cancellation::default())
+        .unwrap();
+    time(&deployment, 1001, 1);
+    let auth = deployment
+        .prepare_legacy_dns(typed(20), peer())
+        .unwrap()
+        .consume()
+        .unwrap();
+    let check = auth.dns_io_check().unwrap();
+    for invalid in [b"opaque descriptor".as_slice(), br#"{"format":"droutex-dns-upstream-v1","fallback":"none","members":[{"transport":"udp_tcp","address":"127.0.0.1:53"}]}"#] {
+        let (bytes, artifacts) = candidate(invalid, 2, false);
+        assert_eq!(deployment.activate(bytes, artifacts, &Cancellation::default()).unwrap_err().code(), ErrorCode::Compilation);
+        let current = deployment.pin().unwrap();
+        assert_eq!(current.metadata().sequence.get(), 1);
+        assert_eq!(current.artifact(SnapshotResource::Upstream(typed(60))), Some(valid.as_slice()));
+        assert_eq!(current.compiled_configuration().upstream(typed(60)).unwrap().members()[0].address().to_string(), "1.1.1.1:53");
+        auth.verify_current().unwrap();
+        check.verify_current().unwrap();
+    }
+    // Refused sequence2 candidates did not consume its replay floor.
+    let (bytes, artifacts) = candidate(valid, 2, true);
+    deployment
+        .activate(bytes, artifacts, &Cancellation::default())
+        .unwrap();
+    assert_eq!(deployment.pin().unwrap().metadata().sequence.get(), 2);
+    assert_eq!(
+        check.verify_current().unwrap_err().code(),
+        AdmissionCode::Retired
+    );
+}
 fn gateway<'store>(
     deployment: &'store Deployment,
     peer: IpAddr,
@@ -292,6 +366,158 @@ fn consumption_retry_retains_one_original_generation_and_quota_reservation() {
     );
     drop(auth);
     assert!(deployment.prepare_legacy_dns(typed(21), peer()).is_ok());
+}
+
+#[test]
+fn dns_io_check_loses_owner_without_holding_quota_or_a_generation_pin() {
+    use std::{sync::mpsc, thread, time::Duration};
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    apply_document(&deployment, &document(), 1);
+    time(&deployment, 1002, 2);
+    let auth = deployment
+        .prepare_legacy_dns(typed(20), peer())
+        .unwrap()
+        .consume()
+        .unwrap();
+    assert_eq!(auth.network_group(), typed(50));
+    let check = auth.dns_io_check().unwrap();
+    let (ready_tx, ready_rx) = mpsc::channel();
+    let (continue_tx, continue_rx) = mpsc::channel();
+    let task = thread::spawn(move || {
+        check.verify_current().unwrap();
+        ready_tx.send(()).unwrap();
+        continue_rx.recv_timeout(Duration::from_secs(5)).unwrap();
+        assert_eq!(
+            check.verify_current().unwrap_err().code(),
+            AdmissionCode::Retired
+        );
+        check
+    });
+    ready_rx.recv_timeout(Duration::from_secs(5)).unwrap();
+    let others: Vec<_> = (0..63)
+        .map(|_| deployment.prepare_legacy_dns(typed(21), peer()).unwrap())
+        .collect();
+    assert_eq!(
+        deployment
+            .prepare_legacy_dns(typed(21), peer())
+            .unwrap_err()
+            .code(),
+        AdmissionCode::Quota
+    );
+    drop(auth);
+    let new_auth = deployment
+        .prepare_legacy_dns(typed(21), peer())
+        .unwrap()
+        .consume()
+        .unwrap();
+    new_auth.dns_io_check().unwrap().verify_current().unwrap();
+    continue_tx.send(()).unwrap();
+    let old_check = task.join().unwrap();
+    drop(new_auth);
+    drop(others);
+    // A retained checker cannot keep retired generations busy or revive under a
+    // later admission/publication with the same signed grant intent.
+    for sequence in 2..=4 {
+        apply_document(&deployment, &document(), sequence);
+        assert_eq!(
+            old_check.verify_current().unwrap_err().code(),
+            AdmissionCode::Retired
+        );
+    }
+    drop(deployment);
+    assert_eq!(
+        old_check.verify_current().unwrap_err().code(),
+        AdmissionCode::Retired
+    );
+}
+
+#[test]
+fn dns_io_check_shares_current_revocation_lease_clock_and_checkpoint_denials() {
+    for failure in [
+        "replace",
+        "revoke",
+        "lease",
+        "clock",
+        "checkpoint",
+        "failed checkpoint",
+    ] {
+        let deployment = Deployment::in_memory(typed(1), trust(false));
+        start(&deployment, 1000);
+        apply_document(&deployment, &document(), 1);
+        time(&deployment, 1001, 1);
+        let auth = deployment
+            .prepare_legacy_dns(typed(20), peer())
+            .unwrap()
+            .consume()
+            .unwrap();
+        let check = auth.dns_io_check().unwrap();
+        let expected = match failure {
+            "replace" | "revoke" => {
+                let mut replacement = document();
+                if failure == "revoke" {
+                    replacement["legacyGrants"][0]["source"] = json!("203.0.113.8");
+                }
+                apply_document(&deployment, &replacement, 2);
+                AdmissionCode::Retired
+            }
+            "lease" => {
+                time(&deployment, 1498, 498);
+                deployment
+                    .refresh_authorization_clock(&Cancellation::default())
+                    .unwrap();
+                AdmissionCode::Lease
+            }
+            "clock" => {
+                time(&deployment, 1000, 5);
+                AdmissionCode::Clock
+            }
+            "checkpoint" => {
+                time(&deployment, 1004, 4);
+                AdmissionCode::CheckpointRequired
+            }
+            "failed checkpoint" => {
+                deployment.admission.lock().unwrap().fail_checkpoint();
+                AdmissionCode::Unavailable
+            }
+            _ => unreachable!(),
+        };
+        assert_eq!(
+            check.verify_current().unwrap_err().code(),
+            expected,
+            "{failure}"
+        );
+        assert_eq!(
+            auth.verify_current().unwrap_err().code(),
+            expected,
+            "{failure}"
+        );
+        assert_eq!(
+            auth.dns_io_check().unwrap_err().code(),
+            expected,
+            "{failure}"
+        );
+        if failure == "checkpoint" {
+            deployment
+                .refresh_authorization_clock(&Cancellation::default())
+                .unwrap();
+            check.verify_current().unwrap();
+            auth.verify_current().unwrap();
+            assert_eq!(auth.decision().metadata().sequence.get(), 1);
+        }
+    }
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    apply_document(&deployment, &document(), 1);
+    time(&deployment, 1001, 1);
+    let gateway = gateway(&deployment, peer(), "service.test", 443)
+        .unwrap()
+        .consume()
+        .unwrap();
+    assert_eq!(
+        gateway.dns_io_check().unwrap_err().code(),
+        AdmissionCode::Scope
+    );
 }
 
 #[test]

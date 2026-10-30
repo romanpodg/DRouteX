@@ -121,7 +121,7 @@ class ValidatorTests(unittest.TestCase):
         missing_evidence = copy.deepcopy(plan)
         missing_evidence['foundation_review']['source'] = ''
         later_work = copy.deepcopy(plan)
-        next(t for t in later_work['tasks'] if t['id'] == 'P3-02')['status'] = 'in_progress'
+        next(t for t in later_work['tasks'] if t['id'] == 'P3-03')['status'] = 'in_progress'
         unfinished_dependencies = copy.deepcopy(plan)
         next(t for t in unfinished_dependencies['tasks'] if t['id'] == 'P0-05')['status'] = 'in_review'
         unfinished_identity = copy.deepcopy(plan)
@@ -223,7 +223,7 @@ class ValidatorTests(unittest.TestCase):
         missing_client_source = copy.deepcopy(plan)
         missing_client_source['dns_client_qualification_decision']['source'] = ''
         broader_client_scope = copy.deepcopy(plan)
-        broader_client_scope['execution_authorization']['additional_scope']['kind'] = 'production_adoption'
+        broader_client_scope['execution_authorization']['decision'] = 'dns_client_qualification_decision'
         changed_client_features = copy.deepcopy(plan)
         changed_client_features['dns_client_qualification_decision']['features'].append('tls-ring')
         adopted_client = copy.deepcopy(plan)
@@ -266,6 +266,28 @@ class ValidatorTests(unittest.TestCase):
                      adopted_validation, unbounded_validation):
             with self.subTest(case=case['foundation_review']), self.assertRaises(AssertionError):
                 planning.validate_review_boundary(case)
+
+    def test_forwarding_requires_its_accepted_profile_and_checked_prerequisites(self):
+        plan = json.loads((ROOT / 'docs/planning/backlog.json').read_text(encoding='utf-8'))
+        planning.validate_review_boundary(plan)
+        for field, value in [('status', 'proposed'), ('source', ''),
+                             ('production_adoption', True), ('default_features', True),
+                             ('features', ['tokio', 'tls-ring'])]:
+            bad = copy.deepcopy(plan)
+            bad['dns_forwarding_decision'][field] = value
+            with self.subTest(field=field), self.assertRaises(AssertionError):
+                planning.validate_review_boundary(bad)
+        for field, value in [('public_numeric_only', False), ('wire_queries', 10000),
+                             ('dnssec', 'forward')]:
+            bad = copy.deepcopy(plan)
+            bad['dns_forwarding_decision']['profile'][field] = value
+            with self.subTest(profile=field), self.assertRaisesRegex(AssertionError, 'Unexpected forwarding profile'):
+                planning.validate_review_boundary(bad)
+        for prerequisite in ('client_qualification', 'documentation_gate'):
+            bad = copy.deepcopy(plan)
+            bad['dns_forwarding_decision'][prerequisite]['reports_processed'] = False
+            with self.subTest(prerequisite=prerequisite), self.assertRaisesRegex(AssertionError, 'Missing checked forwarding prerequisite'):
+                planning.validate_review_boundary(bad)
 
     def test_every_upload_mutation_is_rejected(self):
         flow = quality.read_yaml(ROOT / '.github/workflows/planning.yml')

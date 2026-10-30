@@ -1,11 +1,13 @@
 //! D46 current admission. No socket, origin check or connector is supplied here.
 mod clock;
+mod io;
 mod quota;
 use super::{Cancellation, Decision, Deployment, DeploymentError, ErrorCode, Journal};
 use droutex_common::{DnsProfileBinding, GatewayNetworkIdentity, ListenerId, NetworkGroupId};
 use droutex_config::{
     DnsAccess, GatewayCandidate, GrantLease, ListenerTransport, OutboundObservation,
 };
+pub use io::DnsIoCheck;
 use std::{
     collections::BTreeSet, error::Error, fmt, net::IpAddr, num::NonZeroU16, sync::Arc,
     time::Duration,
@@ -178,24 +180,12 @@ impl fmt::Debug for AdmissionAttempt<'_> {
 impl Reservation<'_> {
     fn check_current(&self) -> Result<()> {
         let owner = self.decision._owner;
-        let published = owner
-            .published
-            .read()
-            .map_err(|_| AdmissionError(AdmissionCode::State))?;
-        if !published.admitted
-            || published
-                .active
-                .as_ref()
-                .is_none_or(|g| !Arc::ptr_eq(g, &self.decision.generation))
-        {
-            return Err(AdmissionError(AdmissionCode::Retired));
-        }
-        owner
-            .admission
-            .lock()
-            .map_err(|_| AdmissionError(AdmissionCode::State))?
-            .interval(self.lease)?;
-        Ok(())
+        io::check_current(
+            &owner.published,
+            &owner.admission,
+            &self.decision.generation,
+            self.lease,
+        )
     }
 }
 impl<'store> AdmissionAttempt<'store> {
@@ -211,7 +201,10 @@ impl<'store> AdmissionAttempt<'store> {
     /// re-pins a generation nor releases/reacquires or refunds the quota charge.
     pub fn try_consume(self) -> AdmissionConsumption<'store> {
         match self.reservation.check_current() {
-            Ok(()) => AdmissionConsumption::Authorized(AuthorizedRequest { attempt: self }),
+            Ok(()) => AdmissionConsumption::Authorized(AuthorizedRequest {
+                lifetime: Arc::new(()),
+                attempt: self,
+            }),
             Err(error) => AdmissionConsumption::Refused {
                 attempt: self,
                 error,
@@ -229,6 +222,8 @@ impl Drop for Reservation<'_> {
 /// Non-Clone, non-deserializable single-request scope evidence. Actual P3/P4 callers
 /// must use the current gate per request and again at final connect admission.
 pub struct AuthorizedRequest<'store> {
+    // Drop the sole strong lifetime token before releasing the reservation.
+    lifetime: Arc<()>,
     attempt: AdmissionAttempt<'store>,
 }
 impl AuthorizedRequest<'_> {
@@ -237,6 +232,9 @@ impl AuthorizedRequest<'_> {
     }
     pub fn decision(&self) -> &Decision<'_> {
         &self.attempt.reservation.decision
+    }
+    pub fn network_group(&self) -> NetworkGroupId {
+        self.attempt.reservation.group
     }
     pub fn verify_current(&self) -> Result<()> {
         self.attempt.reservation.check_current()

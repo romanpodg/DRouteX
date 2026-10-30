@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0/P1/P2/P3-01/P4-01 complete; isolated D51/D52 qualification complete after checked PR113; owner accepted complete D53; P3-02 starts after current PR114 documentation gates",
+  "status": "P0/P1/P2/P3-01/P4-01 and D51/D52 qualification complete; P3-02 implementation in progress under owner-accepted D53 after checked PR114",
   "date": "2026-10-28",
   "phases": {
     "P0": "Foundation",
@@ -647,7 +647,7 @@
       "security": "DNS resolver changes never imply traffic exit changes",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -2619,15 +2619,11 @@
   ],
   "scope_amendment": "CR-0001",
   "execution_authorization": {
-    "date": "2026-10-22",
-    "source": "Direct owner D47 full profile acceptance conditional on checked PR107, fulfilled before qualification code; docs/planning/P3_01_LISTENER_CONTRACT.md; direct owner2026-10-22 isolated DNS-client qualification acceptance, recorded D51",
-    "scope": "Bounded internal UDP/TCP library and exact Hickory0.26.3/Tokio1.53.3 feature qualification/conditional adoption after actual Windows/Linux, dependency/license and independent reviews. No live public deployment; upstream/policy answers remain owning stages. Additional scope is isolated hickory-net0.26.3 client qualification only after checked P3-01; no P3-02 application/production adoption.",
-    "through_task": "P3-01",
-    "additional_scope": {
-      "kind": "isolated_dependency_qualification",
-      "task": "P3-02",
-      "decision": "dns_client_qualification_decision"
-    }
+    "date": "2026-10-28",
+    "source": "Direct owner D53 acceptance after checked PR113, followed by checked PR114 merge3d866cb and exact-main40633658696 before implementation; docs/planning/P3_02_FORWARDING_CONTRACT.md",
+    "scope": "Bounded same-generation policy-selected plaintext UDP/TCP forwarding under complete D53, exact hickory-net0.26.3 composed client conditional production adoption, numeric public upstreams, explicit fallback and current admission/resource/cleanup limits. No deployment, TLS, recursion, cache, overrides, gateway rewriting or new dependency.",
+    "through_task": "P3-02",
+    "decision": "dns_forwarding_decision"
   },
   "design_proposals": [
     {
@@ -2917,6 +2913,59 @@
       "candidates": 16,
       "attempt_ms": 500,
       "cleanup_ms": 3000
+    }
+  },
+  "dns_forwarding_decision": {
+    "status": "accepted",
+    "date": "2026-10-28",
+    "source": "Direct owner reply to call_b35f42de3b6c42afa31321d7242557b7 accepting complete23e291a profile; docs/planning/P3_02_FORWARDING_CONTRACT.md",
+    "package": "hickory-net",
+    "version": "0.26.3",
+    "features": [
+      "tokio"
+    ],
+    "default_features": false,
+    "production_adoption": "conditional",
+    "client_qualification": {
+      "status": "passed",
+      "source": "docs/planning/P3_02_CLIENT_QUALIFICATION_REVIEW.md#corrected-final-head-and-normal-merge",
+      "merge": "f136ac82d7e6421dbb139f022a98575ea26ca8ff",
+      "main_run": 40631471007,
+      "reports_processed": true
+    },
+    "documentation_gate": {
+      "status": "passed",
+      "source": "https://github.com/romanpodg/DRouteX/pull/114",
+      "merge": "3d866cb1ec4faf7c6a4343fdee0c3114c0721a98",
+      "main_run": 40633658696,
+      "reports_processed": true
+    },
+    "profile": {
+      "resource_bytes": 4096,
+      "groups": 64,
+      "members_per_group": 2,
+      "total_members": 128,
+      "port": 53,
+      "transports": [
+        "udp_tcp",
+        "tcp"
+      ],
+      "fallback": [
+        "none",
+        "on_failure"
+      ],
+      "public_numeric_only": true,
+      "dnssec": "notimp",
+      "forwarding_slots_node": 8,
+      "forwarding_slots_group": 2,
+      "wire_reservation_bytes": 131072,
+      "self_addresses": 256,
+      "member_ms": 500,
+      "processor_ms": 1500,
+      "query_ms": 2000,
+      "cleanup_ms": 3000,
+      "shutdown_ms": 5000,
+      "wire_queries": 4
     }
   }
 }

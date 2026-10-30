@@ -3,7 +3,8 @@ use super::{
     CompilationError as Error, Result,
     resources::{self, Catalog},
 };
-use crate::{Configuration, RuleAction};
+use crate::{Configuration, RuleAction, upstream::Group};
+use droutex_common::DnsUpstreamId;
 use droutex_policy::{CatalogRevision, MAX_POLICY_ENTRIES};
 use std::collections::BTreeMap;
 
@@ -14,6 +15,7 @@ fn charge(remaining: &mut usize, count: usize) -> Result<()> {
 pub(super) fn check(
     document: &Configuration,
     catalogs: &BTreeMap<CatalogRevision, Catalog>,
+    upstreams: &BTreeMap<DnsUpstreamId, Group>,
 ) -> Result<()> {
     let mut remaining = MAX_POLICY_ENTRIES;
     for count in [
@@ -23,8 +25,12 @@ pub(super) fn check(
         document.private_records.len(),
         document.legacy_grants.len(),
         document.gateway_grants.len(),
+        upstreams.len(),
     ] {
         charge(&mut remaining, count)?;
+    }
+    for group in upstreams.values() {
+        charge(&mut remaining, group.members().len())?;
     }
     for profile in &document.profiles {
         for rule in &profile.custom_rules {
