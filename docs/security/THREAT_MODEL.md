@@ -1,6 +1,7 @@
 # DNS/proxy MVP threat model
 
 Foundation accepted at P0-01 on 2026-10-15; evidence index reviewed 2026-10-23.
+The DNS control row below is updated on 2026-11-01 after checked P3-02 completion.
 Status: **partial implementation with completed component gates; full MVP acceptance pending**.
 Scope: [accepted MVP](../planning/MVP_SCOPE.md), specification sections 3/5/10/19/22,
 and [foundation review](../planning/P0_01_FOUNDATION_REVIEW.md).
@@ -20,7 +21,7 @@ are all implemented. Preserve exact commit/platform limits in the linked reviews
 | T07 snapshot integrity/replay and local activation | P1-05 and P1-06 completed normal merge/main gates; [signature evidence](../planning/P1_05_SNAPSHOT_REVIEW.md), [activation evidence](../planning/P1_06_ACTIVATION_REVIEW.md) | Full-service DNS/gateway outage/crash acceptance at P10-06 |
 | T10 encrypted records and external key loading | P1-07 component completed; [secret evidence](../planning/P1_07_SECRET_REVIEW.md) and [key contract](KEY_LIFECYCLE.md) | P6 provisioning/auth/export and P6-07/P11-03 complete encrypted backup/restore |
 | T02/T03/T15 current manual source/scope/lease/quota authorization | P4-01/D46 completed; [binding evidence](../planning/P4_01_BINDING_REVIEW.md) | P3-07 secure observation producer after P6; automatic learning remains unavailable |
-| T01/T11 bounded UDP/TCP listener behavior | P3-01 merged in PR109; first exact-main Windows failure and fixture correction in [runtime evidence](../planning/P3_01_LISTENER_REVIEW.md) | Corrective review/CI/merge/main and later forwarding/load acceptance |
+| T01/T05/T11 bounded UDP/TCP listener and upstream behavior | P3-01 through PR112 and bounded D53 forwarding through PR115 completed normal merge/exact-main gates; [listener evidence](../planning/P3_01_LISTENER_REVIEW.md), [forwarding evidence](../planning/P3_02_FORWARDING_REVIEW.md#completed-implementation-and-normal-merge). Current admission, pinned public numeric destinations, self/loop checks, explicit fallback, I/O/resource/deadline bounds and owned cleanup are exercised on Windows/Linux | Known [empty-RDATA compatibility defect](../planning/OPEN_DECISIONS.md#p3-02-forwarding-review-dispositions) remains deferred; cache/scope semantics at P3-03 and full-service load/native packaging/deployment acceptance retain their gates. Plaintext upstreams provide no on-path authentication/confidentiality |
 | T04/T08 actual origin safety and protected proxy failure | Required design and admission prerequisites exist; no accepted origin dial/connector implementation | P4-02/P4-05/P4-06 actual resolution/pinning/TLS/egress tests |
 | T09/T13 management authentication and personal secure DNS | Required MVP controls, not passed by current library tests | P6 and P3-07 actor/session/token/transport acceptance |
 
