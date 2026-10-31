@@ -217,7 +217,7 @@ def validate_client_qualification(plan, by_id):
 
 def validate_forwarding(plan, by_id):
     authorization = plan['execution_authorization']
-    assert authorization.get('decision') == 'dns_forwarding_decision', 'Unexpected active execution decision'
+    assert authorization.get('decision') == 'dns_cache_decision', 'Unexpected active execution decision'
     assert 'additional_scope' not in authorization, 'Unexpected additional execution scope'
     decision = plan.get('dns_forwarding_decision', {})
     assert decision.get('status') == 'accepted' and decision.get('source'), 'Missing owner forwarding decision'
@@ -238,10 +238,27 @@ def validate_forwarding(plan, by_id):
     }, 'Unexpected forwarding profile'
 
 
+def validate_cache(plan, by_id):
+    decision = plan.get('dns_cache_decision', {})
+    assert decision.get('status') == 'accepted' and decision.get('source'), 'Missing owner cache decision'
+    assert by_id['P3-02']['status'] == 'completed', 'Cache forwarding prerequisite not complete'
+    assert by_id['P3-03']['status'] in {'in_progress', 'in_review', 'completed'}, 'Cache stage has not started'
+    assert decision.get('contract') == 'docs/planning/P3_03_CACHE_CONTRACT.md', 'Missing cache contract'
+    assert decision.get('profile') == {
+        'persistent_bytes_node': 16777216, 'entries_node': 2048,
+        'persistent_bytes_scope': 2097152, 'entries_scope': 256,
+        'message_bytes': 4096, 'positive_ttl_seconds': 3600,
+        'negative_ttl_seconds': 60, 'eviction': 'fifo', 'coalescing': False,
+        'failure_cache': False, 'stale_serving': False, 'cross_generation_reuse': False,
+    }, 'Unexpected cache profile'
+    evidence = decision.get('forwarding_prerequisite', {})
+    assert evidence.get('status') == 'passed' and evidence.get('merge') and evidence.get('main_run') and evidence.get('source') and evidence.get('reports_processed') is True, 'Missing checked cache prerequisite'
+
+
 def validate_review_boundary(plan):
     assert plan['foundation_review']['status'] == 'accepted', 'Missing owner acceptance'
     assert plan['foundation_review']['source'], 'Missing owner decision evidence'
-    assert plan['execution_authorization']['through_task'] == 'P3-02', 'Unexpected execution boundary'
+    assert plan['execution_authorization']['through_task'] == 'P3-03', 'Unexpected execution boundary'
     assert plan['execution_authorization']['source'], 'Missing stage authorization'
     by_id = {task['id']: task for task in plan['tasks']}
     assert by_id['P0-01']['status'] == 'completed', 'Foundation gate is still open'
@@ -292,18 +309,19 @@ def validate_review_boundary(plan):
     assert checkpoint['status'] == 'accepted' and checkpoint['source'], 'Missing owner checkpoint wait decision'
     validate_client_qualification(plan, by_id)
     validate_forwarding(plan, by_id)
+    validate_cache(plan, by_id)
     signature = plan['snapshot_auth_qualification_decision']
     assert signature['status'] == 'accepted' and signature['source'], 'Missing owner signature qualification decision'
     assert plan['secret_storage_decision']['status'] == 'accepted' and plan['secret_storage_decision']['source'], 'Missing owner secret storage decision'
     assert plan['draft_revision_decision']['status'] == 'accepted' and plan['draft_revision_decision']['source'], 'Missing owner draft revision decision'
-    assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02', 'P0-03', 'P0-04', 'P0-05', 'P1-01', 'P1-02', 'P1-03', 'P1-04', 'P1-05', 'P1-06', 'P1-07', 'P2-01', 'P2-02', 'P2-03', 'P2-04', 'P2-07', 'P2-05', 'P2-06', 'P4-01', 'P3-01', 'P3-02'}), 'Work exceeds P3-02'
+    assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02', 'P0-03', 'P0-04', 'P0-05', 'P1-01', 'P1-02', 'P1-03', 'P1-04', 'P1-05', 'P1-06', 'P1-07', 'P2-01', 'P2-02', 'P2-03', 'P2-04', 'P2-07', 'P2-05', 'P2-06', 'P4-01', 'P3-01', 'P3-02', 'P3-03'}), 'Work exceeds P3-03'
     assert plan['network_lab_decision']['source'], 'Missing lab authorization'
     assert by_id['P0-03']['status'] == 'completed', 'Native Debian 13 fixture gate is not complete'
     native = plan['network_lab_decision'].get('native_acceptance', {})
     assert native.get('status') == 'passed' and native.get('source') and native.get('report_sha256'), 'Missing native Debian 13 evidence or authorization'
     assert (ROOT/'Cargo.toml').is_file() and (ROOT/'Cargo.lock').is_file(), 'Missing workspace'
     assert {p.name for p in (ROOT/'crates').iterdir()} == {'droutex-common', 'droutex-config', 'droutex-policy', 'droutex-storage', 'droutex-security', 'droutex-core', 'droutex-dns'}, 'Unexpected crate inventory'
-    assert not (ROOT/'apps').exists(), 'Daemons/frontend remain outside the P3-02 library gate'
+    assert not (ROOT/'apps').exists(), 'Daemons/frontend remain outside the P3-03 library gate'
     agents = (ROOT/'AGENTS.md').read_text(encoding='utf-8')
     assert 'mcp__node_repl__js' in agents and 'sky.list_apps()' in agents and 'browser-only' in agents
 
@@ -319,7 +337,7 @@ def main():
     adrs = validate_adrs()
     validate_review_boundary(plan)
     negatives = self_test(plan['tasks']) if '--self-test' in sys.argv else 0
-    result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P3-02','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':7,'runtime_implementation_absent':False}
+    result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P3-03','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':7,'runtime_implementation_absent':False}
     result['active_execution_decision'] = plan['execution_authorization']['decision']
     (ROOT/'docs/environment').mkdir(parents=True, exist_ok=True)
     (ROOT/'docs/environment/planning-verification.json').write_text(json.dumps(result,indent=2),encoding='utf-8')

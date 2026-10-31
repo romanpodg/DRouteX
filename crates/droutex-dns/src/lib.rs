@@ -1,5 +1,6 @@
-//! D47 legacy DNS transport and D53 bounded policy-selected forwarding.
+//! D47 transport, D53 bounded policy-selected forwarding and D54 scoped caching.
 mod budget;
+mod cache;
 mod clock;
 mod forward;
 mod runtime;

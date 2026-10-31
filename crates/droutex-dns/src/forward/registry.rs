@@ -1,6 +1,6 @@
+use super::Outcome;
 use crate::{DnsError, ErrorCode, Result};
 use droutex_common::NetworkGroupId;
-use hickory_proto::op::Message;
 use std::{
     collections::BTreeMap,
     future::Future,
@@ -45,7 +45,7 @@ impl Registry {
     pub(super) fn start<F, Fut>(&self, group: NetworkGroupId, operation: F) -> Result<Ticket>
     where
         F: FnOnce(watch::Receiver<bool>) -> Fut,
-        Fut: Future<Output = Result<Message>> + Send + 'static,
+        Fut: Future<Output = Result<Outcome>> + Send + 'static,
     {
         let mut state = self.state.lock().map_err(|_| DnsError(ErrorCode::State))?;
         if !state.accepting
@@ -133,10 +133,10 @@ impl Registry {
 
 pub(super) struct Ticket {
     cancel: watch::Sender<bool>,
-    response: oneshot::Receiver<Result<Message>>,
+    response: oneshot::Receiver<Result<Outcome>>,
 }
 impl Ticket {
-    pub async fn answer(&mut self) -> Result<Message> {
+    pub async fn answer(&mut self) -> Result<Outcome> {
         (&mut self.response)
             .await
             .map_err(|_| DnsError(ErrorCode::State))?

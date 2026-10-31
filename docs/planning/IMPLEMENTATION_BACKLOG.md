@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1/P2/P3-01/P3-02/P4-01 and D51/D52 qualification complete; P3-02 normal PR115 merge and exact-main gates passed with recorded minor compatibility disposition; later tasks planned.**
+**P3-03 scoped cache implementation in progress under owner-accepted D54; P3-02 complete with recorded minor empty-RDATA compatibility disposition.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -337,13 +337,13 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P3-03: Implement scoped TTL and negative caching
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,22.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,22.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Cache name/type/class/upstream/scope/mode/validation/generation semantics and bounded eviction |
 | Prerequisites | P3-02 |
-| Expected files/modules | crates/droutex-dns/src/cache |
+| Expected files/modules | crates/droutex-dns/src/cache; docs/planning/P3_03_CACHE_CONTRACT.md; crates/droutex-dns/src/forward; crates/droutex-dns/src/runtime.rs; crates/droutex-dns/src/wire.rs; crates/droutex-dns/src/tests/forwarding/cache.rs; docs/planning/P3_03_CACHE_ALLOCATION.md; docs/planning/P3_03_CACHE_REVIEW.md |
 | Acceptance criteria | Profile rewrites never leak; TTL and negative answers expire correctly; memory bound enforced |
 | Tests | Virtual clock, concurrent scopes and policy generation changes |
 | Security considerations | Partition validated origin data and local overrides |

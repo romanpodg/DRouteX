@@ -73,6 +73,7 @@ pub(super) struct Budget {
     pub live: Arc<Live>,
     inventory: Arc<Inventory>,
     probe: Mutex<Option<Probe>>,
+    received: Mutex<Option<Instant>>,
     first_send_checked: AtomicBool,
     destination_refused: AtomicBool,
     #[cfg(test)]
@@ -96,6 +97,7 @@ impl Budget {
             live,
             inventory,
             probe: Mutex::new(None),
+            received: Mutex::new(None),
             first_send_checked: AtomicBool::new(false),
             destination_refused: AtomicBool::new(false),
             #[cfg(test)]
@@ -105,6 +107,19 @@ impl Budget {
             #[cfg(test)]
             inventory_paused: tokio::sync::Notify::new(),
         })
+    }
+    fn received(&self) -> io::Result<()> {
+        self.received
+            .lock()
+            .map_err(|_| denied(Violation::Peer))?
+            .get_or_insert_with(Instant::now);
+        Ok(())
+    }
+    pub fn receipt_floor(&self) -> crate::Result<Instant> {
+        self.received
+            .lock()
+            .map_err(|_| crate::DnsError(crate::ErrorCode::State))?
+            .ok_or(crate::DnsError(crate::ErrorCode::State))
     }
     pub fn check(&self) -> io::Result<()> {
         if Instant::now() >= self.deadline {
@@ -298,6 +313,7 @@ impl DnsUdpSocket for BoundedUdp {
         let mut bytes = [0; MESSAGE_BYTES + 1];
         let mut buffer = ReadBuf::new(&mut bytes);
         let address = ready!(self.inner.poll_recv_from(cx, &mut buffer))?;
+        self.budget.received()?;
         self.budget
             .counters
             .datagrams
@@ -387,6 +403,9 @@ impl AsyncRead for BoundedTcp {
         let mut limited = ReadBuf::new(buffer.initialize_unfilled_to(capacity));
         ready!(Pin::new(&mut this.inner).poll_read(cx, &mut limited))?;
         let count = limited.filled().len();
+        if count > 0 {
+            this.budget.received()?;
+        }
         buffer.advance(count);
         this.read.record(
             count,

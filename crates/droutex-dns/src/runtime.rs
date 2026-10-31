@@ -523,7 +523,7 @@ impl Job {
                     let auth = consume(attempt, &refresh, deadline).await?;
                     binding.check(auth.decision())?;
                     let request = wire::parse(&bytes)?;
-                    let reply = process_reply(
+                    let mut reply = process_reply(
                         &request,
                         &auth,
                         processor.as_ref(),
@@ -533,7 +533,8 @@ impl Job {
                         deadline,
                     )
                     .await?;
-                    let output = wire::encode(&request, &reply, bytes.len(), false)?;
+                    let deadline = reply.prepare_send(Instant::now(), deadline)?;
+                    let output = wire::encode(&request, &reply.message, bytes.len(), false)?;
                     let sent =
                         submit(&auth, &refresh, deadline, socket.send_to(&output, peer)).await?;
                     if sent != output.len() {
@@ -575,7 +576,7 @@ impl Job {
                         let auth = consume(attempt, &refresh, deadline).await?;
                         binding.check(auth.decision())?;
                         let request = wire::parse(&bytes)?;
-                        let reply = process_reply(
+                        let mut reply = process_reply(
                             &request,
                             &auth,
                             processor.as_ref(),
@@ -585,7 +586,8 @@ impl Job {
                             deadline,
                         )
                         .await?;
-                        let output = wire::encode(&request, &reply, bytes.len(), true)?;
+                        let deadline = reply.prepare_send(Instant::now(), deadline)?;
+                        let output = wire::encode(&request, &reply.message, bytes.len(), true)?;
                         let prefix = u16::try_from(output.len())
                             .map_err(|_| DnsError(ErrorCode::State))?
                             .to_be_bytes();
@@ -644,7 +646,7 @@ async fn process_reply<P: Processor>(
     refresh: &Arc<Refresh>,
     registry: &Arc<CleanupRegistry>,
     deadline: Instant,
-) -> Result<hickory_proto::op::Message> {
+) -> Result<wire::Reply> {
     // D48: no processor work beyond1500ms from the original query start.
     // The500ms reserve remains inside D47's original total two-second bound.
     let context = Processing {
@@ -666,10 +668,7 @@ async fn process_reply<P: Processor>(
                 return Err(DnsError(ErrorCode::Admission));
             }
             budget.timed_out.fetch_add(1, Ordering::Relaxed);
-            Ok(wire::response(
-                request,
-                hickory_proto::op::ResponseCode::ServFail,
-            ))
+            Ok(wire::response(request, hickory_proto::op::ResponseCode::ServFail).into())
         }
         result => result,
     }
@@ -705,7 +704,7 @@ pub(super) async fn submit<T>(
     )
     .await
 }
-async fn checked_submit<T>(
+pub(super) async fn checked_submit<T>(
     mut check: impl FnMut() -> std::result::Result<(), AdmissionCode>,
     refresh: &Refresh,
     deadline: Instant,

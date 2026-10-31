@@ -130,7 +130,7 @@ impl Processor for Arc<Probe> {
         request: &Message,
         selection: PolicySelection<'_, DnsAction>,
         _: &crate::forward::Processing<'_, '_>,
-    ) -> Result<Message> {
+    ) -> Result<wire::Reply> {
         self.calls.fetch_add(1, Ordering::Relaxed);
         self.profiles.lock().unwrap().push(selection.profile());
         self.entered.notify_one();
@@ -144,7 +144,7 @@ impl Processor for Arc<Probe> {
         } else {
             Record::from_rdata(name, 60, RData::A(A(Ipv4Addr::new(203, 0, 113, 9))))
         });
-        Ok(reply)
+        Ok(reply.into())
     }
 }
 struct Server {

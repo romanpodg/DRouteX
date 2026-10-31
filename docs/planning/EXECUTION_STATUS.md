@@ -7,6 +7,12 @@ Reviewed 2026-11-01. This card is the current work/authorization entry point;
 Task reviews hold exact acceptance evidence. Later dated evidence supersedes
 historical checkpoints below; reconcile conflicts before dependent work.
 
+- The owner accepted the complete [D54 cache contract](P3_03_CACHE_CONTRACT.md)
+  by direct reply on 2026-11-01 and requested implementation plus Project/Roadmap
+  updates. P3-03 is in progress under that exact profile; later tasks remain planned.
+  The [application evidence](P3_03_CACHE_REVIEW.md) records implementation progress
+  and remaining platform, allocation, account review and merge gates.
+  P3-02's temporary empty-RDATA compatibility disposition remains unchanged.
 - Completed: P0, P1, all seven P2 tasks, P4-01 and P3-01. PR112 corrected the
   strict durable fixture without weakening its counter/failure assertions.
   Its normal merge8f234c44a0c47fc3ef4583e775a591cd90158185 passed all11
@@ -72,8 +78,7 @@ historical checkpoints below; reconcile conflicts before dependent work.
   A valid empty record in any section of an otherwise ordinary response can cause
   explicit fallback or SERVFAIL. Failed preservation evidence is retained; full RR
   transparency, a vendor patch or another profile is not accepted. CodeScene 8217152
-  remains failed with rechecked specific dispositions. Every later task stays
-  planned; this completion update does not start P3-03 or authorize deployment.
+  remains failed with rechecked specific dispositions. This prerequisite evidence does not complete P3-03 or authorize deployment.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

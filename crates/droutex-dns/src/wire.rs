@@ -14,6 +14,49 @@ use std::future::Future;
 // header + 4096 option bytes. The TCP framing limit remains 65535.
 const MAX_QUERY_BYTES: usize = 12 + 255 + 4 + 12 + 4096;
 
+pub(super) struct Reply {
+    pub message: Message,
+    pub expires: Option<tokio::time::Instant>,
+}
+impl Reply {
+    pub fn prepare_send(
+        &mut self,
+        now: tokio::time::Instant,
+        deadline: tokio::time::Instant,
+    ) -> Result<tokio::time::Instant> {
+        let Some(expiry) = self.expires else {
+            return Ok(deadline);
+        };
+        let deadline = deadline.min(expiry);
+        if now >= deadline {
+            return Err(DnsError(ErrorCode::Timeout));
+        }
+        // Checkpoint and partial-write waits can consume the remaining reply
+        // window. Round TTL down at its latest possible submission, so those
+        // waits cannot extend the data lifetime in a downstream client cache.
+        let ttl = u32::try_from(expiry.saturating_duration_since(deadline).as_secs())
+            .map_err(|_| DnsError(ErrorCode::State))?;
+        for rr in self
+            .message
+            .answers
+            .iter_mut()
+            .chain(&mut self.message.authorities)
+            .chain(&mut self.message.additionals)
+        {
+            rr.ttl = rr.ttl.min(ttl);
+        }
+        Ok(deadline)
+    }
+}
+impl From<Message> for Reply {
+    fn from(message: Message) -> Self {
+        Self {
+            message,
+            expires: None,
+        }
+    }
+}
+
 pub(super) trait Processor: Send + Sync + 'static {
     fn forwarding_available(&self) -> bool {
         false
@@ -23,7 +66,7 @@ pub(super) trait Processor: Send + Sync + 'static {
         request: &Message,
         selection: PolicySelection<'_, DnsAction>,
         context: &Processing<'_, '_>,
-    ) -> impl Future<Output = Result<Message>> + Send;
+    ) -> impl Future<Output = Result<Reply>> + Send;
 }
 #[cfg(test)]
 pub(super) struct UnavailableProcessor;
@@ -34,8 +77,8 @@ impl Processor for UnavailableProcessor {
         request: &Message,
         _: PolicySelection<'_, DnsAction>,
         _: &Processing<'_, '_>,
-    ) -> Result<Message> {
-        Ok(response(request, ResponseCode::ServFail))
+    ) -> Result<Reply> {
+        Ok(response(request, ResponseCode::ServFail).into())
     }
 }
 
@@ -122,13 +165,13 @@ pub(super) async fn answer<P: Processor>(
     auth: &AuthorizedRequest<'_>,
     processor: &P,
     context: &Processing<'_, '_>,
-) -> Result<Message> {
+) -> Result<Reply> {
     if request
         .edns
         .as_ref()
         .is_some_and(|edns| edns.version() != 0)
     {
-        return Ok(response(request, ResponseCode::BADVERS));
+        return Ok(response(request, ResponseCode::BADVERS).into());
     }
     let question = request
         .queries
@@ -148,7 +191,7 @@ pub(super) async fn answer<P: Processor>(
         )
         || domain.is_err()
     {
-        return Ok(response(request, ResponseCode::NotImp));
+        return Ok(response(request, ResponseCode::NotImp).into());
     }
     let domain = domain.map_err(|_| DnsError(ErrorCode::Scope))?;
     let AdmissionScope::LegacyDns(binding) = auth.scope() else {
@@ -166,9 +209,12 @@ pub(super) async fn answer<P: Processor>(
     let reply = match processed {
         Ok(reply) => reply,
         Err(error @ DnsError(ErrorCode::Admission)) => return Err(error),
-        Err(_) => response(request, ResponseCode::ServFail),
+        Err(_) => response(request, ResponseCode::ServFail).into(),
     };
-    Ok(sanitize(request, reply, forwarding))
+    Ok(Reply {
+        message: sanitize(request, reply.message, forwarding),
+        expires: reply.expires,
+    })
 }
 
 pub(super) fn sanitize(request: &Message, mut reply: Message, forwarding: bool) -> Message {
