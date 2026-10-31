@@ -180,3 +180,41 @@ and OS/allocator/RSS exclusions remain explicit.
 remains failed with the [specific minor dispositions](OPEN_DECISIONS.md#p3-02-forwarding-review-dispositions).
 They do not defer the failed fixture, a serious defect, required current-head
 checks or completed final account review. New current-head results remain open.
+
+## Clean corrected head and final-review dispositions
+
+Headcec4728034ffc35a56a5ca2ad9c54d634de1d4e5 passes all11
+[CI41185981938](https://github.com/romanpodg/DRouteX/actions/runs/41185981938)
+jobs. Full logs confirm284 Windows/317 Linux tests per default/no-default profile,
+client37/37 per platform/profile, all mandatory IPv6 and all seven deny bundles;
+zero failed/ignored/filtered. Both Codecov uploads are processed as merged; the
+Rust files have9901/10378 covered lines. The earlier failed41185270087 stays failed.
+[CodeScene8216850](https://codescene.io/projects/86145/delta/results/8216850)
+retains the same concrete complexity findings and their recorded dispositions;
+its raw result remains failed. No required branch check or protection is bypassed.
+
+Actual final account review01a19124-734f-72b3-a02b-f4ae61f70efc completed at exit0
+on that head and reported two P2 findings. The empty non-root OPT finding is not
+confirmed: Record::read checks root before zero-length decoding. An independent
+vector verifies EdnsNameNotRoot, and actual malformed UDP TC never permits TCP.
+
+The empty NULL/unknown RDATA finding is a real inherited compatibility defect.
+[RFC1035 NULL](https://www.rfc-editor.org/rfc/rfc1035.html#section-3.3.10) permits
+empty data, and [RFC3597](https://www.rfc-editor.org/rfc/rfc3597.html#section-3)
+requires transparent handling of unknown RR data. The original application
+NOERROR-preservation probe failed and remains failed. A narrow caller allowlist
+also failed: Message::read_records rejects non-OPT Update0 before the client gets
+the response. That ineffective change was removed; no vendor patch is introduced.
+
+The independent spec pass confirms a narrow fail-closed compatibility defect,
+including a legal empty record in any section of an otherwise ordinary A or
+NXDOMAIN response. It finds no loss of admission, destination checks, bounded work
+or owned cleanup. The existing minor functional-deferral policy permits temporary
+disposition while the required11 record types pass. The
+[specific entry](OPEN_DECISIONS.md#p3-02-forwarding-review-dispositions) records
+impact, evidence, owner and mandatory revisit triggers. This is not a permanent
+exception to D53 or successful empty-RDATA compatibility proof. Characterization
+tests prove bounded failure only; the failed preservation source/log is retained
+locally. A vendor patch or other profile needs a separate owner decision and
+qualification. Fresh current-head CI and actual final review remain required for
+the new regressions/dispositions before merge.

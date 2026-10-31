@@ -346,6 +346,15 @@ closes those gates.
 
 ## P3-02 forwarding review dispositions
 
+| Item | Finding, impact, evidence and temporary disposition | Owner / revisit trigger |
+|---|---|---|
+| P3-02-EMPTY-RDATA | Actual final account review01a19124-734f-72b3-a02b-f4ae61f70efc found a real compatibility defect. Proto0.26.3 Message::read_records431–435 rejects a non-OPT zero-length record before caller validation. Legal empty NULL/unknown records in **any section of any otherwise valid response**, including ordinary A or NXDOMAIN, can cause configured fallback or SERVFAIL. The NOERROR preservation probe failed and remains failed; a caller allowlist was ineffective and removed. New tests characterize bounded failure, not successful preservation. The required11 record matrices pass. Separate spec review finds no effect on authorization, destination checks, work bounds or cleanup, and classifies this narrow defect as minor under QUALITY_STRATEGY's existing functional-deferral policy. Defer immediate repair because a vendor patch/another profile requires a separate owner decision forbidden by current D53; no permanent exception to D53's preservation requirement is adopted. | P3 maintainer, P3-02 compatibility follow-up. Revisit before claiming complete RR transparency or empty-NULL/unknown support, at the next Proto/client qualification, or immediately upon concrete user impact. Qualify an owner-approved exact fix before adoption; retain all failed evidence. |
+| P3-02-EMPTY-OPT | The same review's non-root empty OPT finding is not confirmed. Pinned Record::read296–300 rejects the owner before reaching zero-length decoding at348–349. An independent exact vector gets EdnsNameNotRoot, and the actual malformed-UDP-TC case never authorizes TCP. No redundant check or library patch is applied. | Recheck this invariant at any Proto upgrade; keep both regressions. |
+
+These dispositions apply the standing minor-finding policy. They do not authorize
+a vendor patch, reclassify valid empty RDATA as malformed, claim full wire
+compatibility, waive a required existing test or replace current-head review/CI.
+
 [CodeScene8216781](https://codescene.io/projects/86145/delta/results/8216781) on
 PR115 head060b13e reports two failed gates: eight new files below10.00 and four
 files with critical complexity patterns. Its third gate passes. Raw failure is

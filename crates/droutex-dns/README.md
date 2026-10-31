@@ -50,6 +50,13 @@ Per transport, prefilter limits are16 UDP packets,16 delivered TCP candidates,
 Pending polls are free. The [allocation audit](../../docs/planning/P3_02_FORWARDING_ALLOCATION.md)
 records library allocations separately from wire credits and total RSS.
 
+Known temporary compatibility defect: pinned Proto rejects zero-length NULL or
+unknown RDATA, even in an additional section of an otherwise ordinary answer.
+Such a response can cause configured fallback or SERVFAIL. Successful preservation
+of these valid records is not claimed; the failed probe and minor disposition
+remain in [the decision register](../../docs/planning/OPEN_DECISIONS.md#p3-02-forwarding-review-dispositions).
+Fixing the dependency profile retains its separate owner/qualification gate.
+
 A missing next checkpoint may wait for one identified maintenance outcome inside
 the original deadline. Completion never authorizes output: the same held admission
 is checked again. Failed or superseded outcomes refuse, and generic unavailability

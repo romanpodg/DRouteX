@@ -1275,7 +1275,18 @@ async fn tcp_foreign_question_flood_cannot_produce_a_successful_answer() {
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn invalid_udp_frames_use_only_explicit_fallback_and_never_authorize_tcp() {
-    for fault in ["question", "trailing", "count", "oversized", "invalid_tc"] {
+    for fault in [
+        "question",
+        "trailing",
+        "count",
+        "oversized",
+        "invalid_tc",
+        "empty_opt_owner",
+        "class",
+        "opcode",
+        "query_bit",
+        "incomplete_opt",
+    ] {
         let tcp = TcpListener::bind("127.0.0.1:0").await.unwrap();
         let address = tcp.local_addr().unwrap();
         let upstream = UdpSocket::bind(address).await.unwrap();
@@ -1287,12 +1298,32 @@ async fn invalid_udp_frames_use_only_explicit_fallback_and_never_authorize_tcp()
                 .await
                 .unwrap()
                 .unwrap();
-            let mut bad = answer(&bytes[..length], 0, fault == "invalid_tc");
+            let mut bad = answer(
+                &bytes[..length],
+                0,
+                matches!(fault, "invalid_tc" | "empty_opt_owner"),
+            );
             match fault {
                 "question" | "invalid_tc" => bad[13] = b'f',
                 "trailing" => bad.push(0),
                 "count" => bad[7] = 2,
                 "oversized" => bad.resize(4097, 0),
+                "class" => {
+                    let index = bad.len() - 12;
+                    bad[index..index + 2].copy_from_slice(&3u16.to_be_bytes());
+                }
+                "opcode" => bad[2] = (bad[2] & 0x87) | (5 << 3),
+                "query_bit" => bad[2] &= !0x80,
+                "incomplete_opt" => {
+                    bad[11] = 1;
+                    bad.extend_from_slice(
+                        b"\x00\x00\x29\x04\xd0\x00\x00\x00\x00\x00\x04\x00\x08\x00\x01",
+                    );
+                }
+                "empty_opt_owner" => {
+                    bad[11] = 1;
+                    bad.extend_from_slice(b"\xc0\x0c\x00\x29\x04\xd0\x00\x00\x00\x00\x00\x00");
+                }
                 _ => unreachable!(),
             }
             upstream.send_to(&bad, peer).await.unwrap();
@@ -1469,4 +1500,103 @@ async fn generation_change_during_owned_tcp_cleanup_forbids_fallback_and_client_
             .is_err()
     );
     assert_eq!(server.close().await.answered, 0);
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn pinned_decoder_empty_rdata_failure_is_bounded_on_both_transports() {
+    // Characterization of deferred P3-02-EMPTY-RDATA, not successful NULL/unknown
+    // preservation. The original NOERROR preservation probe remains failed.
+    for transport in [Transport::UdpTcp, Transport::Tcp] {
+        for code in [10u16, 65280, 1] {
+            let udp = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+            let tcp = TcpListener::bind("127.0.0.1:0").await.unwrap();
+            let target = match transport {
+                Transport::UdpTcp => udp.local_addr().unwrap(),
+                Transport::Tcp => tcp.local_addr().unwrap(),
+            };
+            let fixture = tokio::spawn(async move {
+                let (query, peer, mut stream) = match transport {
+                    Transport::UdpTcp => {
+                        let mut bytes = [0; 4097];
+                        let (length, peer) =
+                            timeout(Duration::from_secs(3), udp.recv_from(&mut bytes))
+                                .await
+                                .unwrap()
+                                .unwrap();
+                        (bytes[..length].to_vec(), Some(peer), None)
+                    }
+                    Transport::Tcp => {
+                        let (mut stream, _) = timeout(Duration::from_secs(3), tcp.accept())
+                            .await
+                            .unwrap()
+                            .unwrap();
+                        (upstream_tcp_query(&mut stream).await, None, Some(stream))
+                    }
+                };
+                let empty = record_answer(
+                    &query,
+                    &record_vectors::RecordCase {
+                        code,
+                        data: b"",
+                        expected: "",
+                    },
+                );
+                let reply = if code == 1 {
+                    empty
+                } else {
+                    // A valid ordinary A answer can also be affected by an empty
+                    // NULL/unknown RR in an additional section.
+                    let mut reply = answer(&query, 0, false);
+                    reply[11] = 1;
+                    reply.extend_from_slice(&empty[empty.len() - 12..]);
+                    reply
+                };
+                assert!(matches!(
+                    Message::from_vec(&reply),
+                    Err(hickory_proto::serialize::binary::DecodeError::InvalidEmptyRecord)
+                ));
+                if let Some(peer) = peer {
+                    udp.send_to(&reply, peer).await.unwrap();
+                } else {
+                    let stream = stream.as_mut().unwrap();
+                    stream.write_u16(reply.len() as u16).await.unwrap();
+                    stream.write_all(&reply).await.unwrap();
+                    let mut byte = [0];
+                    assert!(matches!(
+                        timeout(Duration::from_secs(2), stream.read(&mut byte)).await,
+                        Ok(Ok(0)) | Ok(Err(_))
+                    ));
+                }
+            });
+            let server = server(
+                v4(),
+                vec![(transport, target)],
+                "none",
+                Arc::new(Mutex::new(Ok(BTreeSet::new()))),
+            )
+            .await;
+            let bytes = exchange_once(&server, QUERY).await.unwrap();
+            let reply = Message::from_vec(&bytes).unwrap();
+            assert_eq!(
+                reply.metadata.response_code,
+                ResponseCode::ServFail,
+                "{transport:?}, type={code}"
+            );
+            assert!(reply.answers.is_empty());
+            fixture.await.unwrap();
+            assert_eq!(server.close().await.answered, 1);
+        }
+    }
+}
+
+#[test]
+fn nonroot_empty_opt_is_rejected_before_the_update0_branch() {
+    let mut reply = answer(QUERY, 2, false);
+    reply[11] = 1;
+    reply.extend_from_slice(b"\xc0\x0c\x00\x29\x04\xd0\x00\x00\x00\x00\x00\x00");
+    let error = Message::from_vec(&reply).unwrap_err();
+    assert!(matches!(
+        error,
+        hickory_proto::serialize::binary::DecodeError::EdnsNameNotRoot(_)
+    ));
 }

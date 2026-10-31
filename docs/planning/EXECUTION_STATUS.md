@@ -59,13 +59,16 @@ historical checkpoints below; reconcile conflicts before dependent work.
   P3-02 is now in progress on its own branch under D53; every later task stays
   planned. [Application evidence](P3_02_FORWARDING_REVIEW.md) tracks its required
   independent proof. D51/D52 alone still confer no production authority.
-- Current implementation PR115 is draft. Resource/core head3faefc0 passed all11
-  CI41014521643 jobs before runtime integration. The bounded forwarding runtime
-  and independent application regressions are now implemented locally. Actual
-  forwarding CI, allocation review, implementation/final account reviews and
-  merge/exact-main/report gates remain open. The full local Windows default and
-  no-default attempts still fail the three mandatory IPv6 probes; no ignored
-  test, filter-based full pass or host-network change is authorized.
+- Current implementation PR115 is draft. Corrected runtime headcec4728 passes
+  all11 CI41185981938 jobs:284 Windows/317 Linux tests per default/no-default,
+  client37/37 including mandatory IPv6, seven deny bundles and both processed
+  reports(Rust9901/10378). Actual implementation/final account reviews completed.
+  Final review found the narrow empty-NULL/unknown compatibility defect; its
+  [temporary minor disposition](OPEN_DECISIONS.md#p3-02-forwarding-review-dispositions)
+  preserves failed evidence and D53's separate patch/profile gate. New regression/
+  disposition head review/CI and normal merge/exact-main/report gates remain open.
+  Earlier failed CI41185270087 and local IPv6 failures remain failed; no ignored
+  test, filtered full pass or host-network change is authorized.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.
