@@ -21,6 +21,7 @@ mod revisions;
 pub use publication::PublicationResourceError;
 mod schema;
 pub mod snapshot;
+pub mod upstream;
 pub use revisions::{DraftRevision, InvalidRevisionMetadata, RevisionProvenance};
 pub use schema::{
     CheckedConfiguration, ConfigError, ConfigErrorCode, Configuration, CredentialMetadata,

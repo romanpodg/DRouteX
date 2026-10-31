@@ -4,7 +4,7 @@ mod admission;
 mod artifacts;
 pub use admission::{
     AdmissionAttempt, AdmissionCode, AdmissionConsumption, AdmissionError, AdmissionScope,
-    AuthorizedRequest, AutomaticLearning,
+    AuthorizedRequest, AutomaticLearning, DnsIoCheck,
 };
 mod explain;
 pub use explain::SimulationReport;
@@ -134,8 +134,8 @@ struct Published {
 /// One writer serializes durable transitions; the reader lock never covers filesystem I/O.
 pub struct Deployment {
     writer: Mutex<Writer>,
-    published: RwLock<Published>,
-    admission: Mutex<admission::AdmissionState>,
+    published: Arc<RwLock<Published>>,
+    admission: Arc<Mutex<admission::AdmissionState>>,
 }
 impl Deployment {
     /// Explicit ephemeral model; never silently substituted for a durable store.
@@ -202,8 +202,8 @@ impl Deployment {
                 previous: None,
                 recovery_required: false,
             }),
-            published: RwLock::new(Published { active, admitted }),
-            admission: Mutex::new(admission),
+            published: Arc::new(RwLock::new(Published { active, admitted })),
+            admission: Arc::new(Mutex::new(admission)),
         }
     }
     pub fn pin(&self) -> Result<Decision<'_>> {

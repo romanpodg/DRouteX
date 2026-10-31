@@ -1,4 +1,6 @@
 use super::*;
+#[path = "tests/forwarding.rs"]
+mod forwarding;
 use crate::{
     runtime,
     wire::{self, Processor},
@@ -8,7 +10,7 @@ use droutex_config::{
     CompletePublication, DnsAction, InputFormat, ReferenceCatalog, parse_configuration,
     snapshot::{SnapshotMetadata, SnapshotSequence},
 };
-use droutex_core::deployment::{Artifacts, Cancellation, Decision};
+use droutex_core::deployment::{Artifacts, Cancellation};
 use droutex_policy::PolicySelection;
 use droutex_security::{SigningKey, SigningKeyId, SnapshotTrust};
 use hickory_proto::{
@@ -127,7 +129,7 @@ impl Processor for Arc<Probe> {
         &self,
         request: &Message,
         selection: PolicySelection<'_, DnsAction>,
-        _: &Decision<'_>,
+        _: &crate::forward::Processing<'_, '_>,
     ) -> Result<Message> {
         self.calls.fetch_add(1, Ordering::Relaxed);
         self.profiles.lock().unwrap().push(selection.profile());
@@ -147,6 +149,7 @@ impl Processor for Arc<Probe> {
 }
 struct Server {
     owner: Arc<Deployment>,
+    refresh: Arc<crate::clock::Refresh>,
     doc: Value,
     udp: SocketAddr,
     tcp: SocketAddr,
@@ -170,10 +173,11 @@ impl Server {
         let node = DnsNode::new(Deployment::in_memory(typed(1), keys().1));
         apply(node.deployment(), &doc, 1);
         let owner = Arc::clone(node.deployment());
+        let refresh = Arc::new(crate::clock::Refresh::new());
         let (stop, shutdown) = watch::channel(false);
         let handle = start_runtime(
             ready,
-            runtime::serve(
+            runtime::serve_with_refresh(
                 node.deployment,
                 vec![
                     ListenerSocket::Udp {
@@ -187,17 +191,24 @@ impl Server {
                 ],
                 shutdown,
                 processor,
+                Arc::clone(&refresh),
             ),
         )
         .await;
         Self {
             owner,
+            refresh,
             doc,
             udp: udp_addr,
             tcp: tcp_addr,
             stop,
             handle,
         }
+    }
+    async fn authorize(&self) -> droutex_core::deployment::AuthorizedRequest<'_> {
+        runtime::fixture_authorize(&self.owner, &self.refresh, typed(20), self.udp)
+            .await
+            .unwrap()
     }
     async fn close(self) -> ShutdownReport {
         self.stop.send_replace(true);
@@ -450,7 +461,12 @@ async fn unsupported_and_badvers_are_explicit_without_handler_or_option_echo() {
     axfr[n - 4..n - 2].copy_from_slice(&252u16.to_be_bytes());
     let mut notify = QUERY.to_vec();
     notify[2] = 0x21;
-    for bytes in [&root, &axfr, &notify] {
+    let mut cd = QUERY.to_vec();
+    cd[3] |= 0x10;
+    let mut dnssec = QUERY.to_vec();
+    dnssec[11] = 1;
+    dnssec.extend_from_slice(b"\x00\x00\x29\x04\xd0\x00\x00\x80\x00\x00\x00");
+    for bytes in [&root, &axfr, &notify, &cd, &dnssec] {
         assert_eq!(
             Message::from_vec(&exchange(&server, bytes).await)
                 .unwrap()
@@ -964,12 +980,7 @@ async fn pending_submission_rechecks_actual_authority_before_resuming_io() {
         task::Poll,
     };
     let server = Server::start(v4(), wire::UnavailableProcessor).await;
-    let auth = server
-        .owner
-        .prepare_legacy_dns(typed(20), v4())
-        .unwrap()
-        .consume()
-        .unwrap();
+    let auth = server.authorize().await;
     let wake = Notify::new();
     let submitted = std::sync::atomic::AtomicBool::new(false);
     let operation = async {

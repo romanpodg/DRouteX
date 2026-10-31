@@ -11,7 +11,9 @@ use crate::{
         self, CredentialLink, SnapshotContent, SnapshotError, SnapshotMetadata, SnapshotResource,
     },
 };
-use droutex_common::{GatewayNetworkGrantId, LegacyDnsAssignment, LegacyNetworkGrantId};
+use droutex_common::{
+    DnsUpstreamId, GatewayNetworkGrantId, LegacyDnsAssignment, LegacyNetworkGrantId,
+};
 use droutex_policy::{
     CatalogPin, CatalogRevision, PolicyBuildError, PolicySet, PolicyValidationError,
     PreparedPrivateRecord,
@@ -33,6 +35,7 @@ pub enum CompilationError {
     Resource,
     CatalogApproval(CatalogRevision),
     Catalog(CatalogImportError),
+    Upstream(DnsUpstreamId, crate::upstream::Error),
     Snapshot(SnapshotError),
     Publication(PublicationResourceError),
     Policy(PolicyBuildError),
@@ -48,6 +51,7 @@ impl Error for CompilationError {
     fn source(&self) -> Option<&(dyn Error + 'static)> {
         match self {
             Self::Catalog(e) => Some(e),
+            Self::Upstream(_, e) => Some(e),
             Self::Snapshot(e) => Some(e),
             Self::Publication(e) => Some(e),
             Self::Policy(e) => Some(e),
@@ -70,6 +74,7 @@ pub struct CompiledConfiguration {
     legacy: BTreeMap<LegacyNetworkGrantId, LegacyDnsAssignment>,
     gateway: BTreeMap<GatewayNetworkGrantId, GatewayScope>,
     catalogs: BTreeMap<CatalogRevision, CatalogManifest>,
+    upstreams: BTreeMap<DnsUpstreamId, crate::upstream::Group>,
 }
 struct CatalogManifest {
     pin: CatalogPin,
@@ -78,6 +83,10 @@ struct CatalogManifest {
 impl CompiledConfiguration {
     pub fn policy(&self) -> &PolicySet<DnsAction, TrafficAction> {
         &self.policy
+    }
+    /// Immutable actual resource data from this same generation, never a dial permit.
+    pub fn upstream(&self, id: DnsUpstreamId) -> Option<&crate::upstream::Group> {
+        self.upstreams.get(&id)
     }
     /// Canonical validated data only; P3 chooses response/precedence behavior.
     pub fn private_records(&self) -> &[PreparedPrivateRecord] {
@@ -105,6 +114,7 @@ impl fmt::Debug for CompiledConfiguration {
             .field("legacy_scopes", &self.legacy.len())
             .field("gateway_scopes", &self.gateway.len())
             .field("catalogs", &self.catalogs.len())
+            .field("upstreams", &self.upstreams.len())
             .finish()
     }
 }
@@ -158,9 +168,10 @@ fn compile(content: &SnapshotContent, bytes: &[ResourceData<'_>]) -> Result<Comp
     if actual.pins() != content.resource_pins() {
         return Err(CompilationError::Resource);
     }
+    let upstreams = resources::upstreams(bytes)?;
     let catalogs = resources::decode(bytes)?;
     let document = content.configuration().document();
-    budget::check(document, &catalogs)?;
+    budget::check(document, &catalogs, &upstreams)?;
     let pins: Vec<_> = catalogs.values().map(|c| c.pin).collect();
     let facts = resources::facts(&catalogs)?;
     content
@@ -178,6 +189,7 @@ fn compile(content: &SnapshotContent, bytes: &[ResourceData<'_>]) -> Result<Comp
         private,
         legacy,
         gateway,
+        upstreams,
         catalogs: catalogs
             .into_iter()
             .map(|(id, c)| {

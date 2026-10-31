@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0/P1/P2/P3-01/P4-01 complete; isolated D51/D52 qualification complete after checked PR113; owner accepted complete D53; P3-02 starts after current PR114 documentation gates. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P0/P1/P2/P3-01/P4-01 and D51/D52 qualification complete; P3-02 implementation in progress under owner-accepted D53 after checked PR114. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

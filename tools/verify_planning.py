@@ -202,15 +202,11 @@ def validate_adrs():
 
 
 def validate_client_qualification(plan, by_id):
-    expected = {'kind': 'isolated_dependency_qualification', 'task': 'P3-02',
-                'decision': 'dns_client_qualification_decision'}
-    assert plan['execution_authorization'].get('additional_scope') == expected, 'Unexpected additional execution scope'
     decision = plan.get('dns_client_qualification_decision', {})
     assert decision.get('status') == 'accepted' and decision.get('source'), 'Missing owner DNS client qualification decision'
     assert (decision.get('package'), decision.get('version'), decision.get('features')) == ('hickory-net', '0.26.3', ['tokio']), 'Unexpected client qualification profile'
     assert decision.get('default_features') is False and decision.get('production_adoption') is False, 'Client qualification must remain isolated'
     assert by_id['P3-01']['status'] == 'completed', 'DNS transport prerequisite remains open'
-    assert by_id['P3-02']['status'] == 'planned', 'Forwarding application is not authorized'
     validation = plan.get('dns_client_validation_decision', {})
     assert validation.get('status') == 'accepted' and validation.get('source'), 'Missing owner client validation decision'
     assert validation.get('production_adoption') is False, 'Client validation must remain isolated'
@@ -219,10 +215,33 @@ def validate_client_qualification(plan, by_id):
         'candidates': 16, 'attempt_ms': 500, 'cleanup_ms': 3000}, 'Unexpected client validation profile'
 
 
+def validate_forwarding(plan, by_id):
+    authorization = plan['execution_authorization']
+    assert authorization.get('decision') == 'dns_forwarding_decision', 'Unexpected active execution decision'
+    assert 'additional_scope' not in authorization, 'Unexpected additional execution scope'
+    decision = plan.get('dns_forwarding_decision', {})
+    assert decision.get('status') == 'accepted' and decision.get('source'), 'Missing owner forwarding decision'
+    assert decision.get('production_adoption') == 'conditional', 'Forwarding adoption requires its application proof'
+    assert (decision.get('package'), decision.get('version'), decision.get('features')) == ('hickory-net', '0.26.3', ['tokio']), 'Unexpected production client profile'
+    assert decision.get('default_features') is False, 'Unexpected production client defaults'
+    assert by_id['P3-02']['status'] in {'in_progress', 'in_review', 'completed'}, 'Forwarding stage has not started'
+    for prerequisite in ('client_qualification', 'documentation_gate'):
+        evidence = decision.get(prerequisite, {})
+        assert evidence.get('status') == 'passed' and evidence.get('source') and evidence.get('merge') and evidence.get('main_run') and evidence.get('reports_processed') is True, 'Missing checked forwarding prerequisite'
+    assert decision.get('profile') == {
+        'resource_bytes': 4096, 'groups': 64, 'members_per_group': 2, 'total_members': 128,
+        'port': 53, 'transports': ['udp_tcp', 'tcp'], 'fallback': ['none', 'on_failure'],
+        'public_numeric_only': True, 'dnssec': 'notimp', 'forwarding_slots_node': 8,
+        'forwarding_slots_group': 2, 'wire_reservation_bytes': 131072, 'self_addresses': 256,
+        'member_ms': 500, 'processor_ms': 1500, 'query_ms': 2000,
+        'cleanup_ms': 3000, 'shutdown_ms': 5000, 'wire_queries': 4,
+    }, 'Unexpected forwarding profile'
+
+
 def validate_review_boundary(plan):
     assert plan['foundation_review']['status'] == 'accepted', 'Missing owner acceptance'
     assert plan['foundation_review']['source'], 'Missing owner decision evidence'
-    assert plan['execution_authorization']['through_task'] == 'P3-01', 'Unexpected execution boundary'
+    assert plan['execution_authorization']['through_task'] == 'P3-02', 'Unexpected execution boundary'
     assert plan['execution_authorization']['source'], 'Missing stage authorization'
     by_id = {task['id']: task for task in plan['tasks']}
     assert by_id['P0-01']['status'] == 'completed', 'Foundation gate is still open'
@@ -272,18 +291,19 @@ def validate_review_boundary(plan):
     checkpoint = plan['dns_transport_checkpoint_wait_decision']
     assert checkpoint['status'] == 'accepted' and checkpoint['source'], 'Missing owner checkpoint wait decision'
     validate_client_qualification(plan, by_id)
+    validate_forwarding(plan, by_id)
     signature = plan['snapshot_auth_qualification_decision']
     assert signature['status'] == 'accepted' and signature['source'], 'Missing owner signature qualification decision'
     assert plan['secret_storage_decision']['status'] == 'accepted' and plan['secret_storage_decision']['source'], 'Missing owner secret storage decision'
     assert plan['draft_revision_decision']['status'] == 'accepted' and plan['draft_revision_decision']['source'], 'Missing owner draft revision decision'
-    assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02', 'P0-03', 'P0-04', 'P0-05', 'P1-01', 'P1-02', 'P1-03', 'P1-04', 'P1-05', 'P1-06', 'P1-07', 'P2-01', 'P2-02', 'P2-03', 'P2-04', 'P2-07', 'P2-05', 'P2-06', 'P4-01', 'P3-01'}), 'Work exceeds P3-01'
+    assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02', 'P0-03', 'P0-04', 'P0-05', 'P1-01', 'P1-02', 'P1-03', 'P1-04', 'P1-05', 'P1-06', 'P1-07', 'P2-01', 'P2-02', 'P2-03', 'P2-04', 'P2-07', 'P2-05', 'P2-06', 'P4-01', 'P3-01', 'P3-02'}), 'Work exceeds P3-02'
     assert plan['network_lab_decision']['source'], 'Missing lab authorization'
     assert by_id['P0-03']['status'] == 'completed', 'Native Debian 13 fixture gate is not complete'
     native = plan['network_lab_decision'].get('native_acceptance', {})
     assert native.get('status') == 'passed' and native.get('source') and native.get('report_sha256'), 'Missing native Debian 13 evidence or authorization'
     assert (ROOT/'Cargo.toml').is_file() and (ROOT/'Cargo.lock').is_file(), 'Missing workspace'
     assert {p.name for p in (ROOT/'crates').iterdir()} == {'droutex-common', 'droutex-config', 'droutex-policy', 'droutex-storage', 'droutex-security', 'droutex-core', 'droutex-dns'}, 'Unexpected crate inventory'
-    assert not (ROOT/'apps').exists(), 'Daemons/frontend remain outside the P3-01 library gate'
+    assert not (ROOT/'apps').exists(), 'Daemons/frontend remain outside the P3-02 library gate'
     agents = (ROOT/'AGENTS.md').read_text(encoding='utf-8')
     assert 'mcp__node_repl__js' in agents and 'sky.list_apps()' in agents and 'browser-only' in agents
 
@@ -299,8 +319,8 @@ def main():
     adrs = validate_adrs()
     validate_review_boundary(plan)
     negatives = self_test(plan['tasks']) if '--self-test' in sys.argv else 0
-    result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P3-01','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':7,'runtime_implementation_absent':False}
-    result['additional_execution_scope'] = plan['execution_authorization']['additional_scope']
+    result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P3-02','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':7,'runtime_implementation_absent':False}
+    result['active_execution_decision'] = plan['execution_authorization']['decision']
     (ROOT/'docs/environment').mkdir(parents=True, exist_ok=True)
     (ROOT/'docs/environment/planning-verification.json').write_text(json.dumps(result,indent=2),encoding='utf-8')
     print(json.dumps(result))

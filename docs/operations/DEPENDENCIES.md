@@ -234,3 +234,25 @@ Root production dependencies are unchanged at qualification completion. The owne
 separately accepted [D53](../planning/P3_02_FORWARDING_CONTRACT.md) on2026-10-28:
 conditional exact-client production adoption follows its bounded application
 profile and independent implementation proof after PR114 documentation gates.
+
+## P3-02 conditional application adoption
+
+PR115 implements D53 with exactly hickory-net0.26.3 defaults-off/tokio and the
+existing pinned Proto0.26.3/Tokio1.53.3 dependencies. The root lock adds only
+hickory-net0.26.3, async-trait0.1.92 and futures-macro0.3.34. Their registry archive
+checksums and all inventoried license/notice hashes match the accepted client
+inventory. Existing root registry versions/checksums remain unchanged. No resolver,
+recursor, TLS, DNSSEC crypto or additional target is adopted.
+
+Actual full-workspace Linux/Windows target feature graphs were inspected. Existing
+SQLx/storage contexts additionally unify futures sink/io, tracing attributes/log,
+URL defaults and Tokio fs; these are existing workspace features, not a claim that
+the application graph equals the isolated client's graph. The Hickory direct
+features stay at the accepted profile. Independent application checks exercise
+this complete unified graph. On2026-10-31 a fresh advisory fetch and all seven
+locked dependency bundles passed without exceptions or policy changes.
+
+The [application review](../planning/P3_02_FORWARDING_REVIEW.md) owns adoption
+acceptance, exact-head reviews and platform/merge gates. Qualification alone and
+local dependency checks do not pass those application gates. Distribution must
+preserve the existing complete inventory notices and approved target restrictions.

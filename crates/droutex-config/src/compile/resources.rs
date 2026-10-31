@@ -91,6 +91,32 @@ pub(super) fn decode(data: &[ResourceData<'_>]) -> Result<BTreeMap<CatalogRevisi
         })
         .collect()
 }
+pub(super) fn upstreams(
+    data: &[ResourceData<'_>],
+) -> Result<BTreeMap<droutex_common::DnsUpstreamId, crate::upstream::Group>> {
+    let count = data
+        .iter()
+        .filter(|input| matches!(input.resource, SnapshotResource::Upstream(_)))
+        .count();
+    if count > crate::upstream::MAX_GROUPS {
+        return Err(Error::Size);
+    }
+    let mut remaining = crate::upstream::MAX_MEMBERS;
+    let mut groups = BTreeMap::new();
+    for input in data {
+        if let SnapshotResource::Upstream(id) = input.resource {
+            let group =
+                crate::upstream::parse(input.bytes).map_err(|error| Error::Upstream(id, error))?;
+            remaining = remaining
+                .checked_sub(group.members().len())
+                .ok_or(Error::Size)?;
+            if groups.insert(id, group).is_some() {
+                return Err(Error::Resource);
+            }
+        }
+    }
+    Ok(groups)
+}
 pub(super) fn facts(
     data: &BTreeMap<CatalogRevision, Catalog>,
 ) -> Result<Vec<CatalogRevisionFacts>> {

@@ -98,11 +98,11 @@ merge/exact-main gates through PR112 on2026-10-24. The
 The owner-accepted [D51/D52 isolated hickory-net qualification](P3_02_CLIENT_QUALIFICATION_CONTRACT.md)
 completed normal PR113 mergef136ac82 and all11 exact-main40631471007 jobs/both
 processed reports on2026-10-28. Only the bounded composed UDP/TCP client role is
-qualified. P3-02 application resources, fallback and production adoption remain
-planned until implementation starts. The owner accepted the complete
+qualified. The owner accepted the complete
 [D53 forwarding contract](P3_02_FORWARDING_CONTRACT.md) on2026-10-28 after checked
-qualification. Finish current PR114 documentation gates, then implement P3-02
-under that profile and its own independent application acceptance checks.
+qualification. PR114 documentation gates subsequently passed, including all11
+exact-main40633658696 jobs and both processed reports. P3-02 implementation is
+now in progress under that profile and its own independent application checks.
 
 Finish and merge each authorized implementation PR before starting the next.
 Subsequent work follows the DAG and owning acceptance contracts. P1-06 library

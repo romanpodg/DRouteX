@@ -2,7 +2,7 @@
 
 ## Current execution card
 
-Reviewed 2026-10-28. This card is the current work/authorization entry point;
+Reviewed 2026-10-31. This card is the current work/authorization entry point;
 [backlog.json](backlog.json) is canonical for task status/dependencies/delivery.
 Task reviews hold exact acceptance evidence. Later dated evidence supersedes
 historical checkpoints below; reconcile conflicts before dependent work.
@@ -34,7 +34,8 @@ historical checkpoints below; reconcile conflicts before dependent work.
   A failed-bind reservation defect has a red/green regression. The earlier UDP
   fixture timeout remains unattributed; clean mandatory CI now passes both profiles.
   Full graph/archive audit and the local seventh deny bundle passed. Production
-  adoption remains unapproved. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md)
+  adoption was not authorized by D51/D52 alone; accepted D53 below supplies its
+  separate conditional authority. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md)
   distinguishes original raw-library behavior from composed-role proof.
 - PR113 final head435bc37 passed all11 CI40630686323 jobs; normal merge
   f136ac82d7e6421dbb139f022a98575ea26ca8ff passed all11 exact-main40631471007
@@ -53,10 +54,21 @@ historical checkpoints below; reconcile conflicts before dependent work.
   bounded P3-02 implementation and conditional exact-client adoption, including
   immutable numeric public upstream groups, explicit fallback, current admission,
   fixed deadlines and owned resource/cleanup limits. No public deployment or
-  infrastructure change is authorized. Finish current PR114 documentation
-  review/merge/main gates first, then start P3-02 and update its canonical task/
-  execution boundary. Until that start P3-02 remains planned; D51/D52 alone still
-  confer no production authority.
+  infrastructure change is authorized. PR114 merged normally at3d866cb and all11
+  exact-main40633658696 jobs/both processed reports passed before implementation.
+  P3-02 is now in progress on its own branch under D53; every later task stays
+  planned. [Application evidence](P3_02_FORWARDING_REVIEW.md) tracks its required
+  independent proof. D51/D52 alone still confer no production authority.
+- Current implementation PR115 is draft. Corrected runtime headcec4728 passes
+  all11 CI41185981938 jobs:284 Windows/317 Linux tests per default/no-default,
+  client37/37 including mandatory IPv6, seven deny bundles and both processed
+  reports(Rust9901/10378). Actual implementation/final account reviews completed.
+  Final review found the narrow empty-NULL/unknown compatibility defect; its
+  [temporary minor disposition](OPEN_DECISIONS.md#p3-02-forwarding-review-dispositions)
+  preserves failed evidence and D53's separate patch/profile gate. New regression/
+  disposition head review/CI and normal merge/exact-main/report gates remain open.
+  Earlier failed CI41185270087 and local IPv6 failures remain failed; no ignored
+  test, filtered full pass or host-network change is authorized.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

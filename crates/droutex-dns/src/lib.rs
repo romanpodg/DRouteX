@@ -1,6 +1,7 @@
-//! D47 bounded legacy DNS transport. No upstream resolver or public deployment.
+//! D47 legacy DNS transport and D53 bounded policy-selected forwarding.
 mod budget;
 mod clock;
+mod forward;
 mod runtime;
 mod wire;
 
@@ -23,6 +24,7 @@ pub enum ErrorCode {
     Unavailable,
     Malformed,
     Scope,
+    Admission,
     Io,
     State,
     Timeout,
@@ -82,11 +84,21 @@ impl DnsNode {
         sockets: Vec<ListenerSocket>,
         shutdown: watch::Receiver<bool>,
     ) -> Result<ShutdownReport> {
+        self.serve_with_aliases(sockets, Vec::new(), shutdown).await
+    }
+    /// Trusted operator-declared public/NAT/service aliases supplement the fresh
+    /// OS inventory. Aliases supply no client, Profile or destination authority.
+    pub async fn serve_with_aliases(
+        self,
+        sockets: Vec<ListenerSocket>,
+        aliases: Vec<std::net::IpAddr>,
+        shutdown: watch::Receiver<bool>,
+    ) -> Result<ShutdownReport> {
         runtime::serve(
             self.deployment,
             sockets,
             shutdown,
-            wire::UnavailableProcessor,
+            forward::Forwarder::new(aliases)?,
         )
         .await
     }

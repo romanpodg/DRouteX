@@ -5,8 +5,10 @@ call_b35f42de3b6c42afa31321d7242557b7, selecting the complete proposed profile
 at23e291a. Checked PR113 completion, including all11 exact-main40631471007 jobs
 and both processed reports, fulfilled its prerequisite before this acceptance.
 This authorizes P3-02 implementation and conditional exact-client adoption under
-the bounds below. Finish the current PR114 documentation review/merge/main gates
-before dependent implementation. P3-02 stays planned until that work starts.
+the bounds below. PR114 subsequently merged normally at3d866cb; all11 exact-main
+40633658696 jobs and both processed reports passed before dependent implementation.
+P3-02 is now in progress; its own [application proof](P3_02_FORWARDING_REVIEW.md)
+remains required before acceptance.
 
 ## Accepted outcome and dependency adoption
 
