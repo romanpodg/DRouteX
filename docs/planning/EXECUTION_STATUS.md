@@ -9,9 +9,10 @@ historical checkpoints below; reconcile conflicts before dependent work.
 
 - The owner accepted the complete [D54 cache contract](P3_03_CACHE_CONTRACT.md)
   by direct reply on 2026-11-01 and requested implementation plus Project/Roadmap
-  updates. P3-03 is in progress under that exact profile; later tasks remain planned.
+  updates. P3-03 is in review under that exact profile; later tasks remain planned.
   The [application evidence](P3_03_CACHE_REVIEW.md) records implementation progress
-  and remaining platform, allocation, account review and merge gates.
+  and passed corrected-head01fe380 implementation review/all11 CI41247958631 jobs,
+  both processed reports, and remaining final-head/final-review/merge/main gates.
   P3-02's temporary empty-RDATA compatibility disposition remains unchanged.
 - Completed: P0, P1, all seven P2 tasks, P4-01 and P3-01. PR112 corrected the
   strict durable fixture without weakening its counter/failure assertions.

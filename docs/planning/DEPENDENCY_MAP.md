@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P3-03 scoped cache implementation in progress under owner-accepted D54; P3-02 complete with recorded minor empty-RDATA compatibility disposition. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P3-03 scoped cache in review under owner-accepted D54; corrected implementation review and CI passed, final/merge/main gates remain. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

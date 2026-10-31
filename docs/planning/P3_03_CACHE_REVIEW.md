@@ -1,9 +1,9 @@
 # P3-03 cache implementation evidence
 
-Status: in progress under owner-accepted [D54](P3_03_CACHE_CONTRACT.md).
-Local component evidence is recorded below; current-head account review, hosted
-Windows/Linux CI, configured processed reports and normal merge/main gates remain
-required. No completion, deployment, DNSSEC validation or full RR transparency is
+Status: in review under owner-accepted [D54](P3_03_CACHE_CONTRACT.md).
+Implementation-head account review and hosted Windows/Linux gates passed as
+recorded below. Final whole-PR review, final-head checks and normal merge/main
+gates remain required. No completion, deployment, DNSSEC validation or full RR transparency is
 claimed by local checks.
 
 ## Authorization and implementation
@@ -104,6 +104,47 @@ login. The interrupted attempt is unverified, not a completed review. Request th
 explicitly authorized GitHub Codex review on the corrected head; require an actual
 result, not a request or reaction. Branch-protection inventory also returns403
 with the present integration token; do not infer its settings or bypass protection.
+
+## Checked implementation head
+
+Corrected implementation head `01fe380eb67980e59a524e299db1ce751fb9bd2a` passes all11
+[CI41247958631](https://github.com/romanpodg/DRouteX/actions/runs/41247958631)
+jobs. The original e17e6b7 run41247262426 also passed all11, but does not prove the
+shared-gate correction. Direct job-log reads confirm309 Windows/342 Linux tests
+per default/no-default profile, zero failed/ignored/filtered, client37/37 with all
+mandatory IPv6, policy8/8 and codec/transport9/9 per profile/platform. GitHub CLI's
+aggregate archive exposed only one job and explicit job reads were empty; the
+GitHub connector supplied both complete platform logs. Missing CLI output was not
+counted as evidence. The platform logs include the current native durable/inventory,
+record matrices and new cache/gate regressions.
+
+Actual owner-requested GitHub Codex implementation review completed on01fe380:
+[explicit receipt6549957939](https://github.com/romanpodg/DRouteX/pull/117#issuecomment-6549957939)
+and [execution summary6549938095](https://github.com/romanpodg/DRouteX/pull/117#issuecomment-6549938095)
+report completed Code Review, exact commit and no findings/unresolved findings.
+This is an actual service result, not the earlier failed CLI login, a request,
+reaction, silence or a self-review. The summary may later show a newer final review;
+this dated record preserves the checked implementation result.
+
+Both exact-head Codecov reports were independently read from the public uploads
+API and are `merged`, flags planning/backend; the commit report is complete.
+The backend report has10327/10795 covered lines across Rust application and test/
+helper code, not production-only coverage. Upload job success alone was not used
+as processing evidence.
+
+[CodeScene8220469](https://codescene.io/projects/86145/delta/results/8220469)
+on01fe380 remains failed with the same template/FIFO/raw-fixture findings and
+Forwarder.answer7.25->6.54. Actual source assessment, current regression/mutation
+proof and completed account review support the specific maintenance dispositions
+in OPEN_DECISIONS. The shared checkpoint defect was fixed, not deferred. Do not
+suppress findings or turn the external result green. The legacy protection endpoint
+returns403, but independent branch metadata reports main `protected=false`, the
+active-branch-rules endpoint returns[] and GraphQL marks CodeScene not required.
+No protection or required check was changed or bypassed. Recheck before merge.
+
+Graphify update was attempted and is unavailable in this cloud image (command127);
+no existing graph is present and no replacement/backend was installed. Source,
+contract and test evidence remain authoritative.
 
 ## Project and remaining external gates
 

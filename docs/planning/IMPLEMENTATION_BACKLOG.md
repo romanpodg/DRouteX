@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P3-03 scoped cache implementation in progress under owner-accepted D54; P3-02 complete with recorded minor empty-RDATA compatibility disposition.**
+**P3-03 scoped cache in review under owner-accepted D54; corrected implementation review and CI passed, final/merge/main gates remain.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -337,7 +337,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P3-03: Implement scoped TTL and negative caching
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,22.
+Status: **in_review**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,22.
 
 | Field | Deliverable / evidence |
 |---|---|
