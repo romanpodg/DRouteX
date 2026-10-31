@@ -218,3 +218,29 @@ tests prove bounded failure only; the failed preservation source/log is retained
 locally. A vendor patch or other profile needs a separate owner decision and
 qualification. Fresh current-head CI and actual final review remain required for
 the new regressions/dispositions before merge.
+
+## Native inventory functional-harness boundary
+
+Current-head delta review01a1913d-ddf1-7112-8f84-e828258189bd completed at exit0
+onf5782c36e75b94e395948d2a6d8f5db21694474c, without new defects. It reviewed the
+test/documentation delta after the complete implementation/whole-PR reviews;
+it is not another claimed whole-PR pass. Cargo was unavailable in that reviewer,
+so its machine checks are not counted. Parent fmt/Clippy and scoped socket tests
+passed independently.
+
+[CI41187914683](https://github.com/romanpodg/DRouteX/actions/runs/41187914683)
+remains failed. Linux, coverage/dependency and upload jobs passed; Windows DNS
+passed75/76 but the unprivileged native inventory test received Timeout instead
+of the required Scope. Its standalone2s fixture budget included utility/runtime
+startup and scheduling. The exact external timing cause is unproven; the failure
+is not converted into a pass or waived.
+
+The correction gives only that functional OS-facility probe10s with a12s outer
+harness bound. It still requires exact Scope after a real successful inventory.
+An additional already-elapsed deadline must return exact Timeout, and the same
+cancelled probe still joins. Production supplies the unchanged original500ms
+member deadline; neither forwarding limits nor retries/cleanup are enlarged.
+This probe verifies facility functionality, not500ms availability under every
+host load. Slow/failed production inventory still disables forwarding. The
+corrected local probe and workspace Clippy pass; clean current-head platform
+proof remains required before merge.

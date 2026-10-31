@@ -340,17 +340,30 @@ mod tests {
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
     async fn actual_unprivileged_inventory_refuses_loopback_and_joins_cancelled_probe() {
         let inventory = Inventory::new(&[], std::iter::empty()).unwrap();
+        // This functional probe includes a cold OS utility/runtime startup on
+        // loaded CI hosts. It proves inventory/loop refusal, not500ms availability.
+        // Production still supplies its original member deadline unchanged.
         let mut probe = inventory.start(
             "127.0.0.1".parse().unwrap(),
-            tokio::time::Instant::now() + Duration::from_secs(2),
+            tokio::time::Instant::now() + Duration::from_secs(10),
         );
         let outcome = tokio::time::timeout(
-            Duration::from_secs(3),
+            Duration::from_secs(12),
             std::future::poll_fn(|context| probe.poll(context)),
         )
         .await
         .unwrap();
         assert_eq!(outcome.unwrap_err().code(), ErrorCode::Scope);
+        // An already elapsed production-style deadline still fails closed;
+        // the functional startup budget above must not become a forwarding retry.
+        let mut expired = inventory.start("1.1.1.1".parse().unwrap(), tokio::time::Instant::now());
+        let outcome = tokio::time::timeout(
+            Duration::from_secs(3),
+            std::future::poll_fn(|context| expired.poll(context)),
+        )
+        .await
+        .unwrap();
+        assert_eq!(outcome.unwrap_err().code(), ErrorCode::Timeout);
         let probe = inventory.start(
             "1.1.1.1".parse().unwrap(),
             tokio::time::Instant::now() + Duration::from_millis(500),
