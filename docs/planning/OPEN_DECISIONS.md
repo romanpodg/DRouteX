@@ -382,6 +382,20 @@ no durable activation mechanism changed with the weak live-check API. Revisit
 when changing actual durability semantics. This disposition requires current-head
 CodeScene findings to be checked again; it does not turn a failed result green.
 
+Final implementation head `2a2fe8b` was rechecked against
+[CodeScene8217152](https://codescene.io/projects/86145/delta/results/8217152).
+The existing findings above retain their specific scope. Additional runtime.rs
+Overall Code Complexity and serve Large/Complex Method/Bumpy Road findings map
+to the existing P3-01-CS-RUNTIME/D50 [runtime dispositions](#p3-01-review-dispositions):
+the supervisor only receives the same private Refresh context, without changing
+production first-poll startup, checkpoint, rate or shutdown behavior. Source review
+and clean current-head/exact-main platform regressions support deferring a score-only
+rewrite. Owner: P3 maintainer; revisit before changing those lifecycle paths or on
+a concrete cancellation/admission/deadline defect. New test-only size/complexity
+patterns remain outside independent metric targets. The raw result stays failed;
+the separate empty-RDATA defect above remains unfixed. [Final application evidence](P3_02_FORWARDING_REVIEW.md#completed-implementation-and-normal-merge)
+records the actual reviews, normal merge and exact-main checks.
+
 ## Development guidance maintenance, 2026-10-23
 
 Owner-authorized documentation maintenance implements the seven reviewed proposals.

@@ -101,8 +101,12 @@ processed reports on2026-10-28. Only the bounded composed UDP/TCP client role is
 qualified. The owner accepted the complete
 [D53 forwarding contract](P3_02_FORWARDING_CONTRACT.md) on2026-10-28 after checked
 qualification. PR114 documentation gates subsequently passed, including all11
-exact-main40633658696 jobs and both processed reports. P3-02 implementation is
-now in progress under that profile and its own independent application checks.
+exact-main40633658696 jobs and both processed reports. P3-02 subsequently completed
+normal PR #115 merge `d7021024` and all 11 exact-main `41191488105` jobs, both processed
+reports and actual account reviews. Its [application evidence](P3_02_FORWARDING_REVIEW.md#completed-implementation-and-normal-merge)
+records the temporary minor empty-RDATA compatibility disposition and retained
+failed attempts. This accepts only the bounded D53 component, not deployment or
+full RR transparency. Every later task remains planned.
 
 Finish and merge each authorized implementation PR before starting the next.
 Subsequent work follows the DAG and owning acceptance contracts. P1-06 library

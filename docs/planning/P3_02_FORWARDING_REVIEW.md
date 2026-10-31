@@ -1,7 +1,10 @@
 # P3-02 forwarding implementation evidence
 
-Status: implementation in progress under owner-accepted
-[D53](P3_02_FORWARDING_CONTRACT.md). This is not completion or deployment proof.
+Status: completed bounded [D53](P3_02_FORWARDING_CONTRACT.md) implementation through
+normal PR #115 merge and checked exact-main gates, with the recorded temporary minor
+empty-RDATA compatibility disposition. No deployment or complete RR transparency
+is claimed. Dated increments preserve their then-open gates and failed attempts;
+the [final evidence](#completed-implementation-and-normal-merge) supersedes them.
 
 ## Checked prerequisites before code
 
@@ -281,3 +284,53 @@ platform waiver. The third constructor now creates, passes and retains the same
 Refresh, matching both other fixtures. Whole-crate caller search confirms all
 three constructors. Windows fmt/Clippy pass; only fresh Linux CI can establish
 the corrected platform build and network tests. The failed run remains failed.
+
+## Completed implementation and normal merge
+
+Final implementation head `2a2fe8b625495a876fdbd79af5bceaaf83b38500` passes all 11
+[CI41190906637](https://github.com/romanpodg/DRouteX/actions/runs/41190906637)
+jobs. Full logs confirm 286 Windows/319 Linux workspace tests per default/no-default
+profile, zero failed/ignored/filtered, client 37/37 per platform/profile and all
+mandatory raw/composed IPv6 probes. Both application IPv6 record matrices, the
+native inventory functional/expired-deadline/cancellation probe and changed-self
+checkpoint regression pass in every applicable profile. All seven dependency
+bundles pass. Both Codecov uploads processed as merged, with Rust 9952/10417
+covered lines across application and test-helper files, not production-only coverage.
+
+Actual owner-linked ChatGPT current-head read-only/never account review
+`01a19166-c5ab-7da3-9aa3-8451a7db4bf6` completed at exit 0 without new defects.
+It reviews the Linux constructor correction after the earlier whole-implementation,
+whole-PR final and subsequent delta reviews above; it is not another whole-PR pass.
+Cargo was unavailable in that reviewer, so no reviewer Cargo execution is claimed.
+The earlier P1 missing Linux field is corrected and independently proven by the
+clean Linux build/tests; its original failed review/CI remain recorded as failed.
+
+[PR #115](https://github.com/romanpodg/DRouteX/pull/115) merged normally on 2026-10-31
+at `d70210246637321c1513a392ba86528565933b6a` using the exact expected head `2a2fe8b`.
+The [merge evidence comment](https://github.com/romanpodg/DRouteX/pull/115#issuecomment-6542042002)
+records actual reviews, checks and finding dispositions. No administrative bypass,
+force push, protection change or new task was used.
+
+All 11 exact-merge [main 41191488105](https://github.com/romanpodg/DRouteX/actions/runs/41191488105)
+jobs pass. Full logs independently confirm the same 286 Windows/319 Linux tests
+per default/no-default profile, client 37/37 including all mandatory IPv6 probes,
+the corrected regressions and all seven successful deny bundles; zero failed,
+ignored or filtered. Both exact-merge Codecov uploads (backend and planning) are
+processed as merged and the commit is complete, with Rust 9956/10417 covered lines.
+Local readbacks and full logs remain untracked in `.setup/p3-02/main-d702-*`.
+
+[CodeScene8217152](https://codescene.io/projects/86145/delta/results/8217152)
+on the final implementation head remains failed. Current-head findings were
+rechecked against the [specific dispositions](OPEN_DECISIONS.md#p3-02-forwarding-review-dispositions),
+including the existing runtime supervisor/D50 disposition. They do not turn the
+service green or waive a required check. Required branch rules were checked before
+normal merge; no required CodeScene check or protection was bypassed.
+
+P3-02 is complete under that bounded profile and standing minor-finding policy.
+The legal empty NULL/unknown RDATA preservation defect remains unfixed, including
+when the record is additional data in an ordinary A or NXDOMAIN response. It can
+cause only the explicitly configured fallback or bounded SERVFAIL in these tests;
+the original NOERROR-preservation probe stays failed. Its owner and mandatory
+revisit triggers remain in OPEN_DECISIONS. No permanent D53 exception, vendor patch,
+new dependency/profile, full-product/native-service acceptance or public deployment
+is authorized. Every later task stays planned; the execution boundary stays P3-02.

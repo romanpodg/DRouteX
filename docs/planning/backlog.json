@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "status": "P0/P1/P2/P3-01/P4-01 and D51/D52 qualification complete; P3-02 implementation in progress under owner-accepted D53 after checked PR114",
-  "date": "2026-10-28",
+  "status": "P0/P1/P2/P3-01/P3-02/P4-01 and D51/D52 qualification complete; P3-02 normal PR115 merge and exact-main gates passed with recorded minor compatibility disposition; later tasks planned",
+  "date": "2026-11-01",
   "phases": {
     "P0": "Foundation",
     "P1": "Domain and configuration",
@@ -640,14 +640,20 @@
       ],
       "scope": "Trusted forwarding, deadlines and policy-selected upstream fallback; no full recursion",
       "files": [
-        "crates/droutex-dns/src/upstream"
+        "crates/droutex-config/src/upstream.rs",
+        "crates/droutex-core/src/deployment/admission",
+        "crates/droutex-dns/src/forward",
+        "crates/droutex-dns/src/runtime.rs",
+        "crates/droutex-dns/src/tests/forwarding.rs",
+        "tests/dns-fixtures/records.rs",
+        "docs/planning/P3_02_FORWARDING_REVIEW.md"
       ],
       "acceptance": "A/AAAA/CNAME/TXT/auxiliary queries resolve; timeout gives permitted fallback or SERVFAIL",
-      "tests": "Controlled upstream success, timeout, outage and recursion-loop tests",
+      "tests": "Real UDP/TCP IPv4/IPv6 record matrices, explicit fallback/RCODE/deadline and destination/self-loop refusal; current admission, exact I/O/resource bounds, cancellation/join and immutable CP/DP/LKG tests; known empty-RDATA bounded-failure characterization with failed preservation evidence retained",
       "security": "DNS resolver changes never imply traffic exit changes",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_progress",
+      "status": "completed",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"

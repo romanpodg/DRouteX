@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P0/P1/P2/P3-01/P4-01 and D51/D52 qualification complete; P3-02 implementation in progress under owner-accepted D53 after checked PR114.**
+**P0/P1/P2/P3-01/P3-02/P4-01 and D51/D52 qualification complete; P3-02 normal PR115 merge and exact-main gates passed with recorded minor compatibility disposition; later tasks planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -322,15 +322,15 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P3-02: Forward via approved upstream groups
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§6,9,20.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§6,9,20.
 
 | Field | Deliverable / evidence |
 |---|---|
 | Goal and implementation scope | Trusted forwarding, deadlines and policy-selected upstream fallback; no full recursion |
 | Prerequisites | P3-01 |
-| Expected files/modules | crates/droutex-dns/src/upstream |
+| Expected files/modules | crates/droutex-config/src/upstream.rs; crates/droutex-core/src/deployment/admission; crates/droutex-dns/src/forward; crates/droutex-dns/src/runtime.rs; crates/droutex-dns/src/tests/forwarding.rs; tests/dns-fixtures/records.rs; docs/planning/P3_02_FORWARDING_REVIEW.md |
 | Acceptance criteria | A/AAAA/CNAME/TXT/auxiliary queries resolve; timeout gives permitted fallback or SERVFAIL |
-| Tests | Controlled upstream success, timeout, outage and recursion-loop tests |
+| Tests | Real UDP/TCP IPv4/IPv6 record matrices, explicit fallback/RCODE/deadline and destination/self-loop refusal; current admission, exact I/O/resource bounds, cancellation/join and immutable CP/DP/LKG tests; known empty-RDATA bounded-failure characterization with failed preservation evidence retained |
 | Security considerations | DNS resolver changes never imply traffic exit changes |
 | Quality checks | Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence. |
 | Definition of Done | Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open. |

@@ -7,8 +7,11 @@ and both processed reports, fulfilled its prerequisite before this acceptance.
 This authorizes P3-02 implementation and conditional exact-client adoption under
 the bounds below. PR114 subsequently merged normally at3d866cb; all11 exact-main
 40633658696 jobs and both processed reports passed before dependent implementation.
-P3-02 is now in progress; its own [application proof](P3_02_FORWARDING_REVIEW.md)
-remains required before acceptance.
+P3-02 completed normal PR #115 merge and exact-main `41191488105` gates. Its own
+[application proof](P3_02_FORWARDING_REVIEW.md#completed-implementation-and-normal-merge)
+records the exact reviewed profile and temporary minor empty-RDATA compatibility
+disposition under the standing quality policy. This does not amend the accepted
+preservation requirement, qualify a vendor patch or claim complete RR transparency.
 
 ## Accepted outcome and dependency adoption
 

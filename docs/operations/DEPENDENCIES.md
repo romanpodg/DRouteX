@@ -254,5 +254,9 @@ locked dependency bundles passed without exceptions or policy changes.
 
 The [application review](../planning/P3_02_FORWARDING_REVIEW.md) owns adoption
 acceptance, exact-head reviews and platform/merge gates. Qualification alone and
-local dependency checks do not pass those application gates. Distribution must
+local dependency checks do not pass those application gates. PR115 normal merge
+and all 11 exact-main `41191488105` jobs/both processed reports now fulfill the bounded
+application gates, with the linked temporary minor empty-RDATA compatibility
+disposition. This does not qualify a vendor patch, another feature profile or full
+RR transparency. Distribution must
 preserve the existing complete inventory notices and approved target restrictions.

@@ -2,7 +2,7 @@
 
 ## Current execution card
 
-Reviewed 2026-10-31. This card is the current work/authorization entry point;
+Reviewed 2026-11-01. This card is the current work/authorization entry point;
 [backlog.json](backlog.json) is canonical for task status/dependencies/delivery.
 Task reviews hold exact acceptance evidence. Later dated evidence supersedes
 historical checkpoints below; reconcile conflicts before dependent work.
@@ -56,19 +56,24 @@ historical checkpoints below; reconcile conflicts before dependent work.
   fixed deadlines and owned resource/cleanup limits. No public deployment or
   infrastructure change is authorized. PR114 merged normally at3d866cb and all11
   exact-main40633658696 jobs/both processed reports passed before implementation.
-  P3-02 is now in progress on its own branch under D53; every later task stays
-  planned. [Application evidence](P3_02_FORWARDING_REVIEW.md) tracks its required
-  independent proof. D51/D52 alone still confer no production authority.
-- Current implementation PR115 is draft. Corrected runtime headcec4728 passes
-  all11 CI41185981938 jobs:284 Windows/317 Linux tests per default/no-default,
-  client37/37 including mandatory IPv6, seven deny bundles and both processed
-  reports(Rust9901/10378). Actual implementation/final account reviews completed.
-  Final review found the narrow empty-NULL/unknown compatibility defect; its
-  [temporary minor disposition](OPEN_DECISIONS.md#p3-02-forwarding-review-dispositions)
-  preserves failed evidence and D53's separate patch/profile gate. New regression/
-  disposition head review/CI and normal merge/exact-main/report gates remain open.
-  Earlier failed CI41185270087 and local IPv6 failures remain failed; no ignored
-  test, filtered full pass or host-network change is authorized.
+  P3-02 subsequently completed its independent application gates below. D51/D52
+  alone still confer no production authority; D53 remains the exact bounded profile.
+- Completed: P3-02 through normal [PR115](https://github.com/romanpodg/DRouteX/pull/115)
+  merge `d70210246637321c1513a392ba86528565933b6a`. Final head `2a2fe8b` passes all 11
+  CI `41190906637` jobs; all 11 exact-main `41191488105` jobs also pass. Full logs confirm
+  286 Windows/319 Linux tests per default/no-default profile, client 37/37 with all
+  mandatory IPv6, zero failed/ignored/filtered, seven successful deny bundles and
+  both processed reports (main Rust 9956/10417). Actual implementation/whole-PR final
+  account reviews and current-head corrective delta review completed. The Linux
+  constructor P1 is fixed; prior failed reviews/runs and local IPv6 failures stay
+  recorded as failed. See [final application evidence](P3_02_FORWARDING_REVIEW.md#completed-implementation-and-normal-merge).
+- The legal empty-NULL/unknown RDATA compatibility defect remains unfixed under
+  the [temporary minor disposition](OPEN_DECISIONS.md#p3-02-forwarding-review-dispositions).
+  A valid empty record in any section of an otherwise ordinary response can cause
+  explicit fallback or SERVFAIL. Failed preservation evidence is retained; full RR
+  transparency, a vendor patch or another profile is not accepted. CodeScene 8217152
+  remains failed with rechecked specific dispositions. Every later task stays
+  planned; this completion update does not start P3-03 or authorize deployment.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.
@@ -77,8 +82,8 @@ historical checkpoints below; reconcile conflicts before dependent work.
   plus the remaining 500ms reply within the original 2s total. Lost/expired
   admission never receives a fallback.
 - No public deployment, management endpoint, TLS/recursion/cache/secure learning or
-  actual origin connector is authorized by P3-01. Admitted valid DNS queries return
-  SERVFAIL until their later handlers. Development-host IPv6 failure does not
+  actual origin connector is authorized by P3-01/P3-02. Resolve now uses the bounded
+  D53 upstream handler; other policy handlers remain unavailable. Development-host IPv6 failure does not
   waive mandatory clean-CI IPv6 or authorize host-network changes.
 
 ## Development guidance maintenance, 2026-10-23
