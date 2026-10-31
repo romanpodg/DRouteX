@@ -149,6 +149,7 @@ impl Processor for Arc<Probe> {
 }
 struct Server {
     owner: Arc<Deployment>,
+    refresh: Arc<crate::clock::Refresh>,
     doc: Value,
     udp: SocketAddr,
     tcp: SocketAddr,
@@ -172,10 +173,11 @@ impl Server {
         let node = DnsNode::new(Deployment::in_memory(typed(1), keys().1));
         apply(node.deployment(), &doc, 1);
         let owner = Arc::clone(node.deployment());
+        let refresh = Arc::new(crate::clock::Refresh::new());
         let (stop, shutdown) = watch::channel(false);
         let handle = start_runtime(
             ready,
-            runtime::serve(
+            runtime::serve_with_refresh(
                 node.deployment,
                 vec![
                     ListenerSocket::Udp {
@@ -189,17 +191,24 @@ impl Server {
                 ],
                 shutdown,
                 processor,
+                Arc::clone(&refresh),
             ),
         )
         .await;
         Self {
             owner,
+            refresh,
             doc,
             udp: udp_addr,
             tcp: tcp_addr,
             stop,
             handle,
         }
+    }
+    async fn authorize(&self) -> droutex_core::deployment::AuthorizedRequest<'_> {
+        runtime::fixture_authorize(&self.owner, &self.refresh, typed(20), self.udp)
+            .await
+            .unwrap()
     }
     async fn close(self) -> ShutdownReport {
         self.stop.send_replace(true);
@@ -971,12 +980,7 @@ async fn pending_submission_rechecks_actual_authority_before_resuming_io() {
         task::Poll,
     };
     let server = Server::start(v4(), wire::UnavailableProcessor).await;
-    let auth = server
-        .owner
-        .prepare_legacy_dns(typed(20), v4())
-        .unwrap()
-        .consume()
-        .unwrap();
+    let auth = server.authorize().await;
     let wake = Notify::new();
     let submitted = std::sync::atomic::AtomicBool::new(false);
     let operation = async {

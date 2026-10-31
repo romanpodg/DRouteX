@@ -114,10 +114,11 @@ async fn server_delayed(
             .unwrap();
     processor.fixture_cleanup_delay(cleanup_delay);
     processor.fixture_tc_delay(tc_delay);
+    let refresh = Arc::new(crate::clock::Refresh::new());
     let (stop, shutdown) = watch::channel(false);
     let handle = start_runtime(
         std::future::ready(()),
-        runtime::serve(
+        runtime::serve_with_refresh(
             Arc::clone(&owner),
             vec![
                 ListenerSocket::Udp {
@@ -131,6 +132,7 @@ async fn server_delayed(
             ],
             shutdown,
             processor,
+            Arc::clone(&refresh),
         ),
     )
     .await;
@@ -139,6 +141,7 @@ async fn server_delayed(
     sleep(Duration::from_millis(100)).await;
     Server {
         owner,
+        refresh,
         doc,
         udp: udp_addr,
         tcp: tcp_addr,
@@ -340,12 +343,7 @@ async fn validated_udp_tc_uses_tcp_at_same_pinned_target_without_datagram_retry(
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn checkpoint_after_actual_partial_write_preserves_the_original_io_progress() {
     let server = Server::start(v4(), wire::UnavailableProcessor).await;
-    let auth = server
-        .owner
-        .prepare_legacy_dns(typed(20), v4())
-        .unwrap()
-        .consume()
-        .unwrap();
+    let auth = server.authorize().await;
     crate::forward::partial_write_checkpoint_fixture(
         auth.dns_io_check().unwrap(),
         Arc::clone(&server.owner),
@@ -548,12 +546,7 @@ async fn delayed_join_cannot_extend_member_response_acceptance_deadline() {
 async fn checkpoint_and_cancellation_wake_both_worker_and_tcp_background_roles() {
     let server = Server::start(v4(), wire::UnavailableProcessor).await;
     for cancel in [false, true] {
-        let auth = server
-            .owner
-            .prepare_legacy_dns(typed(20), v4())
-            .unwrap()
-            .consume()
-            .unwrap();
+        let auth = server.authorize().await;
         crate::forward::shared_waiter_fixture(
             auth.dns_io_check().unwrap(),
             Arc::clone(&server.owner),
@@ -666,12 +659,7 @@ async fn expired_tc_continuation_uses_explicit_next_member_without_late_tcp() {
 async fn checkpoint_before_first_socket_poll_rechecks_changed_self_inventory() {
     let server = Server::start(v4(), wire::UnavailableProcessor).await;
     for tcp in [false, true] {
-        let auth = server
-            .owner
-            .prepare_legacy_dns(typed(20), v4())
-            .unwrap()
-            .consume()
-            .unwrap();
+        let auth = server.authorize().await;
         crate::forward::inventory_checkpoint_fixture(
             auth.dns_io_check().unwrap(),
             Arc::clone(&server.owner),
@@ -1145,12 +1133,7 @@ async fn upstream_message_ceiling_and_client_amplification_are_independent() {
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn application_io_adapter_enforces_exact_successful_operation_and_byte_limits() {
     let server = Server::start(v4(), wire::UnavailableProcessor).await;
-    let auth = server
-        .owner
-        .prepare_legacy_dns(typed(20), v4())
-        .unwrap()
-        .consume()
-        .unwrap();
+    let auth = server.authorize().await;
     crate::forward::exact_io_limits_fixture(&auth, Arc::clone(&server.owner)).await;
     drop(auth);
     server.close().await;
@@ -1159,12 +1142,7 @@ async fn application_io_adapter_enforces_exact_successful_operation_and_byte_lim
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn application_io_denials_prevent_more_bytes_after_actual_partial_progress() {
     let server = Server::start(v4(), wire::UnavailableProcessor).await;
-    let auth = server
-        .owner
-        .prepare_legacy_dns(typed(20), v4())
-        .unwrap()
-        .consume()
-        .unwrap();
+    let auth = server.authorize().await;
     crate::forward::terminal_denial_fixture(&auth, Arc::clone(&server.owner)).await;
     drop(auth);
     server.close().await;
@@ -1218,12 +1196,7 @@ async fn udp_prefilter_budget_counts_wrong_ids_and_accepts_no_seventeenth_packet
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn tcp_complete_question_validation_stops_at_the_sixteenth_candidate() {
     let server = Server::start(v4(), wire::UnavailableProcessor).await;
-    let auth = server
-        .owner
-        .prepare_legacy_dns(typed(20), v4())
-        .unwrap()
-        .consume()
-        .unwrap();
+    let auth = server.authorize().await;
     crate::forward::candidate_limit_fixture(&auth, Arc::clone(&server.owner)).await;
     drop(auth);
     server.close().await;

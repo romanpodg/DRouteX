@@ -111,8 +111,25 @@ impl FrameStart {
 pub(super) async fn serve<P: Processor>(
     deployment: Arc<Deployment>,
     sockets: Vec<ListenerSocket>,
+    shutdown: watch::Receiver<bool>,
+    processor: P,
+) -> Result<ShutdownReport> {
+    serve_with_refresh(
+        deployment,
+        sockets,
+        shutdown,
+        processor,
+        Arc::new(Refresh::new()),
+    )
+    .await
+}
+
+pub(super) async fn serve_with_refresh<P: Processor>(
+    deployment: Arc<Deployment>,
+    sockets: Vec<ListenerSocket>,
     mut shutdown: watch::Receiver<bool>,
     processor: P,
+    refresh: Arc<Refresh>,
 ) -> Result<ShutdownReport> {
     if sockets.is_empty() || sockets.len() > MAX_LISTENERS {
         return Err(DnsError(ErrorCode::Configuration));
@@ -142,7 +159,6 @@ pub(super) async fn serve<P: Processor>(
         }
     }
     let budget = Arc::new(Budget::new());
-    let refresh = Arc::new(Refresh::new());
     let processor = Arc::new(processor);
     let forwarding = Arc::new(CleanupRegistry::new());
     let (stop, stop_rx) = watch::channel(false);
@@ -461,6 +477,25 @@ pub(super) async fn consume<'a>(
             }
         }
     }
+}
+
+#[cfg(test)]
+pub(super) async fn fixture_authorize<'a>(
+    deployment: &'a Deployment,
+    refresh: &Refresh,
+    id: ListenerId,
+    local: SocketAddr,
+) -> Result<AuthorizedRequest<'a>> {
+    let deadline = Instant::now() + QUERY_TIME;
+    let binding = Binding {
+        id,
+        local,
+        tcp: false,
+    };
+    let attempt = prepare(deployment, binding, local, refresh, deadline).await?;
+    let auth = consume(attempt, refresh, deadline).await?;
+    binding.check(auth.decision())?;
+    Ok(auth)
 }
 impl Job {
     async fn run<P: Processor>(

@@ -244,3 +244,31 @@ This probe verifies facility functionality, not500ms availability under every
 host load. Slow/failed production inventory still disables forwarding. The
 corrected local probe and workspace Clippy pass; clean current-head platform
 proof remains required before merge.
+
+## Shared D50 fixture admission
+
+Actual current-head account review01a1914b-19bc-7190-a2c1-44bf54173811 completed
+at exit0 ona2fd3f51ff170e2d444b1844969e508426e2d32c without a confirmed defect
+in the test-only budget change. Cargo was unavailable in that reviewer.
+
+[CI41188899322](https://github.com/romanpodg/DRouteX/actions/runs/41188899322)
+remains failed. Its native inventory functional probe passes, but Windows DNS
+passes75/76: the inventory/checkpoint regression's setup directly unwraps
+prepare_legacy_dns and gets CheckpointRequired before the operation under test.
+This is a real temporal fixture precondition failure, not evidence that the
+inventory check can be removed. Other jobs passed; Windows no-default/later
+qualifiers were not reached and are not inferred from them.
+
+All seven successful direct-admission fixture setups now reuse real runtime
+prepare/consume gates and the exact same node Refresh/maintenance worker. A
+private runtime entry allows fixtures to retain that context; the normal public
+API still creates its own fresh context. One original2s setup deadline, original
+reservation/generation/quota and final binding check remain. Deliberate D50
+negative probes are unchanged; no new worker, manual maintenance, timer retry,
+quota reset or production500ms change is introduced.
+
+Local fmt/workspace Clippy,28 IPv4 forwarding tests,13 checkpoint regressions and
+the actual first-poll/rate-start regression pass. Separate standards/spec source
+passes find no confirmed defect in ownership, first-poll startup or shutdown.
+Their source inspection is supplementary, not an account-review/platform pass.
+Fresh exact-head review/CI, normal merge and exact-main/report gates stay open.
