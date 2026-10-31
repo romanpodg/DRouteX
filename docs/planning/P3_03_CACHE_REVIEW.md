@@ -42,6 +42,8 @@ The pending-send TTL regression preserves expiry while waiting to write.
 Seven removed-check mutations fail their intended pure regressions: positive and
 negative TTL caps, scope-aware key equality, scope capacity, SOA owner, exact expiry
 and pending-send TTL aging. Restoring the source returns all12 pure tests to green.
+An eighth mutation resets the shared checkpoint phase when attaching upstream
+cancellation and fails the dedicated transition regression. Its source is restored.
 The preliminary broad cache substring also selected real-network tests inside the
 restricted sandbox; that environment-only failed attempt is retained separately
 and is not counted as mutation evidence.
@@ -74,6 +76,34 @@ remain failed attempts, not platform waivers.
 Local command transcripts remain outside Git under `/workspace/droutex-cloud/d54-*`.
 These logs are supporting local evidence, not portable CI artifacts or a claim
 about Windows, exact-main, Codecov/CodeScene or product/systemd acceptance.
+
+## Shared checkpoint gate correction
+
+Initial implementation head e17e6b7 was published in [PR117](https://github.com/romanpodg/DRouteX/pull/117).
+Source review found that using independent checked-submit helpers around the
+cache could grant an additional D50 checkpoint wait before a later miss entered
+D53's Live gate. The implementation now constructs one Live before lookup, uses
+it for cache consumption/insertion and every upstream role, and attaches registry
+cancellation without resetting the original phase/wait flag. The actual-original
+authority and deadline are unchanged. The new transition regression and mutation
+prove a second refusal ends work. Both corrected DNS profiles pass100 tests with
+zero failed/ignored/filtered; Clippy passes. Earlier workspace341/99 counts above
+belong to the preceding implementation, not this corrective delta's hosted proof.
+
+Initial CodeScene8220425 on e17e6b7 remains failed: template eligibility/encoding,
+FIFO insertion and the forwarder integration trigger maintenance complexity rules;
+the raw independent fixture also scores below10. Specific source-based dispositions
+are in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-03-cache-review-dispositions). They do
+not turn the service green or waive a required check. Current-head analysis must
+be read again after the correction.
+
+The actual Codex CLI review attempt on e17e6b7 did not complete: after authorization
+was established from accepted D54, standing review permission and public repository
+visibility, the ChatGPT backend returned401 and could not refresh the configured
+login. The interrupted attempt is unverified, not a completed review. Request the
+explicitly authorized GitHub Codex review on the corrected head; require an actual
+result, not a request or reaction. Branch-protection inventory also returns403
+with the present integration token; do not infer its settings or bypass protection.
 
 ## Project and remaining external gates
 

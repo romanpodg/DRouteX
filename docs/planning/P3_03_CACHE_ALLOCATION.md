@@ -81,6 +81,14 @@ completion oneshots remain capped at512; concrete payload sizes are printed by
 the cache allocation regression for platform evidence. Layout/pin/context/queue
 changes require recalculation and current-head review before adoption.
 
+D54 moves the one shared Live gate before cache lookup. At most512 request
+contexts can own one gate each; only the8 active upstream workers attach a registry
+cancellation receiver and transport I/O role. This supersedes D53's8-Live control
+count, without changing its8 transport/worker bound. Cache checks, an expired hit's
+miss and upstream work reuse that same gate/one checkpoint wait; attaching upstream
+cancellation changes neither phase nor authority. Gate/waker/watch/future metadata
+is finite control storage outside the data formula, not an extra queue or worker.
+
 ## Time and authority ownership
 
 The I/O adapter remembers the first successful receive time for each transport.

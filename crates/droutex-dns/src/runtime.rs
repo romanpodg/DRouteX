@@ -704,7 +704,7 @@ pub(super) async fn submit<T>(
     )
     .await
 }
-pub(super) async fn checked_submit<T>(
+async fn checked_submit<T>(
     mut check: impl FnMut() -> std::result::Result<(), AdmissionCode>,
     refresh: &Refresh,
     deadline: Instant,

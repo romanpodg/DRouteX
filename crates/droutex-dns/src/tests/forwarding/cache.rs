@@ -560,3 +560,24 @@ async fn decoded_hit_rechecks_publication_trust_and_expiry_before_consumption() 
         upstream.close().await;
     }
 }
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn cache_to_miss_keeps_the_original_checkpoint_wait_budget() {
+    let upstream = Upstream::start(v4(), Transport::UdpTcp, 0).await;
+    let server = start(&upstream, Transport::UdpTcp).await;
+    let auth = server
+        .owner
+        .prepare_legacy_dns(typed(20), v4())
+        .unwrap()
+        .consume()
+        .unwrap();
+    crate::forward::cache_transition_fixture(
+        auth.dns_io_check().unwrap(),
+        Arc::clone(&server.owner),
+    )
+    .await;
+    assert_eq!(upstream.calls(), 0);
+    drop(auth);
+    assert_eq!(server.close().await.answered, 0);
+    upstream.close().await;
+}

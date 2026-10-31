@@ -493,7 +493,7 @@ pub(crate) async fn partial_write_checkpoint_fixture(
         Arc::clone(&refresh),
         Instant::now() + Duration::from_millis(1500),
         Arc::new(AtomicBool::new(false)),
-        stop,
+        Some(stop),
     ));
     let inventory = Arc::new(Inventory::fixture(Arc::new(Mutex::new(
         Ok(BTreeSet::new()),
@@ -569,7 +569,7 @@ pub(crate) async fn inventory_checkpoint_fixture(
         Arc::clone(&refresh),
         Instant::now() + Duration::from_millis(1500),
         Arc::new(AtomicBool::new(false)),
-        stop,
+        Some(stop),
     ));
     let budget = Budget::new(
         address,
@@ -680,7 +680,7 @@ pub(crate) async fn exact_io_limits_fixture(
             Arc::clone(&refresh),
             Instant::now() + Duration::from_millis(1500),
             Arc::new(AtomicBool::new(false)),
-            stopped,
+            Some(stopped),
         ));
         let inventory = Arc::new(Inventory::fixture(Arc::new(Mutex::new(
             Ok(BTreeSet::new()),
@@ -789,7 +789,7 @@ pub(crate) async fn terminal_denial_fixture(
             refresh,
             Instant::now() + Duration::from_millis(1500),
             Arc::new(AtomicBool::new(false)),
-            stopped,
+            Some(stopped),
         ));
         let inventory = Arc::new(Inventory::fixture(Arc::new(Mutex::new(
             Ok(BTreeSet::new()),

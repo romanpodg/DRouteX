@@ -26,6 +26,8 @@ pub(super) use io::partial_write_checkpoint_fixture;
 #[cfg(test)]
 pub(super) use io::terminal_denial_fixture;
 #[cfg(test)]
+pub(super) use live::cache_transition_fixture;
+#[cfg(test)]
 pub(super) use live::shared_waiter_fixture;
 use registry::Registry;
 use std::sync::{
@@ -43,33 +45,6 @@ pub(super) struct Processing<'request, 'store> {
     pub registry: &'request Arc<Registry>,
     pub cutoff: Instant,
     pub lost: Arc<AtomicBool>,
-}
-
-impl Processing<'_, '_> {
-    async fn current(&self) -> Result<()> {
-        let refused = AtomicBool::new(false);
-        crate::runtime::checked_submit(
-            || {
-                let current = self.auth.verify_current().map_err(|error| error.code());
-                if current.is_err() {
-                    refused.store(true, Ordering::Relaxed);
-                }
-                current
-            },
-            self.refresh,
-            self.cutoff,
-            std::future::ready(Ok(())),
-        )
-        .await
-        .map_err(|error| {
-            if error.code() == ErrorCode::Timeout && !refused.load(Ordering::Relaxed) {
-                error // Ordinary processor expiry retains D48's valid-authority reply reserve.
-            } else {
-                self.lost.store(true, Ordering::Release);
-                DnsError(ErrorCode::Admission)
-            }
-        })
-    }
 }
 
 pub(crate) enum Outcome {
@@ -135,7 +110,17 @@ impl Processor for Forwarder {
         let DnsAction::Resolve { upstream } = selection.action() else {
             return Ok(response(request, ResponseCode::ServFail).into());
         };
-        context.current().await?;
+        let live = Arc::new(live::Live::new(
+            context
+                .auth
+                .dns_io_check()
+                .map_err(|_| DnsError(ErrorCode::Admission))?,
+            Arc::clone(context.refresh),
+            context.cutoff,
+            Arc::clone(&context.lost),
+            None,
+        ));
+        live.current(context.cutoff).await?;
         let key = Key::admitted(context.auth, *upstream, request)?;
         if let Ok(_copy_credit) = context.budget.wire(4096)
             && let Some(template) = self.cache.get(&key, Instant::now())
@@ -151,7 +136,7 @@ impl Processor for Forwarder {
                 barrier.entered.notify_one();
                 barrier.release.notified().await;
             }
-            context.current().await?;
+            live.current(context.cutoff).await?;
             if reply.expires.is_some_and(|expiry| Instant::now() < expiry) {
                 return Ok(reply);
             }
@@ -196,12 +181,8 @@ impl Processor for Forwarder {
         } else {
             (members, inventory)
         };
-        let check = context
-            .auth
-            .dns_io_check()
-            .map_err(|_| DnsError(ErrorCode::Admission))?;
         let wire = context.budget.wire(128 * 1024)?;
-        let refresh = Arc::clone(context.refresh);
+        let worker = Arc::clone(&live);
         let lost = Arc::clone(&context.lost);
         let cutoff = context.cutoff;
         let mut ticket =
@@ -209,23 +190,20 @@ impl Processor for Forwarder {
                 .registry
                 .start(context.auth.network_group(), move |stop| async move {
                     let _wire = wire;
-                    let live = Arc::new(live::Live::new(
-                        check,
-                        refresh,
-                        cutoff,
-                        Arc::clone(&lost),
-                        stop,
-                    ));
-                    run(&template, &members, fallback, live, inventory, cutoff, lost).await
+                    worker.attach_cancel(stop)?;
+                    run(
+                        &template, &members, fallback, worker, inventory, cutoff, lost,
+                    )
+                    .await
                 })?;
         match ticket.answer().await? {
             Outcome::Failure(message) => Ok(message.into()),
             Outcome::Upstream(answer) => {
-                context.current().await?;
+                live.current(context.cutoff).await?;
                 if let Ok(_copy_credit) = context.budget.wire(4096)
                     && let Some(template) = Template::build(&answer)
                 {
-                    context.current().await?;
+                    live.current(context.cutoff).await?;
                     self.cache.insert(key, template, Instant::now());
                 }
                 Ok(answer.message.into())
@@ -497,7 +475,7 @@ pub(super) async fn candidate_limit_fixture(
             refresh,
             Instant::now() + Duration::from_millis(1500),
             Arc::new(AtomicBool::new(false)),
-            stopped,
+            Some(stopped),
         ));
         let inventory = Arc::new(inventory::Inventory::fixture(Arc::new(Mutex::new(Ok(
             BTreeSet::new(),

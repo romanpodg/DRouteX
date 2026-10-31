@@ -53,7 +53,7 @@ impl Live {
         refresh: Arc<Refresh>,
         cutoff: Instant,
         lost: Arc<AtomicBool>,
-        mut stop: watch::Receiver<bool>,
+        stop: Option<watch::Receiver<bool>>,
     ) -> Self {
         Self {
             check,
@@ -61,9 +61,11 @@ impl Live {
                 completion: refresh.subscribe(),
                 phase: Phase::Checking { waited: false },
                 waiters: [None, None],
-                cancelled: Some(Box::pin(async move {
-                    let _ = stop.wait_for(|stopped| *stopped).await;
-                })),
+                cancelled: stop.map(|mut stop| {
+                    Box::pin(async move {
+                        let _ = stop.wait_for(|stopped| *stopped).await;
+                    }) as Pin<Box<dyn Future<Output = ()> + Send>>
+                }),
             }),
             refresh,
             cutoff,
@@ -71,6 +73,18 @@ impl Live {
             #[cfg(test)]
             denial: Mutex::new(None),
         }
+    }
+    pub fn attach_cancel(&self, mut stop: watch::Receiver<bool>) -> Result<()> {
+        let mut gate = self.gate.lock().map_err(|_| self.denied())?;
+        if gate.cancelled.is_some() {
+            return Err(self.denied());
+        }
+        // Joining the upstream registry must not reset this query's checkpoint
+        // phase/wait flag, original authority, cutoff or remembered role wakers.
+        gate.cancelled = Some(Box::pin(async move {
+            let _ = stop.wait_for(|stopped| *stopped).await;
+        }));
+        Ok(())
     }
     fn denied(&self) -> DnsError {
         self.lost.store(true, Ordering::Release);
@@ -201,7 +215,7 @@ pub(crate) async fn shared_waiter_fixture(
         Arc::clone(&refresh),
         Instant::now() + Duration::from_millis(1500),
         Arc::new(AtomicBool::new(false)),
-        stopped,
+        Some(stopped),
     ));
     if !cancel {
         live.test_deny(Some(AdmissionCode::CheckpointRequired));
@@ -281,4 +295,41 @@ pub(crate) async fn shared_waiter_fixture(
         one.unwrap();
         two.unwrap();
     }
+}
+
+#[cfg(test)]
+pub(crate) async fn cache_transition_fixture(
+    check: DnsIoCheck,
+    owner: Arc<droutex_core::deployment::Deployment>,
+) {
+    use droutex_core::deployment::{AdmissionCode, Cancellation};
+    use tokio::time::Duration;
+    let refresh = Arc::new(Refresh::new());
+    let lost = Arc::new(AtomicBool::new(false));
+    let cutoff = Instant::now() + Duration::from_millis(1500);
+    let live = Live::new(check, Arc::clone(&refresh), cutoff, Arc::clone(&lost), None);
+    live.test_deny(Some(AdmissionCode::CheckpointRequired));
+    let mut cache_check = Box::pin(live.current(cutoff));
+    poll_fn(|cx| {
+        assert!(cache_check.as_mut().poll(cx).is_pending());
+        Poll::Ready(())
+    })
+    .await;
+    live.test_deny(None);
+    assert!(
+        refresh
+            .perform(move || owner.refresh_authorization_clock(&Cancellation::default()))
+            .await
+            .unwrap()
+    );
+    cache_check.await.unwrap();
+    let (_stop, stopped) = watch::channel(false);
+    live.attach_cancel(stopped).unwrap();
+    live.test_deny(Some(AdmissionCode::CheckpointRequired));
+    assert_eq!(
+        live.current(cutoff).await.unwrap_err().code(),
+        ErrorCode::Admission,
+        "cache-to-miss transition granted a second checkpoint wait"
+    );
+    assert!(lost.load(Ordering::Acquire));
 }
