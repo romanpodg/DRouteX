@@ -84,10 +84,11 @@ async fn actual_listener_survives_cp_loss_but_checkpoint_failure_closes_admissio
         .unwrap(),
     );
     apply(&owner, &doc, 1);
+    let refresh = Arc::new(crate::clock::Refresh::new());
     let (stop, shutdown) = watch::channel(false);
     let handle = start_runtime(
         std::future::ready(()),
-        runtime::serve(
+        runtime::serve_with_refresh(
             Arc::clone(&owner),
             vec![
                 ListenerSocket::Udp {
@@ -101,11 +102,13 @@ async fn actual_listener_survives_cp_loss_but_checkpoint_failure_closes_admissio
             ],
             shutdown,
             wire::UnavailableProcessor,
+            Arc::clone(&refresh),
         ),
     )
     .await;
     let server = Server {
         owner,
+        refresh,
         doc,
         udp: udp_addr,
         tcp: tcp_addr,

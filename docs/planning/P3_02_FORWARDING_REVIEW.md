@@ -272,3 +272,12 @@ the actual first-poll/rate-start regression pass. Separate standards/spec source
 passes find no confirmed defect in ownership, first-poll startup or shutdown.
 Their source inspection is supplementary, not an account-review/platform pass.
 Fresh exact-head review/CI, normal merge and exact-main/report gates stay open.
+
+The first shared-context head977a377b3002003891b8a32b6bfee40626a83042 did not
+pass Linux compilation: CI41190613208 reports E0063, a missing refresh field in
+the cfg-Linux Server initializer. Actual account review01a19162-7e7d-71c2-9904-ccbb60a16366
+also reports that P1. It is a confirmed missed caller, not a clean review or a
+platform waiver. The third constructor now creates, passes and retains the same
+Refresh, matching both other fixtures. Whole-crate caller search confirms all
+three constructors. Windows fmt/Clippy pass; only fresh Linux CI can establish
+the corrected platform build and network tests. The failed run remains failed.
