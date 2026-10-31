@@ -1,6 +1,7 @@
+use crate::forward::Processing;
 use crate::{DnsError, ErrorCode, MAX_TCP_BYTES, MAX_UDP_BYTES, Result};
 use droutex_config::DnsAction;
-use droutex_core::deployment::{AdmissionScope, AuthorizedRequest, Decision};
+use droutex_core::deployment::{AdmissionScope, AuthorizedRequest};
 use droutex_policy::{CanonicalDomain, PolicySelection};
 use hickory_proto::{
     op::{Edns, Header, Message, MessageType, OpCode, Query, ResponseCode},
@@ -14,20 +15,25 @@ use std::future::Future;
 const MAX_QUERY_BYTES: usize = 12 + 255 + 4 + 12 + 4096;
 
 pub(super) trait Processor: Send + Sync + 'static {
+    fn forwarding_available(&self) -> bool {
+        false
+    }
     fn answer(
         &self,
         request: &Message,
         selection: PolicySelection<'_, DnsAction>,
-        decision: &Decision<'_>,
+        context: &Processing<'_, '_>,
     ) -> impl Future<Output = Result<Message>> + Send;
 }
+#[cfg(test)]
 pub(super) struct UnavailableProcessor;
+#[cfg(test)]
 impl Processor for UnavailableProcessor {
     async fn answer(
         &self,
         request: &Message,
         _: PolicySelection<'_, DnsAction>,
-        _: &Decision<'_>,
+        _: &Processing<'_, '_>,
     ) -> Result<Message> {
         Ok(response(request, ResponseCode::ServFail))
     }
@@ -115,6 +121,7 @@ pub(super) async fn answer<P: Processor>(
     request: &Message,
     auth: &AuthorizedRequest<'_>,
     processor: &P,
+    context: &Processing<'_, '_>,
 ) -> Result<Message> {
     if request
         .edns
@@ -129,6 +136,11 @@ pub(super) async fn answer<P: Processor>(
         .ok_or(DnsError(ErrorCode::Malformed))?;
     let domain = question.name.to_ascii().parse::<CanonicalDomain>();
     if request.metadata.op_code != OpCode::Query
+        || request.metadata.checking_disabled
+        || request
+            .edns
+            .as_ref()
+            .is_some_and(|edns| edns.flags().dnssec_ok)
         || question.query_class != DNSClass::IN
         || matches!(
             question.query_type,
@@ -148,19 +160,41 @@ pub(super) async fn answer<P: Processor>(
         .policy()
         .evaluate_dns(binding, &domain)
         .map_err(|_| DnsError(ErrorCode::Scope))?;
-    let processed = processor.answer(request, selection, auth.decision()).await;
-    let mut reply = match processed {
+    let forwarding =
+        processor.forwarding_available() && matches!(selection.action(), DnsAction::Resolve { .. });
+    let processed = processor.answer(request, selection, context).await;
+    let reply = match processed {
         Ok(reply) => reply,
+        Err(error @ DnsError(ErrorCode::Admission)) => return Err(error),
         Err(_) => response(request, ResponseCode::ServFail),
     };
+    Ok(sanitize(request, reply, forwarding))
+}
+
+pub(super) fn sanitize(request: &Message, mut reply: Message, forwarding: bool) -> Message {
     // The internal processor supplies records/rcode only. It cannot change the
     // admitted question, assert validation, or echo client extension options.
     let clean = response(request, reply.metadata.response_code);
     reply.metadata = clean.metadata;
+    reply.metadata.recursion_available = forwarding;
     reply.queries = clean.queries;
     reply.edns = clean.edns;
     reply.signature = None;
-    Ok(reply)
+    reply
+}
+
+pub(super) fn fits_complete(reply: &Message, ceiling: usize) -> bool {
+    let Ok(bytes) = encode_with_ceiling(reply, reply, ceiling) else {
+        return false;
+    };
+    let Ok(encoded) = Message::from_vec(&bytes) else {
+        return false;
+    };
+    encoded.metadata.truncation == reply.metadata.truncation
+        && encoded.answers.len() == reply.answers.len()
+        && encoded.authorities.len() == reply.authorities.len()
+        && encoded.additionals.len() == reply.additionals.len()
+        && encoded.edns.is_some() == reply.edns.is_some()
 }
 
 pub(super) fn encode(
@@ -200,6 +234,7 @@ fn encode_with_ceiling(request: &Message, reply: &Message, ceiling: usize) -> Re
         || check.queries != request.queries
         || check.metadata.id != request.metadata.id
         || check.metadata.message_type != MessageType::Response
+        || u16::from(check.metadata.response_code) != u16::from(reply.metadata.response_code)
     {
         return Err(DnsError(ErrorCode::Unavailable));
     }

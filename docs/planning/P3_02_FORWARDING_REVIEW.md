@@ -78,3 +78,71 @@ cases and399 local links pass without changing the preserved specifications.
 An earlier complete local Windows workspace attempt failed one existing IPv6
 DNS receive test (42/43 DNS tests passed). That failed run remains failed; the
 host limitation does not waive mandatory clean Windows/Linux IPv6 gates.
+
+## Runtime integration and application regressions, 2026-10-31
+
+Draft [PR115](https://github.com/romanpodg/DRouteX/pull/115) owns this implementation.
+Its resource/core head3faefc0217875e16fadb08cccf1ce9a78c22581b passed all11
+[CI41014521643](https://github.com/romanpodg/DRouteX/actions/runs/41014521643)
+jobs. Full logs confirm253 Windows/286 Linux tests per default/no-default profile,
+client37/37 per profile/platform including all four mandatory IPv6 tests, and
+seven passing deny bundles. Those results precede runtime integration and do not
+establish current runtime, account-review or report acceptance.
+
+The default DNS processor now forwards only same-generation Resolve selections.
+It retains original admission, fixed member/processor deadlines, explicit group
+fallback, one UDP query and validated-TC-only same-target TCP. Fresh queries strip
+client options; complete original response bytes and question are checked before
+sanitization. DO/CD receives NOTIMP. Current OS/listener/trusted-alias inventory
+is checked before new connect/send; failed or self inventory refuses the group.
+The bounded root registry owns workers, inventory helpers and TCP background
+handles independently of cancellable processor futures until explicit joins.
+
+Real CP publication and DP activation still use public numeric resource bytes.
+Private test-only exact loopback targets and inventory substitution exercise real
+application UDP/TCP without a release constructor, public feature or validation
+bypass. Independent raw record vectors cover11 types through both upstream
+transports and both client transports on each mandatory IP family. Common vectors
+are now shared with the isolated qualifier; its two affected IPv4 tests pass.
+
+Local application checks cover explicit RCODE/fallback order; fresh RD/EDNS/no ECS;
+same-target TC; full4096 versus4097 refusal and UDP amplification/TC; wrong peer/ID,
+malformed/trailing/count/foreign-question responses;16 prefilter UDP packets;
+16 delivered TCP candidates; exact65568/4098 byte and256 operation boundaries;
+real partial write/checkpoint progress; self/inventory change/refusal; two/group
+exhaustion; cancelled partial TCP reads and joined shutdown/rebind. The registry
+test independently fills8 node slots across groups and retains cancelled slots
+until owned cleanup finishes. Flood tests are separate from paced delivered-
+candidate tests: library queue overflow may discard a valid packet and is not
+evidence that a particular candidate reached validation.
+
+Eight actual generation/revocation cases replace admission during either member
+and both upstream transports. Real conservative-clock lease expiry is exercised
+during both UDP members without changing host time. Generation change during TCP
+cleanup prevents fallback and client output. Core tests prove genuine lease/clock/
+checkpoint causes; additional-refusal-only application hooks prove no further read
+or write after actual progress. These hooks cannot authorize a request denied by
+the original checker and are not evidence of a real host clock fault.
+
+Review and regressions corrected these concrete defects before external review:
+post-write checkpoint suspension duplicated already sent bytes; joined cleanup
+extended member acceptance; a shared checkpoint future stranded one poller;
+removing EDNS changed extended RCODE into false NOERROR; TC continuation timeout
+bypassed explicit fallback; a completed cancellation future could be repolled; and
+pre-start checkpoint waiting reused stale self inventory. Removed-check red cases
+and restored green cases are retained locally. No mutation remains in source.
+
+The full local Windows default/no-default workspace attempts each fail the same
+three mandatory IPv6 probes; DNS70/73 passed before the final additional-denial
+test. No test was ignored or filtered in those full attempts. A scoped IPv4
+application run passed25 tests; later changed tests have their own targeted passes.
+The host reports WSAEACCES10013 when these new IPv6 clients connect. Cause beyond
+that observation remains unproven; no host network change or acceptance waiver.
+All-target/all-feature workspace Clippy passes. Fresh advisories and all seven
+deny bundles pass. Exactly three adopted archives and their complete qualified
+license texts match existing inventory; other root registry pins are unchanged.
+
+Current-head clean Windows/Linux default/no-default runs, allocation review,
+actual implementation/final owner-linked Code Reviews, external finding
+dispositions, normal merge, exact-main checks and both processed reports remain
+open. This evidence does not mark P3-02 complete or authorize deployment.

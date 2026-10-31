@@ -12,11 +12,12 @@ droutex-config.workspace = true
 droutex-core = { path = "../droutex-core", version = "=0.1.0" }
 droutex-policy.workspace = true
 hickory-proto.workspace = true
+hickory-net.workspace = true
+serde_json.workspace = true
 tokio = { workspace = true, features = ["net", "io-util", "macros"] }
 
 [dev-dependencies]
 droutex-security.workspace = true
-serde_json.workspace = true
 
 [lints]
 workspace = true

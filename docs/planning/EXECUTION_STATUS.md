@@ -2,7 +2,7 @@
 
 ## Current execution card
 
-Reviewed 2026-10-28. This card is the current work/authorization entry point;
+Reviewed 2026-10-31. This card is the current work/authorization entry point;
 [backlog.json](backlog.json) is canonical for task status/dependencies/delivery.
 Task reviews hold exact acceptance evidence. Later dated evidence supersedes
 historical checkpoints below; reconcile conflicts before dependent work.
@@ -34,7 +34,8 @@ historical checkpoints below; reconcile conflicts before dependent work.
   A failed-bind reservation defect has a red/green regression. The earlier UDP
   fixture timeout remains unattributed; clean mandatory CI now passes both profiles.
   Full graph/archive audit and the local seventh deny bundle passed. Production
-  adoption remains unapproved. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md)
+  adoption was not authorized by D51/D52 alone; accepted D53 below supplies its
+  separate conditional authority. [Evidence](P3_02_CLIENT_QUALIFICATION_REVIEW.md)
   distinguishes original raw-library behavior from composed-role proof.
 - PR113 final head435bc37 passed all11 CI40630686323 jobs; normal merge
   f136ac82d7e6421dbb139f022a98575ea26ca8ff passed all11 exact-main40631471007
@@ -58,6 +59,13 @@ historical checkpoints below; reconcile conflicts before dependent work.
   P3-02 is now in progress on its own branch under D53; every later task stays
   planned. [Application evidence](P3_02_FORWARDING_REVIEW.md) tracks its required
   independent proof. D51/D52 alone still confer no production authority.
+- Current implementation PR115 is draft. Resource/core head3faefc0 passed all11
+  CI41014521643 jobs before runtime integration. The bounded forwarding runtime
+  and independent application regressions are now implemented locally. Actual
+  forwarding CI, allocation review, implementation/final account reviews and
+  merge/exact-main/report gates remain open. The full local Windows default and
+  no-default attempts still fail the three mandatory IPv6 probes; no ignored
+  test, filter-based full pass or host-network change is authorized.
 - Recorded CodeScene failures and concrete minor dispositions remain failed and
   documented in [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-01-review-dispositions).
   No suppression, branch-protection bypass or CI-status exception is authorized.

@@ -493,7 +493,11 @@ fn dns_io_check_shares_current_revocation_lease_clock_and_checkpoint_denials() {
             "{failure}"
         );
         assert_eq!(
-            auth.dns_io_check().unwrap_err().code(),
+            auth.dns_io_check()
+                .unwrap()
+                .verify_current()
+                .unwrap_err()
+                .code(),
             expected,
             "{failure}"
         );

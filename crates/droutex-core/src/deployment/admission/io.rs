@@ -40,7 +40,8 @@ impl AuthorizedRequest<'_> {
             generation: Arc::downgrade(&reservation.decision.generation),
             lease: reservation.lease,
         };
-        check.verify_current()?;
+        // This only constructs a checker. A caller must run its live check at
+        // I/O consumption, including the existing bounded checkpoint wait.
         Ok(check)
     }
 }

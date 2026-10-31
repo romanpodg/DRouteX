@@ -3,6 +3,7 @@ use crate::{
     ShutdownReport,
     budget::Budget,
     clock::{Checkpoint, Refresh},
+    forward::{CleanupRegistry, Processing},
     wire::{self, Processor},
 };
 use droutex_common::ListenerId;
@@ -14,7 +15,10 @@ use std::{
     collections::BTreeSet,
     future::{Future, poll_fn},
     net::SocketAddr,
-    sync::{Arc, atomic::Ordering},
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
     task::Poll,
     time::Duration,
 };
@@ -140,6 +144,7 @@ pub(super) async fn serve<P: Processor>(
     let budget = Arc::new(Budget::new());
     let refresh = Arc::new(Refresh::new());
     let processor = Arc::new(processor);
+    let forwarding = Arc::new(CleanupRegistry::new());
     let (stop, stop_rx) = watch::channel(false);
     let (jobs, mut receive) = mpsc::channel(512);
     let mut tasks = JoinSet::new();
@@ -173,11 +178,13 @@ pub(super) async fn serve<P: Processor>(
                 Some(Ok(Task::Worker(result)))=>{ failure=Some(result.err().unwrap_or(DnsError(ErrorCode::State)));break; },
                 _=>{ failure=Some(DnsError(ErrorCode::State));break; },
             },
+            completed=forwarding.completed()=>if let Err(error)=completed { failure=Some(error);break; },
             job=receive.recv()=>match job {
                 Some(job)=>{
                     let owner=Arc::clone(&deployment);let stats=Arc::clone(&budget);
                     let clock=Arc::clone(&refresh);let process=Arc::clone(&processor);let stop=stop_rx.clone();
-                    tasks.spawn(async move { Task::Request(job.run(owner,stats,clock,process,stop).await) });
+                    let registry=Arc::clone(&forwarding);
+                    tasks.spawn(async move { Task::Request(job.run(owner,stats,clock,process,registry,stop).await) });
                 },
                 None=>{failure=Some(DnsError(ErrorCode::State));break;},
             },
@@ -187,16 +194,22 @@ pub(super) async fn serve<P: Processor>(
     refresh.cancel.cancel();
     receive.close();
     while receive.try_recv().is_ok() {} // Drop every queued socket/reservation.
-    finish(&mut tasks, &refresh, &budget, failure).await
+    forwarding.cancel()?;
+    finish(&mut tasks, &refresh, &budget, forwarding, failure).await
 }
 
 async fn finish(
     tasks: &mut JoinSet<Task>,
     refresh: &Refresh,
     budget: &Budget,
+    forwarding: Arc<CleanupRegistry>,
     mut failure: Option<DnsError>,
 ) -> Result<ShutdownReport> {
     let drain_deadline = Instant::now() + DRAIN_TIME;
+    // Keep this owner outside the cancellable request futures and the listener
+    // JoinSet. On timeout it continues to own and drain all eight bounded slots;
+    // an incomplete shutdown never reports a joined graceful result.
+    let mut cleanup = tokio::spawn(async move { forwarding.drain().await });
     let drain = async {
         while let Some(result) = tasks.join_next().await {
             check_deadline(drain_deadline)?;
@@ -219,7 +232,17 @@ async fn finish(
     }
     // A blocking atomic transaction is not cancelled by aborting its async waiter.
     if refresh.pending.load(Ordering::Acquire) {
-        return Err(DnsError(ErrorCode::ShutdownIncomplete));
+        failure.get_or_insert(DnsError(ErrorCode::ShutdownIncomplete));
+    }
+    match tokio::time::timeout_at(drain_deadline, &mut cleanup).await {
+        Ok(Ok(Ok(()))) => (),
+        Ok(Ok(Err(error))) => {
+            failure.get_or_insert(error);
+        }
+        Ok(Err(_)) => {
+            failure.get_or_insert(DnsError(ErrorCode::State));
+        }
+        Err(_) => return Err(DnsError(ErrorCode::ShutdownIncomplete)),
     }
     match failure {
         Some(error) => Err(error),
@@ -362,12 +385,12 @@ async fn prepare<'a>(
     check_deadline(deadline)?;
     Ok(attempt)
 }
-fn begin_check(completion: &mut watch::Receiver<Checkpoint>) -> Checkpoint {
+pub(super) fn begin_check(completion: &mut watch::Receiver<Checkpoint>) -> Checkpoint {
     // Clear only completions older than the authority check. A completion racing
     // with that check or its refusal must remain visible to the waiter.
     *completion.borrow_and_update()
 }
-async fn wait_checkpoint(
+pub(super) async fn wait_checkpoint(
     code: AdmissionCode,
     refresh: &Refresh,
     completion: &mut watch::Receiver<Checkpoint>,
@@ -446,6 +469,7 @@ impl Job {
         budget: Arc<Budget>,
         refresh: Arc<Refresh>,
         processor: Arc<P>,
+        forwarding: Arc<CleanupRegistry>,
         mut stop: watch::Receiver<bool>,
     ) -> Result<()> {
         match self {
@@ -464,9 +488,16 @@ impl Job {
                     let auth = consume(attempt, &refresh, deadline).await?;
                     binding.check(auth.decision())?;
                     let request = wire::parse(&bytes)?;
-                    let reply =
-                        process_reply(&request, &auth, processor.as_ref(), &budget, deadline)
-                            .await?;
+                    let reply = process_reply(
+                        &request,
+                        &auth,
+                        processor.as_ref(),
+                        &budget,
+                        &refresh,
+                        &forwarding,
+                        deadline,
+                    )
+                    .await?;
                     let output = wire::encode(&request, &reply, bytes.len(), false)?;
                     let sent =
                         submit(&auth, &refresh, deadline, socket.send_to(&output, peer)).await?;
@@ -509,9 +540,16 @@ impl Job {
                         let auth = consume(attempt, &refresh, deadline).await?;
                         binding.check(auth.decision())?;
                         let request = wire::parse(&bytes)?;
-                        let reply =
-                            process_reply(&request, &auth, processor.as_ref(), &budget, deadline)
-                                .await?;
+                        let reply = process_reply(
+                            &request,
+                            &auth,
+                            processor.as_ref(),
+                            &budget,
+                            &refresh,
+                            &forwarding,
+                            deadline,
+                        )
+                        .await?;
                         let output = wire::encode(&request, &reply, bytes.len(), true)?;
                         let prefix = u16::try_from(output.len())
                             .map_err(|_| DnsError(ErrorCode::State))?
@@ -567,18 +605,31 @@ async fn process_reply<P: Processor>(
     request: &hickory_proto::op::Message,
     auth: &droutex_core::deployment::AuthorizedRequest<'_>,
     processor: &P,
-    budget: &Budget,
+    budget: &Arc<Budget>,
+    refresh: &Arc<Refresh>,
+    registry: &Arc<CleanupRegistry>,
     deadline: Instant,
 ) -> Result<hickory_proto::op::Message> {
     // D48: no processor work beyond1500ms from the original query start.
     // The500ms reserve remains inside D47's original total two-second bound.
+    let context = Processing {
+        auth,
+        budget,
+        refresh,
+        registry,
+        cutoff: deadline - REPLY_RESERVE,
+        lost: Arc::new(AtomicBool::new(false)),
+    };
     match within_deadline(
         deadline - REPLY_RESERVE,
-        wire::answer(request, auth, processor),
+        wire::answer(request, auth, processor, &context),
     )
     .await
     {
         Err(DnsError(ErrorCode::Timeout)) => {
+            if context.lost.load(Ordering::Acquire) {
+                return Err(DnsError(ErrorCode::Admission));
+            }
             budget.timed_out.fetch_add(1, Ordering::Relaxed);
             Ok(wire::response(
                 request,
@@ -1123,10 +1174,16 @@ mod tests {
         .await
         .unwrap();
         assert_eq!(
-            finish(&mut tasks, &refresh, &budget, None)
-                .await
-                .unwrap_err()
-                .code(),
+            finish(
+                &mut tasks,
+                &refresh,
+                &budget,
+                Arc::new(CleanupRegistry::new()),
+                None
+            )
+            .await
+            .unwrap_err()
+            .code(),
             ErrorCode::ShutdownIncomplete
         );
         assert!(tasks.is_empty());
