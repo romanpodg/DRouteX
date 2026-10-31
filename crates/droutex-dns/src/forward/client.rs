@@ -220,6 +220,8 @@ impl TcpAttempt {
                     .counters
                     .rejected
                     .fetch_add(1, Ordering::Relaxed);
+                #[cfg(test)]
+                self.budget.counters.rejected_wake.notify_one();
             }
             Err(Failure::Candidates)
         })

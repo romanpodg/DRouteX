@@ -416,8 +416,12 @@ pub(super) async fn candidate_limit_fixture(
                 stream.write_all(&bad).await.unwrap();
                 // Prove delivery to validation rather than overflowing the library's
                 // bounded response queue and mistaking a dropped valid packet for a limit.
-                while witness.counters.rejected.load(Ordering::Relaxed) <= index {
-                    tokio::time::sleep(Duration::from_millis(1)).await;
+                loop {
+                    let observed = witness.counters.rejected_wake.notified();
+                    if witness.counters.rejected.load(Ordering::Relaxed) > index {
+                        break;
+                    }
+                    observed.await;
                 }
             }
             if foreign < client::CANDIDATES {

@@ -18,7 +18,7 @@ was installed for this audit. The reviewed public source blobs are respectively
 5d4ad3ac4bf98b49c3bdaedefa9c791095799d50 and84dd4b7e49def6126f665e62df59f7902b62413c.
 
 Exact hickory-proto/net0.26.3 and futures-channel0.3.34 registry sources were
-inspected: `op/message.rs`, `op/response.rs`, `rr/domain/name.rs`, `rr/resource.rs`,
+inspected: `op/message.rs`, `op/dns_response.rs`, `rr/domain/name.rs`, `rr/record.rs`,
 `rr/record_data.rs`, reachable `rr/rdata/` decoders, `serialize/binary/encoder.rs`,
 `xfer/dns_multiplexer.rs`, `xfer/dns_exchange.rs`, TCP framing and channel queues.
 Their qualified archives and notice hashes remain in the
@@ -66,6 +66,12 @@ loose requested-data envelope `D(B,q) = 88q + 4096B + 65,536`:
 These terms fit below4096B; the additive64KiB covers small eager vectors,
 partially decoded names and container slack. This is a source-derived upper
 bound, not a claim that independent maxima are simultaneously attainable.
+In particular, names cost at most`1024*(q_actual+3*r_actual+3)`, and CSYNC costs
+at most`2561B+320*r_actual`. With `q_actual<=B/5` and `r_actual<=B/11`, all variable
+terms total less than3410B. This leaves more than686B margin under4096B. Eager
+record vectors6528 plus partial names3072 and bounded inline/fresh-query terms
+fit the additive64KiB. The checked source anchors are Message lines425/677,
+Record338–343, RecordTypeSet200/223 and Encoder273/466 in the pinned archives.
 
 The encoder has at most64 compression candidates with at most255 suffix bytes,
 bounded candidate-vector growth,127 label offsets and at most65535 output bytes.
@@ -110,3 +116,20 @@ Existing client input/wire storage remains separately bounded by P3-01's16MiB
 credits. Fixed task/channel/socket/registry metadata and OS/allocator costs are
 separate from this data formula; bounded ownership counts are reviewed with the
 application lifecycle evidence. No claim of a complete process-memory bound is made.
+
+The control metadata counts are independently finite:8 registry workers/owners,
+at most8 TCP background handles and one active library request per TCP worker.
+Each has three bounded library channels. Only one outbound item can be published
+per exchange/write channel; the response channel has at most9 queued items.
+Including stub/transient nodes, charge at most12 response nodes of at most192
+bytes each, and4 nodes per outbound channel with its concrete element size plus
+pointer/tag fields. Sender counts are at most2 for requests and1 each for writes
+and responses. Cloning does not create an unbounded sender history.
+
+There are at most8 inventory workers, scoped readers and children, one Probe per
+attempt, two role Wakers and at most one checkpoint/cancellation future per Live,
+512 result oneshots/client contexts and one shutdown cleanup coordinator. Their
+fixed control-object byte total is outside the numeric DATA formula, as are OS
+thread stacks, socket buffers and allocator internals. The separate standards
+pass found no omitted enabled binary RDATA family. Linux's current-head default/
+no-default CI asserts the same layouts and passes both full workspace profiles.

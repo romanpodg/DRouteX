@@ -344,6 +344,35 @@ closes those gates.
 | Later AWG/TUN/Xray/helper risks | Post-MVP integration/security | Retained P5-10 actual-engine/segmentation/helper acceptance |
 | External quality service unavailable | Missing external evidence | Local gates continue; explicit activation blockers |
 
+## P3-02 forwarding review dispositions
+
+[CodeScene8216781](https://codescene.io/projects/86145/delta/results/8216781) on
+PR115 head060b13e reports two failed gates: eight new files below10.00 and four
+files with critical complexity patterns. Its third gate passes. Raw failure is
+retained; no suppression, required-check exception or protection change applies.
+The following findings are minor maintenance risks after direct source inspection,
+negative/real-socket evidence and completed account implementation review
+01a1911a-27e2-7fb3-a827-07f5666321ba found no confirmed functional defect. These
+dispositions do not defer the independently failed Windows candidate fixture,
+current-head platform proof or a serious future finding.
+
+| Finding | Impact, evidence and reason to defer immediate restructuring | Owner / revisit trigger |
+|---|---|---|
+| Forwarder.answer / run: complexity, arguments, large method;7.27 | Future edits must preserve selected group, original authority, serial attempts and joined cleanup. Explicit arguments expose those resources; tests prove RCODE order, TC deadlines, revocation/expiry and no fallback after loss. Extracting branches solely for a score has no demonstrated behavior benefit. The test-only fixture conditional is outside release code. | P3 maintainer; before cache/transport/fallback changes or immediately for a concrete ordering defect. |
+| Expected.new / accepts: conditionals, overall complexity, Bumpy Road;8.03 | Complete original-frame validation deliberately keeps question, section counts, classes and one OPT state together. Foreign/trailing/malformed/oversized and exact candidate regressions exercise this boundary. No reported pattern identifies an accepted invalid frame; splitting it now would move audited parser state. | P3 maintainer; before changing accepted wire types/EDNS or an actual validation defect. |
+| Live.poll_caller / new: complexity, Bumpy Road, arguments;8.61 | State transitions coordinate one checkpoint wait and two caller roles. Corrected cancellation/waker/progress regressions and actual core authority tests support the explicit state machine. Maintainability remains a risk; no current defect is deferred. | P3 maintainer; any checkpoint/cancellation/authority transition change. |
+| Inventory.read_native: complexity, Bumpy Road;9.54 | Child status, bounded pipe reader, timeout/cancellation and kill/wait have different cleanup obligations. Current platform/parsing/ownership tests and source inspection support retaining one owner. No privileged operation or arbitrary command is accepted. | P3 maintainer; any command/output/cleanup change or concrete child-lifetime defect. |
+| Upstream public_address / Member.try_from / parse: complexity;8.77 | Explicit special-prefix exclusions and strict bounded resource validation are security requirements. Boundary/shape/hash/LKG tests pass; reducing those predicates would weaken validation. | Configuration maintainer; changed prefix policy or resource schema. |
+| Registry.start: complex conditional;9.69 | One locked admission checks shutdown, node8 and actual network-group2 limits. An8-entry bounded scan avoids a second count index; cancellation-retention/exhaustion tests prove it. | P3 maintainer; changing slot/group accounting or an actual release/count defect. |
+| Test-only forwarding.rs5.51 and fixture methods in io.rs8.20, mod.rs and live.rs | Large/duplicated assertion blocks, nesting, argument and file/method size reflect independent failure matrices and explicit real-socket cleanup. Tests/fixtures are excluded as independent metric targets by owner policy. Preserve behavior checks; no score-only rewrite. | Owning test change or concrete fixture defect, including the separate Windows delivery-witness correction. |
+
+Historical co-change suggestions for planning-verification/OPEN_DECISIONS and
+core deployment/Linux tests identify correlation, not a missing behavior change.
+The current planning boundary and Linux activation/admission suites are checked;
+no durable activation mechanism changed with the weak live-check API. Revisit
+when changing actual durability semantics. This disposition requires current-head
+CodeScene findings to be checked again; it does not turn a failed result green.
+
 ## Development guidance maintenance, 2026-10-23
 
 Owner-authorized documentation maintenance implements the seven reviewed proposals.

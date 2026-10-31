@@ -146,3 +146,37 @@ Current-head clean Windows/Linux default/no-default runs, allocation review,
 actual implementation/final owner-linked Code Reviews, external finding
 dispositions, normal merge, exact-main checks and both processed reports remain
 open. This evidence does not mark P3-02 complete or authorize deployment.
+
+## First runtime head and Windows delivery witness
+
+Head060b13e2b160b5b763927e19a97407b3dc5183ca received completed actual
+owner-linked ChatGPT Codex implementation review01a1911a-27e2-7fb3-a827-07f5666321ba
+(read-only/never, exit0), without confirmed defects. Fmt/diff and28 tests from the
+existing DNS binary passed in that reviewer; rebuilding/Clippy were blocked by
+read-only permissions and are not claimed from the review.
+
+Its CI41185270087 Linux workspace passes317 tests per default/no-default profile,
+zero failed/ignored/filtered, including both new IPv6 record matrices. Linux
+client37/37 per profile and nested/base allocation-layout assertions pass. The
+Windows workspace fails one test:73/74 DNS tests pass; the16th foreign-candidate
+fixture gets Err(Deadline). This CI attempt remains failed. Windows no-default
+and later isolated steps were not reached and are not inferred from Linux.
+
+That fixture polls its delivered-rejection counter with1ms timers inside the
+real500ms attempt, introducing scheduling delay for every candidate. The
+correction replaces timer polling with a private test-only Notify emitted after
+the actual counter increment. It retains the exact16 delivered-candidate checks,
+original500ms deadline, real sockets and release code. The corrected local probe
+passes in0.07s. The observation does not establish all Windows timer/host causes;
+fresh full-platform CI remains mandatory before acceptance.
+
+The separate allocation source pass confirms the finite
+[data envelope](P3_02_FORWARDING_ALLOCATION.md), including nested RDATA, library
+queues, validation copies and completed responses outside the8 slots. Linux CI
+now verifies the measured layout assumptions too. Fixed control-object counts
+and OS/allocator/RSS exclusions remain explicit.
+
+[CodeScene8216781](https://codescene.io/projects/86145/delta/results/8216781)
+remains failed with the [specific minor dispositions](OPEN_DECISIONS.md#p3-02-forwarding-review-dispositions).
+They do not defer the failed fixture, a serious defect, required current-head
+checks or completed final account review. New current-head results remain open.

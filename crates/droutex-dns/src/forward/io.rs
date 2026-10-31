@@ -62,6 +62,8 @@ pub(super) struct Counters {
     pub sockets: AtomicUsize,
     pub opened: AtomicUsize,
     pub rejected: AtomicUsize,
+    #[cfg(test)]
+    pub rejected_wake: tokio::sync::Notify,
 }
 
 pub(super) struct Budget {
