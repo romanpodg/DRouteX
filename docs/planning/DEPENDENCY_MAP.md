@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: D54 P3-03 completed through reviewed PR117/118 and passing exact-main41290188222; external Project access remains blocked; later tasks planned. Edges are planned prerequisites, not implemented crate dependencies.
+Status: D54 P3-03 acceptance reopened after exact-main41291237869 Windows checkpoint fixture setup failure; bounded correction in progress; external Project access blocked. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

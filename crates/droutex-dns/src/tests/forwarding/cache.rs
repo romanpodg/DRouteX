@@ -565,12 +565,9 @@ async fn decoded_hit_rechecks_publication_trust_and_expiry_before_consumption() 
 async fn cache_to_miss_keeps_the_original_checkpoint_wait_budget() {
     let upstream = Upstream::start(v4(), Transport::UdpTcp, 0).await;
     let server = start(&upstream, Transport::UdpTcp).await;
-    let auth = server
-        .owner
-        .prepare_legacy_dns(typed(20), v4())
-        .unwrap()
-        .consume()
-        .unwrap();
+    // Setup may cross a real clock checkpoint before the transition under test.
+    // Use the normal bounded prepare/consume path; do not assume a fresh floor.
+    let auth = server.authorize().await;
     crate::forward::cache_transition_fixture(
         auth.dns_io_check().unwrap(),
         Arc::clone(&server.owner),
