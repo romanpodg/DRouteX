@@ -35,3 +35,8 @@ updated to the selected NXDOMAIN, and the corrected default run passed. Clippy,
 offline workspace cargo-deny and planning self-test passed. Independent account
 review, current-head CI/reports and applicable Linux/Windows acceptance remain
 to be recorded. No deployment is claimed.
+
+PR122 initial CI 41340903278 failed the Linux planning job: its negative test
+still treated P3-04 as outside the allowed boundary. The test now attempts to
+start P3-05 instead, preserving the rejection of unauthorized later work. The
+initial failure remains failed; the corrected head requires its own checks.
