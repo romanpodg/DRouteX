@@ -2,9 +2,8 @@
 
 Status: **accepted by direct owner reply on 2026-11-01**. The owner accepted
 all proposed choices and explicitly requested D54 implementation and Project/Roadmap
-updates. Runtime and its first fixture correction passed normal review/merge/main
-gates; acceptance reopened after a later checkpoint setup failure on2026-11-01.
-See the application evidence below.
+updates. Runtime and both test-fixture corrections completed normal review, merge
+and fresh exact-main gates on2026-11-01; see the application evidence below.
 No new dependency, vendor patch or deployment is authorized.
 The [application evidence](P3_03_CACHE_REVIEW.md) and
 [allocation audit](P3_03_CACHE_ALLOCATION.md) track actual implementation gates.
