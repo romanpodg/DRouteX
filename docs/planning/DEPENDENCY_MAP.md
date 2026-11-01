@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P3-04 implementation in progress; owner selected NXDOMAIN and BLOCK before profile-local records; P3-05 remains planned. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P3-04 completed through PR122 and exact-main 41344649618; P3-05 remains planned. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 
