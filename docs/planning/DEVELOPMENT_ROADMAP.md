@@ -108,7 +108,9 @@ records the temporary minor empty-RDATA compatibility disposition and retained
 failed attempts. This accepts only the bounded D53 component, not deployment or
 full RR transparency. The owner accepted the complete [D54 cache contract](P3_03_CACHE_CONTRACT.md)
 on2026-11-01 and authorized P3-03 implementation and Project/Roadmap updates.
-P3-03 now requires its independent acceptance gates; later tasks remain planned.
+P3-03 runtime merged through PR117, but exact-main Windows fixture binds failed
+with10013; bounded shared-port setup correction and fresh acceptance gates remain
+required. Later tasks remain planned.
 
 Finish and merge each authorized implementation PR before starting the next.
 Subsequent work follows the DAG and owning acceptance contracts. P1-06 library

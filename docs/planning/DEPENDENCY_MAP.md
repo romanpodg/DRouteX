@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P3-03 scoped cache in review under owner-accepted D54; corrected implementation review and CI passed, final/merge/main gates remain. Edges are planned prerequisites, not implemented crate dependencies.
+Status: D54 runtime merged through PR117; P3-03 remains open for bounded Windows fixture setup correction after failed exact-main verification. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

@@ -556,10 +556,11 @@ pub(crate) async fn inventory_checkpoint_fixture(
     use crate::clock::Refresh;
     use hickory_net::runtime::{DnsUdpSocket, RuntimeProvider};
     use std::collections::BTreeSet;
-    use tokio::{net::TcpListener, sync::watch, time::timeout};
-    let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    use tokio::{sync::watch, time::timeout};
+    let (listener, peer) = crate::tests::paired_loopback("127.0.0.1".parse().unwrap())
+        .await
+        .unwrap();
     let address = listener.local_addr().unwrap();
-    let peer = UdpSocket::bind(address).await.unwrap();
     let source = Arc::new(Mutex::new(Ok(BTreeSet::new())));
     let inventory = Arc::new(Inventory::fixture(Arc::clone(&source)));
     let refresh = Arc::new(Refresh::new());

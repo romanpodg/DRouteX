@@ -1,6 +1,8 @@
 use super::*;
 #[path = "tests/forwarding.rs"]
 mod forwarding;
+#[path = "tests/ports.rs"]
+mod ports;
 use crate::{
     runtime,
     wire::{self, Processor},
@@ -20,6 +22,7 @@ use hickory_proto::{
         rdata::{A, TXT},
     },
 };
+pub(crate) use ports::paired_loopback;
 use serde_json::{Value, json};
 use std::{
     future::{Future, poll_fn},
