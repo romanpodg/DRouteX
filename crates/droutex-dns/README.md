@@ -1,4 +1,4 @@
-# Bounded DNS transport and forwarding library
+# Bounded DNS transport, forwarding and scoped cache library
 
 P3-01 implements the accepted [D47/D48/D49/D50 contract](../../docs/planning/P3_01_LISTENER_CONTRACT.md).
 The caller owns a Tokio runtime, an initialized `Deployment`, explicit prebound
@@ -18,7 +18,7 @@ wildcard retains its kernel-established destination and remains supported.
 Under the accepted [D53 contract](../../docs/planning/P3_02_FORWARDING_CONTRACT.md),
 Resolve uses the same generation's strictly decoded public numeric upstream group.
 Other actions remain unavailable and produce SERVFAIL without upstream traffic.
-DO/CD requests receive NOTIMP. This subset provides no cache, private override,
+DO/CD requests receive NOTIMP. This subset provides no private override,
 filtering answer, DNSSEC validation, secure endpoint, gateway or public deployment.
 RA describes configured forwarding capability; AD/AA are cleared. Fresh upstream
 queries use independent IDs, RD and EDNS0/1232 without client options or ECS.
@@ -34,6 +34,23 @@ prevent local loops before new connect/send operations. `serve_with_aliases` als
 accepts at most256 trusted operator-declared public/NAT/service addresses; hosts
 must supply aliases not visible in their OS inventory. Enumeration failure or a
 self destination refuses the whole group. No host networking changes occur.
+
+Under [D54](../../docs/planning/P3_03_CACHE_CONTRACT.md), Resolve first checks a
+private whole-response cache after current admission and policy selection. Keys
+include exact Endpoint/Profile/network-group/generation, DNS question, configured
+upstream resource and the non-DNSSEC forwarding domain. Positive entries use the
+shortest retained RR TTL capped at3600s; SOA-backed exact-question NXDOMAIN/NODATA
+use at most60s. Failures, zero TTLs, alias-bearing negatives and expired data are
+not cached. There is no coalescing, prefetch, stale serving or gateway-origin use.
+
+The fixed arena, keys and metadata fit within16MiB/2048 slots; one scope uses at
+most2MiB/256 slots. FIFO eviction and nonwaiting lock contention preserve bounded
+work; misses keep D53's normal limits. Each hit rechecks current authority and
+carries expiry to client writes; conservative TTL aging includes the remaining
+write window. New applied generations/restarts start cold, while a rejected
+candidate preserves usable LKG cache entries. See the
+[D54 allocation audit](../../docs/planning/P3_03_CACHE_ALLOCATION.md) for requested
+persistent storage versus decoded transient data and RSS.
 
 Limits are node-wide:16 listeners,64 TCP connections,512 owned contexts,16MiB
 transport wire credits and fixed monotonic intake buckets. Forwarding additionally

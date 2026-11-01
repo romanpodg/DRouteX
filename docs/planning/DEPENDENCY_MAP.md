@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P0/P1/P2/P3-01/P3-02/P4-01 and D51/D52 qualification complete; P3-02 normal PR115 merge and exact-main gates passed with recorded minor compatibility disposition; later tasks planned. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P3-03 scoped cache in review under owner-accepted D54; corrected implementation review and CI passed, final/merge/main gates remain. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

@@ -111,6 +111,7 @@ IPv6/QUIC/application enforcement.
 | D51 | Owner accepted exact hickory-net0.26.3 defaults-off/tokio isolated UDP/TCP client qualification after checked P3-01, preserving selected versions and mandatory matching/bounds/lifecycle/platform/license checks. No production adoption or P3-02 application profile is approved. | P3-02 prerequisite qualification | Direct owner reply2026-10-22, recorded2026-10-24; [contract](P3_02_CLIENT_QUALIFICATION_CONTRACT.md) |
 | D52 | Owner accepted qualification of the exact library with mandatory bounded DRouteX ingress and caller-validation adapters, one absolute500ms attempt and finite3s cleanup. The explicit input/message/candidate/I/O bounds and UDP one-shot/TCP framing limits apply; no production adoption. | P3-02 prerequisite qualification | Direct owner reply2026-10-24 (call_4629a212e9ed46b4ba18deb5d0bcfd02); [contract](P3_02_CLIENT_VALIDATION_CONTRACT.md) |
 | D53 | Owner accepted the complete bounded forwarding profile, including conditional exact-client adoption, immutable numeric public upstream groups, explicit fallback/deadlines, destination/loop checks and owned resource limits. Plaintext-only and unavailable DNSSEC are explicit initial limits. Implementation follows checked PR114 documentation gates. | P3-02 application | Direct owner reply2026-10-28 (call_b35f42de3b6c42afa31321d7242557b7); [contract](P3_02_FORWARDING_CONTRACT.md) |
+| D54 | Owner accepted the complete scoped TTL/negative cache profile: Endpoint/Profile/network-group/generation and upstream/mode/validation isolation; whole-response TTL at most3600s, SOA-backed exact-question negatives at most60s; persistent16MiB/2048 node and2MiB/256 scope limits; bounded FIFO, independent misses and cold generation transitions. No failure caching, stale serving or empty-RDATA repair/profile change. | P3-03 implementation; own acceptance gates required | Direct owner reply2026-11-01 accepting all choices and requesting implementation plus Project/Roadmap updates; [accepted contract](P3_03_CACHE_CONTRACT.md). |
 
 ## P3-02 client-role decision and open qualification
 
@@ -395,6 +396,27 @@ a concrete cancellation/admission/deadline defect. New test-only size/complexity
 patterns remain outside independent metric targets. The raw result stays failed;
 the separate empty-RDATA defect above remains unfixed. [Final application evidence](P3_02_FORWARDING_REVIEW.md#completed-implementation-and-normal-merge)
 records the actual reviews, normal merge and exact-main checks.
+
+## P3-03 cache review dispositions
+
+Initial [CodeScene8220425](https://codescene.io/projects/86145/delta/results/8220425)
+on PR117 head e17e6b7 fails two maintenance gates; its decline gate passes.
+The service remains failed. Corrected-head01fe380 [CodeScene8220469](https://codescene.io/projects/86145/delta/results/8220469)
+was read back with the same findings, Forwarder.answer7.25->6.54 and completed
+actual account review without findings. Current platform/mutation evidence supports
+the maintenance dispositions below. No suppression, metric-only rewrite or
+required-check waiver is authorized. Recheck on subsequent heads.
+
+| Item | Finding, source assessment and scope | Owner / revisit trigger |
+|---|---|---|
+| P3-03-CS-TEMPLATE | Template.build8.42 has complex/bumpy eligibility and bounded emission. The branches retain the complete-response SOA/RCODE/TTL and lossless encoding conditions together. Pure SOA/expiry cases, real transport/section vectors and removed-check mutations support the current behavior; no functional defect is inferred from the score. Maintenance-only extraction is deferred with checked01fe380 account review and current platform evidence, without weakening any condition. | P3 maintainer; before new eligibility/record/DNSSEC modes, an encoder change, or immediately on a concrete classification/TTL defect. |
+| P3-03-CS-FIFO | Cache.insert9.35 has complex/bumpy bounded eviction. One finite scan performs expiry/retirement, duplicate-key protection, scope accounting and FIFO victim selection, including counter exhaustion. Capacity/concurrency/transition tests and the scope-cap mutation support this fixed-storage model. Splitting scans solely for the score could obscure the one-pass bound; no concrete data/isolation defect is established. | P3 maintainer; before capacity/index/eviction/generation changes, or immediately for incorrect accounting or stale-data reuse. |
+| P3-03-CS-FORWARD | Forwarder.answer7.25->6.55 is complex/bumpy around original authority, selected resources, slots, cleanup and cache integration. Source review independently found and fixed the shared checkpoint-wait ownership issue; it is not deferred as a metric finding. Corrected-head regressions and completed01fe380 account review support the remaining maintenance disposition. | P3 maintainer; review after the shared-gate correction and before lifecycle/transport/cache admission changes; any serious functional finding blocks merge. |
+| P3-03-CS-FIXTURE | The raw fixture data builder8.76 has two complexity rules. It deliberately assembles independent positive, negative, oversized and legal empty-RDATA vectors; tests/fixtures are excluded as independent score targets. Concrete fixture defects still require fixes; the original TXT RDLENGTH typo was fixed and the failed attempt retained. | Owning tests when adding a vector or investigating a false pass/failure; do not alter raw expectations to improve scores. |
+
+These are maintenance assessments, not completed external review or P3-03
+acceptance. The [owning evidence](P3_03_CACHE_REVIEW.md) records actual gates and
+the still-deferred P3-02 empty-RDATA defect remains separate.
 
 ## Development guidance maintenance, 2026-10-23
 

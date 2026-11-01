@@ -6,8 +6,9 @@ mod registry;
 use crate::{
     DnsError, ErrorCode, Result,
     budget::Budget,
+    cache::{Cache, Key, Template, UpstreamAnswer},
     clock::Refresh,
-    wire::{Processor, response},
+    wire::{Processor, Reply, response},
 };
 use droutex_config::{
     DnsAction,
@@ -24,6 +25,8 @@ pub(super) use io::inventory_checkpoint_fixture;
 pub(super) use io::partial_write_checkpoint_fixture;
 #[cfg(test)]
 pub(super) use io::terminal_denial_fixture;
+#[cfg(test)]
+pub(super) use live::cache_transition_fixture;
 #[cfg(test)]
 pub(super) use live::shared_waiter_fixture;
 use registry::Registry;
@@ -44,12 +47,24 @@ pub(super) struct Processing<'request, 'store> {
     pub lost: Arc<AtomicBool>,
 }
 
+pub(crate) enum Outcome {
+    Upstream(UpstreamAnswer),
+    Failure(Message),
+}
+
 pub(super) struct Forwarder {
     aliases: Vec<std::net::IpAddr>,
+    cache: Cache,
     #[cfg(test)]
     fixture: Option<Fixture>,
 }
 impl Forwarder {
+    #[cfg(test)]
+    pub fn fixture_cache_hit_barrier(&mut self, barrier: Arc<CacheHitBarrier>) {
+        if let Some(fixture) = &mut self.fixture {
+            fixture.cache_hit = Some(barrier);
+        }
+    }
     #[cfg(test)]
     pub fn fixture_cleanup_delay(&mut self, delay: std::time::Duration) {
         if let Some(fixture) = &mut self.fixture {
@@ -76,6 +91,7 @@ impl Forwarder {
         }
         Ok(Self {
             aliases,
+            cache: Cache::new(),
             #[cfg(test)]
             fixture: None,
         })
@@ -90,10 +106,41 @@ impl Processor for Forwarder {
         request: &Message,
         selection: PolicySelection<'_, DnsAction>,
         context: &Processing<'_, '_>,
-    ) -> Result<Message> {
+    ) -> Result<Reply> {
         let DnsAction::Resolve { upstream } = selection.action() else {
-            return Ok(response(request, ResponseCode::ServFail));
+            return Ok(response(request, ResponseCode::ServFail).into());
         };
+        let live = Arc::new(live::Live::new(
+            context
+                .auth
+                .dns_io_check()
+                .map_err(|_| DnsError(ErrorCode::Admission))?,
+            Arc::clone(context.refresh),
+            context.cutoff,
+            Arc::clone(&context.lost),
+            None,
+        ));
+        live.current(context.cutoff).await?;
+        let key = Key::admitted(context.auth, *upstream, request)?;
+        if let Ok(_copy_credit) = context.budget.wire(4096)
+            && let Some(template) = self.cache.get(&key, Instant::now())
+            && let Some(reply) = template.reply(request, Instant::now())
+        {
+            #[cfg(test)]
+            if let Some(barrier) = self
+                .fixture
+                .as_ref()
+                .and_then(|fixture| fixture.cache_hit.as_ref())
+            {
+                // A private delay only: the real current check still follows it.
+                barrier.entered.notify_one();
+                barrier.release.notified().await;
+            }
+            live.current(context.cutoff).await?;
+            if reply.expires.is_some_and(|expiry| Instant::now() < expiry) {
+                return Ok(reply);
+            }
+        }
         let group = context
             .auth
             .decision()
@@ -134,12 +181,8 @@ impl Processor for Forwarder {
         } else {
             (members, inventory)
         };
-        let check = context
-            .auth
-            .dns_io_check()
-            .map_err(|_| DnsError(ErrorCode::Admission))?;
         let wire = context.budget.wire(128 * 1024)?;
-        let refresh = Arc::clone(context.refresh);
+        let worker = Arc::clone(&live);
         let lost = Arc::clone(&context.lost);
         let cutoff = context.cutoff;
         let mut ticket =
@@ -147,16 +190,25 @@ impl Processor for Forwarder {
                 .registry
                 .start(context.auth.network_group(), move |stop| async move {
                     let _wire = wire;
-                    let live = Arc::new(live::Live::new(
-                        check,
-                        refresh,
-                        cutoff,
-                        Arc::clone(&lost),
-                        stop,
-                    ));
-                    run(&template, &members, fallback, live, inventory, cutoff, lost).await
+                    worker.attach_cancel(stop)?;
+                    run(
+                        &template, &members, fallback, worker, inventory, cutoff, lost,
+                    )
+                    .await
                 })?;
-        ticket.answer().await
+        match ticket.answer().await? {
+            Outcome::Failure(message) => Ok(message.into()),
+            Outcome::Upstream(answer) => {
+                live.current(context.cutoff).await?;
+                if let Ok(_copy_credit) = context.budget.wire(4096)
+                    && let Some(template) = Template::build(&answer)
+                {
+                    live.current(context.cutoff).await?;
+                    self.cache.insert(key, template, Instant::now());
+                }
+                Ok(answer.message.into())
+            }
+        }
     }
 }
 
@@ -183,9 +235,16 @@ impl From<Member> for Target {
 }
 
 #[cfg(test)]
+#[derive(Default)]
+pub(crate) struct CacheHitBarrier {
+    pub entered: tokio::sync::Notify,
+    pub release: tokio::sync::Notify,
+}
+#[cfg(test)]
 struct Fixture {
     targets: std::collections::BTreeMap<droutex_common::DnsUpstreamId, Vec<Target>>,
     inventory: Arc<inventory::Inventory>,
+    cache_hit: Option<Arc<CacheHitBarrier>>,
 }
 
 /// Private test-only exact loopback injection. Production resources still pass
@@ -226,9 +285,11 @@ pub(super) fn fixture(
     }
     Ok(Forwarder {
         aliases: Vec::new(),
+        cache: Cache::new(),
         fixture: Some(Fixture {
             targets: mapped,
             inventory: Arc::new(inventory::Inventory::fixture(inventory)),
+            cache_hit: None,
         }),
     })
 }
@@ -252,7 +313,7 @@ async fn transport(
     deadline: Instant,
     live: Arc<live::Live>,
     inventory: Arc<inventory::Inventory>,
-) -> Result<DnsResponse> {
+) -> Result<(DnsResponse, Instant)> {
     let outbound = query(request)?;
     let budget = io::Budget::new(member.address, deadline, live, inventory);
     let result = if tcp {
@@ -277,10 +338,13 @@ async fn transport(
     if budget.destination_refused() {
         return Err(DnsError(ErrorCode::Scope));
     }
-    result.map_err(|error| match error {
-        client::Failure::Deadline | client::Failure::Cleanup => DnsError(ErrorCode::Timeout),
-        _ => DnsError(ErrorCode::Unavailable),
-    })
+    let received = budget.receipt_floor();
+    result
+        .map_err(|error| match error {
+            client::Failure::Deadline | client::Failure::Cleanup => DnsError(ErrorCode::Timeout),
+            _ => DnsError(ErrorCode::Unavailable),
+        })
+        .and_then(|response| Ok((response, received?)))
 }
 
 async fn run(
@@ -291,8 +355,8 @@ async fn run(
     inventory: Arc<inventory::Inventory>,
     cutoff: Instant,
     lost: Arc<AtomicBool>,
-) -> Result<Message> {
-    for member in members {
+) -> Result<Outcome> {
+    for (member_index, member) in members.iter().enumerate() {
         let deadline = (Instant::now() + io::ATTEMPT).min(cutoff);
         let mut result = async {
             live.current(deadline).await?;
@@ -307,8 +371,14 @@ async fn run(
             .await
         }
         .await;
+        let response_was_tcp = member.transport == Transport::UdpTcp
+            && result
+                .as_ref()
+                .is_ok_and(|(reply, _)| reply.metadata.truncation);
         if member.transport == Transport::UdpTcp
-            && result.as_ref().is_ok_and(|reply| reply.metadata.truncation)
+            && result
+                .as_ref()
+                .is_ok_and(|(reply, _)| reply.metadata.truncation)
         {
             #[cfg(test)]
             tokio::time::sleep(member.tc_delay).await;
@@ -336,7 +406,7 @@ async fn run(
         {
             break;
         }
-        if let Ok(response) = result
+        if let Ok((response, received)) = result
             && !response.metadata.truncation
             && (fallback == Fallback::None
                 || !matches!(
@@ -346,7 +416,18 @@ async fn run(
         {
             let reply = crate::wire::sanitize(request, response.into_message(), true);
             if crate::wire::fits_complete(&reply, io::MESSAGE_BYTES) && Instant::now() < deadline {
-                return Ok(reply);
+                return Ok(Outcome::Upstream(UpstreamAnswer {
+                    message: reply,
+                    received,
+                    member: member_index,
+                    transport: if member.transport == Transport::Tcp
+                        || member.transport == Transport::UdpTcp && response_was_tcp
+                    {
+                        Transport::Tcp
+                    } else {
+                        Transport::UdpTcp
+                    },
+                }));
             }
         }
         if fallback == Fallback::None {
@@ -354,11 +435,11 @@ async fn run(
         }
     }
     live.current(cutoff).await?;
-    Ok(crate::wire::sanitize(
+    Ok(Outcome::Failure(crate::wire::sanitize(
         request,
         response(request, ResponseCode::ServFail),
         true,
-    ))
+    )))
 }
 
 #[cfg(test)]
@@ -394,7 +475,7 @@ pub(super) async fn candidate_limit_fixture(
             refresh,
             Instant::now() + Duration::from_millis(1500),
             Arc::new(AtomicBool::new(false)),
-            stopped,
+            Some(stopped),
         ));
         let inventory = Arc::new(inventory::Inventory::fixture(Arc::new(Mutex::new(Ok(
             BTreeSet::new(),

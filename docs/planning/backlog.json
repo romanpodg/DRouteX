@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P0/P1/P2/P3-01/P3-02/P4-01 and D51/D52 qualification complete; P3-02 normal PR115 merge and exact-main gates passed with recorded minor compatibility disposition; later tasks planned",
+  "status": "P3-03 scoped cache in review under owner-accepted D54; corrected implementation review and CI passed, final/merge/main gates remain",
   "date": "2026-11-01",
   "phases": {
     "P0": "Foundation",
@@ -672,14 +672,21 @@
       ],
       "scope": "Cache name/type/class/upstream/scope/mode/validation/generation semantics and bounded eviction",
       "files": [
-        "crates/droutex-dns/src/cache"
+        "crates/droutex-dns/src/cache",
+        "docs/planning/P3_03_CACHE_CONTRACT.md",
+        "crates/droutex-dns/src/forward",
+        "crates/droutex-dns/src/runtime.rs",
+        "crates/droutex-dns/src/wire.rs",
+        "crates/droutex-dns/src/tests/forwarding/cache.rs",
+        "docs/planning/P3_03_CACHE_ALLOCATION.md",
+        "docs/planning/P3_03_CACHE_REVIEW.md"
       ],
       "acceptance": "Profile rewrites never leak; TTL and negative answers expire correctly; memory bound enforced",
       "tests": "Virtual clock, concurrent scopes and policy generation changes",
       "security": "Partition validated origin data and local overrides",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_review",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -2625,11 +2632,11 @@
   ],
   "scope_amendment": "CR-0001",
   "execution_authorization": {
-    "date": "2026-10-28",
-    "source": "Direct owner D53 acceptance after checked PR113, followed by checked PR114 merge3d866cb and exact-main40633658696 before implementation; docs/planning/P3_02_FORWARDING_CONTRACT.md",
-    "scope": "Bounded same-generation policy-selected plaintext UDP/TCP forwarding under complete D53, exact hickory-net0.26.3 composed client conditional production adoption, numeric public upstreams, explicit fallback and current admission/resource/cleanup limits. No deployment, TLS, recursion, cache, overrides, gateway rewriting or new dependency.",
-    "through_task": "P3-02",
-    "decision": "dns_forwarding_decision"
+    "date": "2026-11-01",
+    "source": "Direct owner reply in this chat: accepts all D54 choices and requests implementation plus Project/Roadmap updates; docs/planning/P3_03_CACHE_CONTRACT.md",
+    "scope": "Implement the complete accepted D54 scoped TTL/negative cache over the unchanged D53 forwarding profile. No deployment, DNSSEC validation, overrides, gateway-origin resolver, vendor patch or new dependency. Update Project/Roadmap with actual progress.",
+    "through_task": "P3-03",
+    "decision": "dns_cache_decision"
   },
   "design_proposals": [
     {
@@ -2972,6 +2979,33 @@
       "cleanup_ms": 3000,
       "shutdown_ms": 5000,
       "wire_queries": 4
+    }
+  },
+  "dns_cache_decision": {
+    "status": "accepted",
+    "date": "2026-11-01",
+    "source": "Direct owner reply in this chat accepting all proposed D54 choices and requesting implementation",
+    "contract": "docs/planning/P3_03_CACHE_CONTRACT.md",
+    "profile": {
+      "persistent_bytes_node": 16777216,
+      "entries_node": 2048,
+      "persistent_bytes_scope": 2097152,
+      "entries_scope": 256,
+      "message_bytes": 4096,
+      "positive_ttl_seconds": 3600,
+      "negative_ttl_seconds": 60,
+      "eviction": "fifo",
+      "coalescing": false,
+      "failure_cache": false,
+      "stale_serving": false,
+      "cross_generation_reuse": false
+    },
+    "forwarding_prerequisite": {
+      "status": "passed",
+      "merge": "d70210246637321c1513a392ba86528565933b6a",
+      "main_run": 41191488105,
+      "source": "docs/planning/P3_02_FORWARDING_REVIEW.md#completed-implementation-and-normal-merge",
+      "reports_processed": true
     }
   }
 }

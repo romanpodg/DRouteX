@@ -498,7 +498,11 @@ async fn inventory_change_is_rechecked_before_the_next_admitted_send() {
     assert_eq!(Message::from_vec(&first).unwrap().answers.len(), 1);
     let upstream = fixture.await.unwrap();
     *inventory.lock().unwrap() = Ok([v4()].into());
-    let second = exchange_once(&server, QUERY).await.unwrap();
+    // D54 may reuse a fresh entry without new upstream I/O. Force a distinct
+    // name so this regression still proves the next actual send checks inventory.
+    let mut miss = QUERY.to_vec();
+    miss[13] = b'x';
+    let second = exchange_once(&server, &miss).await.unwrap();
     assert_eq!(
         Message::from_vec(&second).unwrap().metadata.response_code,
         ResponseCode::ServFail
@@ -681,6 +685,14 @@ fn record_answer(query: &[u8], case: &record_vectors::RecordCase) -> Vec<u8> {
     reply.extend_from_slice(case.data);
     reply
 }
+// Keep this D53 network matrix cold: both client transports must really reach
+// the upstream. D54 warm-hit/TTL behavior has its own independent counter tests.
+fn uncached_record_answer(query: &[u8], case: &record_vectors::RecordCase) -> Vec<u8> {
+    let mut reply = record_answer(query, case);
+    let offset = reply.len() - case.data.len() - 6;
+    reply[offset..offset + 4].fill(0);
+    reply
+}
 async fn ordinary_records(ip: IpAddr, transport: Transport) {
     let udp = UdpSocket::bind((ip, 0)).await.unwrap();
     let tcp = TcpListener::bind((ip, 0)).await.unwrap();
@@ -703,7 +715,7 @@ async fn ordinary_records(ip: IpAddr, transport: Transport) {
                             wire::parse(&bytes[..length]).unwrap().queries[0].query_type,
                             hickory_proto::rr::RecordType::from(case.code)
                         );
-                        udp.send_to(&record_answer(&bytes[..length], &case), peer)
+                        udp.send_to(&uncached_record_answer(&bytes[..length], &case), peer)
                             .await
                             .unwrap();
                     }
@@ -717,7 +729,7 @@ async fn ordinary_records(ip: IpAddr, transport: Transport) {
                             wire::parse(&query).unwrap().queries[0].query_type,
                             hickory_proto::rr::RecordType::from(case.code)
                         );
-                        let reply = record_answer(&query, &case);
+                        let reply = uncached_record_answer(&query, &case);
                         socket.write_u16(reply.len() as u16).await.unwrap();
                         socket.write_all(&reply).await.unwrap();
                         let mut extra = [0; 1];
@@ -1081,7 +1093,10 @@ async fn upstream_message_ceiling_and_client_amplification_are_independent() {
                     .unwrap()
                     .unwrap();
                 let query = upstream_tcp_query(&mut stream).await;
-                let reply = txt_answer(&query, length);
+                let mut reply = txt_answer(&query, length);
+                // This D53 boundary test must exercise two actual upstream reads.
+                let question_end = answer(&query, 2, false).len();
+                reply[question_end + 6..question_end + 10].fill(0);
                 stream.write_u16(reply.len() as u16).await.unwrap();
                 stream.write_all(&reply).await.unwrap();
                 let mut byte = [0];
@@ -1573,3 +1588,6 @@ fn nonroot_empty_opt_is_rejected_before_the_update0_branch() {
         hickory_proto::serialize::binary::DecodeError::EdnsNameNotRoot(_)
     ));
 }
+
+#[path = "forwarding/cache.rs"]
+mod cache;

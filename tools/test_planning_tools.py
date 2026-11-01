@@ -121,7 +121,7 @@ class ValidatorTests(unittest.TestCase):
         missing_evidence = copy.deepcopy(plan)
         missing_evidence['foundation_review']['source'] = ''
         later_work = copy.deepcopy(plan)
-        next(t for t in later_work['tasks'] if t['id'] == 'P3-03')['status'] = 'in_progress'
+        next(t for t in later_work['tasks'] if t['id'] == 'P3-04')['status'] = 'in_progress'
         unfinished_dependencies = copy.deepcopy(plan)
         next(t for t in unfinished_dependencies['tasks'] if t['id'] == 'P0-05')['status'] = 'in_review'
         unfinished_identity = copy.deepcopy(plan)
@@ -288,6 +288,28 @@ class ValidatorTests(unittest.TestCase):
             bad['dns_forwarding_decision'][prerequisite]['reports_processed'] = False
             with self.subTest(prerequisite=prerequisite), self.assertRaisesRegex(AssertionError, 'Missing checked forwarding prerequisite'):
                 planning.validate_review_boundary(bad)
+
+    def test_cache_requires_owner_acceptance_exact_bounds_and_completed_forwarding(self):
+        plan = json.loads((ROOT / 'docs/planning/backlog.json').read_text(encoding='utf-8'))
+        for field, value in [('status', 'proposed'), ('source', ''), ('contract', '')]:
+            bad = copy.deepcopy(plan)
+            bad['dns_cache_decision'][field] = value
+            with self.subTest(field=field), self.assertRaises(AssertionError):
+                planning.validate_review_boundary(bad)
+        for field, value in [('persistent_bytes_node', 33554432), ('coalescing', True),
+                             ('negative_ttl_seconds', 300), ('cross_generation_reuse', True)]:
+            bad = copy.deepcopy(plan)
+            bad['dns_cache_decision']['profile'][field] = value
+            with self.subTest(profile=field), self.assertRaisesRegex(AssertionError, 'Unexpected cache profile'):
+                planning.validate_review_boundary(bad)
+        bad = copy.deepcopy(plan)
+        next(t for t in bad['tasks'] if t['id'] == 'P3-02')['status'] = 'in_progress'
+        with self.assertRaisesRegex(AssertionError, 'forwarding prerequisite'):
+            planning.validate_review_boundary(bad)
+        bad = copy.deepcopy(plan)
+        bad['dns_cache_decision']['forwarding_prerequisite']['reports_processed'] = False
+        with self.assertRaisesRegex(AssertionError, 'checked cache prerequisite'):
+            planning.validate_review_boundary(bad)
 
     def test_every_upload_mutation_is_rejected(self):
         flow = quality.read_yaml(ROOT / '.github/workflows/planning.yml')
