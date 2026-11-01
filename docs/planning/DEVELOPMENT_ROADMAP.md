@@ -108,13 +108,15 @@ records the temporary minor empty-RDATA compatibility disposition and retained
 failed attempts. This accepts only the bounded D53 component, not deployment or
 full RR transparency. The owner accepted the complete [D54 cache contract](P3_03_CACHE_CONTRACT.md)
 on2026-11-01 and authorized P3-03 implementation and Project/Roadmap updates.
-P3-03 completed runtime PR117 and bounded test-fixture correction PR118 through
-actual account review and normal merge. Fresh exact-main41290188222 on641f6eac
-passes all11 jobs and both processed reports. The [application evidence](P3_03_CACHE_REVIEW.md#reviewed-fixture-correction-and-fresh-main-verification)
-preserves the earlier failed Windows binds and P3-02 empty-RDATA deferral.
-Repository Roadmap/backlog reflect completion; external GitHub Project access is
-still blocked by the integration. Later tasks remain planned; this authorization
-ends at P3-03.
+P3-03 runtime PR117 and bounded test-fixture correction PR118 passed actual account
+review, normal merge and all11 exact-main41290188222 jobs/both processed reports.
+Completion-record PR119 passed its own review/current-head gates, but subsequent
+main41291237869 exposed a separate Windows checkpoint setup assumption. Acceptance
+is reopened while the test uses the existing bounded authorization path and fresh
+review/platform/main gates are obtained. The [application evidence](P3_03_CACHE_REVIEW.md#completion-record-main-checkpoint-setup-failure)
+preserves both failures, prior successes and P3-02 empty-RDATA deferral. External
+GitHub Project access remains blocked; authorization ends at P3-03 and later tasks
+remain planned.
 
 Finish and merge each authorized implementation PR before starting the next.
 Subsequent work follows the DAG and owning acceptance contracts. P1-06 library

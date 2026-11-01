@@ -1,11 +1,11 @@
 # P3-03 cache implementation evidence
 
-Status: **completed on 2026-11-01** under owner-accepted
+Status: **acceptance reopened on 2026-11-01** under owner-accepted
 [D54](P3_03_CACHE_CONTRACT.md). Runtime PR117 and test-only correction PR118
-completed actual account reviews and normal merges. Fresh exact-main41290188222
-passes all11 jobs and both processed reports; the failed earlier Windows run is
-preserved below. This accepts the bounded component, not deployment, DNSSEC
-validation or full RR transparency.
+completed actual account reviews and normal merges. Exact-main41290188222 passed;
+the later completion-record merge exposed a separate Windows checkpoint setup
+failure in41291237869. Its correction requires fresh review/platform/main proof.
+No deployment, DNSSEC validation or full RR transparency is claimed.
 
 ## Authorization and implementation
 
@@ -241,9 +241,48 @@ planning/backend Codecov uploads are processed (`merged`); the commit report is
 complete. These are fresh corrected-main results, not a rerun or waiver of failed
 41287781675. All seven dependency/license bundles passed in the same main run.
 
-P3-03 is complete within D54's accepted component boundary. The original specs,
+At641f6eac, P3-03 passed D54's accepted component gates. The original specs,
 P3-02 empty-RDATA compatibility deferral and specific runtime CodeScene maintenance
-dispositions remain unchanged. Repository backlog, execution card and Roadmap
-reflect completion; external Project access still returns FORBIDDEN. P3-04 and
+dispositions remain unchanged. At that checkpoint, repository backlog, execution
+card and Roadmap recorded completion; the later failure below supersedes it.
+External Project access still returns FORBIDDEN. P3-04 and
 later implementation, product deployment and broader DNS modes remain outside
 this task's authorization.
+
+## Completion-record main checkpoint setup failure
+
+Documentation/status [PR119](https://github.com/romanpodg/DRouteX/pull/119) exact
+head82742668b506301d1fe7a3abe0c7b9026e84872a passed all11
+[CI41290792289](https://github.com/romanpodg/DRouteX/actions/runs/41290792289)
+jobs and both processed reports. Actual [Codex execution6555774470](https://github.com/romanpodg/DRouteX/pull/119#issuecomment-6555774470)
+completed without findings/unresolved findings on that head. Direct platform logs
+repeat345 Linux/312 Windows per default/no-default, client37/37 and mandatory IPv6,
+zero failed/ignored/filtered. CodeScene8223665 reports success and explicitly skips
+Code Health because no application code changed; previous runtime findings remain.
+Normal merge90bdf3f3fd32ebba07ddc59f9aa5432add1bded4 followed the
+[checked merge record6555834858](https://github.com/romanpodg/DRouteX/pull/119#issuecomment-6555834858).
+
+[Exact-main41291237869](https://github.com/romanpodg/DRouteX/actions/runs/41291237869)
+on90bdf3f3 failed Windows workspace job124802759361; its other10 jobs passed.
+DNS101 tests passed/1failed,
+zero ignored/filtered; no-default/later workspace qualifications were not reached.
+The cache-to-miss regression unwrapped AdmissionError(CheckpointRequired) at
+cache.rs571 during synchronous prepare_legacy_dns, before calling the transition
+helper. A current clock checkpoint is a real setup precondition, not guaranteed
+by elapsed fixture startup; no particular Windows scheduler delay is established.
+
+The correction uses existing Server.authorize and its normal bounded prepare/
+consume/clock-maintenance path to create the original authorization. It changes
+only setup before the tested Live gate exists. The gate's original1500ms cutoff,
+explicit first checkpoint wait, original owner/reservation, attached cancellation,
+second-wait rejection and zero-upstream/zero-answer assertions remain unchanged.
+Resetting the shared gate's wait phase still fails the intended second-wait
+assertion (Timeout instead of Admission); that mutation is restored. No new
+product wait, re-admission, quota refund, retransmission or retry-until-green is
+introduced. Acceptance is reopened until the correction's fresh gates pass.
+
+Corrected local DNS default/no-default each pass103 tests, zero failed/ignored/
+filtered; fmt and all-target/all-feature DNS Clippy pass. The original hosted
+setup failure and deliberate removed-wait mutation remain failed evidence.
+Q-DOC passes21 planning tests, nine negative validator cases and source/link
+preservation. Graphify remains unavailable; no graph or new backend is installed.
