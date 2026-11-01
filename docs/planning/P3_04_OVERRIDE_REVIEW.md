@@ -47,3 +47,11 @@ revision separates record conversion from answer assembly and the P3-04 gate
 from the existing planning boundary checks. Existing selection, admission,
 response and publication-boundary conditions remain in place. The old result
 remains failed; current-head analysis and review are required.
+
+On `e724798`, [CodeScene 8227388](https://codescene.io/projects/86145/delta/results/8227388)
+still fails two gates solely for the large test and auxiliary planning function;
+its critical-rules gate passes. The [specific dispositions](OPEN_DECISIONS.md#p3-04-review-dispositions)
+retain those failures and set revisit triggers without suppressing any check.
+Actual Codex Code Review of `e724798e7cebe310f39e43a684888901bb3d57cc`
+completed without reported findings; the later documentation-only head still
+requires current-head review and checks.

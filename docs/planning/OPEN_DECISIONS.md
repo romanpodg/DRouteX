@@ -418,6 +418,21 @@ These are maintenance assessments, not completed external review or P3-03
 acceptance. The [owning evidence](P3_03_CACHE_REVIEW.md) records actual gates and
 the still-deferred P3-02 empty-RDATA defect remains separate.
 
+## P3-04 review dispositions
+
+[CodeScene 8227388](https://codescene.io/projects/86145/delta/results/8227388)
+on PR122 head `e724798` remains failed: its hotspot gate reports a large
+`verify_planning.py` boundary function with no health decline, and its new-code
+gate reports a large test in `policy.rs`. The application `local_answer`
+complexity and critical-rule findings from 8227241 no longer appear. The
+remaining findings identify no concrete functional defect: the planning test
+suite checks authorization-boundary rejection, and the DNS test checks
+profile isolation, A/AAAA/CNAME and missing-type behavior. Tests and auxiliary
+planning tools are not independent metric targets. Maintainers should revisit
+these areas when changing planning authorization or local-record behavior, or
+when a concrete defect is found. No suppression, required-check waiver or
+successful CodeScene result is claimed; recheck each new head.
+
 ## Development guidance maintenance, 2026-10-23
 
 Owner-authorized documentation maintenance implements the seven reviewed proposals.
