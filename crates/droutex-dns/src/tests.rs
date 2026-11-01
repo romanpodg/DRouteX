@@ -1042,7 +1042,7 @@ async fn public_node_replies_from_the_explicit_nondefault_destination() {
     let report = handle.await.unwrap().unwrap();
     let length = received.unwrap().unwrap();
     let reply = Message::from_vec(&bytes[..length]).unwrap();
-    assert_eq!(reply.metadata.response_code, ResponseCode::ServFail);
+    assert_eq!(reply.metadata.response_code, ResponseCode::NXDomain);
     assert_eq!(report.answered, 1);
     let _rebound = UdpSocket::bind(address).await.unwrap();
 }
@@ -1128,7 +1128,7 @@ async fn tcp_wildcard_keeps_the_kernel_established_nondefault_destination() {
     frame(&mut stream, QUERY).await;
     assert_eq!(
         read_reply(&mut stream).await.metadata.response_code,
-        ResponseCode::ServFail
+        ResponseCode::NXDomain
     );
     drop(stream);
     stop.send_replace(true);

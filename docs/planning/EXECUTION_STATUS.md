@@ -2,6 +2,11 @@
 
 ## Current execution card
 
+- On 2026-11-02 the owner authorized P3-04 and selected NXDOMAIN for BLOCK,
+  followed by profile-local records and DIRECT/upstream. Implementation is in
+  progress; [P3-04 evidence](P3_04_OVERRIDE_REVIEW.md) records its limits.
+  P3-05 and deployment remain separate gates.
+
 Reviewed 2026-11-01. This card is the current work/authorization entry point;
 [backlog.json](backlog.json) is canonical for task status/dependencies/delivery.
 Task reviews hold exact acceptance evidence. Later dated evidence supersedes
@@ -19,7 +24,7 @@ historical checkpoints below; reconcile conflicts before dependent work.
   without weakening product admission, deadlines, query counts or test assertions.
   P3-02 empty-RDATA and specific CodeScene maintenance dispositions remain unchanged.
   Repository Roadmap/backlog reflect completion; external GitHub Project access is
-  still blocked by the integration. Authorization ends at P3-03; later tasks planned.
+  still blocked by the integration. P3-04 is now authorized and in progress; P3-05 and later tasks remain planned.
 - Completed: P0, P1, all seven P2 tasks, P4-01 and P3-01. PR112 corrected the
   strict durable fixture without weakening its counter/failure assertions.
   Its normal merge8f234c44a0c47fc3ef4583e775a591cd90158185 passed all11

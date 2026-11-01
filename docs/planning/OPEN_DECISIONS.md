@@ -65,7 +65,7 @@ IPv6/QUIC/application enforcement.
 | D06 | Coherent IPv4/IPv6 inside DNS/proxy boundary, with explicit uncontrolled-client limits | P3-04/P4-08 | Network owner; captures |
 | D07 | Select controlled origin/proxy and 2–3 authorized DNS/proxy reference services; VPN clients chosen later | P4-08 | User/operator |
 | D08 | Exact-address manual bootstrap plus disabled-by-default secure observation learning; separate DNS/gateway scopes, bounded expiry, cause/revocation and no conflicting last-query Profile switch; no automatic /64 | P0-01 / P4-01/P3-06/P3-07 | Foundation accepted; numeric/clock limits and actual source-mismatch/conflict/expiry/derived-revocation tests |
-| D09 | BLOCK answer, DNSSEC override and HTTPS/SVCB compatibility behavior | P3-04/P3-05 | Network owner; validating client tests |
+| D09 | BLOCK returns NXDOMAIN with precedence over Profile-local records (owner reply 2026-11-02); DNSSEC override and HTTPS/SVCB compatibility remain open | P3-04/P3-05 | Network owner; validating client tests |
 | D10 | Wildcard excludes apex; priority/specificity/stable ordering and conflict rejection | P2-01 | Product owner; properties |
 | D11 | Owner accepted the complete bounded D11 profile in this chat2026-10-18 (local .setup/p1-05/implementation-design-proposal.md). D35 qualification and strict candidate verification are implemented/reviewed/tested on cd0e2c5; durable publication/activation remains P1-06 | P1-05 | Security owner; replay/crash tests |
 | D12 | TUN-to-Xray bridge and privileged routing design deferred | Post-MVP P5/P9 | Real-engine spike before claiming support |
@@ -417,6 +417,21 @@ required-check waiver is authorized. Recheck on subsequent heads.
 These are maintenance assessments, not completed external review or P3-03
 acceptance. The [owning evidence](P3_03_CACHE_REVIEW.md) records actual gates and
 the still-deferred P3-02 empty-RDATA defect remains separate.
+
+## P3-04 review dispositions
+
+[CodeScene 8227388](https://codescene.io/projects/86145/delta/results/8227388)
+on PR122 head `e724798` remains failed: its hotspot gate reports a large
+`verify_planning.py` boundary function with no health decline, and its new-code
+gate reports a large test in `policy.rs`. The application `local_answer`
+complexity and critical-rule findings from 8227241 no longer appear. The
+remaining findings identify no concrete functional defect: the planning test
+suite checks authorization-boundary rejection, and the DNS test checks
+profile isolation, A/AAAA/CNAME and missing-type behavior. Tests and auxiliary
+planning tools are not independent metric targets. Maintainers should revisit
+these areas when changing planning authorization or local-record behavior, or
+when a concrete defect is found. No suppression, required-check waiver or
+successful CodeScene result is claimed; recheck each new head.
 
 ## Development guidance maintenance, 2026-10-23
 

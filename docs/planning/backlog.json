@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "D54 P3-03 completed through reviewed runtime and fixture corrections; exact-main41292606417 all11 jobs and both reports passed; external Project access blocked; later tasks planned",
+  "status": "P3-04 implementation in progress; owner selected NXDOMAIN and BLOCK before profile-local records; P3-05 remains planned",
   "date": "2026-11-01",
   "phases": {
     "P0": "Foundation",
@@ -714,7 +714,7 @@
       "security": "Signed data modification cannot preserve apparent authenticity",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001",
@@ -2633,11 +2633,11 @@
   ],
   "scope_amendment": "CR-0001",
   "execution_authorization": {
-    "date": "2026-11-01",
-    "source": "Direct owner reply in this chat: accepts all D54 choices and requests implementation plus Project/Roadmap updates; docs/planning/P3_03_CACHE_CONTRACT.md",
-    "scope": "Implement the complete accepted D54 scoped TTL/negative cache over the unchanged D53 forwarding profile. No deployment, DNSSEC validation, overrides, gateway-origin resolver, vendor patch or new dependency. Update Project/Roadmap with actual progress.",
-    "through_task": "P3-03",
-    "decision": "dns_cache_decision"
+    "date": "2026-11-02",
+    "source": "Owner requested P3-04 and accepted NXDOMAIN with BLOCK before profile-local records in this chat",
+    "scope": "Implement P3-04; P3-05 and deployment remain separate.",
+    "through_task": "P3-04",
+    "decision": "dns_override_decision"
   },
   "design_proposals": [
     {
@@ -3008,5 +3008,10 @@
       "source": "docs/planning/P3_02_FORWARDING_REVIEW.md#completed-implementation-and-normal-merge",
       "reports_processed": true
     }
+  },
+  "dns_override_decision": {
+    "status": "accepted",
+    "source": "Owner reply in this chat: NXDOMAIN; BLOCK then profile-local records then DIRECT/upstream",
+    "contract": "docs/planning/P3_04_OVERRIDE_REVIEW.md"
   }
 }

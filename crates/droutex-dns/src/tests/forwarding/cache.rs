@@ -277,7 +277,7 @@ async fn generation_rollback_failed_candidate_and_revoked_policy_use_current_aut
     server.doc["profiles"][0]["defaultDnsAction"] = json!({"kind":"block"});
     apply_forwarding(&server.owner, &server.doc, &[Transport::UdpTcp], "none", 4);
     let denied = Message::from_vec(&exchange_once(&server, QUERY).await.unwrap()).unwrap();
-    assert_eq!(denied.metadata.response_code, ResponseCode::ServFail);
+    assert_eq!(denied.metadata.response_code, ResponseCode::NXDomain);
     assert_eq!(upstream.calls(), 3);
     server.doc["endpoints"][0]["enabled"] = json!(false);
     apply_forwarding(&server.owner, &server.doc, &[Transport::UdpTcp], "none", 5);

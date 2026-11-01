@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: D54 P3-03 completed through reviewed runtime and fixture corrections; exact-main41292606417 all11 jobs and both reports passed; external Project access blocked; later tasks planned. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P3-04 implementation in progress; owner selected NXDOMAIN and BLOCK before profile-local records; P3-05 remains planned. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 
