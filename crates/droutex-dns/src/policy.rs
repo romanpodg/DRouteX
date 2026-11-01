@@ -38,34 +38,35 @@ pub(super) fn local_answer(
         .iter()
         .filter(|record| record.profile == profile && record.owner == domain)
     {
-        let data = match &record.value {
-            PrivateRecordValue::Ipv4(ip) if question.query_type == RecordType::A => {
-                Some(RData::A(A(*ip)))
-            }
-            PrivateRecordValue::Ipv6(ip) if question.query_type == RecordType::AAAA => {
-                Some(RData::AAAA(AAAA(*ip)))
-            }
-            PrivateRecordValue::Cname(target) => {
-                let name = format!("{}.", target.as_str())
-                    .parse()
-                    .map_err(|_| DnsError(ErrorCode::State))?;
-                Some(RData::CNAME(CNAME(name)))
-            }
-            _ => None,
-        };
-        if let Some(data) = data {
-            // Identical records are legal input but must not be duplicated in an RRset.
-            if unique.insert(data.clone()) {
-                reply
-                    .answers
-                    .push(Record::from_rdata(question.name.clone(), record.ttl, data));
-            }
+        // Identical records are legal input but must not be duplicated in an RRset.
+        if let Some(data) = record_data(&record.value, question.query_type)?
+            && unique.insert(data.clone())
+        {
+            reply
+                .answers
+                .push(Record::from_rdata(question.name.clone(), record.ttl, data));
         }
     }
     if !wire::fits_complete(&reply, crate::MAX_TCP_BYTES) {
         return Err(DnsError(ErrorCode::Unavailable));
     }
     Ok(Some(reply))
+}
+
+fn record_data(value: &PrivateRecordValue, query_type: RecordType) -> Result<Option<RData>> {
+    Ok(match value {
+        PrivateRecordValue::Ipv4(ip) if query_type == RecordType::A => Some(RData::A(A(*ip))),
+        PrivateRecordValue::Ipv6(ip) if query_type == RecordType::AAAA => {
+            Some(RData::AAAA(AAAA(*ip)))
+        }
+        PrivateRecordValue::Cname(target) => {
+            let name = format!("{}.", target.as_str())
+                .parse()
+                .map_err(|_| DnsError(ErrorCode::State))?;
+            Some(RData::CNAME(CNAME(name)))
+        }
+        _ => None,
+    })
 }
 
 #[cfg(test)]

@@ -40,3 +40,10 @@ PR122 initial CI 41340903278 failed the Linux planning job: its negative test
 still treated P3-04 as outside the allowed boundary. The test now attempts to
 start P3-05 instead, preserving the rejection of unauthorized later work. The
 initial failure remains failed; the corrected head requires its own checks.
+
+CodeScene 8227241 on `550df65` failed its three gates, identifying complexity
+in local answer construction and the planning boundary validator. The following
+revision separates record conversion from answer assembly and the P3-04 gate
+from the existing planning boundary checks. Existing selection, admission,
+response and publication-boundary conditions remain in place. The old result
+remains failed; current-head analysis and review are required.

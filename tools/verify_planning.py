@@ -255,6 +255,13 @@ def validate_cache(plan, by_id):
     assert evidence.get('status') == 'passed' and evidence.get('merge') and evidence.get('main_run') and evidence.get('source') and evidence.get('reports_processed') is True, 'Missing checked cache prerequisite'
 
 
+def validate_override(plan, by_id):
+    assert by_id['P3-03']['status'] == 'completed', 'P3-04 prerequisite incomplete'
+    assert by_id['P3-04']['status'] in {'in_progress', 'in_review', 'completed'}, 'P3-04 has not started'
+    override = plan.get('dns_override_decision', {})
+    assert override.get('status') == 'accepted' and override.get('source') and override.get('contract') == 'docs/planning/P3_04_OVERRIDE_REVIEW.md', 'Missing P3-04 decision'
+
+
 def validate_review_boundary(plan):
     assert plan['foundation_review']['status'] == 'accepted', 'Missing owner acceptance'
     assert plan['foundation_review']['source'], 'Missing owner decision evidence'
@@ -310,10 +317,7 @@ def validate_review_boundary(plan):
     validate_client_qualification(plan, by_id)
     validate_forwarding(plan, by_id)
     validate_cache(plan, by_id)
-    assert by_id['P3-03']['status'] == 'completed', 'P3-04 prerequisite incomplete'
-    assert by_id['P3-04']['status'] in {'in_progress', 'in_review', 'completed'}, 'P3-04 has not started'
-    override = plan.get('dns_override_decision', {})
-    assert override.get('status') == 'accepted' and override.get('source') and override.get('contract') == 'docs/planning/P3_04_OVERRIDE_REVIEW.md', 'Missing P3-04 decision'
+    validate_override(plan, by_id)
     signature = plan['snapshot_auth_qualification_decision']
     assert signature['status'] == 'accepted' and signature['source'], 'Missing owner signature qualification decision'
     assert plan['secret_storage_decision']['status'] == 'accepted' and plan['secret_storage_decision']['source'], 'Missing owner secret storage decision'
