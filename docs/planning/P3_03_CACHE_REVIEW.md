@@ -1,11 +1,11 @@
 # P3-03 cache implementation evidence
 
-Status: runtime merged; exact-main acceptance remains open under owner-accepted
-[D54](P3_03_CACHE_CONTRACT.md).
-Implementation/final reviews, final-head checks and normal PR117 merge passed.
-Exact-main verification failed two Windows fixture binds; correction and fresh
-platform/merge/main proof remain required. No completion, deployment, DNSSEC validation or full RR transparency is
-claimed by local checks.
+Status: **completed on 2026-11-01** under owner-accepted
+[D54](P3_03_CACHE_CONTRACT.md). Runtime PR117 and test-only correction PR118
+completed actual account reviews and normal merges. Fresh exact-main41290188222
+passes all11 jobs and both processed reports; the failed earlier Windows run is
+preserved below. This accepts the bounded component, not deployment, DNSSEC
+validation or full RR transparency.
 
 ## Authorization and implementation
 
@@ -147,20 +147,19 @@ Graphify update was attempted and is unavailable in this cloud image (command127
 no existing graph is present and no replacement/backend was installed. Source,
 contract and test evidence remain authoritative.
 
-## Project and remaining external gates
+## Project access and acceptance boundary
 
-The authenticated GitHub CLI identifies the owner account, but Projects GraphQL
+The earlier authenticated GitHub CLI identified the owner account, but Projects GraphQL
 returns `Resource not accessible by integration` for the owner's projects. No
 connected browser-control tool is available. The owner was asked for the Project
 link and read/write access while implementation continued. Repository Roadmap,
 backlog and execution card track actual progress; no external Project update is
 claimed. Retry once the required access is available.
 
-Before acceptance, record actual implementation/final account review identities,
-exact heads and hosted checks/reports, investigate concrete findings, then perform
-normal merge and exact-main verification. Required missing evidence keeps P3-03
-open. Existing P3-02 failures/dispositions and D53 security/lifecycle boundaries
-are not waived by the cache's local success.
+The completed implementation/final reviews, hosted checks/reports, normal merges
+and fresh exact-main result are recorded below. External Project synchronization
+remains blocked by access; it is not claimed as completed. Existing P3-02
+failures/dispositions and D53 security/lifecycle boundaries are unchanged.
 
 
 ## Final review and normal runtime merge
@@ -208,3 +207,43 @@ changed-inventory fixtures share this helper. This is fixture resource selection
 not DNS retransmission, test rerun, admission/quota refund, product port acceptance
 or a replacement for clean mandatory Windows/Linux evidence. Original query,
 response, TC/fallback and work/deadline assertions remain unchanged.
+
+## Reviewed fixture correction and fresh main verification
+
+[PR118](https://github.com/romanpodg/DRouteX/pull/118) exact head
+5eaf22ee8c24226897604f3be2f05f644b591261 passed all11
+[CI41289464149](https://github.com/romanpodg/DRouteX/actions/runs/41289464149)
+jobs. Direct workspace job124797492375/124797492481 logs confirm345 Linux/312 Windows
+tests per default/no-default profile, zero failed/ignored/filtered. Isolated
+client37/37 includes all mandatory raw/composed IPv6, policy8/8 and codec/transport9/9
+per platform/profile. Local DNS default/no-default each103 tests and final Clippy
+pass. Both exact-head Codecov uploads are processed (`merged`), commit report
+complete. [CodeScene8223582](https://codescene.io/projects/86145/delta/results/8223582)
+passes; its test-file score does not replace functional evidence or clear the
+earlier runtime maintenance dispositions.
+
+Actual owner-account [Codex receipt6555626456](https://github.com/romanpodg/DRouteX/pull/118#issuecomment-6555626456)
+and [execution summary6555616906](https://github.com/romanpodg/DRouteX/pull/118#issuecomment-6555616906)
+identify exact5eaf22e, completed without findings/unresolved findings. Marking ready
+triggered another review of the same head; it also completed without findings
+before the normal merge. The [merge evidence6555673803](https://github.com/romanpodg/DRouteX/pull/118#issuecomment-6555673803)
+records the independently checked gates. Main metadata was unprotected, active
+rules empty and check runs not required; no protection or check was bypassed.
+Normal merge641f6eac32cc01d4b207d277399b60fc60e1b683 retains reviewed5eaf22e and
+previous main8779a2d9 as parents.
+
+[Exact-main41290188222](https://github.com/romanpodg/DRouteX/actions/runs/41290188222)
+on641f6eac passes all11 jobs. Direct full workspace logs124799636354/124799636237
+confirm345 Linux/312 Windows tests per default/no-default profile, zero
+failed/ignored/filtered, and client37/37 with every mandatory raw/composed IPv6
+probe, policy8/8 and codec/transport9/9 on both platforms. Both exact-merge
+planning/backend Codecov uploads are processed (`merged`); the commit report is
+complete. These are fresh corrected-main results, not a rerun or waiver of failed
+41287781675. All seven dependency/license bundles passed in the same main run.
+
+P3-03 is complete within D54's accepted component boundary. The original specs,
+P3-02 empty-RDATA compatibility deferral and specific runtime CodeScene maintenance
+dispositions remain unchanged. Repository backlog, execution card and Roadmap
+reflect completion; external Project access still returns FORBIDDEN. P3-04 and
+later implementation, product deployment and broader DNS modes remain outside
+this task's authorization.

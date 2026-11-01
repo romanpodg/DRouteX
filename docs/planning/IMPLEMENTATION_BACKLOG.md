@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**D54 runtime merged through PR117; P3-03 remains open for bounded Windows fixture setup correction after failed exact-main verification.**
+**D54 P3-03 completed through reviewed PR117/118 and passing exact-main41290188222; external Project access remains blocked; later tasks planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -337,7 +337,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P3-03: Implement scoped TTL and negative caching
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,22.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,22.
 
 | Field | Deliverable / evidence |
 |---|---|

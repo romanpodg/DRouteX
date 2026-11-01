@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: D54 runtime merged through PR117; P3-03 remains open for bounded Windows fixture setup correction after failed exact-main verification. Edges are planned prerequisites, not implemented crate dependencies.
+Status: D54 P3-03 completed through reviewed PR117/118 and passing exact-main41290188222; external Project access remains blocked; later tasks planned. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

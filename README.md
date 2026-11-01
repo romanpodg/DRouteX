@@ -27,6 +27,8 @@ is generated from the canonical backlog; exact historical results live in task r
 - [P1-06 activation contract](docs/planning/P1_06_ACTIVATION_CONTRACT.md)
 - [P1-06 validation evidence](docs/planning/P1_06_ACTIVATION_REVIEW.md)
 - [P2-01 domain profile and gates](docs/planning/P2_01_DOMAIN_CONTRACT.md)
+- [P3-03 accepted cache contract](docs/planning/P3_03_CACHE_CONTRACT.md)
+- [P3-03 implementation and validation evidence](docs/planning/P3_03_CACHE_REVIEW.md)
 - [English source specification](DRouteX_Project_Specification_EN.md)
 
 Windows PowerShell development environment: `. ./tools/activate.ps1`.
