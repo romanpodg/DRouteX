@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**D54 P3-03 acceptance reopened after exact-main41291237869 Windows checkpoint fixture setup failure; bounded correction in progress; external Project access blocked.**
+**D54 P3-03 completed through reviewed runtime and fixture corrections; exact-main41292606417 all11 jobs and both reports passed; external Project access blocked; later tasks planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -337,7 +337,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P3-03: Implement scoped TTL and negative caching
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,22.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,22.
 
 | Field | Deliverable / evidence |
 |---|---|

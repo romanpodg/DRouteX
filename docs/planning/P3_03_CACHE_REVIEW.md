@@ -1,11 +1,11 @@
 # P3-03 cache implementation evidence
 
-Status: **acceptance reopened on 2026-11-01** under owner-accepted
-[D54](P3_03_CACHE_CONTRACT.md). Runtime PR117 and test-only correction PR118
-completed actual account reviews and normal merges. Exact-main41290188222 passed;
-the later completion-record merge exposed a separate Windows checkpoint setup
-failure in41291237869. Its correction requires fresh review/platform/main proof.
-No deployment, DNSSEC validation or full RR transparency is claimed.
+Status: **completed on2026-11-01** under owner-accepted
+[D54](P3_03_CACHE_CONTRACT.md). Runtime PR117 and test-only corrections PR118/120
+completed actual account reviews and normal merges. Fresh exact-main41292606417
+on3d0cd66d passes all11 jobs and both processed reports. Both earlier failed main
+runs remain recorded below. This accepts the bounded component; product deployment,
+DNSSEC validation and full RR transparency remain outside its scope.
 
 ## Authorization and implementation
 
@@ -279,10 +279,52 @@ second-wait rejection and zero-upstream/zero-answer assertions remain unchanged.
 Resetting the shared gate's wait phase still fails the intended second-wait
 assertion (Timeout instead of Admission); that mutation is restored. No new
 product wait, re-admission, quota refund, retransmission or retry-until-green is
-introduced. Acceptance is reopened until the correction's fresh gates pass.
+introduced. Acceptance was reopened pending the correction's fresh gates below.
 
 Corrected local DNS default/no-default each pass103 tests, zero failed/ignored/
 filtered; fmt and all-target/all-feature DNS Clippy pass. The original hosted
 setup failure and deliberate removed-wait mutation remain failed evidence.
 Q-DOC passes21 planning tests, nine negative validator cases and source/link
 preservation. Graphify remains unavailable; no graph or new backend is installed.
+
+## Reviewed bounded checkpoint setup correction
+
+[PR120](https://github.com/romanpodg/DRouteX/pull/120) exact
+heada8525ffb040d3269f133cd87a3ef824ed52bcf18 passed all11
+[CI41291950813](https://github.com/romanpodg/DRouteX/actions/runs/41291950813)
+jobs and both processed Codecov reports (commit complete). Direct full workspace
+logs124804826391/124804826669 confirm345 Linux/312 Windows tests per default/
+no-default, zero failed/ignored/filtered, client37/37 with every mandatory raw/
+composed IPv6 probe, policy8/8 and codec/transport9/9 per platform/profile.
+Actual [Codex execution6555934491](https://github.com/romanpodg/DRouteX/pull/120#issuecomment-6555934491)
+completed on exacta8525ff without findings/unresolved findings; inline review
+threads were empty. CodeScene8223758 passed all3 gates. Its expected-cochange
+warnings concern planning-verification.json, whose checked443 links/result are
+unchanged; no artificial metric edit or suppression was made.
+
+The [merge evidence6556022705](https://github.com/romanpodg/DRouteX/pull/120#issuecomment-6556022705)
+records the checked current head, reviews, reports and branch state. Main was
+unprotected, repository/parent rulesets empty; no check, protection or approval
+bypass occurred. PR120 merged normally at3d0cd66d7eae14d3d44b846aafa9e0c4acdd5fb4,
+parents90bdf3f3 and exact revieweda8525ff.
+
+
+## Completed D54 acceptance after checkpoint correction
+
+[Exact-main41292606417](https://github.com/romanpodg/DRouteX/actions/runs/41292606417)
+on3d0cd66d7eae14d3d44b846aafa9e0c4acdd5fb4 passes all11 jobs. Direct full workspace
+logs124806774975/124806775028 confirm345 Linux/312 Windows tests per default/
+no-default, zero failed/ignored/filtered. The repaired cache-to-miss checkpoint
+regression passes in both Windows profiles. Isolated client37/37 includes every
+mandatory raw/composed IPv6 probe, policy8/8 and codec/transport9/9 per platform/
+profile. All seven dependency/license bundles pass. Both exact-merge planning/
+backend Codecov uploads are processed (`merged`), commit report complete.
+
+This fresh main proof closes the reopened P3-03 component gate; neither failed
+41287781675 nor41291237869 was rerun, ignored, relabeled or waived. The preserved
+specifications, D53 admission/quota/deadline/allocation boundaries, temporary
+empty-RDATA defect and specific runtime CodeScene maintenance dispositions are
+unchanged. Backlog, execution card and repository Roadmap record completion.
+External Project synchronization remains blocked by integration access; no such
+update is claimed. P3-04/later implementation and deployment remain outside this
+task's authorization.

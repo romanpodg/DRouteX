@@ -8,18 +8,18 @@ Task reviews hold exact acceptance evidence. Later dated evidence supersedes
 historical checkpoints below; reconcile conflicts before dependent work.
 
 - The owner accepted the complete [D54 cache contract](P3_03_CACHE_CONTRACT.md)
-  on2026-11-01. Runtime PR117 and fixture correction PR118 passed account reviews,
-  normal merges and all11 exact-main41290188222 jobs/both processed reports.
-  Completion-record PR119 also passed review/current-head checks and merged normally,
-  but fresh exact-main41291237869 on90bdf3f3 failed Windows checkpoint fixture setup
-  before the tested cache transition. P3-03 acceptance is reopened/in_progress.
-  Replace the setup's synchronous fresh-floor assumption with existing bounded
-  Server.authorize, preserving the original shared-gate and no-second-wait assertions;
-  require fresh account review/platform/main proof before closing. See the
-  [application evidence](P3_03_CACHE_REVIEW.md#completion-record-main-checkpoint-setup-failure).
-  Both failed main attempts remain failed. P3-02 empty-RDATA and CodeScene maintenance
-  dispositions are unchanged. External Project access remains blocked; authorization
-  ends at P3-03 and later tasks remain planned.
+  on2026-11-01. P3-03 is completed through runtime PR117 and bounded test-fixture
+  corrections PR118/120, each with actual account review and normal merge.
+  Fresh exact-main41292606417 on3d0cd66d passes all11 jobs and both processed reports:
+  345 Linux/312 Windows tests per default/no-default, client37/37 per platform/profile
+  with mandatory raw/composed IPv6, zero failed/ignored/filtered. The checkpoint
+  transition regression passes both profiles on Windows. See the
+  [application evidence](P3_03_CACHE_REVIEW.md#completed-d54-acceptance-after-checkpoint-correction).
+  Earlier main41287781675/41291237869 remain failed; both setup defects were fixed
+  without weakening product admission, deadlines, query counts or test assertions.
+  P3-02 empty-RDATA and specific CodeScene maintenance dispositions remain unchanged.
+  Repository Roadmap/backlog reflect completion; external GitHub Project access is
+  still blocked by the integration. Authorization ends at P3-03; later tasks planned.
 - Completed: P0, P1, all seven P2 tasks, P4-01 and P3-01. PR112 corrected the
   strict durable fixture without weakening its counter/failure assertions.
   Its normal merge8f234c44a0c47fc3ef4583e775a591cd90158185 passed all11
