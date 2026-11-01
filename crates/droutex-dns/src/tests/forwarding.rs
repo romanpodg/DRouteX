@@ -170,6 +170,122 @@ fn answer(query: &[u8], code: u8, truncated: bool) -> Vec<u8> {
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn block_precedes_local_data_and_local_answers_do_not_reach_upstream() {
+    let upstream = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+    let server = server(
+        "127.0.0.1".parse().unwrap(),
+        vec![(Transport::UdpTcp, upstream.local_addr().unwrap())],
+        "none",
+        Arc::new(Mutex::new(Ok(BTreeSet::new()))),
+    )
+    .await;
+    let mut doc = server.doc.clone();
+    doc["privateRecords"] = json!([{"id":text(70),"profile":text(10),"name":"example.test","ttl":42,"record":{"kind":"a","address":"192.0.2.1"}}]);
+    doc["profiles"][0]["defaultDnsAction"] = json!({"kind":"block"});
+    apply_forwarding(&server.owner, &doc, &[Transport::UdpTcp], "none", 2);
+    let blocked = Message::from_vec(&exchange_once(&server, QUERY).await.unwrap()).unwrap();
+    assert_eq!(blocked.metadata.response_code, ResponseCode::NXDomain);
+    assert!(blocked.answers.is_empty());
+    doc["profiles"][0]["defaultDnsAction"] = json!({"kind":"resolve","upstream":text(60)});
+    apply_forwarding(&server.owner, &doc, &[Transport::UdpTcp], "none", 3);
+    let local = Message::from_vec(&exchange_once(&server, QUERY).await.unwrap()).unwrap();
+    assert_eq!(local.metadata.response_code, ResponseCode::NoError);
+    assert_eq!(local.answers.len(), 1);
+    assert_eq!(
+        local.answers[0].data,
+        RData::A(A("192.0.2.1".parse().unwrap()))
+    );
+    assert!(!local.metadata.authentic_data);
+    let mut buffer = [0; 512];
+    assert!(
+        timeout(Duration::from_millis(150), upstream.recv_from(&mut buffer))
+            .await
+            .is_err()
+    );
+    server.close().await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn local_answers_are_isolated_across_authenticated_profiles() {
+    let upstream = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+    let udp = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+    let tcp = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let udp_addr = udp.local_addr().unwrap();
+    let tcp_addr = tcp.local_addr().unwrap();
+    let mut doc = document(udp_addr, tcp_addr);
+    let resolve = json!({"kind":"resolve", "upstream":text(60)});
+    doc["profiles"][0]["defaultDnsAction"] = resolve.clone();
+    doc["profiles"].as_array_mut().unwrap().push(json!({"id":text(11),"name":"Second","defaultDnsAction":resolve,"defaultTrafficAction":{"kind":"deny"}}));
+    doc["endpoints"][0]["access"].as_array_mut().unwrap().pop();
+    doc["endpoints"].as_array_mut().unwrap().push(json!({"id":text(31),"name":"Second","enabled":true,"profile":text(11),"access":[{"transport":"tcp","listener":text(21),"grants":[text(41)]}]}));
+    doc["legacyGrants"][1]["endpoint"] = json!(text(31));
+    doc["privateRecords"] = json!([
+        {"id":text(70),"profile":text(10),"name":"example.test","ttl":42,"record":{"kind":"a","address":"192.0.2.1"}},
+        {"id":text(71),"profile":text(11),"name":"example.test","ttl":42,"record":{"kind":"a","address":"192.0.2.2"}}
+    ]);
+    let owner = Arc::new(Deployment::in_memory(typed(1), keys().1));
+    apply_forwarding(&owner, &doc, &[Transport::UdpTcp], "none", 1);
+    let refresh = Arc::new(crate::clock::Refresh::new());
+    let (stop, shutdown) = watch::channel(false);
+    let handle = start_runtime(
+        std::future::ready(()),
+        runtime::serve_with_refresh(
+            Arc::clone(&owner),
+            vec![
+                ListenerSocket::Udp {
+                    id: typed(20),
+                    socket: udp,
+                },
+                ListenerSocket::Tcp {
+                    id: typed(21),
+                    socket: tcp,
+                },
+            ],
+            shutdown,
+            crate::forward::fixture(
+                vec![(
+                    typed(60),
+                    vec![(Transport::UdpTcp, upstream.local_addr().unwrap())],
+                )],
+                Arc::new(Mutex::new(Ok(BTreeSet::new()))),
+            )
+            .unwrap(),
+            Arc::clone(&refresh),
+        ),
+    )
+    .await;
+    let server = Server {
+        owner,
+        refresh,
+        doc,
+        udp: udp_addr,
+        tcp: tcp_addr,
+        stop,
+        handle,
+    };
+    let first = Message::from_vec(&exchange_once(&server, QUERY).await.unwrap()).unwrap();
+    let mut stream = TcpStream::connect(tcp_addr).await.unwrap();
+    frame(&mut stream, QUERY).await;
+    let second = read_reply(&mut stream).await;
+    assert_eq!(
+        first.answers[0].data,
+        RData::A(A("192.0.2.1".parse().unwrap()))
+    );
+    assert_eq!(
+        second.answers[0].data,
+        RData::A(A("192.0.2.2".parse().unwrap()))
+    );
+    drop(stream);
+    let mut buffer = [0; 512];
+    assert!(
+        timeout(Duration::from_millis(150), upstream.recv_from(&mut buffer))
+            .await
+            .is_err()
+    );
+    server.close().await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn udp_forwarding_uses_fresh_query_and_preserves_only_clean_client_semantics() {
     let upstream = UdpSocket::bind("127.0.0.1:0").await.unwrap();
     let address = upstream.local_addr().unwrap();

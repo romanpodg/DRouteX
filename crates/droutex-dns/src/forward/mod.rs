@@ -107,6 +107,26 @@ impl Processor for Forwarder {
         selection: PolicySelection<'_, DnsAction>,
         context: &Processing<'_, '_>,
     ) -> Result<Reply> {
+        match selection.action() {
+            DnsAction::Block {} => {
+                return Ok(response(request, ResponseCode::NXDomain).into());
+            }
+            DnsAction::Resolve { .. } => {
+                if let Some(reply) = crate::policy::local_answer(
+                    request,
+                    selection.profile(),
+                    context
+                        .auth
+                        .decision()
+                        .compiled_configuration()
+                        .private_records(),
+                    context.budget,
+                )? {
+                    return Ok(reply.into());
+                }
+            }
+            DnsAction::Gateway { .. } => {}
+        }
         let DnsAction::Resolve { upstream } = selection.action() else {
             return Ok(response(request, ResponseCode::ServFail).into());
         };

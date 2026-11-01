@@ -113,8 +113,8 @@ with actual account reviews and normal merges. Fresh exact-main41292606417
 on3d0cd66d passes all11 jobs and both processed reports. The [application evidence](P3_03_CACHE_REVIEW.md#completed-d54-acceptance-after-checkpoint-correction)
 preserves both failed main runs, reviewed fixes and the P3-02 empty-RDATA deferral.
 Repository Roadmap/backlog reflect completion; external GitHub Project access
-remains blocked by the integration. Authorization ends at P3-03; later tasks
-remain planned.
+remains blocked by the integration. The owner authorized P3-04 and selected BLOCK NXDOMAIN before profile-local
+records on 2026-11-02; implementation is in progress. P3-05 and later tasks remain planned.
 
 Finish and merge each authorized implementation PR before starting the next.
 Subsequent work follows the DAG and owning acceptance contracts. P1-06 library
