@@ -8,14 +8,16 @@ Task reviews hold exact acceptance evidence. Later dated evidence supersedes
 historical checkpoints below; reconcile conflicts before dependent work.
 
 - The owner accepted the complete [D54 cache contract](P3_03_CACHE_CONTRACT.md)
-  on2026-11-01. Runtime PR117 merged normally at8779a2d9 after actual implementation/
-  final account reviews, all11 final-head CI41248935383 jobs and both processed
-  reports. Exact-main41287781675 subsequently failed Windows fixture UDP binds
-  with10013; its other10 jobs passed. P3-03 remains open/in_progress while a bounded
-  test-only shared-port setup correction is prepared. Do not mark acceptance or
-  start a later task until fresh platform/main gates pass. See the
-  [application evidence](P3_03_CACHE_REVIEW.md#exact-main-windows-fixture-failure).
-  The P3-02 empty-RDATA disposition is unchanged; external Project access is blocked.
+  on2026-11-01. P3-03 is completed: runtime PR117 and test-only fixture correction
+  PR118 passed actual account reviews and normal merges. Fresh exact-main41290188222
+  on641f6eac passes all11 jobs, both processed reports,345 Linux/312 Windows tests
+  per default/no-default and client37/37 per profile/platform with mandatory IPv6,
+  zero failed/ignored/filtered. See the [application evidence](P3_03_CACHE_REVIEW.md#reviewed-fixture-correction-and-fresh-main-verification).
+  Earlier exact-main41287781675 remains failed; its Windows10013 fixture failure
+  was corrected without weakening DNS/admission/deadline assertions. The P3-02
+  empty-RDATA and specific CodeScene maintenance dispositions are unchanged.
+  Repository Roadmap/backlog are updated; external Project synchronization remains
+  blocked by FORBIDDEN. Authorization ends at P3-03; later tasks remain planned.
 - Completed: P0, P1, all seven P2 tasks, P4-01 and P3-01. PR112 corrected the
   strict durable fixture without weakening its counter/failure assertions.
   Its normal merge8f234c44a0c47fc3ef4583e775a591cd90158185 passed all11
