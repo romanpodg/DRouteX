@@ -2,7 +2,7 @@
 
 Status: **accepted by direct owner reply on 2026-11-01**. The owner accepted
 all proposed choices and explicitly requested D54 implementation and Project/Roadmap
-updates. P3-03 implementation is in review; its own acceptance gates remain required.
+updates. Runtime implementation is merged; exact-main acceptance remains open.
 No new dependency, vendor patch or deployment is authorized.
 The [application evidence](P3_03_CACHE_REVIEW.md) and
 [allocation audit](P3_03_CACHE_ALLOCATION.md) track actual implementation gates.

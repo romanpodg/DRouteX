@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P3-03 scoped cache in review under owner-accepted D54; corrected implementation review and CI passed, final/merge/main gates remain",
+  "status": "D54 runtime merged through PR117; P3-03 remains open for bounded Windows fixture setup correction after failed exact-main verification",
   "date": "2026-11-01",
   "phases": {
     "P0": "Foundation",
@@ -679,14 +679,15 @@
         "crates/droutex-dns/src/wire.rs",
         "crates/droutex-dns/src/tests/forwarding/cache.rs",
         "docs/planning/P3_03_CACHE_ALLOCATION.md",
-        "docs/planning/P3_03_CACHE_REVIEW.md"
+        "docs/planning/P3_03_CACHE_REVIEW.md",
+        "crates/droutex-dns/src/tests/ports.rs"
       ],
       "acceptance": "Profile rewrites never leak; TTL and negative answers expire correctly; memory bound enforced",
       "tests": "Virtual clock, concurrent scopes and policy generation changes",
       "security": "Partition validated origin data and local overrides",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "in_review",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"

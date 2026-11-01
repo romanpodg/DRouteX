@@ -1,9 +1,10 @@
 # P3-03 cache implementation evidence
 
-Status: in review under owner-accepted [D54](P3_03_CACHE_CONTRACT.md).
-Implementation-head account review and hosted Windows/Linux gates passed as
-recorded below. Final whole-PR review, final-head checks and normal merge/main
-gates remain required. No completion, deployment, DNSSEC validation or full RR transparency is
+Status: runtime merged; exact-main acceptance remains open under owner-accepted
+[D54](P3_03_CACHE_CONTRACT.md).
+Implementation/final reviews, final-head checks and normal PR117 merge passed.
+Exact-main verification failed two Windows fixture binds; correction and fresh
+platform/merge/main proof remain required. No completion, deployment, DNSSEC validation or full RR transparency is
 claimed by local checks.
 
 ## Authorization and implementation
@@ -160,3 +161,50 @@ exact heads and hosted checks/reports, investigate concrete findings, then perfo
 normal merge and exact-main verification. Required missing evidence keeps P3-03
 open. Existing P3-02 failures/dispositions and D53 security/lifecycle boundaries
 are not waived by the cache's local success.
+
+
+## Final review and normal runtime merge
+
+Final documentation/evidence head3b8cc848c92bb11b9f989f8064d307fe94d712fc passed
+all11 [CI41248935383](https://github.com/romanpodg/DRouteX/actions/runs/41248935383)
+jobs and both processed Codecov reports. Direct platform logs repeat309 Windows/
+342 Linux tests per default/no-default and client37/37 with mandatory raw/composed
+IPv6, no failed/ignored/filtered cases. Actual final whole-PR
+[Codex receipt6550079931](https://github.com/romanpodg/DRouteX/pull/117#issuecomment-6550079931)
+records that head without findings. Marking the draft ready triggered another
+same-head review; its execution summary also completed without findings before
+merge. CodeScene8220525 remained failed with the same checked maintenance findings.
+
+[PR117](https://github.com/romanpodg/DRouteX/pull/117) merged normally on2026-11-01
+at8779a2d9f7dd010119fbfca8d85adf1e18888832, parents8cf65d4 and exact reviewed3b8cc84.
+The [merge evidence](https://github.com/romanpodg/DRouteX/pull/117#issuecomment-6555338547)
+records reviews, checks, report processing and current dispositions. No force,
+protection change, administrative bypass or public deployment occurred.
+
+## Exact-main Windows fixture failure
+
+[Exact-main41287781675](https://github.com/romanpodg/DRouteX/actions/runs/41287781675)
+on8779a2d9 failed Workspace/windows-latest; its other10 jobs passed. Direct Windows
+job124792500605 logs show PermissionDenied/WSA10013 at forwarding.rs304 and1280:
+a TCP ephemeral port had been selected, but binding UDP at that same address
+failed before the actual DNS exchange. The DNS suite was97 passed/2 failed;
+no-default and later workspace qualification steps were not reached. The failure
+is retained, not relabeled green or waived because earlier heads passed.
+
+These fixtures assumed a TCP-allocated port was simultaneously available to UDP.
+The observed failure proves that precondition did not hold; the exact OS reservation/
+competing actor is not established. Windows protocol-specific exclusions and
+concurrent port claims are consistent with the result. Do not change host policy
+or claim an attributed reservation without evidence.
+
+The correction reserves an OS-selected UDP loopback candidate, then TCP at the
+same numeric address, retaining both before publishing the fixture. It allows at
+most64 candidates within one5s setup cutoff, releasing every failed candidate;
+only AddrInUse/PermissionDenied on the candidate TCP bind permit another choice.
+Other errors fail immediately and exhaustion still fails. Three setup regressions
+exercise denied/in-use candidates, finite exhaustion and cancellation ownership;
+a one-candidate mutation fails the unavailable-port regression. Affected TC/fallback/
+changed-inventory fixtures share this helper. This is fixture resource selection,
+not DNS retransmission, test rerun, admission/quota refund, product port acceptance
+or a replacement for clean mandatory Windows/Linux evidence. Original query,
+response, TC/fallback and work/deadline assertions remain unchanged.

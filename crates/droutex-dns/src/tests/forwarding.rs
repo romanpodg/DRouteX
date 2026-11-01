@@ -299,9 +299,8 @@ async fn tcp_forwarding_joins_one_shot_upstream_before_returning_clean_answer() 
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn validated_udp_tc_uses_tcp_at_same_pinned_target_without_datagram_retry() {
-    let tcp = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let (tcp, udp) = paired_loopback(v4()).await.unwrap();
     let address = tcp.local_addr().unwrap();
-    let udp = UdpSocket::bind(address).await.unwrap();
     let datagram = tokio::spawn(async move {
         let mut bytes = [0; 4097];
         let (length, peer) = timeout(Duration::from_secs(3), udp.recv_from(&mut bytes))
@@ -605,9 +604,8 @@ async fn extended_upstream_rcode_never_becomes_a_false_noerror_for_legacy_client
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn expired_tc_continuation_uses_explicit_next_member_without_late_tcp() {
-    let tcp = TcpListener::bind("127.0.0.1:0").await.unwrap();
+    let (tcp, udp) = paired_loopback(v4()).await.unwrap();
     let address = tcp.local_addr().unwrap();
-    let udp = UdpSocket::bind(address).await.unwrap();
     let next = UdpSocket::bind("127.0.0.1:0").await.unwrap();
     let next_address = next.local_addr().unwrap();
     let first = tokio::spawn(async move {
@@ -1275,9 +1273,8 @@ async fn invalid_udp_frames_use_only_explicit_fallback_and_never_authorize_tcp()
         "query_bit",
         "incomplete_opt",
     ] {
-        let tcp = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let (tcp, upstream) = paired_loopback(v4()).await.unwrap();
         let address = tcp.local_addr().unwrap();
-        let upstream = UdpSocket::bind(address).await.unwrap();
         let next = UdpSocket::bind("127.0.0.1:0").await.unwrap();
         let next_address = next.local_addr().unwrap();
         let first = tokio::spawn(async move {
