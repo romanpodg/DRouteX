@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P3-04 completed; P3-05 implementation in progress with DNSSEC transit and HTTPS/SVCB compatibility decisions accepted.**
+**P3-05 completed through PR124 and exact-main 41428157616; P3-06 remains planned.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -367,7 +367,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P3-05: Handle DNSSEC and HTTPS/SVCB coherently
 
-Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,9,22.
+Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,9,22.
 
 | Field | Deliverable / evidence |
 |---|---|
