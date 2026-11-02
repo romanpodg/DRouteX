@@ -1,4 +1,4 @@
-# P3-05 DNSSEC and HTTPS/SVCB: work in progress
+# P3-05 DNSSEC and HTTPS/SVCB: implementation evidence
 
 On 2026-11-02 the owner requested P3-05 and selected bounded transit of DO/CD
 and signed data without local DNSSEC validation. Local policy answers remain
@@ -8,7 +8,7 @@ Ordinary HTTPS/SVCB data retains its endpoint and parameters. SmartDNS redirects
 with HTTPS/SVCB are unsupported pending P3-06; no ECH removal or QUIC control is
 claimed. These choices do not authorize deployment or a new dependency profile.
 
-The implementation in progress forwards DO/CD, clears upstream AD/AA, and keeps
+The implementation forwards DO/CD, clears upstream AD/AA, and keeps
 DNSSEC-mode queries out of the D53 non-DNSSEC cache. The existing plaintext
 upstream is not authenticated. Response and transport limits still apply.
 The current codec treats DNSSEC records as opaque data; this is not proof of
@@ -46,10 +46,9 @@ Cargo dependencies and features are unchanged. The Linux qualification workflow
 now runs the client explicitly; ordinary workspace runs without its environment
 variable exercise the wire regression but not the independent client.
 
-These are interim results, not task acceptance. The IPv6 bypass matrix for a
-supported redirect belongs to its later integration; external current-head review,
-CI, and security/architecture review remain required. Do not mark P3-05 complete
-or start P3-06 on this evidence.
+The IPv6 bypass matrix for an actual supported redirect belongs to its later
+integration. P3-05 does not establish gateway, public-root or deployed-service
+acceptance. P3-06 remains separately gated.
 
 PR [#124](https://github.com/romanpodg/DRouteX/pull/124) implementation head
 `bc687a42fddde04db2fbcdeb536bdbfa6e010f0a` received completed Codex Code Review
@@ -57,3 +56,17 @@ with no findings. [CodeScene 8236255](https://codescene.io/projects/86145/delta/
 failed on the auxiliary planning validator; its scoped disposition is in
 [OPEN_DECISIONS](OPEN_DECISIONS.md#p3-05-review-dispositions). GitHub reported
 that check as not required. New heads need their own review and checks.
+
+PR124 merged normally as `3f1fa33f4bceae063e053e3c09d4be92306487e8` after the
+owner explicitly authorized the merge. Codex Code Review completed without
+findings on final head `7f78a6e02e527a974797626b7b8187920a3f191c`.
+PR-head Foundation run [41423277587](https://github.com/romanpodg/DRouteX/actions/runs/41423277587)
+passed all 11 jobs and both Codecov patch checks; the Codecov exact-head report
+was complete with two sessions. Final-head
+[CodeScene 8236343](https://codescene.io/projects/86145/delta/results/8236343)
+remained failed with the same recorded non-required planning-tool finding.
+Exact-main Foundation run [41428157616](https://github.com/romanpodg/DRouteX/actions/runs/41428157616)
+passed all 11 jobs on the exact merge commit. Codecov reported the commit
+complete and both planning and backend uploads `merged`. The requested separate
+security review has not produced a result. The PR records a security and architecture
+assessment; no separate successful security review or deployment is claimed.
