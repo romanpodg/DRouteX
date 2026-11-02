@@ -433,6 +433,20 @@ these areas when changing planning authorization or local-record behavior, or
 when a concrete defect is found. No suppression, required-check waiver or
 successful CodeScene result is claimed; recheck each new head.
 
+## P3-05 review dispositions
+
+[CodeScene 8236255](https://codescene.io/projects/86145/delta/results/8236255)
+failed on implementation head `bc687a4`: the auxiliary planning validator's
+`validate_review_boundary` declined from 8.72 to 8.67 for a complex method.
+The DNS `answer` method improved; the other two gates passed. The validator's
+new checks preserve the explicit authorization and prerequisite boundary, with
+planning self-tests and 21 planning-tool tests passing. No functional defect is
+identified by the metric. The P3 maintainer defers score-only restructuring of
+this auxiliary tool; revisit before its next authorization-boundary change or on
+a concrete defect. The failure remains failed, and GitHub reported this check
+as not required for PR124. This disposition does not waive any required check
+or substitute for review on a new head.
+
 ## Development guidance maintenance, 2026-10-23
 
 Owner-authorized documentation maintenance implements the seven reviewed proposals.

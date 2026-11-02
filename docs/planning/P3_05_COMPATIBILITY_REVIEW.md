@@ -50,3 +50,10 @@ These are interim results, not task acceptance. The IPv6 bypass matrix for a
 supported redirect belongs to its later integration; external current-head review,
 CI, and security/architecture review remain required. Do not mark P3-05 complete
 or start P3-06 on this evidence.
+
+PR [#124](https://github.com/romanpodg/DRouteX/pull/124) implementation head
+`bc687a42fddde04db2fbcdeb536bdbfa6e010f0a` received completed Codex Code Review
+with no findings. [CodeScene 8236255](https://codescene.io/projects/86145/delta/results/8236255)
+failed on the auxiliary planning validator; its scoped disposition is in
+[OPEN_DECISIONS](OPEN_DECISIONS.md#p3-05-review-dispositions). GitHub reported
+that check as not required. New heads need their own review and checks.
