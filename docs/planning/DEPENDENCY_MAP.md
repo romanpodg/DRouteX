@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P3-04 completed through PR122 and exact-main 41344649618; P3-05 remains planned. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P3-04 completed; P3-05 implementation in progress with DNSSEC transit and HTTPS/SVCB compatibility decisions accepted. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

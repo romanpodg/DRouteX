@@ -2,11 +2,16 @@
 
 ## Current execution card
 
+- On 2026-11-02 the owner authorized P3-05 and selected bounded DNSSEC transit,
+  root DNSKEY via the admitted Profile default, and explicit non-support for
+  HTTPS/SVCB SmartDNS redirects. Work is in progress; see
+  [P3-05 evidence](P3_05_COMPATIBILITY_REVIEW.md). P3-06 and deployment remain gated.
+
 - On 2026-11-02 the owner authorized P3-04 and selected NXDOMAIN for BLOCK,
   followed by profile-local records and DIRECT/upstream. P3-04 completed through
   PR122 and exact-main 41344649618; [P3-04 evidence](P3_04_OVERRIDE_REVIEW.md)
   records review, results and limits.
-  P3-05 and deployment remain separate gates.
+  P3-05 is now in progress; deployment remains a separate gate.
 
 Reviewed 2026-11-01. This card is the current work/authorization entry point;
 [backlog.json](backlog.json) is canonical for task status/dependencies/delivery.
@@ -25,7 +30,7 @@ historical checkpoints below; reconcile conflicts before dependent work.
   without weakening product admission, deadlines, query counts or test assertions.
   P3-02 empty-RDATA and specific CodeScene maintenance dispositions remain unchanged.
   Repository Roadmap/backlog reflect completion; external GitHub Project access is
-  still blocked by the integration. P3-04 is complete; P3-05 and later tasks remain planned.
+  still blocked by the integration. P3-04 is complete; P3-05 is in progress.
 - Completed: P0, P1, all seven P2 tasks, P4-01 and P3-01. PR112 corrected the
   strict durable fixture without weakening its counter/failure assertions.
   Its normal merge8f234c44a0c47fc3ef4583e775a591cd90158185 passed all11

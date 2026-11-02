@@ -43,6 +43,40 @@ impl<D, T> PolicySet<D, T> {
     where
         D: Eq,
     {
+        let profile = self.dns_profile(binding)?;
+        ordering::select(
+            PolicyScope::DnsEndpoint(binding.endpoint),
+            profile.id,
+            &profile.dns_default,
+            profile
+                .dns_rules
+                .iter()
+                .filter(|rule| applicable(rule, query)),
+        )
+    }
+
+    /// Select the Profile default for a root DNSKEY query. Root is not a
+    /// policy domain and cannot match a domain rule. Admission is separate.
+    pub fn evaluate_root_dnskey(
+        &self,
+        binding: &DnsProfileBinding,
+    ) -> Result<PolicySelection<'_, D>, EvaluationError>
+    where
+        D: Eq,
+    {
+        let profile = self.dns_profile(binding)?;
+        ordering::select(
+            PolicyScope::DnsEndpoint(binding.endpoint),
+            profile.id,
+            &profile.dns_default,
+            std::iter::empty(),
+        )
+    }
+
+    fn dns_profile(
+        &self,
+        binding: &DnsProfileBinding,
+    ) -> Result<&PreparedProfile<D, T>, EvaluationError> {
         let endpoint = self
             .endpoints
             .get(&binding.endpoint)
@@ -53,19 +87,9 @@ impl<D, T> PolicySet<D, T> {
         if endpoint.profile != binding.profile {
             return Err(EvaluationError::EndpointBindingMismatch);
         }
-        let profile = self
-            .profiles
+        self.profiles
             .get(&endpoint.profile)
-            .ok_or(EvaluationError::UnknownProfile)?;
-        ordering::select(
-            PolicyScope::DnsEndpoint(binding.endpoint),
-            profile.id,
-            &profile.dns_default,
-            profile
-                .dns_rules
-                .iter()
-                .filter(|rule| applicable(rule, query)),
-        )
+            .ok_or(EvaluationError::UnknownProfile)
     }
 
     /// Requires independently established gateway identity and the actual TCP

@@ -65,6 +65,16 @@ jobs:
           python-version: '3.12'
       - name: Install approved qualification toolchain
         run: rustup toolchain install 1.99.0 --profile minimal --component rustfmt,clippy
+      - name: Install isolated DNSSEC validation client
+        run: |
+          python -m pip install --only-binary=:all: --require-hashes -r tests/dns-fixtures/requirements-linux.txt
+      - name: Check signed DNSSEC transit with an independent validating client
+        env:
+          DROUTEX_DNSSEC_CLIENT_PYTHON: python
+        run: |
+          python tests/dns-fixtures/verify_dnssec_vector.py
+          cargo test -p droutex-dns signed_dnssec_transit --locked
+          cargo test -p droutex-dns signed_dnssec_transit --no-default-features --locked
       - name: Generate disposable local test identities
         run: python tests/dependencies/prepare_certificates.py .setup/dependency-certificates
       - run: cargo fmt --manifest-path tests/dependencies/Cargo.toml -- --check

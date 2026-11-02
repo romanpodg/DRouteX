@@ -115,7 +115,7 @@ preserves both failed main runs, reviewed fixes and the P3-02 empty-RDATA deferr
 Repository Roadmap/backlog reflect completion; external GitHub Project access
 remains blocked by the integration. The owner authorized P3-04 and selected BLOCK NXDOMAIN before profile-local
 records on 2026-11-02. P3-04 completed through PR122 and exact-main
-41344649618; P3-05 and later tasks remain planned.
+41344649618. P3-05 is authorized and in progress; P3-06 and later tasks remain planned.
 
 Finish and merge each authorized implementation PR before starting the next.
 Subsequent work follows the DAG and owning acceptance contracts. P1-06 library

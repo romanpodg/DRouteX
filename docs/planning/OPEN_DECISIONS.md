@@ -65,7 +65,7 @@ IPv6/QUIC/application enforcement.
 | D06 | Coherent IPv4/IPv6 inside DNS/proxy boundary, with explicit uncontrolled-client limits | P3-04/P4-08 | Network owner; captures |
 | D07 | Select controlled origin/proxy and 2–3 authorized DNS/proxy reference services; VPN clients chosen later | P4-08 | User/operator |
 | D08 | Exact-address manual bootstrap plus disabled-by-default secure observation learning; separate DNS/gateway scopes, bounded expiry, cause/revocation and no conflicting last-query Profile switch; no automatic /64 | P0-01 / P4-01/P3-06/P3-07 | Foundation accepted; numeric/clock limits and actual source-mismatch/conflict/expiry/derived-revocation tests |
-| D09 | BLOCK returns NXDOMAIN with precedence over Profile-local records (owner reply 2026-11-02); DNSSEC override and HTTPS/SVCB compatibility remain open | P3-04/P3-05 | Network owner; validating client tests |
+| D09 | BLOCK returns NXDOMAIN with precedence over Profile-local records (owner reply 2026-11-02); owner selected bounded DNSSEC transit, unsigned local answers and unsupported HTTPS/SVCB SmartDNS redirects on 2026-11-02 | P3-04/P3-05 | Network owner; validating client tests |
 | D10 | Wildcard excludes apex; priority/specificity/stable ordering and conflict rejection | P2-01 | Product owner; properties |
 | D11 | Owner accepted the complete bounded D11 profile in this chat2026-10-18 (local .setup/p1-05/implementation-design-proposal.md). D35 qualification and strict candidate verification are implemented/reviewed/tested on cd0e2c5; durable publication/activation remains P1-06 | P1-05 | Security owner; replay/crash tests |
 | D12 | TUN-to-Xray bridge and privileged routing design deferred | Post-MVP P5/P9 | Real-engine spike before claiming support |
@@ -432,6 +432,20 @@ planning tools are not independent metric targets. Maintainers should revisit
 these areas when changing planning authorization or local-record behavior, or
 when a concrete defect is found. No suppression, required-check waiver or
 successful CodeScene result is claimed; recheck each new head.
+
+## P3-05 review dispositions
+
+[CodeScene 8236255](https://codescene.io/projects/86145/delta/results/8236255)
+failed on implementation head `bc687a4`: the auxiliary planning validator's
+`validate_review_boundary` declined from 8.72 to 8.67 for a complex method.
+The DNS `answer` method improved; the other two gates passed. The validator's
+new checks preserve the explicit authorization and prerequisite boundary, with
+planning self-tests and 21 planning-tool tests passing. No functional defect is
+identified by the metric. The P3 maintainer defers score-only restructuring of
+this auxiliary tool; revisit before its next authorization-boundary change or on
+a concrete defect. The failure remains failed, and GitHub reported this check
+as not required for PR124. This disposition does not waive any required check
+or substitute for review on a new head.
 
 ## Development guidance maintenance, 2026-10-23
 

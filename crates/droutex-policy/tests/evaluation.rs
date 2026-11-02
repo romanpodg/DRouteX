@@ -508,6 +508,10 @@ fn endpoint_and_gateway_profile_scopes_remain_independent_of_dns_history() {
             *p.evaluate_dns(&binding, &query()).unwrap().action(),
             if ep == 10 { 1 } else { 3 }
         );
+        assert_eq!(
+            *p.evaluate_root_dnskey(&binding).unwrap().action(),
+            if ep == 10 { 1 } else { 3 }
+        );
         let tcp = p.evaluate_tcp(&identity(20), &query(), port(443)).unwrap();
         assert_eq!(
             (*tcp.action(), tcp.profile(), tcp.scope()),
@@ -543,6 +547,22 @@ fn endpoint_and_gateway_profile_scopes_remain_independent_of_dns_history() {
         Eval::UnknownEndpoint
     );
     assert_eq!(
+        p.evaluate_root_dnskey(&DnsProfileBinding {
+            endpoint: id(10),
+            profile: id(2)
+        })
+        .unwrap_err(),
+        Eval::EndpointBindingMismatch
+    );
+    assert_eq!(
+        p.evaluate_root_dnskey(&DnsProfileBinding {
+            endpoint: id(99),
+            profile: id(1)
+        })
+        .unwrap_err(),
+        Eval::UnknownEndpoint
+    );
+    assert_eq!(
         p.evaluate_tcp(&identity(99), &query(), port(443))
             .unwrap_err(),
         Eval::UnknownGatewayGroup
@@ -552,6 +572,10 @@ fn endpoint_and_gateway_profile_scopes_remain_independent_of_dns_history() {
     let p = PolicySet::new(vec![profile(1, vec![], vec![])], vec![disabled], vec![]).unwrap();
     assert_eq!(
         p.evaluate_dns(&binding(), &query()).unwrap_err(),
+        Eval::UnavailableEndpoint
+    );
+    assert_eq!(
+        p.evaluate_root_dnskey(&binding()).unwrap_err(),
         Eval::UnavailableEndpoint
     );
 }
