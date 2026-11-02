@@ -169,6 +169,222 @@ fn answer(query: &[u8], code: u8, truncated: bool) -> Vec<u8> {
     response
 }
 
+async fn dnssec_transit_keeps_rrsig_and_bypasses_non_dnssec_cache(ip: IpAddr) {
+    let vector: Value = serde_json::from_str(include_str!(
+        "../../../../tests/dns-fixtures/dnssec-ed25519.json"
+    ))
+    .unwrap();
+    let rrsig = hex(vector["rrsig_rdata"].as_str().unwrap());
+    let expected_rrsig = rrsig.clone();
+    let validating_client = std::env::var_os("DROUTEX_DNSSEC_CLIENT_PYTHON");
+    let client_enabled = validating_client.is_some();
+    let upstream = UdpSocket::bind((ip, 0)).await.unwrap();
+    let address = upstream.local_addr().unwrap();
+    let fixture = tokio::spawn(async move {
+        let mut bytes = [0; 4097];
+        for index in 0..3 + usize::from(client_enabled) {
+            let (length, peer) = timeout(Duration::from_secs(3), upstream.recv_from(&mut bytes))
+                .await
+                .unwrap()
+                .unwrap();
+            let request = wire::parse(&bytes[..length]).unwrap();
+            assert_eq!(request.metadata.checking_disabled, index != 0);
+            assert_eq!(request.edns.as_ref().unwrap().flags().dnssec_ok, index != 0);
+            let mut reply = answer(&bytes[..length], 0, false);
+            if index != 0 {
+                reply[7] = 2;
+                reply.extend_from_slice(b"\xc0\x0c\x00\x2e\x00\x01\x00\x00\x00\x3c");
+                reply.extend_from_slice(&(rrsig.len() as u16).to_be_bytes());
+                reply.extend_from_slice(&rrsig);
+            }
+            upstream.send_to(&reply, peer).await.unwrap();
+        }
+    });
+    let server = server(
+        ip,
+        vec![(Transport::UdpTcp, address)],
+        "none",
+        Arc::new(Mutex::new(Ok(BTreeSet::new()))),
+    )
+    .await;
+    let mut request = QUERY.to_vec();
+    request[3] |= 0x10;
+    request[11] = 1;
+    request.extend_from_slice(b"\x00\x00\x29\x04\xd0\x00\x00\x80\x00\x00\x00");
+    let mut stream = TcpStream::connect(server.tcp).await.unwrap();
+    frame(&mut stream, QUERY).await;
+    assert_eq!(read_reply(&mut stream).await.answers.len(), 1);
+    for _ in 0..2 {
+        frame(&mut stream, &request).await;
+        let reply = read_reply(&mut stream).await;
+        assert_eq!(reply.metadata.response_code, ResponseCode::NoError);
+        assert!(reply.metadata.checking_disabled);
+        assert!(!reply.metadata.authentic_data);
+        assert!(reply.edns.as_ref().unwrap().flags().dnssec_ok);
+        assert_eq!(reply.answers.len(), 2);
+        assert_eq!(
+            reply.answers[1].record_type(),
+            hickory_proto::rr::RecordType::RRSIG
+        );
+        let RData::Unknown { rdata, .. } = &reply.answers[1].data else {
+            panic!("expected opaque RRSIG");
+        };
+        assert_eq!(rdata.anything, expected_rrsig);
+        assert_eq!(
+            reply.answers[0].data,
+            RData::A(A("203.0.113.9".parse().unwrap()))
+        );
+    }
+    drop(stream);
+    if let Some(python) = &validating_client {
+        validating_dnssec_client(python, server.tcp, "signed").await;
+    }
+    fixture.await.unwrap();
+    if let Some(python) = &validating_client {
+        let mut doc = server.doc.clone();
+        doc["privateRecords"] = json!([{"id":text(70),"profile":text(10),"name":"example.test","ttl":42,"record":{"kind":"a","address":"192.0.2.1"}}]);
+        apply_forwarding(&server.owner, &doc, &[Transport::UdpTcp], "none", 2);
+        validating_dnssec_client(python, server.tcp, "override").await;
+    }
+    server.close().await;
+}
+
+async fn validating_dnssec_client(python: &std::ffi::OsStr, address: SocketAddr, mode: &str) {
+    let mut command = std::process::Command::new(python);
+    command.arg(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../../tests/dns-fixtures/validating_client.py"
+    ));
+    command
+        .arg(address.ip().to_string())
+        .arg(address.port().to_string())
+        .arg(mode);
+    let result = tokio::task::spawn_blocking(move || command.output())
+        .await
+        .unwrap()
+        .unwrap();
+    assert!(
+        result.status.success(),
+        "validating client failed: {}",
+        String::from_utf8_lossy(&result.stderr)
+    );
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn signed_dnssec_transit_ipv4() {
+    dnssec_transit_keeps_rrsig_and_bypasses_non_dnssec_cache(v4()).await;
+    if let Some(python) = std::env::var_os("DROUTEX_DNSSEC_CLIENT_PYTHON") {
+        independent_client_validates_dnssec_chain_from_root(&python).await;
+    }
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn signed_dnssec_transit_ipv6() {
+    dnssec_transit_keeps_rrsig_and_bypasses_non_dnssec_cache(IpAddr::V6(
+        std::net::Ipv6Addr::LOCALHOST,
+    ))
+    .await;
+}
+
+async fn independent_client_validates_dnssec_chain_from_root(python: &std::ffi::OsStr) {
+    let vector: Value = serde_json::from_str(include_str!(
+        "../../../../tests/dns-fixtures/dnssec-chain.json"
+    ))
+    .unwrap();
+    let answers = vector["answers"].as_array().unwrap().clone();
+    let upstream = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+    let address = upstream.local_addr().unwrap();
+    let fixture = tokio::spawn(async move {
+        let mut bytes = [0; 4097];
+        for _ in 0..6 {
+            let (length, peer) = timeout(Duration::from_secs(3), upstream.recv_from(&mut bytes))
+                .await
+                .unwrap()
+                .unwrap();
+            let request = wire::parse(&bytes[..length]).unwrap();
+            let question = &request.queries[0];
+            assert!(request.metadata.checking_disabled);
+            assert!(request.edns.as_ref().unwrap().flags().dnssec_ok);
+            let entry = answers
+                .iter()
+                .find(|entry| {
+                    entry["name"] == question.name.to_ascii()
+                        && entry["type"] == question.query_type.to_string()
+                })
+                .unwrap();
+            let mut response = hex(entry["wire"].as_str().unwrap());
+            response[..2].copy_from_slice(&bytes[..2]);
+            upstream.send_to(&response, peer).await.unwrap();
+        }
+    });
+    let server = server(
+        v4(),
+        vec![(Transport::UdpTcp, address)],
+        "none",
+        Arc::new(Mutex::new(Ok(BTreeSet::new()))),
+    )
+    .await;
+    validating_dnssec_client(python, server.tcp, "chain").await;
+    fixture.await.unwrap();
+    server.close().await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn root_dnskey_uses_profile_default_and_other_root_queries_remain_unsupported() {
+    let upstream = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+    let address = upstream.local_addr().unwrap();
+    let fixture = tokio::spawn(async move {
+        let mut bytes = [0; 4097];
+        let (length, peer) = timeout(Duration::from_secs(3), upstream.recv_from(&mut bytes))
+            .await
+            .unwrap()
+            .unwrap();
+        let request = wire::parse(&bytes[..length]).unwrap();
+        assert!(request.queries[0].name.is_root());
+        assert_eq!(
+            request.queries[0].query_type,
+            hickory_proto::rr::RecordType::DNSKEY
+        );
+        let mut reply = bytes[..17].to_vec();
+        reply[2] = 0x81;
+        reply[3] = 0x80;
+        reply[7] = 1;
+        reply[10..12].fill(0);
+        reply
+            .extend_from_slice(b"\x00\x00\x30\x00\x01\x00\x00\x00\x3c\x00\x05\x01\x01\x03\x0f\x42");
+        upstream.send_to(&reply, peer).await.unwrap();
+    });
+    let server = server(
+        v4(),
+        vec![(Transport::UdpTcp, address)],
+        "none",
+        Arc::new(Mutex::new(Ok(BTreeSet::new()))),
+    )
+    .await;
+    let root_key = b"\x04\xd2\x01\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x30\x00\x01";
+    let mut stream = TcpStream::connect(server.tcp).await.unwrap();
+    frame(&mut stream, root_key).await;
+    let reply = read_reply(&mut stream).await;
+    assert_eq!(reply.metadata.response_code, ResponseCode::NoError);
+    assert_eq!(
+        reply.answers[0].record_type(),
+        hickory_proto::rr::RecordType::DNSKEY
+    );
+    fixture.await.unwrap();
+    drop(stream);
+    let mut doc = server.doc.clone();
+    doc["profiles"][0]["defaultDnsAction"] = json!({"kind":"block"});
+    apply_forwarding(&server.owner, &doc, &[Transport::UdpTcp], "none", 2);
+    let mut stream = TcpStream::connect(server.tcp).await.unwrap();
+    frame(&mut stream, root_key).await;
+    assert_eq!(
+        read_reply(&mut stream).await.metadata.response_code,
+        ResponseCode::NXDomain
+    );
+    drop(stream);
+    server.close().await;
+}
+
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn block_precedes_local_data_and_local_answers_do_not_reach_upstream() {
     let upstream = UdpSocket::bind("127.0.0.1:0").await.unwrap();
@@ -183,12 +399,17 @@ async fn block_precedes_local_data_and_local_answers_do_not_reach_upstream() {
     doc["privateRecords"] = json!([{"id":text(70),"profile":text(10),"name":"example.test","ttl":42,"record":{"kind":"a","address":"192.0.2.1"}}]);
     doc["profiles"][0]["defaultDnsAction"] = json!({"kind":"block"});
     apply_forwarding(&server.owner, &doc, &[Transport::UdpTcp], "none", 2);
-    let blocked = Message::from_vec(&exchange_once(&server, QUERY).await.unwrap()).unwrap();
+    let mut dnssec_query = QUERY.to_vec();
+    dnssec_query[3] |= 0x10;
+    dnssec_query[11] = 1;
+    dnssec_query.extend_from_slice(b"\x00\x00\x29\x04\xd0\x00\x00\x80\x00\x00\x00");
+    let blocked = Message::from_vec(&exchange_once(&server, &dnssec_query).await.unwrap()).unwrap();
     assert_eq!(blocked.metadata.response_code, ResponseCode::NXDomain);
     assert!(blocked.answers.is_empty());
+    assert!(!blocked.metadata.authentic_data);
     doc["profiles"][0]["defaultDnsAction"] = json!({"kind":"resolve","upstream":text(60)});
     apply_forwarding(&server.owner, &doc, &[Transport::UdpTcp], "none", 3);
-    let local = Message::from_vec(&exchange_once(&server, QUERY).await.unwrap()).unwrap();
+    let local = Message::from_vec(&exchange_once(&server, &dnssec_query).await.unwrap()).unwrap();
     assert_eq!(local.metadata.response_code, ResponseCode::NoError);
     assert_eq!(local.answers.len(), 1);
     assert_eq!(
@@ -806,6 +1027,110 @@ fn uncached_record_answer(query: &[u8], case: &record_vectors::RecordCase) -> Ve
     let offset = reply.len() - case.data.len() - 6;
     reply[offset..offset + 4].fill(0);
     reply
+}
+
+async fn https_and_svcb_parameters(ip: IpAddr) {
+    const DATA: &[u8] = b"\x00\x01\x03alt\x04test\x00\x00\x01\x00\x06\x02h2\x02h3\x00\x03\x00\x02\x01\xbb\x00\x04\x00\x04\xc0\x00\x02\x01\x00\x05\x00\x04\x00\x02\xaa\xbb\x00\x06\x00\x10\x20\x01\x0d\xb8\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01";
+    let upstream = UdpSocket::bind((ip, 0)).await.unwrap();
+    let address = upstream.local_addr().unwrap();
+    let fixture = tokio::spawn(async move {
+        let mut bytes = [0; 4097];
+        for code in [64, 65] {
+            let (length, peer) = timeout(Duration::from_secs(3), upstream.recv_from(&mut bytes))
+                .await
+                .unwrap()
+                .unwrap();
+            let case = record_vectors::RecordCase {
+                code,
+                data: DATA,
+                expected: "",
+            };
+            let reply = uncached_record_answer(&bytes[..length], &case);
+            upstream.send_to(&reply, peer).await.unwrap();
+        }
+    });
+    let server = server(
+        ip,
+        vec![(Transport::UdpTcp, address)],
+        "none",
+        Arc::new(Mutex::new(Ok(BTreeSet::new()))),
+    )
+    .await;
+    let mut stream = TcpStream::connect(server.tcp).await.unwrap();
+    for code in [64u16, 65] {
+        let mut request = QUERY.to_vec();
+        let offset = request.len() - 4;
+        request[offset..offset + 2].copy_from_slice(&code.to_be_bytes());
+        frame(&mut stream, &request).await;
+        let reply = read_reply(&mut stream).await;
+        let case = record_vectors::RecordCase {
+            code,
+            data: DATA,
+            expected: "",
+        };
+        let expected = Message::from_vec(&uncached_record_answer(&request, &case)).unwrap();
+        assert_eq!(reply.answers.len(), 1);
+        assert_eq!(reply.answers[0].data, expected.answers[0].data);
+        assert!(!reply.metadata.authentic_data);
+    }
+    drop(stream);
+    fixture.await.unwrap();
+    server.close().await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn https_and_svcb_preserve_parameters_on_ipv4() {
+    https_and_svcb_parameters(v4()).await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn https_and_svcb_preserve_parameters_on_ipv6() {
+    https_and_svcb_parameters(IpAddr::V6(std::net::Ipv6Addr::LOCALHOST)).await;
+}
+
+async fn unsupported_gateway_types(ip: IpAddr) {
+    let upstream = UdpSocket::bind((ip, 0)).await.unwrap();
+    let server = server(
+        ip,
+        vec![(Transport::UdpTcp, upstream.local_addr().unwrap())],
+        "none",
+        Arc::new(Mutex::new(Ok(BTreeSet::new()))),
+    )
+    .await;
+    let mut doc = server.doc.clone();
+    doc["outbounds"] =
+        json!([{"id":text(70),"name":"Direct","enabled":true,"transport":{"kind":"vps_direct"}}]);
+    doc["profiles"][0]["defaultDnsAction"] = json!({"kind":"gateway","outbound":text(70)});
+    apply_forwarding(&server.owner, &doc, &[Transport::UdpTcp], "none", 2);
+    let mut stream = TcpStream::connect(server.tcp).await.unwrap();
+    for code in [1u16, 28, 64, 65] {
+        let mut request = QUERY.to_vec();
+        let offset = request.len() - 4;
+        request[offset..offset + 2].copy_from_slice(&code.to_be_bytes());
+        frame(&mut stream, &request).await;
+        let reply = read_reply(&mut stream).await;
+        assert_eq!(reply.metadata.response_code, ResponseCode::ServFail);
+        assert!(!reply.metadata.authentic_data);
+        assert!(reply.answers.is_empty());
+    }
+    drop(stream);
+    let mut bytes = [0; 512];
+    assert!(
+        timeout(Duration::from_millis(150), upstream.recv_from(&mut bytes))
+            .await
+            .is_err()
+    );
+    server.close().await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn gateway_types_are_unavailable_on_ipv4() {
+    unsupported_gateway_types(v4()).await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn gateway_types_are_unavailable_on_ipv6() {
+    unsupported_gateway_types(IpAddr::V6(std::net::Ipv6Addr::LOCALHOST)).await;
 }
 async fn ordinary_records(ip: IpAddr, transport: Transport) {
     let udp = UdpSocket::bind((ip, 0)).await.unwrap();

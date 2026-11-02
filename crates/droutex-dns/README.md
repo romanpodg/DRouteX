@@ -17,11 +17,17 @@ wildcard retains its kernel-established destination and remains supported.
 
 Under the accepted [D53 contract](../../docs/planning/P3_02_FORWARDING_CONTRACT.md),
 Resolve uses the same generation's strictly decoded public numeric upstream group.
-Other actions remain unavailable and produce SERVFAIL without upstream traffic.
-DO/CD requests receive NOTIMP. This subset provides no private override,
-filtering answer, DNSSEC validation, secure endpoint, gateway or public deployment.
-RA describes configured forwarding capability; AD/AA are cleared. Fresh upstream
-queries use independent IDs, RD and EDNS0/1232 without client options or ECS.
+BLOCK returns NXDOMAIN and Profile-local records take precedence over upstream
+resolution. Gateway actions remain unavailable. DO/CD are forwarded without
+client EDNS options or ECS; AD/AA are cleared and DNSSEC is not validated here.
+Local answers are unsigned, so a validating client may reject them. Root DNSKEY
+uses the admitted Profile's default action; other root queries remain unsupported.
+DO/CD and DNSSEC-type queries bypass the non-DNSSEC cache. RA describes configured
+forwarding capability; upstream queries use independent IDs, RD and EDNS0/1232.
+This library does not provide a secure endpoint, gateway or public deployment.
+Ordinary HTTPS/SVCB answers retain advertised endpoints, ALPN, ECH and IP hints.
+SmartDNS redirection with those records is unsupported; clients can use IPv6,
+alternative endpoints or QUIC outside any future TCP-only gateway path.
 
 Groups have one or two UDP/TCP members on port53, with explicit fallback only.
 Each member has500ms inside the original processor cutoff. Only a fully validated

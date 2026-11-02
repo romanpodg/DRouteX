@@ -112,16 +112,21 @@ impl Processor for Forwarder {
                 return Ok(response(request, ResponseCode::NXDomain).into());
             }
             DnsAction::Resolve { .. } => {
-                if let Some(reply) = crate::policy::local_answer(
-                    request,
-                    selection.profile(),
-                    context
-                        .auth
-                        .decision()
-                        .compiled_configuration()
-                        .private_records(),
-                    context.budget,
-                )? {
+                if !request
+                    .queries
+                    .first()
+                    .is_some_and(|query| query.name.is_root())
+                    && let Some(reply) = crate::policy::local_answer(
+                        request,
+                        selection.profile(),
+                        context
+                            .auth
+                            .decision()
+                            .compiled_configuration()
+                            .private_records(),
+                        context.budget,
+                    )?
+                {
                     return Ok(reply.into());
                 }
             }
@@ -141,8 +146,18 @@ impl Processor for Forwarder {
             None,
         ));
         live.current(context.cutoff).await?;
+        let cacheable = !request.metadata.checking_disabled
+            && !request
+                .edns
+                .as_ref()
+                .is_some_and(|edns| edns.flags().dnssec_ok)
+            && !request
+                .queries
+                .first()
+                .is_some_and(|query| query.query_type.is_dnssec());
         let key = Key::admitted(context.auth, *upstream, request)?;
-        if let Ok(_copy_credit) = context.budget.wire(4096)
+        if cacheable
+            && let Ok(_copy_credit) = context.budget.wire(4096)
             && let Some(template) = self.cache.get(&key, Instant::now())
             && let Some(reply) = template.reply(request, Instant::now())
         {
@@ -220,7 +235,8 @@ impl Processor for Forwarder {
             Outcome::Failure(message) => Ok(message.into()),
             Outcome::Upstream(answer) => {
                 live.current(context.cutoff).await?;
-                if let Ok(_copy_credit) = context.budget.wire(4096)
+                if cacheable
+                    && let Ok(_copy_credit) = context.budget.wire(4096)
                     && let Some(template) = Template::build(&answer)
                 {
                     live.current(context.cutoff).await?;
@@ -321,9 +337,47 @@ fn query(request: &Message) -> Result<DnsRequest> {
         .ok_or(DnsError(ErrorCode::Malformed))?;
     let mut options = DnsRequestOptions::default();
     options.edns_payload_len = crate::MAX_UDP_BYTES as u16;
-    // Qualified library creates an independent transaction ID and a fresh
-    // RD/EDNS0 message. No client EDNS option or DNSSEC flag is copied.
-    Ok(DnsRequest::from_query(question.clone(), options))
+    options.edns_set_dnssec_ok = request
+        .edns
+        .as_ref()
+        .is_some_and(|edns| edns.flags().dnssec_ok);
+    // The library creates an independent ID and fresh EDNS without client options.
+    let mut outbound = DnsRequest::from_query(question.clone(), options);
+    outbound.metadata.checking_disabled = request.metadata.checking_disabled;
+    Ok(outbound)
+}
+
+#[cfg(test)]
+#[test]
+fn dnssec_request_flags_reach_upstream_without_client_options() {
+    use hickory_proto::op::{Edns, MessageType, OpCode, Query};
+    use hickory_proto::rr::RecordType;
+
+    let mut request = Message::new(17, MessageType::Query, OpCode::Query);
+    request.add_query(Query::query(
+        "example.test.".parse().unwrap(),
+        RecordType::A,
+    ));
+    for cd in [false, true] {
+        for do_bit in [false, true] {
+            request.metadata.checking_disabled = cd;
+            let mut edns = Edns::new();
+            edns.set_dnssec_ok(do_bit);
+            request.set_edns(edns);
+            let outbound = query(&request).unwrap();
+            assert_eq!(outbound.metadata.checking_disabled, cd);
+            assert_eq!(outbound.edns.as_ref().unwrap().flags().dnssec_ok, do_bit);
+            assert!(
+                outbound
+                    .edns
+                    .as_ref()
+                    .unwrap()
+                    .options()
+                    .as_ref()
+                    .is_empty()
+            );
+        }
+    }
 }
 
 async fn transport(

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P3-04 completed through PR122 and exact-main 41344649618; P3-05 remains planned",
+  "status": "P3-04 completed; P3-05 implementation in progress with DNSSEC transit and HTTPS/SVCB compatibility decisions accepted",
   "date": "2026-11-02",
   "phases": {
     "P0": "Foundation",
@@ -742,7 +742,7 @@
       "security": "No blanket ECH stripping, downgrade claims or silent QUIC control",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -2634,10 +2634,10 @@
   "scope_amendment": "CR-0001",
   "execution_authorization": {
     "date": "2026-11-02",
-    "source": "Owner requested P3-04 and accepted NXDOMAIN with BLOCK before profile-local records in this chat",
-    "scope": "Implement P3-04; P3-05 and deployment remain separate.",
-    "through_task": "P3-04",
-    "decision": "dns_override_decision"
+    "source": "Owner requested P3-05 and selected bounded DNSSEC transit, root DNSKEY profile default and unsupported SmartDNS/HTTPS-SVCB redirects in this chat",
+    "scope": "Implement P3-05; P3-06 and deployment remain separate.",
+    "through_task": "P3-05",
+    "decision": "dns_compatibility_decision"
   },
   "design_proposals": [
     {
@@ -3013,5 +3013,10 @@
     "status": "accepted",
     "source": "Owner reply in this chat: NXDOMAIN; BLOCK then profile-local records then DIRECT/upstream",
     "contract": "docs/planning/P3_04_OVERRIDE_REVIEW.md"
+  },
+  "dns_compatibility_decision": {
+    "status": "accepted",
+    "source": "Owner replies in this chat on 2026-11-02",
+    "contract": "docs/planning/P3_05_COMPATIBILITY_REVIEW.md"
   }
 }

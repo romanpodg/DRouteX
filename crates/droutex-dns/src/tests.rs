@@ -464,12 +464,7 @@ async fn unsupported_and_badvers_are_explicit_without_handler_or_option_echo() {
     axfr[n - 4..n - 2].copy_from_slice(&252u16.to_be_bytes());
     let mut notify = QUERY.to_vec();
     notify[2] = 0x21;
-    let mut cd = QUERY.to_vec();
-    cd[3] |= 0x10;
-    let mut dnssec = QUERY.to_vec();
-    dnssec[11] = 1;
-    dnssec.extend_from_slice(b"\x00\x00\x29\x04\xd0\x00\x00\x80\x00\x00\x00");
-    for bytes in [&root, &axfr, &notify, &cd, &dnssec] {
+    for bytes in [&root, &axfr, &notify] {
         assert_eq!(
             Message::from_vec(&exchange(&server, bytes).await)
                 .unwrap()

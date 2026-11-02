@@ -149,12 +149,19 @@ pub(super) fn response(request: &Message, code: ResponseCode) -> Message {
         request.metadata.op_code,
     );
     reply.metadata.recursion_desired = request.metadata.recursion_desired;
+    reply.metadata.checking_disabled = request.metadata.checking_disabled;
     reply.metadata.response_code = code;
     // A protocol copy preserves the original wire question, including its type.
     reply.queries.clone_from(&request.queries);
     if request.edns.is_some() {
         let mut edns = Edns::new();
         edns.set_max_payload(MAX_UDP_BYTES as u16);
+        edns.set_dnssec_ok(
+            request
+                .edns
+                .as_ref()
+                .is_some_and(|edns| edns.flags().dnssec_ok),
+        );
         reply.set_edns(edns);
     }
     reply
@@ -178,31 +185,27 @@ pub(super) async fn answer<P: Processor>(
         .first()
         .ok_or(DnsError(ErrorCode::Malformed))?;
     let domain = question.name.to_ascii().parse::<CanonicalDomain>();
+    let root_dnskey = question.name.is_root() && question.query_type == RecordType::DNSKEY;
     if request.metadata.op_code != OpCode::Query
-        || request.metadata.checking_disabled
-        || request
-            .edns
-            .as_ref()
-            .is_some_and(|edns| edns.flags().dnssec_ok)
         || question.query_class != DNSClass::IN
         || matches!(
             question.query_type,
             RecordType::AXFR | RecordType::IXFR | RecordType::OPT
         )
-        || domain.is_err()
+        || (domain.is_err() && !root_dnskey)
     {
         return Ok(response(request, ResponseCode::NotImp).into());
     }
-    let domain = domain.map_err(|_| DnsError(ErrorCode::Scope))?;
     let AdmissionScope::LegacyDns(binding) = auth.scope() else {
         return Err(DnsError(ErrorCode::Scope));
     };
-    let selection = auth
-        .decision()
-        .compiled_configuration()
-        .policy()
-        .evaluate_dns(binding, &domain)
-        .map_err(|_| DnsError(ErrorCode::Scope))?;
+    let policy = auth.decision().compiled_configuration().policy();
+    let selection = if root_dnskey {
+        policy.evaluate_root_dnskey(binding)
+    } else {
+        policy.evaluate_dns(binding, &domain.map_err(|_| DnsError(ErrorCode::Scope))?)
+    }
+    .map_err(|_| DnsError(ErrorCode::Scope))?;
     let forwarding =
         processor.forwarding_available() && matches!(selection.action(), DnsAction::Resolve { .. });
     let processed = processor.answer(request, selection, context).await;
