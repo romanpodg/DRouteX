@@ -129,6 +129,23 @@ application behavior/resources/adoption were separately accepted in complete D53
 on2026-10-28 after this qualification. Finish current PR114 documentation gates
 before dependent implementation and its own application acceptance checks.
 
+## P3-06 foundation review dispositions
+
+CodeScene [8280140](https://codescene.io/projects/86145/delta/results/8280140)
+failed all three gates on PR #126 head `8e6cc2926f92669e0c01e4194489925000a15185`
+against `d744433260dbe6ba26db5aa3543e6493e3abf5cb`. It reported complexity,
+low cohesion and function-size concerns; the check remains failed. The current-head
+Codex Code Review completed without reported findings. The owner authorized
+independent development decisions and a PR; P3-06 remains open.
+
+| Item | Finding, impact, rationale and evidence | Revisit trigger |
+|---|---|---|
+| P3-06-CS-RESPONSE | `response.rs` 7.01 flags its DNS frame/alias traversal. It combines security-sensitive checks, making review harder, but the traversal has explicit frame, record and alias limits and rejects malformed, mismatched and ambiguous answers. Frame/ID/EDNS/CNAME negative tests and mutation checks pass; no concrete behavioral defect has been established. Preserve the checked ordering for this fail-closed foundation rather than restructure solely for a score. | Before production gateway integration or modifying DNS validation; review parser boundaries and maintain negative tests. |
+| P3-06-CS-RESOLVER | `resolver.rs` 7.10 flags cohesion, nested resolution control flow and argument counts. Separate DNS I/O, origin screening and connection admission remain non-interchangeable and their deadlines/current-owner checks are covered by live local and negative tests. The module is difficult to navigate; it does not expose an operational gateway or unguarded stream. | P4-02 integration or a concrete maintenance/correctness defect; consider extracting components without changing cancellation, pinning or authority. |
+| P3-06-CS-LIFECYCLE | `listener.rs` 9.04 and `inventory.rs` 9.54 flag lifecycle complexity; the former only closes streams, the latter owns bounded subprocess cleanup. Local tests cover shutdown, cancellation, worker quotas, changed listener bindings and actual inventory. Their complexity is a maintenance concern, not proof of operational readiness. | Before implementing listener processing or full gateway shutdown; re-evaluate with end-to-end lifecycle tests. |
+| P3-06-CS-API | `prepare_smartdns_gateway` 9.69 has an argument-count finding: its separate trusted listener, actual peer, domain, port and outbound observations are required inputs, not client-derived authorization. Existing scope/revocation tests pass. | Revisit if a trusted ingress context type is introduced in P4, preserving field provenance. |
+| P3-06-CS-AUX | The other flagged files are the planning validator and isolated test-only TLS qualification, excluded as independent metric targets. The TLS candidate is not a production dependency; parser security and Windows evidence remain open independently of this metric. | Revisit for a concrete correctness defect or production adoption; do not treat the failed gate as passed. |
+
 ## P3-02 qualification review dispositions
 
 CodeScene8117794 on initial qualification headf4a8d8c failed all three gates.

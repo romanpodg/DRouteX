@@ -384,12 +384,17 @@ mod tests {
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
     async fn live_inventory_rejects_node_and_aliases_with_owned_cleanup_and_global_quota() {
         let alias = "1.1.1.1".parse().unwrap();
-        let first = OriginInventory::new(&[alias], []).unwrap();
-        let second = OriginInventory::new(&[], []).unwrap();
+        let mut first = OriginInventory::new(&[alias], []).unwrap();
+        let mut second = OriginInventory::new(&[], []).unwrap();
         assert!(
             Arc::ptr_eq(&first.slots, &second.slots),
             "all inventories share the process limit"
         );
+        // Test quota exhaustion in a shared isolated semaphore so parallel
+        // resolver tests cannot consume permits or observe the artificial load.
+        let fixture_slots = Arc::new(Semaphore::new(MAX_PROBES));
+        first.slots = Arc::clone(&fixture_slots);
+        second.slots = fixture_slots;
         let deadline = || tokio::time::Instant::now() + Duration::from_secs(10);
         for target in ["127.0.0.1".parse().unwrap(), alias] {
             let mut probe = first.start(target, deadline()).unwrap();

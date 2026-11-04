@@ -882,11 +882,36 @@ pub(crate) mod tests {
             .unwrap()
             .unwrap();
     }
+    async fn paired_loopback() -> io::Result<(tokio::net::TcpListener, UdpSocket)> {
+        tokio::time::timeout(Duration::from_secs(5), async {
+            let mut last =
+                io::Error::new(io::ErrorKind::AddrNotAvailable, "no shared TCP/UDP port");
+            for _ in 0..64 {
+                // Windows can reserve a port for one protocol but not the other.
+                let udp = UdpSocket::bind("127.0.0.1:0").await?;
+                let address = udp.local_addr()?;
+                match tokio::net::TcpListener::bind(address).await {
+                    Ok(tcp) => return Ok((tcp, udp)),
+                    Err(error)
+                        if matches!(
+                            error.kind(),
+                            io::ErrorKind::AddrInUse | io::ErrorKind::PermissionDenied
+                        ) =>
+                    {
+                        last = error
+                    }
+                    Err(error) => return Err(error),
+                }
+            }
+            Err(last)
+        })
+        .await
+        .map_err(|_| io::Error::new(io::ErrorKind::TimedOut, "TCP/UDP fixture setup timed out"))?
+    }
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
     async fn truncated_udp_falls_back_to_framed_tcp() {
-        let tcp = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let (tcp, udp) = paired_loopback().await.unwrap();
         let address = tcp.local_addr().unwrap();
-        let udp = UdpSocket::bind(address).await.unwrap();
         let udp_server = tokio::spawn(async move {
             let mut bytes = [0; MAX_WIRE];
             for index in 0..2 {

@@ -127,3 +127,14 @@ on Linux in both default and no-default feature profiles outside the restricted
 filesystem sandbox, including the existing network and protected-path fixtures.
 These results do not establish TLS forwarding, native Windows behavior or
 current-head external review.
+
+PR #126 CI run 41890017654 failed its Windows workspace job on head
+`8e6cc2926f92669e0c01e4194489925000a15185`: the inventory quota test attempted
+to reserve all process-wide permits while parallel resolver tests held permits,
+and the TCP-first dual-protocol fixture hit Windows socket error 10013 when UDP
+could not bind the same port. The quota fixture now confirms the production
+semaphore is shared before exercising exhaustion with a separate shared test
+semaphore; production limits are unchanged. The DNS fixture now reserves UDP
+first and tries up to 64 complete UDP/TCP pairs within one five-second deadline,
+refusing setup if none are available. The failed run remains failed; the fixes
+require fresh CI evidence on their own head.
