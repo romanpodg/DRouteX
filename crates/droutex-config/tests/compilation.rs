@@ -867,3 +867,74 @@ fn complete_resource_and_dependency_sets_refuse_substitution_and_before_oversize
         Err(CompilationError::Size)
     ));
 }
+
+#[test]
+fn smartdns_publication_requires_both_policy_planes_and_compiled_service_scope() {
+    let store = catalogs();
+    let mut doc = document();
+    doc["schemaVersion"] = json!(2);
+    for table in ["legacyGrants", "gatewayGrants"] {
+        for grant in doc[table].as_array_mut().unwrap() {
+            grant["lease"] = json!({"issuedAt":1000,"expiresAt":2000,"cause":"manual"});
+        }
+    }
+    doc["listeners"][1]["bind"] = json!("127.0.0.1:443");
+    doc["profiles"][0]["serviceRules"][0]["action"]["action"]["outbound"] = json!(text(50));
+    doc["smartDnsRoutes"] = json!([{"endpoint":text(10),"grant":text(41),
+        "domain":"service.example.test","port":443,"outbound":text(50),
+        "addresses":["203.0.113.1"],"ttl":60}]);
+    let original = publication(&doc, &store).expect("same-generation service route must compile");
+    let mut reordered = doc.clone();
+    reordered["smartDnsRoutes"][0]["addresses"] = json!(["2001:db8::1", "203.0.113.1"]);
+    let mut same_addresses = reordered.clone();
+    same_addresses["smartDnsRoutes"][0]["addresses"]
+        .as_array_mut()
+        .unwrap()
+        .reverse();
+    assert_eq!(
+        publication(&reordered, &store).unwrap().content().hash(),
+        publication(&same_addresses, &store)
+            .unwrap()
+            .content()
+            .hash(),
+        "address ordering must not change the signed content"
+    );
+    let (key, trust) = key();
+    let encoded = original.encode(snapshot_metadata(), &key).unwrap();
+    let inputs = data(&store);
+    let trusted = TrustedResources::new(
+        inputs
+            .iter()
+            .map(|r| ResourcePin::from_bytes(r.resource, r.bytes).unwrap())
+            .collect(),
+    )
+    .unwrap();
+    let verified = snapshot::verify_snapshot(
+        &encoded,
+        &trust,
+        &ReplayState::first_provisioning(id(80)),
+        &trusted,
+    )
+    .unwrap();
+    verified
+        .compile(&inputs)
+        .expect("authenticated DP must compile the same route");
+    let mut dns_mismatch = doc.clone();
+    dns_mismatch["profiles"][0]["serviceRules"][0]["action"]["action"] = json!({"kind":"block"});
+    assert!(
+        publication(&dns_mismatch, &store).is_err(),
+        "DNS policy mismatch must refuse publication"
+    );
+    let mut tcp_mismatch = doc.clone();
+    tcp_mismatch["profiles"][1]["serviceRules"][0]["action"]["action"] = json!({"kind":"deny"});
+    assert!(
+        publication(&tcp_mismatch, &store).is_err(),
+        "gateway policy mismatch must refuse publication"
+    );
+    let mut scope_mismatch = doc.clone();
+    scope_mismatch["gatewayGrants"][0]["services"] = json!([]);
+    assert!(
+        publication(&scope_mismatch, &store).is_err(),
+        "domain outside compiled grant must refuse publication"
+    );
+}

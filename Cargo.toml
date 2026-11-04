@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/droutex-common", "crates/droutex-config", "crates/droutex-policy", "crates/droutex-storage", "crates/droutex-security", "crates/droutex-core", "crates/droutex-dns"]
+members = ["crates/droutex-common", "crates/droutex-config", "crates/droutex-policy", "crates/droutex-storage", "crates/droutex-security", "crates/droutex-core", "crates/droutex-dns", "crates/droutex-gateway"]
 exclude = ["vendor/sqlx-sqlite"]
 resolver = "3"
 

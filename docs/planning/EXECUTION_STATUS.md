@@ -2,11 +2,37 @@
 
 ## Current execution card
 
+- On 2026-11-03 the owner authorized the assistant to make development changes
+  and development decisions autonomously across the project. This standing
+  instruction supersedes earlier project guidance to seek separate owner choices
+  for ordinary development decisions. Continue to record consequential choices,
+  actual review and test evidence, and applicable external safety constraints.
+
+- On 2026-11-03 the owner authorized starting P4-02 through P4-04 while
+  P3-06 remains open, to enable its eventual real DNS-to-TLS acceptance.
+  [P4-02](P4_02_ORIGIN_WORK.md) is in progress. The origin resolver now composes
+  signed upstream selection, bounded UDP/TCP DNS exchanges, response screening
+  and per-probe OS inventory under live gateway admission. An initial opaque
+  direct connector repeats admission and inventory checks. Controlled local
+  tests exercise numeric target selection and revocation during a connected dial;
+  external origin connectivity and data transfer remain unverified. Inventory
+  workers have an explicit resolver-owned shutdown and join; gateway-wide
+  shutdown and readiness remain unimplemented. A fail-closed listener closes
+  all accepted streams until TLS and forwarding are ready. No gateway is deployed.
+  Isolated TLS parser qualification is in progress; production adoption and
+  gateway integration remain open.
+
+- On 2026-11-03 the owner authorized P3-06 and accepted the
+  [binding profile](P3_06_BINDING_PROPOSAL.md), including current-generation-only
+  checks. Configuration validation, same-generation policy checks and core
+  two-lease/current-route admission are in progress; Gateway DNS responses remain SERVFAIL. Runtime integration, real
+  DNS-to-TLS acceptance and deployment remain unverified.
+
 - On 2026-11-02 the owner authorized P3-05 and selected bounded DNSSEC transit,
   root DNSKEY via the admitted Profile default, and explicit non-support for
   HTTPS/SVCB SmartDNS redirects. P3-05 completed through PR124 and exact-main
-  41428157616; see [P3-05 evidence](P3_05_COMPATIBILITY_REVIEW.md). P3-06 and
-  deployment remain gated.
+  41428157616; see [P3-05 evidence](P3_05_COMPATIBILITY_REVIEW.md). P3-06 was
+  subsequently authorized as recorded above; deployment remains separate.
 
 - On 2026-11-02 the owner authorized P3-04 and selected NXDOMAIN for BLOCK,
   followed by profile-local records and DIRECT/upstream. P3-04 completed through

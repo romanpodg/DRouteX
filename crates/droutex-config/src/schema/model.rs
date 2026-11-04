@@ -29,10 +29,49 @@ pub struct Configuration {
     pub legacy_grants: Vec<LegacyGrant>,
     #[serde(default)]
     pub gateway_grants: Vec<GatewayGrant>,
+    /// Explicit policy-independent origin DNS resource; not runtime readiness.
+    #[serde(
+        default,
+        skip_serializing_if = "Option::is_none",
+        deserialize_with = "optional_id",
+        serialize_with = "serialize_optional_id"
+    )]
+    pub origin_upstream: Option<DnsUpstreamId>,
+    /// Static publication intent; this is not live gateway availability or access.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub smart_dns_routes: Vec<SmartDnsRoute>,
     #[serde(default)]
     pub outbounds: Vec<ProxyOutbound>,
     #[serde(default)]
     pub private_records: Vec<PrivateRecord>,
+}
+
+/// Explicit exact-name route. Gateway source admission remains independent.
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct SmartDnsRoute {
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
+    pub endpoint: EndpointId,
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
+    pub grant: GatewayNetworkGrantId,
+    pub domain: String,
+    pub port: u16,
+    #[serde(deserialize_with = "resource_id", serialize_with = "serialize_id")]
+    pub outbound: ProxyOutboundId,
+    pub addresses: Vec<IpAddr>,
+    pub ttl: u32,
+}
+impl SmartDnsRoute {
+    /// Canonical exact-name comparison; this alone grants no authority.
+    pub fn matches_domain(&self, name: &str) -> bool {
+        match (
+            self.domain.parse::<droutex_policy::CanonicalDomain>(),
+            name.parse::<droutex_policy::CanonicalDomain>(),
+        ) {
+            (Ok(configured), Ok(candidate)) => configured == candidate,
+            _ => false,
+        }
+    }
 }
 
 /// Trusted external resource inventory supplied by the caller, never by the document.

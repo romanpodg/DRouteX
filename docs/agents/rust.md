@@ -9,7 +9,7 @@ Do not weaken these rules through generic skill defaults.
 
 ## Workspace and dependency boundaries
 
-The workspace contains seven crates; manifests define exact dependency direction.
+The workspace contains eight crates; manifests define exact dependency direction.
 
 | Crate | Responsibility |
 |---|---|
@@ -20,6 +20,7 @@ The workspace contains seven crates; manifests define exact dependency direction
 | droutex-storage | SQLite persistence, revision metadata and encrypted-record storage |
 | droutex-core | Local activation/recovery and current generation/lease/quota admission |
 | droutex-dns | Bounded UDP/TCP transport library; acceptance follows the P3-01 gates |
+| droutex-gateway | Origin screening components; gateway network integration remains in progress |
 
 Current acceptance is in [EXECUTION_STATUS](../planning/EXECUTION_STATUS.md).
 Library/socket tests do not establish a deployed resolver, TCP gateway or frontend.

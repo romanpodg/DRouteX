@@ -1,6 +1,6 @@
 # Dependency map
 
-Status: P3-05 completed through PR124 and exact-main 41428157616; P3-06 remains planned. Edges are planned prerequisites, not implemented crate dependencies.
+Status: P3-06, P4-02 and isolated P4-03 qualification are in progress. Edges are planned prerequisites, not implemented crate dependencies.
 
 ## Current release chain
 

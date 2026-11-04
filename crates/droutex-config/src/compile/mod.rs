@@ -3,6 +3,7 @@ mod budget;
 mod build;
 mod resources;
 mod scope;
+mod smartdns;
 
 use crate::{
     CheckedConfiguration, DnsAction, PublicationResourceError, TrafficAction,
@@ -184,6 +185,7 @@ fn compile(content: &SnapshotContent, bytes: &[ResourceData<'_>]) -> Result<Comp
         .map_err(CompilationError::Conflict)?;
     let private = build::private(document)?;
     let (legacy, gateway) = scope::build(document, &catalogs)?;
+    smartdns::validate(document, &policy, &gateway)?;
     Ok(CompiledConfiguration {
         policy,
         private,

@@ -4,7 +4,7 @@ mod admission;
 mod artifacts;
 pub use admission::{
     AdmissionAttempt, AdmissionCode, AdmissionConsumption, AdmissionError, AdmissionScope,
-    AuthorizedRequest, AutomaticLearning, DnsIoCheck,
+    AuthorizedRequest, AutomaticLearning, DnsIoCheck, GatewayIoCheck, SmartDnsBinding,
 };
 mod explain;
 pub use explain::SimulationReport;
@@ -113,6 +113,17 @@ impl Decision<'_> {
     }
     pub fn gateway_configuration(&self) -> &CheckedConfiguration {
         self.generation.content().configuration()
+    }
+    /// Explicit origin resolver group from this same signed generation.
+    /// It supplies no admission, peer authentication or permission to send.
+    pub fn origin_upstream(&self) -> Option<&droutex_config::upstream::Group> {
+        let id = self
+            .generation
+            .content()
+            .configuration()
+            .document()
+            .origin_upstream?;
+        self.generation.compiled.upstream(id)
     }
     pub fn artifact(&self, resource: SnapshotResource) -> Option<&[u8]> {
         self.generation.artifacts.get(resource)

@@ -757,3 +757,65 @@ fn tagged_enums_require_objects_even_when_serde_accepts_sequences() {
         Code::InvalidShape
     );
 }
+
+#[test]
+fn smartdns_routes_reject_invalid_scopes_and_ambiguous_names() {
+    let mut data = fixture();
+    data["schemaVersion"] = json!(2);
+    for key in ["legacyGrants", "gatewayGrants"] {
+        for grant in data[key].as_array_mut().unwrap() {
+            grant["lease"] = json!({"issuedAt": 1000, "expiresAt": 2000, "cause": "manual"});
+        }
+    }
+    data["listeners"][4]["bind"] = json!("127.0.0.1:443");
+    data["smartDnsRoutes"] = json!([{
+        "endpoint": id(11), "grant": id(60), "domain": "example.com",
+        "port": 443, "outbound": id(70), "addresses": ["203.0.113.1", "2001:db8::1"], "ttl": 60
+    }]);
+    assert!(parse(&data).is_ok(), "valid explicit route must parse");
+    for (field, value) in [
+        ("port", json!(0)),
+        ("port", json!(444)),
+        ("ttl", json!(0)),
+        ("ttl", json!(61)),
+        ("addresses", json!([])),
+        ("addresses", json!(["0.0.0.0"])),
+        ("domain", json!("bad..name")),
+        ("grant", json!(id(999))),
+        ("endpoint", json!(id(999))),
+        ("outbound", json!(id(999))),
+    ] {
+        let mut invalid = data.clone();
+        invalid["smartDnsRoutes"][0][field] = value;
+        assert!(parse(&invalid).is_err(), "invalid {field} must be refused");
+    }
+    let mut duplicate = data.clone();
+    let mut route = data["smartDnsRoutes"][0].clone();
+    route["domain"] = json!("EXAMPLE.COM.");
+    duplicate["smartDnsRoutes"]
+        .as_array_mut()
+        .unwrap()
+        .push(route);
+    assert!(
+        parse(&duplicate).is_err(),
+        "canonical duplicate must be refused"
+    );
+    let mut excessive = data.clone();
+    excessive["smartDnsRoutes"] = json!(
+        (0..257)
+            .map(|i| {
+                let mut route = data["smartDnsRoutes"][0].clone();
+                route["domain"] = json!(format!("service-{i}.example.com"));
+                route
+            })
+            .collect::<Vec<_>>()
+    );
+    reject(&excessive, Code::ResourceLimit, "$.smartDnsRoutes");
+}
+
+#[test]
+fn origin_upstream_requires_current_leased_configuration_version() {
+    let mut legacy = fixture();
+    legacy["originUpstream"] = json!(id(90));
+    reject(&legacy, Code::InvalidScope, "$.originUpstream");
+}
