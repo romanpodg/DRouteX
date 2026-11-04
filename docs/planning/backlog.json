@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "P3-05 completed through PR124 and exact-main 41428157616; P3-06 remains planned",
+  "status": "P3-06, P4-02 and isolated P4-03 qualification are in progress",
   "date": "2026-11-02",
   "phases": {
     "P0": "Foundation",
@@ -770,7 +770,7 @@
       "security": "Never authorize a TCP request solely because prior DNS/IP matches",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -861,7 +861,7 @@
       "security": "Administrative internal override requires narrow explicit authorization",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -888,7 +888,7 @@
       "security": "No custom cryptography, MITM certificate or unbounded buffer",
       "quality": "Q-RUST for Rust; Q-WEB for frontend; Q-LINUX for OS/network behavior; Q-DOC for docs. External Codecov/CodeScene only after activation; report unavailable evidence.",
       "complexity": "M",
-      "status": "planned",
+      "status": "in_progress",
       "definition_of_done": "Task acceptance and negative tests pass; applicable quality bundle passes; security/architecture review recorded; docs and traceability updated; no secrets or unintended changes; unverified required integration keeps task open.",
       "delivery": "MVP",
       "scope_change": "CR-0001"
@@ -2633,11 +2633,16 @@
   ],
   "scope_amendment": "CR-0001",
   "execution_authorization": {
-    "date": "2026-11-02",
-    "source": "Owner requested P3-05 and selected bounded DNSSEC transit, root DNSKEY profile default and unsupported SmartDNS/HTTPS-SVCB redirects in this chat",
-    "scope": "Implement P3-05; P3-06 and deployment remain separate.",
-    "through_task": "P3-05",
-    "decision": "dns_compatibility_decision"
+    "date": "2026-11-03",
+    "source": "Owner requested P3-06 and accepted the proposed SmartDNS binding profile with current-generation-only checks in this chat; owner authorized P4-02 through P4-04 while P3-06 remains open; owner authorized isolated tls-parser 0.12.2 qualification",
+    "scope": "Implement P3-06; deployment remains separate.",
+    "through_task": "P3-06",
+    "decision": "smartdns_binding_decision",
+    "additional_scope": [
+      "P4-02",
+      "P4-03",
+      "P4-04"
+    ]
   },
   "design_proposals": [
     {
@@ -3018,5 +3023,10 @@
     "status": "accepted",
     "source": "Owner replies in this chat on 2026-11-02",
     "contract": "docs/planning/P3_05_COMPATIBILITY_REVIEW.md"
+  },
+  "smartdns_binding_decision": {
+    "status": "accepted",
+    "source": "Owner replies in this chat on 2026-11-03",
+    "contract": "docs/planning/P3_06_BINDING_PROPOSAL.md"
   }
 }

@@ -29,7 +29,8 @@ pub use schema::{
     GatewayGrant, GrantLease, InputFormat, InvalidGrantLease, LegacyGrant, Listener,
     ListenerTransport, MAX_DEPTH, MAX_GRANT_TIMESTAMP, MAX_INPUT_BYTES, MAX_RESOURCE_ENTRIES,
     MatchMode, NetworkGroup, OutboundKind, PortRange, PrivateRecord, Profile, ProxyOutbound,
-    RecordData, ReferenceCatalog, RuleAction, ServiceRule, TrafficAction, parse_configuration,
+    RecordData, ReferenceCatalog, RuleAction, ServiceRule, SmartDnsRoute, TrafficAction,
+    parse_configuration,
 };
 
 use std::fmt;

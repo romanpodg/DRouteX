@@ -34,6 +34,16 @@ borrowed scope is still ordinary data and cannot construct another admission.
 Gateway evidence retains the exact canonical domain and port, not just a wider
 grant. verify_gateway_destination checks that target and current authority again.
 
+P3-06 adds `prepare_smartdns_gateway` for future transparent SmartDNS ingress.
+It checks the independently authorized gateway candidate against an exact current
+published route; a held attempt is retired on any generation change. A transparent
+SmartDNS listener must use that gate rather than relying on `prepare_gateway` alone:
+removing a DNS route does not automatically revoke an otherwise valid generic
+gateway grant. DNS-side `SmartDnsBinding` checks both DNS and gateway leases in one
+clock sample under the current-generation lock, but is neither gateway readiness
+nor a TCP permit. These library checks do not themselves publish DNS answers or
+establish that any gateway socket is running.
+
 The result does not resolve/check an origin address or connect. P4-02 must use the
 current gate again at final connect admission and pin only checked safe addresses;
 P3-01's candidate integrates current admission per request; its acceptance remains

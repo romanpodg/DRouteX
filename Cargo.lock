@@ -389,6 +389,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "droutex-gateway"
+version = "0.1.0"
+dependencies = [
+ "droutex-common",
+ "droutex-config",
+ "droutex-core",
+ "droutex-policy",
+ "droutex-security",
+ "hickory-proto",
+ "serde_json",
+ "tokio",
+]
+
+[[package]]
 name = "droutex-policy"
 version = "0.1.0"
 dependencies = [

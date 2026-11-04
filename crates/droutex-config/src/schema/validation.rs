@@ -1,7 +1,7 @@
 use super::{ConfigError, ConfigErrorCode as Code, Configuration, ReferenceCatalog, model::*};
 use droutex_common::{
-    EndpointId, LegacyNetworkGrantId, ListenerId, NetworkGroupId, ProfileId, ProxyOutboundId,
-    ResolverCredentialId, RuleId,
+    EndpointId, GatewayNetworkGrantId, LegacyNetworkGrantId, ListenerId, NetworkGroupId, ProfileId,
+    ProxyOutboundId, ResolverCredentialId, RuleId,
 };
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -12,6 +12,7 @@ pub(super) struct Tables<'a> {
     pub listeners: BTreeMap<ListenerId, &'a Listener>,
     pub groups: BTreeMap<NetworkGroupId, &'a NetworkGroup>,
     pub legacy: BTreeMap<LegacyNetworkGrantId, &'a LegacyGrant>,
+    pub gateway: BTreeMap<GatewayNetworkGrantId, &'a GatewayGrant>,
     pub outbounds: BTreeMap<ProxyOutboundId, &'a ProxyOutbound>,
 }
 
@@ -24,6 +25,7 @@ impl<'a> Tables<'a> {
             listeners: unique(&c.listeners, |p| p.id, "listeners")?,
             groups: unique(&c.network_groups, |p| p.id, "networkGroups")?,
             legacy: unique(&c.legacy_grants, |p| p.id, "legacyGrants")?,
+            gateway: unique(&c.gateway_grants, |p| p.id, "gatewayGrants")?,
             outbounds: unique(&c.outbounds, |p| p.id, "outbounds")?,
         })
     }
@@ -36,6 +38,18 @@ pub(super) fn validate(c: &Configuration, catalog: &ReferenceCatalog) -> Result<
         "$.schemaVersion",
     )?;
     count_resources(c)?;
+    if let Some(origin) = c.origin_upstream {
+        require(
+            c.schema_version == 2,
+            Code::InvalidScope,
+            "$.originUpstream",
+        )?;
+        require(
+            catalog.upstreams.contains(&origin),
+            Code::UnknownReference,
+            "$.originUpstream",
+        )?;
+    }
     for (kind, leases) in [
         (
             "legacyGrants",
@@ -55,13 +69,13 @@ pub(super) fn validate(c: &Configuration, catalog: &ReferenceCatalog) -> Result<
         }
     }
     let tables = Tables::new(c)?;
-    unique(&c.gateway_grants, |g| g.id, "gatewayGrants")?;
     unique(&c.private_records, |r| r.id, "privateRecords")?;
     super::rules::validate_profiles(&c.profiles, &tables, catalog)?;
     super::access::validate_access(c, &tables, catalog)?;
     super::binding::validate_bindings(&c.listeners)?;
     validate_outbounds(&c.outbounds, catalog)?;
     validate_private_records(&c.private_records, &tables)?;
+    validate_smart_dns_routes(c, &tables)?;
     Ok(())
 }
 
@@ -74,6 +88,7 @@ fn count_resources(c: &Configuration) -> Result<(), ConfigError> {
         c.network_groups.len(),
         c.legacy_grants.len(),
         c.gateway_grants.len(),
+        c.smart_dns_routes.len(),
         c.outbounds.len(),
         c.private_records.len(),
     ];
@@ -89,6 +104,68 @@ fn count_resources(c: &Configuration) -> Result<(), ConfigError> {
         remaining = remaining
             .checked_sub(count)
             .ok_or_else(|| error(Code::ResourceLimit, "$"))?;
+    }
+    Ok(())
+}
+
+fn validate_smart_dns_routes(c: &Configuration, tables: &Tables<'_>) -> Result<(), ConfigError> {
+    // Compilation evaluates two policy planes for each route. Bound that work
+    // independently of the global resource budget.
+    require(
+        c.smart_dns_routes.len() <= 256,
+        Code::ResourceLimit,
+        "$.smartDnsRoutes",
+    )?;
+    let mut names = BTreeSet::new();
+    for (i, route) in c.smart_dns_routes.iter().enumerate() {
+        let path = format!("$.smartDnsRoutes[{i}]");
+        require(c.schema_version == 2, Code::InvalidScope, &path)?;
+        let name = route
+            .domain
+            .parse::<droutex_policy::CanonicalDomain>()
+            .map_err(|_| error(Code::InvalidValue, &format!("{path}.domain")))?;
+        require(
+            names.insert((route.endpoint, name)),
+            Code::BindingConflict,
+            &path,
+        )?;
+        let endpoint = tables
+            .endpoints
+            .get(&route.endpoint)
+            .ok_or_else(|| error(Code::UnknownReference, &format!("{path}.endpoint")))?;
+        require(endpoint.enabled, Code::InvalidScope, &path)?;
+        let grant = tables
+            .gateway
+            .get(&route.grant)
+            .ok_or_else(|| error(Code::UnknownReference, &format!("{path}.grant")))?;
+        let listener = tables
+            .listeners
+            .get(&grant.listener)
+            .ok_or_else(|| error(Code::UnknownReference, &format!("{path}.grant")))?;
+        require(
+            listener.enabled
+                && route.port != 0
+                && grant
+                    .ports
+                    .iter()
+                    .any(|range| (range.from..=range.to).contains(&route.port))
+                && grant.outbounds.contains(&route.outbound),
+            Code::InvalidScope,
+            &path,
+        )?;
+        require(
+            tables
+                .outbounds
+                .get(&route.outbound)
+                .is_some_and(|outbound| outbound.enabled),
+            Code::InvalidScope,
+            &path,
+        )?;
+        let mut addresses = BTreeSet::new();
+        require((1..=2).contains(&route.addresses.len()) && (1..=60).contains(&route.ttl)
+            && route.addresses.iter().all(|address| !address.is_unspecified() && !address.is_multicast()
+                && !matches!(address, std::net::IpAddr::V6(ip) if ip.to_ipv4_mapped().is_some())
+                && addresses.insert(address.is_ipv4())), Code::InvalidValue, &path)?;
     }
     Ok(())
 }

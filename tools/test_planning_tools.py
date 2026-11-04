@@ -121,7 +121,7 @@ class ValidatorTests(unittest.TestCase):
         missing_evidence = copy.deepcopy(plan)
         missing_evidence['foundation_review']['source'] = ''
         later_work = copy.deepcopy(plan)
-        next(t for t in later_work['tasks'] if t['id'] == 'P3-06')['status'] = 'in_progress'
+        next(t for t in later_work['tasks'] if t['id'] == 'P3-07')['status'] = 'in_progress'
         unfinished_dependencies = copy.deepcopy(plan)
         next(t for t in unfinished_dependencies['tasks'] if t['id'] == 'P0-05')['status'] = 'in_review'
         unfinished_identity = copy.deepcopy(plan)
@@ -348,7 +348,7 @@ class ValidatorTests(unittest.TestCase):
         for path in ('crates/droutex-common/src/', 'crates/droutex-config/src/',
                      'crates/droutex-policy/src/', 'crates/droutex-storage/src/',
                      'crates/droutex-security/src/', 'crates/droutex-core/src/',
-                     'crates/droutex-dns/src/'):
+                     'crates/droutex-dns/src/', 'crates/droutex-gateway/src/'):
             bad = copy.deepcopy(config)
             bad['flags']['backend']['paths'] = [
                 entry for entry in bad['flags']['backend']['paths'] if entry != path]

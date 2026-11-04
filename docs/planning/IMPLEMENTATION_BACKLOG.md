@@ -1,6 +1,6 @@
 # Implementation backlog
 
-**P3-05 completed through PR124 and exact-main 41428157616; P3-06 remains planned.**
+**P3-06, P4-02 and isolated P4-03 qualification are in progress.**
 
 Accepted scope: CR-0001, DNS/proxy MVP before tunnels. See [ADR-0016](../architecture/adr/ADR-0016-dns-proxy-mvp-before-tunnels.md).
 
@@ -382,7 +382,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P3-06: Publish safe SmartDNS route bindings
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§6,9,10.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§6,9,10.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -429,7 +429,7 @@ Status: **completed**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specifica
 
 ### P4-02: Resolve and pin safe origin addresses
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,10,19.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§9,10,19.
 
 | Field | Deliverable / evidence |
 |---|---|
@@ -444,7 +444,7 @@ Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specificati
 
 ### P4-03: Parse bounded ClientHello metadata
 
-Status: **planned**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,10,22.
+Status: **in_progress**. Delivery: **MVP** (CR-0001). Complexity: **M**. Specification: §§3,10,22.
 
 | Field | Deliverable / evidence |
 |---|---|

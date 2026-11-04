@@ -1,0 +1,21 @@
+[package]
+name = "droutex-tls-parser-qualification"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.99"
+license = "Apache-2.0"
+publish = false
+
+[workspace]
+resolver = "3"
+
+[dependencies]
+tls-parser = { version = "=0.12.2", default-features = false }
+
+[[test]]
+name = "qualification"
+path = "qualification.rs"
+
+[lints.rust]
+unsafe_code = "forbid"
+warnings = "deny"

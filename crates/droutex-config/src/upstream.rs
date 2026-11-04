@@ -64,7 +64,7 @@ impl TryFrom<Object<RawMember>> for Member {
         if address.to_string() != raw.address
             || address.port() != 53
             || matches!(address, SocketAddr::V6(ip) if ip.scope_id() != 0 || ip.flowinfo() != 0)
-            || !public_address(address.ip())
+            || !public_unicast_address(address.ip())
         {
             return Err(Error::Address);
         }
@@ -175,7 +175,9 @@ pub fn parse(bytes: &[u8]) -> Result<Group, Error> {
     })
 }
 
-fn public_address(address: IpAddr) -> bool {
+/// Conservative address classification shared with origin screening. This is
+/// not proof of reachability, freshness, absence from node inventory or authority.
+pub fn public_unicast_address(address: IpAddr) -> bool {
     // D53 deliberately excludes protocol-special ranges, even globally reachable
     // exceptions. Registry identity checked2026-10-28, not a routability promise:
     // https://www.iana.org/assignments/iana-ipv4-special-registry
@@ -339,7 +341,10 @@ mod tests {
             "3fff:fff:ffff::1",
             "2620:4f:8000::1",
         ] {
-            assert!(!public_address(address.parse().unwrap()), "{address}");
+            assert!(
+                !public_unicast_address(address.parse().unwrap()),
+                "{address}"
+            );
         }
         for address in [
             "1.1.1.1",
@@ -359,7 +364,10 @@ mod tests {
             "2620:fe::fe",
             "3fff:1000::1",
         ] {
-            assert!(public_address(address.parse().unwrap()), "{address}");
+            assert!(
+                public_unicast_address(address.parse().unwrap()),
+                "{address}"
+            );
         }
     }
 }

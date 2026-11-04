@@ -25,6 +25,7 @@ pub(super) fn check(
         document.private_records.len(),
         document.legacy_grants.len(),
         document.gateway_grants.len(),
+        document.smart_dns_routes.len(),
         upstreams.len(),
     ] {
         charge(&mut remaining, count)?;

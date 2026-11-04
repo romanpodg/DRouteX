@@ -2,12 +2,14 @@
 mod clock;
 mod io;
 mod quota;
+mod smartdns;
 use super::{Cancellation, Decision, Deployment, DeploymentError, ErrorCode, Journal};
 use droutex_common::{DnsProfileBinding, GatewayNetworkIdentity, ListenerId, NetworkGroupId};
 use droutex_config::{
     DnsAccess, GatewayCandidate, GrantLease, ListenerTransport, OutboundObservation,
 };
-pub use io::DnsIoCheck;
+pub use io::{DnsIoCheck, GatewayIoCheck};
+pub use smartdns::SmartDnsBinding;
 use std::{
     collections::BTreeSet, error::Error, fmt, net::IpAddr, num::NonZeroU16, sync::Arc,
     time::Duration,
@@ -93,6 +95,9 @@ impl AdmissionState {
         }
     }
     fn interval(&mut self, lease: GrantLease) -> Result<clock::Interval> {
+        self.interval_many(&[lease])
+    }
+    fn interval_many(&mut self, leases: &[GrantLease]) -> Result<clock::Interval> {
         if self.checkpoint_failed {
             return Err(AdmissionError(AdmissionCode::Unavailable));
         }
@@ -104,9 +109,10 @@ impl AdmissionState {
         {
             return Err(AdmissionError(AdmissionCode::CheckpointRequired));
         }
-        if interval.lower < Duration::from_secs(lease.issued_at())
-            || interval.upper >= Duration::from_secs(lease.expires_at())
-        {
+        if leases.iter().any(|lease| {
+            interval.lower < Duration::from_secs(lease.issued_at())
+                || interval.upper >= Duration::from_secs(lease.expires_at())
+        }) {
             return Err(AdmissionError(AdmissionCode::Lease));
         }
         Ok(interval)

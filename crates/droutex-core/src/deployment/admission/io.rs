@@ -19,6 +19,19 @@ pub struct DnsIoCheck {
     generation: Weak<Generation>,
     lease: GrantLease,
 }
+/// Gateway I/O liveness for one held admission. It cannot admit a new flow,
+/// choose a destination, check an origin address, or outlive its owner.
+pub struct GatewayIoCheck(DnsIoCheck);
+impl fmt::Debug for GatewayIoCheck {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("GatewayIoCheck").finish_non_exhaustive()
+    }
+}
+impl GatewayIoCheck {
+    pub fn verify_current(&self) -> Result<()> {
+        self.0.verify_current()
+    }
+}
 impl fmt::Debug for DnsIoCheck {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("DnsIoCheck").finish_non_exhaustive()
@@ -31,6 +44,17 @@ impl AuthorizedRequest<'_> {
         if !matches!(self.scope(), AdmissionScope::LegacyDns(_)) {
             return Err(AdmissionError(AdmissionCode::Scope));
         }
+        Ok(self.io_check())
+    }
+    /// A weak current-generation check for the existing gateway reservation.
+    /// Origin resolution and numeric connection still need their own checks.
+    pub fn gateway_io_check(&self) -> Result<GatewayIoCheck> {
+        if !matches!(self.scope(), AdmissionScope::Gateway(_)) {
+            return Err(AdmissionError(AdmissionCode::Scope));
+        }
+        Ok(GatewayIoCheck(self.io_check()))
+    }
+    fn io_check(&self) -> DnsIoCheck {
         let reservation = &self.attempt.reservation;
         let owner = reservation.decision._owner;
         let check = DnsIoCheck {
@@ -42,7 +66,7 @@ impl AuthorizedRequest<'_> {
         };
         // This only constructs a checker. A caller must run its live check at
         // I/O consumption, including the existing bounded checkpoint wait.
-        Ok(check)
+        check
     }
 }
 impl DnsIoCheck {
@@ -80,6 +104,15 @@ pub(super) fn check_current(
     generation: &Arc<Generation>,
     lease: GrantLease,
 ) -> Result<()> {
+    check_current_leases(published, admission, generation, &[lease])
+}
+
+pub(super) fn check_current_leases(
+    published: &RwLock<Published>,
+    admission: &Mutex<AdmissionState>,
+    generation: &Arc<Generation>,
+    leases: &[GrantLease],
+) -> Result<()> {
     // Same linearization as original consumption: hold the current publication
     // read lock through the lease/clock check. Neither lock spans filesystem I/O.
     let published = published
@@ -96,6 +129,6 @@ pub(super) fn check_current(
     admission
         .lock()
         .map_err(|_| AdmissionError(AdmissionCode::State))?
-        .interval(lease)?;
+        .interval_many(leases)?;
     Ok(())
 }

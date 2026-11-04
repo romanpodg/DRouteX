@@ -46,7 +46,7 @@ IPv6/QUIC/application enforcement.
 | Original first-release WG/AWG/Xray vs user's narrower MVP | Accepted CR-0001: DNS/proxy G2, protocols/helper G3 | ADR-0016; dependency validation |
 | DNS profile vs trustworthy TCP identity | Trusted network/group or dedicated authenticated context; never NAT-IP individual identity | D08, P4-01 |
 | Authorization without a VPN | Restrict gateway ingress/service/target independently; private/trusted network requirements explicit | P4-01/P10-02/P4-08 |
-| DNS TTL after publication/revocation | Authorized versioned route grace; revoked/ambiguous target denied | D08, P3-06 |
+| DNS TTL after publication/revocation | Owner selected current generation only on 2026-11-03; revoked/ambiguous targets denied and cached answers do not grant access | D08, P3-06 |
 | IPv6 outside a DNS-only proxy path | Test supported gateway paths; warn uncontrolled clients may bypass; never promise VPN-like enforcement | P10-05 |
 | CP/runtime separation and atomic changes | Separate CP; local immutable generation/journal; future kernel/engine transaction issues do not force helper into MVP | P1-06 |
 | Proxy transport vs protocol engines | Minimal protected TCP connector; engine supervisor/TUN bridge deferred | D19, P4-05 |

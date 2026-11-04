@@ -91,6 +91,12 @@ pub(super) fn configuration(checked: &CheckedConfiguration) -> Result<Value, Sna
         ids(grant, "services")?;
         ids(grant, "outbounds")?;
     }
+    if value.get("smartDnsRoutes").is_some() {
+        rows(&mut value, "smartDnsRoutes", &["endpoint", "domain"])?;
+        for route in array(&mut value, "smartDnsRoutes")? {
+            ids(route, "addresses")?;
+        }
+    }
     if serde_json::to_vec(&value).map_err(|_| invalid())?.len() > MAX_INPUT_BYTES {
         return Err(SnapshotError(Code::Size));
     }

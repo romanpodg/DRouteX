@@ -217,8 +217,8 @@ def validate_client_qualification(plan, by_id):
 
 def validate_forwarding(plan, by_id):
     authorization = plan['execution_authorization']
-    assert authorization.get('decision') == 'dns_compatibility_decision', 'Unexpected active execution decision'
-    assert 'additional_scope' not in authorization, 'Unexpected additional execution scope'
+    assert authorization.get('decision') == 'smartdns_binding_decision', 'Unexpected active execution decision'
+    assert authorization.get('additional_scope') == ['P4-02', 'P4-03', 'P4-04'], 'Unexpected additional execution scope'
     decision = plan.get('dns_forwarding_decision', {})
     assert decision.get('status') == 'accepted' and decision.get('source'), 'Missing owner forwarding decision'
     assert decision.get('production_adoption') == 'conditional', 'Forwarding adoption requires its application proof'
@@ -265,7 +265,7 @@ def validate_override(plan, by_id):
 def validate_review_boundary(plan):
     assert plan['foundation_review']['status'] == 'accepted', 'Missing owner acceptance'
     assert plan['foundation_review']['source'], 'Missing owner decision evidence'
-    assert plan['execution_authorization']['through_task'] == 'P3-05', 'Unexpected execution boundary'
+    assert plan['execution_authorization']['through_task'] == 'P3-06', 'Unexpected execution boundary'
     assert plan['execution_authorization']['source'], 'Missing stage authorization'
     by_id = {task['id']: task for task in plan['tasks']}
     assert by_id['P0-01']['status'] == 'completed', 'Foundation gate is still open'
@@ -322,17 +322,21 @@ def validate_review_boundary(plan):
     compatibility = plan.get('dns_compatibility_decision', {})
     assert compatibility.get('status') == 'accepted' and compatibility.get('source') and compatibility.get('contract') == 'docs/planning/P3_05_COMPATIBILITY_REVIEW.md', 'Missing P3-05 decision'
     assert by_id['P3-05']['status'] in {'in_progress', 'in_review', 'completed'}, 'P3-05 has not started'
+    assert by_id['P3-05']['status'] == 'completed', 'P3-06 prerequisite incomplete'
+    binding_profile = plan.get('smartdns_binding_decision', {})
+    assert binding_profile.get('status') == 'accepted' and binding_profile.get('source') and binding_profile.get('contract') == 'docs/planning/P3_06_BINDING_PROPOSAL.md', 'Missing P3-06 decision'
+    assert by_id['P3-06']['status'] in {'in_progress', 'in_review', 'completed'}, 'P3-06 has not started'
     signature = plan['snapshot_auth_qualification_decision']
     assert signature['status'] == 'accepted' and signature['source'], 'Missing owner signature qualification decision'
     assert plan['secret_storage_decision']['status'] == 'accepted' and plan['secret_storage_decision']['source'], 'Missing owner secret storage decision'
     assert plan['draft_revision_decision']['status'] == 'accepted' and plan['draft_revision_decision']['source'], 'Missing owner draft revision decision'
-    assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02', 'P0-03', 'P0-04', 'P0-05', 'P1-01', 'P1-02', 'P1-03', 'P1-04', 'P1-05', 'P1-06', 'P1-07', 'P2-01', 'P2-02', 'P2-03', 'P2-04', 'P2-07', 'P2-05', 'P2-06', 'P4-01', 'P3-01', 'P3-02', 'P3-03', 'P3-04', 'P3-05'}), 'Work exceeds P3-05'
+    assert all(task['status'] == 'planned' for task in plan['tasks'] if task['id'] not in {'P0-01', 'P0-02', 'P0-03', 'P0-04', 'P0-05', 'P1-01', 'P1-02', 'P1-03', 'P1-04', 'P1-05', 'P1-06', 'P1-07', 'P2-01', 'P2-02', 'P2-03', 'P2-04', 'P2-07', 'P2-05', 'P2-06', 'P4-01', 'P3-01', 'P3-02', 'P3-03', 'P3-04', 'P3-05', 'P3-06', 'P4-02', 'P4-03', 'P4-04'}), 'Work exceeds authorized scope'
     assert plan['network_lab_decision']['source'], 'Missing lab authorization'
     assert by_id['P0-03']['status'] == 'completed', 'Native Debian 13 fixture gate is not complete'
     native = plan['network_lab_decision'].get('native_acceptance', {})
     assert native.get('status') == 'passed' and native.get('source') and native.get('report_sha256'), 'Missing native Debian 13 evidence or authorization'
     assert (ROOT/'Cargo.toml').is_file() and (ROOT/'Cargo.lock').is_file(), 'Missing workspace'
-    assert {p.name for p in (ROOT/'crates').iterdir()} == {'droutex-common', 'droutex-config', 'droutex-policy', 'droutex-storage', 'droutex-security', 'droutex-core', 'droutex-dns'}, 'Unexpected crate inventory'
+    assert {p.name for p in (ROOT/'crates').iterdir()} == {'droutex-common', 'droutex-config', 'droutex-policy', 'droutex-storage', 'droutex-security', 'droutex-core', 'droutex-dns', 'droutex-gateway'}, 'Unexpected crate inventory'
     assert not (ROOT/'apps').exists(), 'Daemons/frontend remain outside the P3-03 library gate'
     agents = (ROOT/'AGENTS.md').read_text(encoding='utf-8')
     assert 'mcp__node_repl__js' in agents and 'sky.list_apps()' in agents and 'browser-only' in agents
@@ -349,7 +353,7 @@ def main():
     adrs = validate_adrs()
     validate_review_boundary(plan)
     negatives = self_test(plan['tasks']) if '--self-test' in sys.argv else 0
-    result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P3-05','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':7,'runtime_implementation_absent':False}
+    result = {'status':'passed','scope_amendment':'CR-0001','accepted_design':'CR-0002','execution_boundary':'P3-06','tasks':len(ids),'deliveries':counts,'mvp_release_dependency_closure':len(release),'requirements':len(trace['requirements']),'source_headings':len(headings),'local_links_checked':link_count,'adrs':len(adrs),'accepted_adrs':2,'negative_validator_cases':negatives,'source_specs_unchanged':True,'workspace_crates':8,'runtime_implementation_absent':False}
     result['active_execution_decision'] = plan['execution_authorization']['decision']
     (ROOT/'docs/environment').mkdir(parents=True, exist_ok=True)
     (ROOT/'docs/environment/planning-verification.json').write_text(json.dumps(result,indent=2),encoding='utf-8')

@@ -81,6 +81,7 @@ fn signed_invalid_upstream_candidate_retains_actual_lkg_and_original_admission()
     start(&deployment, 1000);
     let mut document = document();
     document["profiles"][0]["defaultDnsAction"] = json!({"kind":"resolve","upstream":text(60)});
+    document["originUpstream"] = json!(text(60));
     let document_bytes = serde_json::to_vec(&document).unwrap();
     let candidate = |payload: &[u8], sequence, complete| {
         let configuration = parse_configuration(
@@ -127,6 +128,12 @@ fn signed_invalid_upstream_candidate_retains_actual_lkg_and_original_admission()
         .consume()
         .unwrap();
     let check = auth.dns_io_check().unwrap();
+    assert_eq!(
+        auth.decision().origin_upstream().unwrap().members()[0]
+            .address()
+            .to_string(),
+        "1.1.1.1:53"
+    );
     for invalid in [b"opaque descriptor".as_slice(), br#"{"format":"droutex-dns-upstream-v1","fallback":"none","members":[{"transport":"udp_tcp","address":"127.0.0.1:53"}]}"#] {
         let (bytes, artifacts) = candidate(invalid, 2, false);
         assert_eq!(deployment.activate(bytes, artifacts, &Cancellation::default()).unwrap_err().code(), ErrorCode::Compilation);
@@ -919,4 +926,250 @@ fn inventory_preflight_pauses_new_acquisitions_and_drop_restores_them() {
     drop(pause);
     assert!(deployment.prepare_legacy_dns(typed(20), peer()).is_ok());
     assert!(gateway(&deployment, peer(), "service.test", 443).is_ok());
+}
+
+fn smartdns_document() -> Value {
+    let mut doc = document();
+    doc["profiles"][0]["defaultDnsAction"] = json!({"kind":"gateway","outbound":text(90)});
+    doc["gatewayGrants"][0]["lease"]["expiresAt"] = json!(1010);
+    doc["smartDnsRoutes"] = json!([{"endpoint":text(30),"grant":text(42),
+        "domain":"service.test","port":443,"outbound":text(90),
+        "addresses":["203.0.113.1","2001:db8::1"],"ttl":30}]);
+    doc
+}
+
+#[test]
+fn smartdns_binding_checks_both_leases_and_current_generation_without_granting_tcp() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    let doc = smartdns_document();
+    apply_document(&deployment, &doc, 1);
+    time(&deployment, 1001, 1);
+    let dns = deployment
+        .prepare_legacy_dns(typed(20), peer())
+        .unwrap()
+        .consume()
+        .unwrap();
+    let binding = dns.smart_dns_binding("SeRvIcE.TeSt.", typed(90)).unwrap();
+    binding.verify_current().unwrap();
+    assert_eq!(binding.ttl(), 30);
+    assert!(dns.smart_dns_binding("other.test", typed(90)).is_err());
+    assert!(dns.smart_dns_binding("service.test", typed(91)).is_err());
+    assert!(
+        gateway(
+            &deployment,
+            "203.0.113.8".parse().unwrap(),
+            "service.test",
+            443
+        )
+        .is_err()
+    );
+    let tcp = gateway(&deployment, peer(), "service.test", 443)
+        .unwrap()
+        .consume()
+        .unwrap();
+    assert!(tcp.smart_dns_binding("service.test", typed(90)).is_err());
+    time(&deployment, 1008, 8);
+    deployment
+        .refresh_authorization_clock(&Cancellation::default())
+        .unwrap();
+    assert_eq!(
+        binding.verify_current().unwrap_err().code(),
+        AdmissionCode::Lease
+    );
+    dns.verify_current().unwrap(); // DNS lease alone still remains valid.
+    apply_document(&deployment, &doc, 2);
+    assert_eq!(
+        binding.verify_current().unwrap_err().code(),
+        AdmissionCode::Retired
+    );
+}
+
+#[test]
+fn smartdns_cached_address_never_authorizes_removed_route_or_wrong_source() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    let doc = smartdns_document();
+    apply_document(&deployment, &doc, 1);
+    time(&deployment, 1001, 1);
+    let dns = deployment
+        .prepare_legacy_dns(typed(20), peer())
+        .unwrap()
+        .consume()
+        .unwrap();
+    let binding = dns.smart_dns_binding("service.test", typed(90)).unwrap();
+    let cached = *binding
+        .addresses()
+        .iter()
+        .find(|address| address.is_ipv4())
+        .unwrap();
+    assert_eq!(cached, "203.0.113.1".parse::<IpAddr>().unwrap());
+    let attempt = deployment
+        .prepare_smartdns_gateway(
+            typed(22),
+            peer(),
+            "service.test",
+            NonZeroU16::new(443).unwrap(),
+            observations(),
+        )
+        .unwrap();
+    assert!(
+        deployment
+            .prepare_smartdns_gateway(
+                typed(22),
+                "203.0.113.8".parse().unwrap(),
+                "service.test",
+                NonZeroU16::new(443).unwrap(),
+                observations()
+            )
+            .is_err()
+    );
+    let mut replacement = doc.clone();
+    replacement["smartDnsRoutes"] = json!([]);
+    apply_document(&deployment, &replacement, 2);
+    assert_eq!(
+        binding.verify_current().unwrap_err().code(),
+        AdmissionCode::Retired
+    );
+    assert_eq!(
+        attempt.consume().unwrap_err().code(),
+        AdmissionCode::Retired
+    );
+    assert!(
+        deployment
+            .prepare_smartdns_gateway(
+                typed(22),
+                peer(),
+                "service.test",
+                NonZeroU16::new(443).unwrap(),
+                observations()
+            )
+            .is_err()
+    );
+    assert!(
+        gateway(&deployment, peer(), "service.test", 443).is_ok(),
+        "ordinary separate grant remains independent"
+    );
+}
+
+#[test]
+fn smartdns_replacement_uses_new_generation_without_old_answer_grace() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    let doc = smartdns_document();
+    apply_document(&deployment, &doc, 1);
+    time(&deployment, 1001, 1);
+    let old_dns = deployment
+        .prepare_legacy_dns(typed(20), peer())
+        .unwrap()
+        .consume()
+        .unwrap();
+    let old = old_dns
+        .smart_dns_binding("service.test", typed(90))
+        .unwrap();
+    let previous = deployment
+        .prepare_smartdns_gateway(
+            typed(22),
+            peer(),
+            "service.test",
+            NonZeroU16::new(443).unwrap(),
+            observations(),
+        )
+        .unwrap();
+    let mut replacement = doc.clone();
+    replacement["smartDnsRoutes"][0]["addresses"] = json!(["203.0.113.2"]);
+    apply_document(&deployment, &replacement, 2);
+    assert_eq!(
+        old.verify_current().unwrap_err().code(),
+        AdmissionCode::Retired
+    );
+    assert_eq!(
+        previous.consume().unwrap_err().code(),
+        AdmissionCode::Retired
+    );
+    time(&deployment, 1002, 2);
+    let dns = deployment
+        .prepare_legacy_dns(typed(20), peer())
+        .unwrap()
+        .consume()
+        .unwrap();
+    let current = dns.smart_dns_binding("service.test", typed(90)).unwrap();
+    assert_eq!(
+        current.addresses(),
+        &["203.0.113.2".parse::<IpAddr>().unwrap()]
+    );
+    assert!(
+        deployment
+            .prepare_smartdns_gateway(
+                typed(22),
+                peer(),
+                "service.test",
+                NonZeroU16::new(443).unwrap(),
+                observations()
+            )
+            .unwrap()
+            .consume()
+            .is_ok()
+    );
+}
+
+#[test]
+fn gateway_io_check_requires_owner_and_current_gateway_lease() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    apply_document(&deployment, &document(), 1);
+    time(&deployment, 1001, 1);
+    let dns = deployment
+        .prepare_legacy_dns(typed(20), peer())
+        .unwrap()
+        .consume()
+        .unwrap();
+    assert!(matches!(dns.gateway_io_check(), Err(error) if error.code() == AdmissionCode::Scope));
+    let auth = gateway(&deployment, peer(), "service.test", 443)
+        .unwrap()
+        .consume()
+        .unwrap();
+    let check = auth.gateway_io_check().unwrap();
+    check.verify_current().unwrap();
+    let mut revoked = document();
+    revoked["gatewayGrants"][0]["source"] = json!("203.0.113.8");
+    apply_document(&deployment, &revoked, 2);
+    assert_eq!(
+        check.verify_current().unwrap_err().code(),
+        AdmissionCode::Retired
+    );
+    drop(auth);
+    assert_eq!(
+        check.verify_current().unwrap_err().code(),
+        AdmissionCode::Retired
+    );
+    drop(dns);
+    drop(deployment);
+    assert_eq!(
+        check.verify_current().unwrap_err().code(),
+        AdmissionCode::Retired
+    );
+}
+
+#[test]
+fn gateway_io_check_expires_with_original_gateway_lease() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    let mut doc = document();
+    doc["gatewayGrants"][0]["lease"]["expiresAt"] = json!(1010);
+    apply_document(&deployment, &doc, 1);
+    time(&deployment, 1001, 1);
+    let auth = gateway(&deployment, peer(), "service.test", 443)
+        .unwrap()
+        .consume()
+        .unwrap();
+    let check = auth.gateway_io_check().unwrap();
+    time(&deployment, 1008, 8);
+    deployment
+        .refresh_authorization_clock(&Cancellation::default())
+        .unwrap();
+    assert_eq!(
+        check.verify_current().unwrap_err().code(),
+        AdmissionCode::Lease
+    );
 }
