@@ -671,6 +671,25 @@ pub(crate) mod tests {
         facts: Vec<OutboundObservation>,
     ) -> droutex_core::deployment::AuthorizedRequest<'_> {
         use droutex_core::deployment::{AdmissionCode, AdmissionConsumption};
+        // The clock persists a five-second ceiling over a two-second
+        // uncertainty interval. Begin test work just after a new ceiling
+        // boundary and refresh it so slow platform probes cannot straddle an
+        // unmaintained checkpoint. The production deadline is unchanged.
+        let setup_limit = Instant::now() + Duration::from_secs(8);
+        loop {
+            assert!(
+                Instant::now() < setup_limit,
+                "fixture clock window timed out"
+            );
+            let wall = SystemTime::now().duration_since(UNIX_EPOCH).unwrap();
+            if (wall.as_secs() + 2).is_multiple_of(5) {
+                owner
+                    .refresh_authorization_clock(&Cancellation::default())
+                    .unwrap();
+                break;
+            }
+            tokio::time::sleep(Duration::from_millis(25)).await;
+        }
         let limit = Instant::now() + Duration::from_secs(3);
         let mut attempt = loop {
             assert!(

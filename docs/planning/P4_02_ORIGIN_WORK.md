@@ -138,3 +138,12 @@ semaphore; production limits are unchanged. The DNS fixture now reserves UDP
 first and tries up to 64 complete UDP/TCP pairs within one five-second deadline,
 refusing setup if none are available. The failed run remains failed; the fixes
 require fresh CI evidence on their own head.
+
+The next Windows workspace run 41891146484 failed on head `051bbe9`: the
+successful-dial fixture crossed the five-second authorization checkpoint during
+resolution, correctly returning `Admission`. The fixture now waits for the start
+of a fresh clock window and refreshes the existing in-memory deployment before
+admission; it does not extend the production resolution deadline, alter leases,
+or disable current-generation checks. Local gateway tests pass in both feature
+profiles. The first local Clippy attempt found a test-helper style lint, which was
+fixed; the corrected Clippy run passed. Fresh Windows CI remains necessary.
