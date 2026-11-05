@@ -153,35 +153,7 @@ async fn serve(
         binding.check(&current)?;
         bindings.push((binding, listener.socket));
     }
-    let mut outbounds = BTreeSet::new();
-    if current.origin_upstream().is_some() {
-        for observation in &observations {
-            if observation.kind == ProxyOutboundKind::GatewayDirect
-                && observation.availability == OutboundAvailability::Available
-                && observation.tcp == droutex_policy::TcpCapability::Supported
-                && observations
-                    .iter()
-                    .filter(|item| item.id == observation.id)
-                    .count()
-                    == 1
-                && current
-                    .gateway_configuration()
-                    .document()
-                    .outbounds
-                    .iter()
-                    .any(|outbound| {
-                        outbound.id == observation.id
-                            && outbound.enabled
-                            && matches!(
-                                outbound.transport,
-                                droutex_config::OutboundKind::VpsDirect {}
-                            )
-                    })
-            {
-                outbounds.insert(observation.id);
-            }
-        }
-    }
+    let outbounds = usable_outbounds(&current, &observations);
     let state = Arc::new(ReadyState {
         active: AtomicBool::new(true),
         deployment: Arc::downgrade(&deployment),
@@ -201,48 +173,15 @@ async fn serve(
     let (cancel, stop) = watch::channel(false);
     let mut listeners = JoinSet::new();
     for (binding, socket) in bindings {
-        let guard = ReadyGuard(Arc::clone(&state));
-        let owner = Arc::clone(&deployment);
-        let resolver = Arc::clone(&resolver);
-        let facts = Arc::clone(&facts);
-        let permits = Arc::clone(&permits);
-        let mut stop = stop.clone();
-        listeners.spawn(async move {
-            let _guard = guard;
-            let mut sessions = JoinSet::new();
-            let outcome = loop {
-                while sessions.try_join_next().is_some() {}
-                if *stop.borrow() { break Ok(()); }
-                tokio::select! {
-                    changed = stop.changed() => if changed.is_err() || *stop.borrow_and_update() { break Ok(()); },
-                    result = sessions.join_next(), if !sessions.is_empty() => { let _ = result; },
-                    accepted = socket.accept() => {
-                        let (stream, peer) = match accepted { Ok(result) => result, Err(_) => break Err(ListenerError::Io) };
-                        let current = match owner.pin() { Ok(current) => current, Err(_) => break Err(ListenerError::Unavailable) };
-                        if let Err(error) = binding.check(&current) { break Err(error); }
-                        drop(current);
-                        let Ok(permit) = Arc::clone(&permits).try_acquire_owned() else { drop(stream); continue; };
-                        let owner = Arc::clone(&owner);
-                        let resolver = Arc::clone(&resolver);
-                        let facts = Arc::clone(&facts);
-                        let mut session_stop = stop.clone();
-                        sessions.spawn(async move {
-                            let _permit = permit;
-                            if *session_stop.borrow() { return; }
-                            let work = session(owner, resolver, facts, binding.id, peer.ip(), stream, session_stop.clone());
-                            tokio::select! {
-                                biased;
-                                _ = session_stop.wait_for(|stopped| *stopped) => (),
-                                _ = work => (),
-                            }
-                        });
-                    }
-                }
-            };
-            sessions.abort_all();
-            while sessions.join_next().await.is_some() {}
-            outcome
-        });
+        let task = ListenerTask {
+            owner: Arc::clone(&deployment),
+            resolver: Arc::clone(&resolver),
+            facts: Arc::clone(&facts),
+            permits: Arc::clone(&permits),
+            stop: stop.clone(),
+            _guard: ReadyGuard(Arc::clone(&state)),
+        };
+        listeners.spawn(task.run(binding, socket));
     }
     if let Some(ready) = ready {
         let _ = ready.send(GatewayReadiness(state));
@@ -274,6 +213,87 @@ async fn serve(
         return Err(ListenerError::Cleanup);
     }
     outcome
+}
+
+struct ListenerTask {
+    owner: Arc<Deployment>,
+    resolver: Arc<OriginResolver>,
+    facts: Arc<Vec<OutboundObservation>>,
+    permits: Arc<Semaphore>,
+    stop: watch::Receiver<bool>,
+    _guard: ReadyGuard,
+}
+impl ListenerTask {
+    async fn run(mut self, binding: Binding, socket: tokio::net::TcpListener) -> Result<()> {
+        let mut sessions = JoinSet::new();
+        let outcome = loop {
+            while sessions.try_join_next().is_some() {}
+            if *self.stop.borrow() {
+                break Ok(());
+            }
+            tokio::select! {
+                changed = self.stop.changed() => if changed.is_err() || *self.stop.borrow_and_update() { break Ok(()); },
+                result = sessions.join_next(), if !sessions.is_empty() => { let _ = result; },
+                accepted = socket.accept() => {
+                    let (stream, peer) = match accepted { Ok(result) => result, Err(_) => break Err(ListenerError::Io) };
+                    let current = match self.owner.pin() { Ok(current) => current, Err(_) => break Err(ListenerError::Unavailable) };
+                    if let Err(error) = binding.check(&current) { break Err(error); }
+                    drop(current);
+                    let Ok(permit) = Arc::clone(&self.permits).try_acquire_owned() else { drop(stream); continue; };
+                    let owner = Arc::clone(&self.owner);
+                    let resolver = Arc::clone(&self.resolver);
+                    let facts = Arc::clone(&self.facts);
+                    let mut session_stop = self.stop.clone();
+                    sessions.spawn(async move {
+                        let _permit = permit;
+                        if *session_stop.borrow() { return; }
+                        let work = session(owner, resolver, facts, binding.id, peer.ip(), stream, session_stop.clone());
+                        tokio::select! {
+                            biased;
+                            _ = session_stop.wait_for(|stopped| *stopped) => (),
+                            _ = work => (),
+                        }
+                    });
+                }
+            }
+        };
+        sessions.abort_all();
+        while sessions.join_next().await.is_some() {}
+        outcome
+    }
+}
+
+/// Readiness covers only outbounds that the preview can actually connect.
+fn usable_outbounds(
+    current: &droutex_core::deployment::Decision<'_>,
+    observations: &[OutboundObservation],
+) -> BTreeSet<ProxyOutboundId> {
+    if current.origin_upstream().is_none() {
+        return BTreeSet::new();
+    }
+    let configured = &current.gateway_configuration().document().outbounds;
+    observations
+        .iter()
+        .filter(|observation| {
+            observation.kind == ProxyOutboundKind::GatewayDirect
+                && observation.availability == OutboundAvailability::Available
+                && observation.tcp == droutex_policy::TcpCapability::Supported
+                && observations
+                    .iter()
+                    .filter(|item| item.id == observation.id)
+                    .count()
+                    == 1
+                && configured.iter().any(|outbound| {
+                    outbound.id == observation.id
+                        && outbound.enabled
+                        && matches!(
+                            outbound.transport,
+                            droutex_config::OutboundKind::VpsDirect {}
+                        )
+                })
+        })
+        .map(|observation| observation.id)
+        .collect()
 }
 
 async fn session(

@@ -24,6 +24,12 @@
   the root directory owner; the full subsequent run outside it passed. The
   gateway-readiness and listener-port regressions each failed when their
   corresponding check was deliberately disabled, then sources were restored.
+  PR127 head `a9f70a1` failed CodeScene run 8287293: the gate reported
+  complexity in the preview listener and TLS parser and also measured two test
+  files, which the owner excludes as independent metric targets. The listener
+  task and bounded TLS-record/name parsing were subsequently separated for
+  reviewability; the failed run remains failed. Follow-up head checks and an
+  actual independent security review remain required.
 
 - Current worktree on 2026-11-05: the gateway has an opt-in, non-default
   `experimental-tls` preview which composes bounded ClientHello inspection,

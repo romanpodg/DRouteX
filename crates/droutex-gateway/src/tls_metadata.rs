@@ -41,42 +41,61 @@ pub fn inspect(input: &[u8]) -> Result<Inspection, HelloError> {
     let mut wire = input;
     let mut handshake = Vec::new();
     for _ in 0..MAX_RECORDS {
-        if wire.len() < 5 {
+        let Some(HandshakeRecord { tail, data }) = handshake_record(wire)? else {
             return Ok(Inspection::Pending);
-        }
-        let (_, header) = parse_tls_record_header(wire).map_err(|_| HelloError::Invalid)?;
-        if header.record_type != TlsRecordType::Handshake
-            || !(0x0301..=0x0303).contains(&header.version.0)
-            || header.len == 0
-            || usize::from(header.len) > 16_384
-        {
-            return Err(HelloError::Invalid);
-        }
-        if wire.len() < 5 + usize::from(header.len) {
-            return Ok(Inspection::Pending);
-        }
-        let (tail, record) = parse_tls_raw_record(wire).map_err(|_| HelloError::Invalid)?;
-        if handshake.len() + record.data.len() > MAX_INPUT {
+        };
+        if handshake.len() + data.len() > MAX_INPUT {
             return Err(HelloError::Limit);
         }
-        handshake.extend_from_slice(record.data);
-        if handshake.len() >= 4 {
-            if handshake[0] != 1 {
-                return Err(HelloError::Invalid);
-            }
-            let len = (usize::from(handshake[1]) << 16)
-                | (usize::from(handshake[2]) << 8)
-                | usize::from(handshake[3]);
-            if len + 4 > MAX_INPUT {
-                return Err(HelloError::Limit);
-            }
-            if handshake.len() >= len + 4 {
-                return parse_body(&handshake[4..len + 4]).map(Inspection::Complete);
-            }
+        handshake.extend_from_slice(data);
+        if let Some(body) = complete_hello(&handshake)? {
+            return parse_body(body).map(Inspection::Complete);
         }
         wire = tail;
     }
     Err(HelloError::Limit)
+}
+/// Accept only a complete bounded TLS handshake record; incomplete data is not
+/// rejected until the fixed input/read deadline has been reached.
+struct HandshakeRecord<'a> {
+    tail: &'a [u8],
+    data: &'a [u8],
+}
+fn handshake_record(wire: &[u8]) -> Result<Option<HandshakeRecord<'_>>, HelloError> {
+    if wire.len() < 5 {
+        return Ok(None);
+    }
+    let (_, header) = parse_tls_record_header(wire).map_err(|_| HelloError::Invalid)?;
+    if header.record_type != TlsRecordType::Handshake
+        || !(0x0301..=0x0303).contains(&header.version.0)
+        || header.len == 0
+        || usize::from(header.len) > 16_384
+    {
+        return Err(HelloError::Invalid);
+    }
+    if wire.len() < 5 + usize::from(header.len) {
+        return Ok(None);
+    }
+    let (tail, record) = parse_tls_raw_record(wire).map_err(|_| HelloError::Invalid)?;
+    Ok(Some(HandshakeRecord {
+        tail,
+        data: record.data,
+    }))
+}
+fn complete_hello(handshake: &[u8]) -> Result<Option<&[u8]>, HelloError> {
+    if handshake.len() < 4 {
+        return Ok(None);
+    }
+    if handshake[0] != 1 {
+        return Err(HelloError::Invalid);
+    }
+    let len = (usize::from(handshake[1]) << 16)
+        | (usize::from(handshake[2]) << 8)
+        | usize::from(handshake[3]);
+    if len + 4 > MAX_INPUT {
+        return Err(HelloError::Limit);
+    }
+    Ok((handshake.len() >= len + 4).then(|| &handshake[4..len + 4]))
 }
 fn parse_body(body: &[u8]) -> Result<CanonicalDomain, HelloError> {
     let (tail, hello) = parse_tls_handshake_client_hello(body).map_err(|_| HelloError::Invalid)?;
@@ -105,28 +124,27 @@ fn parse_body(body: &[u8]) -> Result<CanonicalDomain, HelloError> {
             return Err(HelloError::EncryptedName);
         }
         if kind.0 == 0 {
-            if data.len() < 2
-                || usize::from(u16::from_be_bytes([data[0], data[1]])) != data.len() - 2
-            {
-                return Err(HelloError::Invalid);
-            }
-            let (tail, (kind, host)) =
-                parse_tls_extension_sni_hostname(&data[2..]).map_err(|_| HelloError::Invalid)?;
-            if !tail.is_empty() || kind.0 != 0 || host.is_empty() || !host.is_ascii() {
-                return Err(HelloError::Invalid);
-            }
-            let host = std::str::from_utf8(host).map_err(|_| HelloError::Invalid)?;
-            if host.ends_with('.') || host.parse::<std::net::IpAddr>().is_ok() {
-                return Err(HelloError::Invalid);
-            }
-            name = Some(
-                host.parse::<CanonicalDomain>()
-                    .map_err(|_| HelloError::Invalid)?,
-            );
+            name = Some(parse_server_name(data)?);
         }
         extensions = tail;
     }
     name.ok_or(HelloError::Invalid)
+}
+fn parse_server_name(data: &[u8]) -> Result<CanonicalDomain, HelloError> {
+    if data.len() < 2 || usize::from(u16::from_be_bytes([data[0], data[1]])) != data.len() - 2 {
+        return Err(HelloError::Invalid);
+    }
+    let (tail, (kind, host)) =
+        parse_tls_extension_sni_hostname(&data[2..]).map_err(|_| HelloError::Invalid)?;
+    if !tail.is_empty() || kind.0 != 0 || host.is_empty() || !host.is_ascii() {
+        return Err(HelloError::Invalid);
+    }
+    let host = std::str::from_utf8(host).map_err(|_| HelloError::Invalid)?;
+    if host.ends_with('.') || host.parse::<std::net::IpAddr>().is_ok() {
+        return Err(HelloError::Invalid);
+    }
+    host.parse::<CanonicalDomain>()
+        .map_err(|_| HelloError::Invalid)
 }
 
 const MAX_READS: usize = 256;
