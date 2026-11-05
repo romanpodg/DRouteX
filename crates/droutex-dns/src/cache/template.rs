@@ -141,6 +141,8 @@ impl Template {
         Some(wire::Reply {
             message: wire::sanitize(request, message, true),
             expires: Some(self.expires),
+            #[cfg(feature = "experimental-smartdns")]
+            gateway: None,
         })
     }
 }

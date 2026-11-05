@@ -535,8 +535,14 @@ impl Job {
                     .await?;
                     let deadline = reply.prepare_send(Instant::now(), deadline)?;
                     let output = wire::encode(&request, &reply.message, bytes.len(), false)?;
-                    let sent =
-                        submit(&auth, &refresh, deadline, socket.send_to(&output, peer)).await?;
+                    let sent = submit_reply(
+                        &auth,
+                        &reply,
+                        &refresh,
+                        deadline,
+                        socket.send_to(&output, peer),
+                    )
+                    .await?;
                     if sent != output.len() {
                         return Err(DnsError(ErrorCode::Io));
                     }
@@ -591,8 +597,10 @@ impl Job {
                         let prefix = u16::try_from(output.len())
                             .map_err(|_| DnsError(ErrorCode::State))?
                             .to_be_bytes();
-                        submit(&auth, &refresh, deadline, socket.write_all(&prefix)).await?;
-                        submit(&auth, &refresh, deadline, socket.write_all(&output)).await?;
+                        submit_reply(&auth, &reply, &refresh, deadline, socket.write_all(&prefix))
+                            .await?;
+                        submit_reply(&auth, &reply, &refresh, deadline, socket.write_all(&output))
+                            .await?;
                         budget.answered.fetch_add(1, Ordering::Relaxed);
                         Ok(())
                     })
@@ -690,6 +698,7 @@ async fn within_deadline<T>(
         })=>result,
     }
 }
+#[cfg(test)]
 pub(super) async fn submit<T>(
     auth: &AuthorizedRequest<'_>,
     refresh: &Refresh,
@@ -698,6 +707,30 @@ pub(super) async fn submit<T>(
 ) -> Result<T> {
     checked_submit(
         || auth.verify_current().map_err(|error| error.code()),
+        refresh,
+        deadline,
+        operation,
+    )
+    .await
+}
+pub(super) async fn submit_reply<T>(
+    auth: &AuthorizedRequest<'_>,
+    reply: &wire::Reply,
+    refresh: &Refresh,
+    deadline: Instant,
+    operation: impl Future<Output = std::io::Result<T>>,
+) -> Result<T> {
+    checked_submit(
+        || {
+            auth.verify_current().map_err(|error| error.code())?;
+            #[cfg(feature = "experimental-smartdns")]
+            if let Some(gateway) = &reply.gateway {
+                gateway.check(auth)?;
+            }
+            #[cfg(not(feature = "experimental-smartdns"))]
+            let _ = reply;
+            Ok(())
+        },
         refresh,
         deadline,
         operation,

@@ -1,8 +1,12 @@
-//! Fail-closed listener lifecycle; no TLS processing or readiness is exposed.
+//! Default fail-closed listener and an opt-in experimental TLS preview.
+#[cfg(feature = "experimental-tls")]
+mod preview;
 use crate::origin::resolver::OriginResolver;
 use droutex_common::ListenerId;
 use droutex_config::ListenerTransport;
 use droutex_core::deployment::{Decision, Deployment};
+#[cfg(feature = "experimental-tls")]
+pub use preview::{GatewayReadiness, serve_preview, serve_preview_ready};
 use std::{collections::BTreeSet, error::Error, fmt, net::SocketAddr, sync::Arc, time::Duration};
 use tokio::{net::TcpListener, sync::watch, task::JoinSet, time::timeout};
 
@@ -52,8 +56,8 @@ impl Binding {
     }
 }
 
-/// Serve a bounded set of configured sockets until shutdown. Until TLS, current
-/// admission and passthrough exist, every accepted stream is immediately closed.
+/// Serve a bounded set of configured sockets until shutdown. Every accepted
+/// stream is immediately closed; the experimental preview is a separate entry point.
 /// This function deliberately does not establish SmartDNS gateway readiness.
 /// The host must retain and poll this future, and signal shutdown before dropping it.
 pub async fn serve_closed(

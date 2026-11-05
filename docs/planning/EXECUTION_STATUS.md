@@ -2,11 +2,59 @@
 
 ## Current execution card
 
+- Later current-worktree update: non-default `experimental-smartdns` can return
+  a configured address when a running experimental gateway supplies readiness
+  for the same deployment, generation, listener, port, address family and
+  supported direct outbound. Port-translating NAT is unavailable in this
+  preview. It rechecks readiness and both leases at UDP submission and
+  each poll of both TCP frame writes. Readiness is withdrawn on shutdown,
+  task failure, inventory shutdown or generation replacement; a new generation
+  requires a newly started preview and readiness handle. Controlled Linux UDP
+  and TCP tests cover answers and withdrawal. A separate local OpenSSL test
+  establishes TLS through the gateway and rejects the wrong certificate name,
+  using a synthetic origin DNS server and test-only loopback dial substitution.
+  These tests are not a single real DNS-to-TLS acceptance test and do not verify
+  public numeric routing. Independent parser review, Windows testing, real
+  end-to-end acceptance, CI and deployment remain outstanding. Earlier wording
+  below about DNS output and experimental TLS is historical.
+  The final all-features Linux run passed 60 core tests, 119 DNS tests, 39
+  gateway tests and six doctests. Clippy, formatting, offline cargo-deny and the
+  planning self-test passed. The first all-features DNS run inside the sandbox
+  failed its durable-store test with `UnsafePath` because the sandbox changed
+  the root directory owner; the full subsequent run outside it passed. The
+  gateway-readiness and listener-port regressions each failed when their
+  corresponding check was deliberately disabled, then sources were restored.
+
+- Current worktree on 2026-11-05: the gateway has an opt-in, non-default
+  `experimental-tls` preview which composes bounded ClientHello inspection,
+  current-route admission, direct origin resolution and bounded TCP relay.
+  Local tests exercise this composition with synthetic DNS and a test-only
+  loopback origin. The default listener remains fail-closed; this preview does
+  not advertise DNS readiness. Gateway DNS answers remain SERVFAIL. Real TLS
+  certificate validation, DNS-to-TLS acceptance, independent security review,
+  current-worktree Windows testing and deployment remain outstanding. The
+  owner-reported Windows results below apply to the earlier merge only.
+  Local Linux verification passed 60 core tests and five doctests, 38 gateway
+  tests plus one doctest with the experimental feature, and 27 gateway tests
+  plus one doctest with default features. Clippy, formatting, offline cargo-deny
+  and the planning self-test passed; cargo-deny reported duplicate dependencies.
+  The first full core run in the sandbox failed 19 durable-store tests because
+  the sandbox gives `/` an untrusted owner. A subsequent run outside that
+  sandbox passed all 60; this does not erase the initial failure.
+
 - On 2026-11-03 the owner authorized the assistant to make development changes
   and development decisions autonomously across the project. This standing
   instruction supersedes earlier project guidance to seek separate owner choices
   for ordinary development decisions. Continue to record consequential choices,
   actual review and test evidence, and applicable external safety constraints.
+
+- On 2026-11-05 the owner supplied a screenshot reporting Windows tests in a
+  clean worktree at merge commit `836d655`: 27 gateway tests and one doctest,
+  plus 16 isolated TLS parser tests, all passed without ignored tests. This is
+  owner-reported evidence; the screenshot does not identify the Windows version,
+  commands, feature profile or raw logs. It does not verify gateway passthrough
+  or SmartDNS DNS answers. See [P4-02](P4_02_ORIGIN_WORK.md) and
+  [P4-03 qualification](P4_03_TLS_PARSER_CANDIDATE.md).
 
 - On 2026-11-03 the owner authorized starting P4-02 through P4-04 while
   P3-06 remains open, to enable its eventual real DNS-to-TLS acceptance.

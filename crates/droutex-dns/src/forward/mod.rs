@@ -55,10 +55,68 @@ pub(crate) enum Outcome {
 pub(super) struct Forwarder {
     aliases: Vec<std::net::IpAddr>,
     cache: Cache,
+    #[cfg(feature = "experimental-smartdns")]
+    pub(super) readiness: Option<droutex_gateway::listener::GatewayReadiness>,
     #[cfg(test)]
     fixture: Option<Fixture>,
 }
 impl Forwarder {
+    #[cfg(feature = "experimental-smartdns")]
+    fn gateway_answer(
+        &self,
+        request: &Message,
+        outbound: droutex_common::ProxyOutboundId,
+        context: &Processing<'_, '_>,
+    ) -> Result<Reply> {
+        use hickory_proto::rr::{
+            RData, Record, RecordType,
+            rdata::{A, AAAA},
+        };
+        let question = request
+            .queries
+            .first()
+            .ok_or(DnsError(ErrorCode::Malformed))?;
+        let name = question.name.to_ascii();
+        let readiness = self
+            .readiness
+            .as_ref()
+            .ok_or(DnsError(ErrorCode::Unavailable))?;
+        let binding = context
+            .auth
+            .smart_dns_binding(&name, outbound)
+            .map_err(|_| DnsError(ErrorCode::Unavailable))?;
+        if !readiness.matches(&binding) {
+            return Err(DnsError(ErrorCode::Unavailable));
+        }
+        let mut reply = response(request, ResponseCode::NoError);
+        for address in binding.addresses() {
+            if !readiness.supports_address(&binding, *address) {
+                continue;
+            }
+            let data = match (question.query_type, address) {
+                (RecordType::A, std::net::IpAddr::V4(ip)) => RData::A(A(*ip)),
+                (RecordType::AAAA, std::net::IpAddr::V6(ip)) => RData::AAAA(AAAA(*ip)),
+                _ => continue,
+            };
+            reply.answers.push(Record::from_rdata(
+                question.name.clone(),
+                binding.ttl(),
+                data,
+            ));
+        }
+        if reply.answers.is_empty() {
+            return Err(DnsError(ErrorCode::Unavailable));
+        }
+        Ok(Reply {
+            message: reply,
+            expires: None,
+            gateway: Some(crate::wire::GatewayCheck {
+                name,
+                outbound,
+                readiness: readiness.clone(),
+            }),
+        })
+    }
     #[cfg(test)]
     pub fn fixture_cache_hit_barrier(&mut self, barrier: Arc<CacheHitBarrier>) {
         if let Some(fixture) = &mut self.fixture {
@@ -92,6 +150,8 @@ impl Forwarder {
         Ok(Self {
             aliases,
             cache: Cache::new(),
+            #[cfg(feature = "experimental-smartdns")]
+            readiness: None,
             #[cfg(test)]
             fixture: None,
         })
@@ -130,7 +190,12 @@ impl Processor for Forwarder {
                     return Ok(reply.into());
                 }
             }
-            DnsAction::Gateway { .. } => {}
+            DnsAction::Gateway { outbound } => {
+                #[cfg(feature = "experimental-smartdns")]
+                return self.gateway_answer(request, *outbound, context);
+                #[cfg(not(feature = "experimental-smartdns"))]
+                let _ = outbound;
+            }
         }
         let DnsAction::Resolve { upstream } = selection.action() else {
             return Ok(response(request, ResponseCode::ServFail).into());
@@ -322,6 +387,8 @@ pub(super) fn fixture(
     Ok(Forwarder {
         aliases: Vec::new(),
         cache: Cache::new(),
+        #[cfg(feature = "experimental-smartdns")]
+        readiness: None,
         fixture: Some(Fixture {
             targets: mapped,
             inventory: Arc::new(inventory::Inventory::fixture(inventory)),
