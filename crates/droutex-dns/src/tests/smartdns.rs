@@ -63,11 +63,19 @@ async fn query_udp(address: SocketAddr, qtype: u16) -> Message {
     }
 }
 
+#[derive(Clone, Copy, Eq, PartialEq)]
+enum AddressCase {
+    Listener,
+    Unknown,
+    TrustedAlias,
+}
+
 async fn live_gateway_controls_dns_answers(
     change_generation: bool,
     ipv6: bool,
     stop_inventory: bool,
     wrong_port: bool,
+    address_case: AddressCase,
 ) {
     let udp = UdpSocket::bind("127.0.0.1:0").await.unwrap();
     let tcp = TcpListener::bind("127.0.0.1:0").await.unwrap();
@@ -96,13 +104,28 @@ async fn live_gateway_controls_dns_answers(
     doc["outbounds"] =
         json!([{"id":text(90),"name":"Direct","enabled":true,"transport":{"kind":"vps_direct"}}]);
     doc["originUpstream"] = json!(text(60));
-    doc["smartDnsRoutes"] = json!([{"endpoint":text(30),"grant":text(42),"domain":"example.test","port":gateway_port,"outbound":text(90),"addresses":["127.0.0.1", "::1"],"ttl":30}]);
+    let ipv4 = if address_case == AddressCase::Listener {
+        "127.0.0.1"
+    } else {
+        "127.0.0.2"
+    };
+    let ipv6_address = if address_case == AddressCase::Listener {
+        "::1"
+    } else {
+        "::2"
+    };
+    doc["smartDnsRoutes"] = json!([{"endpoint":text(30),"grant":text(42),"domain":"example.test","port":gateway_port,"outbound":text(90),"addresses":[ipv4, ipv6_address],"ttl":30}]);
     let node = DnsNode::new(Deployment::in_memory(typed(1), keys().1));
     publish(node.deployment(), &doc, 1);
     let owner = Arc::clone(node.deployment());
     let (gateway_stop, shutdown) = watch::channel(false);
     let (ready, receiver) = oneshot::channel();
-    let resolver = Arc::new(OriginResolver::new(vec![]).unwrap());
+    let aliases = if address_case == AddressCase::TrustedAlias {
+        vec![if ipv6 { ipv6_address } else { ipv4 }.parse().unwrap()]
+    } else {
+        vec![]
+    };
+    let resolver = Arc::new(OriginResolver::new(aliases).unwrap());
     let gateway = tokio::spawn(listener::serve_preview_ready(
         Arc::clone(&owner),
         vec![listener::ListenerSocket {
@@ -147,13 +170,13 @@ async fn live_gateway_controls_dns_answers(
     let unsupported = if ipv6 { 1 } else { 28 };
     let expected = if ipv6 {
         RData::AAAA(hickory_proto::rr::rdata::AAAA(
-            std::net::Ipv6Addr::LOCALHOST,
+            ipv6_address.parse().unwrap(),
         ))
     } else {
-        RData::A(A(Ipv4Addr::LOCALHOST))
+        RData::A(A(ipv4.parse::<Ipv4Addr>().unwrap()))
     };
     let reply = query_udp(udp_address, supported).await;
-    if wrong_port {
+    if wrong_port || address_case == AddressCase::Unknown {
         assert_eq!(reply.metadata.response_code, ResponseCode::ServFail);
         gateway_stop.send_replace(true);
         timeout(Duration::from_secs(3), gateway)
@@ -296,25 +319,45 @@ async fn live_gateway_controls_dns_answers(
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn live_gateway_generation_change_withdraws_dns_answers() {
-    live_gateway_controls_dns_answers(true, false, false, false).await;
+    live_gateway_controls_dns_answers(true, false, false, false, AddressCase::Listener).await;
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn live_gateway_shutdown_withdraws_dns_answers() {
-    live_gateway_controls_dns_answers(false, false, false, false).await;
+    live_gateway_controls_dns_answers(false, false, false, false, AddressCase::Listener).await;
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn live_ipv6_gateway_only_advertises_its_address_family() {
-    live_gateway_controls_dns_answers(true, true, false, false).await;
+    live_gateway_controls_dns_answers(true, true, false, false, AddressCase::Listener).await;
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn inventory_shutdown_withdraws_gateway_dns_answers() {
-    live_gateway_controls_dns_answers(false, false, true, false).await;
+    live_gateway_controls_dns_answers(false, false, true, false, AddressCase::Listener).await;
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn mismatched_listener_port_never_produces_a_gateway_address() {
-    live_gateway_controls_dns_answers(false, false, false, true).await;
+    live_gateway_controls_dns_answers(false, false, false, true, AddressCase::Listener).await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn unregistered_gateway_address_never_produces_a_dns_answer() {
+    live_gateway_controls_dns_answers(false, false, false, false, AddressCase::Unknown).await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn operator_declared_gateway_alias_can_be_advertised() {
+    live_gateway_controls_dns_answers(true, false, false, false, AddressCase::TrustedAlias).await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn unregistered_ipv6_gateway_address_never_produces_a_dns_answer() {
+    live_gateway_controls_dns_answers(false, true, false, false, AddressCase::Unknown).await;
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn operator_declared_ipv6_gateway_alias_can_be_advertised() {
+    live_gateway_controls_dns_answers(true, true, false, false, AddressCase::TrustedAlias).await;
 }

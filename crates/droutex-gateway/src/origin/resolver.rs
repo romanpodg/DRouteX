@@ -218,6 +218,11 @@ impl OriginResolver {
     pub(crate) fn inventory_available(&self) -> bool {
         self.registry.available()
     }
+    /// Host-declared addresses behind NAT or otherwise absent from local binds.
+    #[cfg(feature = "experimental-tls")]
+    pub(crate) fn has_trusted_alias(&self, address: IpAddr) -> bool {
+        self.aliases.contains(&address)
+    }
     pub fn new(aliases: Vec<IpAddr>) -> Result<Self> {
         if aliases.len() > super::MAX_SELF_ADDRESSES {
             return Err(ResolveError::Unavailable);

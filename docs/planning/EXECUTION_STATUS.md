@@ -2,6 +2,20 @@
 
 ## Current execution card
 
+- Owner-supplied Windows raw output for merge `836d655` reports 27 gateway
+  tests and one doctest, plus 16 isolated TLS-parser tests, passing outside the
+  sandbox. The preceding sandboxed gateway run failed eight tests: two reported
+  socket permission errors and others timed out or returned a different refusal.
+  The raw output does not independently establish a cause for each timeout or
+  test the later PR127 preview. This is reported evidence, not current-head
+  Windows, real SmartDNS-to-TLS acceptance, or an independent parser review.
+- Current worktree tightens experimental readiness: a DNS redirect address must
+  equal the bound listener IP or a trusted host-declared alias, in addition to
+  the existing owner, generation, family and port checks. Declarations are not
+  proof that NAT routing is reachable. A live DNS regression exposed the previous
+  unregistered-address `NOERROR` and now expects `SERVFAIL`; a declared alias
+  remains accepted. P3-06 and PR127 remain in progress.
+
 - Later current-worktree update: non-default `experimental-smartdns` can return
   a configured address when a running experimental gateway supplies readiness
   for the same deployment, generation, listener, port, address family and

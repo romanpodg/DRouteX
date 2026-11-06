@@ -72,7 +72,9 @@ Later current-worktree update: `experimental-smartdns` now connects the DNS
 transport to a gateway-issued readiness handle tied to the same owner,
 generation and listener. It admits only matching address families and a
 supported observed direct outbound with a configured origin upstream and live
-inventory registry. The listener's actual local port must equal the route port;
+inventory registry. An advertised address must equal the bound listener address
+or an operator-declared public/NAT alias. Alias declarations are trusted host
+input, not independent proof that external routing actually reaches the listener. The listener's actual local port must equal the route port;
 NAT that translates ports is therefore unavailable in this preview. Both leases
 and readiness are rechecked before every UDP
 output poll and both TCP frame writes, including checkpoint retries. Stopping a

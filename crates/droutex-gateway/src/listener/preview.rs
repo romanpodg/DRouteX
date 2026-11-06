@@ -66,8 +66,9 @@ impl GatewayReadiness {
                 .is_some_and(|resolver| resolver.inventory_available())
             && state.active.load(Ordering::Acquire)
     }
-    /// A socket bound to one address family cannot establish readiness for
-    /// a route advertising the other family.
+    /// The advertised address must match the bound socket or an explicitly
+    /// host-declared alias, in addition to matching the socket address family.
+    /// A declared alias is operator evidence, not a reachability probe.
     pub fn supports_address(
         &self,
         binding: &SmartDnsBinding<'_, '_>,
@@ -78,7 +79,15 @@ impl GatewayReadiness {
                 .0
                 .listeners
                 .get(&binding.listener())
-                .is_some_and(|local| local.is_ipv4() == address.is_ipv4())
+                .is_some_and(|local| {
+                    local.is_ipv4() == address.is_ipv4()
+                        && (local.ip() == address
+                            || self
+                                .0
+                                .resolver
+                                .upgrade()
+                                .is_some_and(|resolver| resolver.has_trusted_alias(address)))
+                })
     }
 }
 struct ReadyGuard(Arc<ReadyState>);
