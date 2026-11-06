@@ -2,6 +2,27 @@
 
 ## Current execution card
 
+- On 2026-11-06 draft [PR #127](https://github.com/romanpodg/DRouteX/pull/127)
+  remained open at `f54dbc012026d0f635be22b61d7632207a23620d`; `main` remained
+  at `836d655cdcc0e0073bce9f989504aca0b67683b4`. The four preview commits
+  were already published. GitHub Actions run [42173085830](https://github.com/romanpodg/DRouteX/actions/runs/42173085830)
+  passed all 11 workflow jobs and both Codecov patch checks on that PR head.
+  Its all-features Linux job ran 123 DNS and 39 gateway tests, including the
+  local OpenSSL certificate/hostname check; Windows ran 122 DNS and 38 gateway
+  tests. Both reported zero failures or ignored tests. The OpenSSL acceptance
+  test is Linux-only, so the Windows result does not prove that test ran there.
+  This is CI evidence for `f54dbc0`, not for later commits or the owner's own
+  Windows machine. No Codex Code Review or independent parser security review
+  was recorded on the PR at inspection time.
+- CodeScene [8303523](https://codescene.io/projects/86145/delta/results/8303523)
+  failed on the same head: it reported new-code health issues in the preview
+  listener, TLS metadata parser and relay, as well as two test files. The
+  project's metric scope excludes tests as independent targets; application
+  findings still need investigation and disposition. The check remains failed.
+  P3-06 is not complete: a single real DNS-to-TLS path with checked public
+  numeric origin dialing, independent security review and release acceptance
+  remain unverified. The features remain experimental and disabled by default.
+
 - Owner-supplied Windows raw output for merge `836d655` reports 27 gateway
   tests and one doctest, plus 16 isolated TLS-parser tests, passing outside the
   sandbox. The preceding sandboxed gateway run failed eight tests: two reported
@@ -28,8 +49,9 @@
   establishes TLS through the gateway and rejects the wrong certificate name,
   using a synthetic origin DNS server and test-only loopback dial substitution.
   These tests are not a single real DNS-to-TLS acceptance test and do not verify
-  public numeric routing. Independent parser review, Windows testing, real
-  end-to-end acceptance, CI and deployment remain outstanding. Earlier wording
+  public numeric routing. Independent parser review, owner-machine Windows testing,
+  real end-to-end acceptance and deployment remain outstanding. Later exact-head
+  Linux and Windows CI evidence is recorded above. Earlier wording
   below about DNS output and experimental TLS is historical.
   The final all-features Linux run passed 60 core tests, 119 DNS tests, 39
   gateway tests and six doctests. Clippy, formatting, offline cargo-deny and the
