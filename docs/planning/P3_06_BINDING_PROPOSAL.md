@@ -68,6 +68,67 @@ and keep P3-06 open; do not describe a DNS-only result as complete.
 
 ## Partial implementation and remaining work
 
+On 2026-11-07, the owner selected example.com:443 for a manual external probe.
+The [runnable probe](../../crates/droutex-dns/README.md#manual-public-origin-probe)
+uses the SmartDNS answer for a real HTTPS client connection to the experimental
+gateway. It retains the real origin resolver, inventory screening and numeric
+dial, and curl verifies the public certificate chain and example.com hostname.
+On the owner's Windows device the positive path returned HTTPS 200; removing the
+route in a new signed generation then refused DNS output and a new HTTPS request
+using the cached gateway address. Earlier loopback-only descriptions below are
+historical. This establishes that bounded local IPv4/direct public-origin path,
+not full release acceptance. Public ingress reachability, native Linux/IPv6,
+protected egress, additional revocation races and independent parser security
+review remain open. See the execution card for commit/review/CI identity.
+
+Later current-worktree update: `experimental-smartdns` now connects the DNS
+transport to a gateway-issued readiness handle tied to the same owner,
+generation and listener. It admits only matching address families and a
+supported observed direct outbound with a configured origin upstream and live
+inventory registry. An advertised address must equal the bound listener address
+or an operator-declared public/NAT alias. Alias declarations are trusted host
+input, not independent proof that external routing actually reaches the listener. The listener's actual local port must equal the route port;
+NAT that translates ports is therefore unavailable in this preview. Both leases
+and readiness are rechecked before every UDP
+output poll and both TCP frame writes, including checkpoint retries. Stopping a
+listener or publishing a new generation invalidates the handle; a new preview
+must issue a new one. Local UDP/TCP tests verify this behavior. A separate
+OpenSSL loopback test verifies a real TLS handshake and rejection of an
+incorrect certificate hostname through the gateway, but substitutes the origin
+dial and is not a combined DNS-to-TLS or public-routing acceptance test.
+Default behavior remains fail-closed. The historical paragraphs immediately
+below describe earlier worktree states.
+
+An experimental host starts with one `DnsNode`, clones its deployment handle,
+and runs `serve_preview_ready` with explicitly prebound gateway sockets, a
+resolver, trusted outbound observations, a shutdown receiver and a one-shot
+readiness sender. After receiving that handle it runs `serve_with_gateway` on
+the original DNS node and its explicitly prebound DNS sockets. Both futures
+must remain polled, use the same deployment and be joined on shutdown. DNS's
+clock worker maintains the common authorization clock; starting the gateway
+alone does not provide that maintenance. After any applied generation change,
+this preview requires restarting both runtimes with a freshly issued handle.
+The Linux OpenSSL test requires the `openssl` executable and creates disposable
+one-day test credentials in the temporary directory; they are never committed.
+
+Current worktree update, 2026-11-05: a non-default experimental gateway now
+inspects bounded ClientHello input and composes separate SmartDNS ingress
+admission, direct origin resolution and byte relay. It reserves ingress quota
+before reading the hello and rejects ambiguous ports and stale generations.
+The local composition test uses synthetic DNS and a test-only loopback dial; it
+does not prove TLS certificate validation, actual DNS output or production
+readiness. The older implementation descriptions below are historical where
+they describe the parser and relay as unavailable. Gateway DNS answers still
+fail closed and the task remains open.
+
+The remaining DNS integration needs evidence tied to a live listener and the
+same deployment and generation, invalidated when that listener stops or fails.
+It must check readiness and both authorization leases at every UDP submission
+and every poll of both TCP frame writes, including after clock-checkpoint waits.
+Static configuration or a DNS answer cannot supply this evidence. A real
+DNS-to-TLS test must then cover certificate and hostname validation, denial and
+revocation, without the local test-only origin-dial substitution.
+
 The signed v2 configuration now accepts up to 256 exact-name route declarations,
 with one address per family and a TTL from 1 to 60 seconds. Empty route tables
 are omitted so existing signed configurations retain their canonical bytes.

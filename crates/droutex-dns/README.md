@@ -98,3 +98,38 @@ Cleanup cannot extend response acceptance; a timeout retains ownership and repor
 `ShutdownIncomplete` explicitly reports a still-running atomic operation. Dropping
 the service future cannot claim graceful completion or roll back disk writes.
 Public service deployment/port53 packaging is not supplied by this library.
+
+## Manual public-origin probe
+
+Run from the repository root with the pinned toolchain:
+
+```sh
+cargo run -p droutex-dns --example smartdns_public_probe --features experimental-smartdns --locked
+```
+
+The probe requires an unused loopback TCP port 443, `curl` on PATH (`curl.exe`
+on Windows), direct DNS access to 1.1.1.1:53 and HTTPS access to example.com:443.
+It never changes host DNS, firewall or privilege settings. If port 443 cannot be
+bound unprivileged, run on another authorized test host; do not stop an existing
+service or grant new permissions for this probe.
+
+Only disposable in-memory configuration and an RFC8032 public fixture signing
+key are used. Never reuse this key or configuration for an operational service.
+The probe composes the ordinary DNS and experimental gateway libraries with
+their shared deployment and maintained clock, uses the actual SmartDNS answer
+for curl's destination and keeps the real origin resolver/inventory/numeric dial.
+Curl ignores user configuration and proxies, verifies the certificate chain and
+example.com hostname, and must receive HTTPS 200. Removing the route in a new
+signed generation must then produce SERVFAIL and refuse HTTPS through the cached
+gateway address. All started service tasks are signalled and joined after the
+checks, including a startup or check failure; cleanup timeout aborts and joins
+remaining tasks and reports an error. The negative result also requires a
+current-generation `Scope` admission refusal; unrelated curl errors such as
+timeouts, CA failures and DNS failures cannot pass the revocation check.
+
+This is an explicitly invoked external probe, not an ordinary offline test.
+Require exit code 0 and both PASS markers; record commit, host and command.
+It proves only a local IPv4
+client path with direct public origin egress and one route-removal case. It does
+not prove public gateway reachability, native Debian acceptance, IPv6, protected
+proxy egress, restoration, all revocation races or independent parser security.

@@ -2,11 +2,216 @@
 
 ## Current execution card
 
+- Focused [local security review](../security/PREVIEW_SECURITY_REVIEW.md) of
+  runtime source `885de5000680d389e3a8e260d1e8b25c502bff7d` found no confirmed
+  exploitable defect in the reviewed TLS/ingress/origin/relay paths. The
+  follow-up adds three production-wrapper security regressions without changing
+  runtime behavior. It records residual post-parse timing and direct-ingress
+  port-consistency observations, not demonstrated authorization bypasses.
+  New raw body/SNI consumption mutations fail as intended and sources are
+  restored. Local Windows gateway/qualifier checks and cargo-deny evidence are
+  recorded in the report. This is not an independent external audit; P3-06/P4-03
+  and the owner's deferred native Linux gate remain open. Current-head external
+  CI and account review are required for the follow-up tests/docs.
+
+- The `684afbc2381bf0d212b8ea5881184c9f42641361` follow-up's CodeScene
+  [8322365](https://codescene.io/projects/86145/delta/results/8322365) remains
+  failed. Listener health improved from 7.87 to 8.13 and relay from 9.19 to 9.69;
+  the application Bumpy Road Ahead finding is absent. The remaining critical
+  metric finding is in a SmartDNS integration test, outside the owner's
+  independent metric scope. Other application maintenance findings retain
+  their [recorded dispositions](OPEN_DECISIONS.md#p3-06-preview-review-dispositions).
+  Required checks are not waived by these dispositions.
+  Its [Codex Code Review](https://github.com/romanpodg/DRouteX/pull/127#issuecomment-6707490736)
+  reported no major issues. Run
+  [42376428621](https://github.com/romanpodg/DRouteX/actions/runs/42376428621)
+  passed Linux, qualifiers, coverage upload and both patch checks, but Windows
+  failed in `checkpoint_before_first_socket_poll_rechecks_changed_self_inventory`:
+  paired loopback fixture setup returned socket error 10013 at forward/io.rs:562.
+  The test profile reported 112 passed and one failed. The cause is unverified;
+  the failed run remains failed and requires current-head follow-up.
+- With the owner's explicit selection of example.com:443, a manual
+  [public-origin probe](../../crates/droutex-dns/README.md#manual-public-origin-probe)
+  now composes real DNS and gateway libraries without test-only origin lookup
+  or dial substitution. On this Windows device, it returned a SmartDNS gateway
+  address, obtained verified example.com HTTPS 200 through actual public origin
+  resolution/numeric dialing, then observed SERVFAIL and cached-address HTTPS
+  refusal after route removal in a new signed generation. Both PASS markers
+  were observed on Windows 10.0.26300.0 / Rust 1.99.0, including after strict
+  curl-failure classification, explicit current-generation Scope refusal,
+  removal of curl trust/keylog environment overrides and cleanup on startup
+  failure or timeout. The classifier regression and Clippy pass.
+  One intermediate external run refused positive TLS before HTTP; its cause
+  was not established. Later strengthened runs passed; these do not erase that
+  failure or prove long-term external reliability.
+  This is local IPv4 ingress/direct public egress evidence, not external gateway
+  reachability, native Linux/IPv6 acceptance, protected proxy proof or an
+  independent TLS-parser security review. The manual probe and its README are
+  a subsequent follow-up and need their own current-head CI/review. The initial
+  probe compile required Hickory's explicit Message constructor arguments; its
+  first runtime response check required a fully qualified DNS query name.
+  Both harness issues were fixed before the passing runs.
+
+- PR127 head `aab4cb9d642820a61f55db27125b1d2ca030f315` passed all
+  11 jobs in [42374070307](https://github.com/romanpodg/DRouteX/actions/runs/42374070307)
+  and both Codecov patch checks. Its [Codex Code Review](https://github.com/romanpodg/DRouteX/pull/127#issuecomment-6707281019)
+  completed without reported major issues. CodeScene
+  [8322184](https://codescene.io/projects/86145/delta/results/8322184) failed;
+  [preview dispositions](OPEN_DECISIONS.md#p3-06-preview-review-dispositions)
+  record the application findings, changes and remaining review triggers.
+  A follow-up separates listener session spawning and bounded draining, and
+  separates admitted relay setup from byte transfer while sharing the existing
+  activity context. Windows passes 40 gateway tests plus one doctest, nine
+  selected SmartDNS tests and gateway/DNS Clippy. The first new-test compile
+  failed due to an unspecified oneshot channel type; adding its unit type fixed
+  the error. Standards and spec diff reviews found no concrete defects.
+  Current-head external checks/review remain required for this follow-up.
+  The owner's native Linux follow-up remains deferred. A bounded direct DNS
+  probe to 1.1.1.1 succeeded; this is only a prerequisite check and does not
+  prove the real DNS-to-TLS path, public numeric origin dialing or revocation.
+
+- On 2026-11-07, owner-device Windows testing at `5d36b22` ran outside the
+  restricted sandbox using the project-local Rust tools. `cargo test -p droutex-dns
+  -p droutex-gateway --all-features --locked` stopped after DNS: 115 passed,
+  seven failed, none ignored. Five IPv6 TCP connection attempts returned Windows
+  socket error 10013 (PermissionDenied); one IPv6 admission and one cache test
+  timed out. A separate exact IPv6 gateway-types test repeated error 10013. The
+  cause of these errors and timeouts is unverified. An independent .NET IPv6
+  loopback TCP listener/connect probe also returned socket error 10013; it does
+  not explain either timeout. A separate `cargo test -p
+  droutex-gateway --all-features --locked` passed 38 tests and one doctest, none
+  ignored. The Linux-only OpenSSL test was not run. This does not prove real
+  DNS-to-public-origin TLS acceptance. Codex Code Review completed on this head
+  and identified an unresolved per-direction idle timeout defect in the relay:
+  active one-way transfers may be disconnected after 15 seconds. See
+  [review finding](https://github.com/romanpodg/DRouteX/pull/127#discussion_r4501687671).
+  A local follow-up changes the relay to use one connection-wide idle deadline,
+  refreshed by successful reads and writes in either direction. On Windows, all
+  39 all-feature gateway tests and one doctest pass, as does gateway Clippy.
+  The no-default gateway run passes 27 tests and one doctest; all nine selected
+  all-feature SmartDNS tests and the workspace formatting check also pass. A
+  regression exercises an active one-way response beyond the idle interval,
+  then confirms timeout after activity stops; disabling activity updates makes
+  that regression fail. This follow-up has no current-head
+  external review or CI. Ubuntu has no Rust toolchain and Docker's Linux engine
+  is unavailable, so this follow-up has no local Linux test evidence. The
+  Windows IPv6 failures remain unresolved.
+  **Deferred Linux follow-up:** on a supported Linux machine, test the commit
+  containing this relay change with `cargo test -p droutex-gateway --all-features
+  --locked` and `cargo test -p droutex-dns --all-features --locked`. Record the
+  exact commit, environment and results, including IPv6 and the Linux-only
+  OpenSSL test. Investigate any failure; do not treat Windows results or hosted
+  CI on an earlier commit as proof for this Linux run.
+  The next recorded PR gate is CodeScene: on `5d36b22`, analysis
+  [8308476](https://codescene.io/projects/86145/delta/results/8308476) failed
+  and identified application findings in `preview.rs`, `tls_metadata.rs` and
+  `relay.rs`. Its test-file findings are outside the owner's independent metric
+  scope; the overall check remains failed. The local CodeScene CLI requires a
+  token and did not analyze the local follow-up.
+  Local follow-up separates listener binding validation from its lifecycle and
+  cleanup, and separates TLS extension inspection from ClientHello body parsing.
+  The unchanged checks retain their ordering and failure behavior. Windows
+  all-feature gateway (39 tests and one doctest), SmartDNS (nine tests) and
+  gateway/DNS Clippy pass. The original CodeScene analysis remains failed;
+  impact on its findings is unverified until a new analysis completes. The
+  remaining short parser guards and relay argument lists retain security checks;
+  no finding is suppressed or claimed resolved solely from source inspection.
+
+- On 2026-11-06 draft [PR #127](https://github.com/romanpodg/DRouteX/pull/127)
+  remained open at `f54dbc012026d0f635be22b61d7632207a23620d`; `main` remained
+  at `836d655cdcc0e0073bce9f989504aca0b67683b4`. The four preview commits
+  were already published. GitHub Actions run [42173085830](https://github.com/romanpodg/DRouteX/actions/runs/42173085830)
+  passed all 11 workflow jobs and both Codecov patch checks on that PR head.
+  Its all-features Linux job ran 123 DNS and 39 gateway tests, including the
+  local OpenSSL certificate/hostname check; Windows ran 122 DNS and 38 gateway
+  tests. Both reported zero failures or ignored tests. The OpenSSL acceptance
+  test is Linux-only, so the Windows result does not prove that test ran there.
+  This is CI evidence for `f54dbc0`, not for later commits or the owner's own
+  Windows machine. No Codex Code Review or independent parser security review
+  was recorded on the PR at inspection time.
+- CodeScene [8303523](https://codescene.io/projects/86145/delta/results/8303523)
+  failed on the same head: it reported new-code health issues in the preview
+  listener, TLS metadata parser and relay, as well as two test files. The
+  project's metric scope excludes tests as independent targets; application
+  findings still need investigation and disposition. The check remains failed.
+  P3-06 is not complete: a single real DNS-to-TLS path with checked public
+  numeric origin dialing, independent security review and release acceptance
+  remain unverified. The features remain experimental and disabled by default.
+
+- Owner-supplied Windows raw output for merge `836d655` reports 27 gateway
+  tests and one doctest, plus 16 isolated TLS-parser tests, passing outside the
+  sandbox. The preceding sandboxed gateway run failed eight tests: two reported
+  socket permission errors and others timed out or returned a different refusal.
+  The raw output does not independently establish a cause for each timeout or
+  test the later PR127 preview. This is reported evidence, not current-head
+  Windows, real SmartDNS-to-TLS acceptance, or an independent parser review.
+- Current worktree tightens experimental readiness: a DNS redirect address must
+  equal the bound listener IP or a trusted host-declared alias, in addition to
+  the existing owner, generation, family and port checks. Declarations are not
+  proof that NAT routing is reachable. A live DNS regression exposed the previous
+  unregistered-address `NOERROR` and now expects `SERVFAIL`; a declared alias
+  remains accepted. P3-06 and PR127 remain in progress.
+
+- Later current-worktree update: non-default `experimental-smartdns` can return
+  a configured address when a running experimental gateway supplies readiness
+  for the same deployment, generation, listener, port, address family and
+  supported direct outbound. Port-translating NAT is unavailable in this
+  preview. It rechecks readiness and both leases at UDP submission and
+  each poll of both TCP frame writes. Readiness is withdrawn on shutdown,
+  task failure, inventory shutdown or generation replacement; a new generation
+  requires a newly started preview and readiness handle. Controlled Linux UDP
+  and TCP tests cover answers and withdrawal. A separate local OpenSSL test
+  establishes TLS through the gateway and rejects the wrong certificate name,
+  using a synthetic origin DNS server and test-only loopback dial substitution.
+  These tests are not a single real DNS-to-TLS acceptance test and do not verify
+  public numeric routing. Independent parser review, owner-machine Windows testing,
+  real end-to-end acceptance and deployment remain outstanding. Later exact-head
+  Linux and Windows CI evidence is recorded above. Earlier wording
+  below about DNS output and experimental TLS is historical.
+  The final all-features Linux run passed 60 core tests, 119 DNS tests, 39
+  gateway tests and six doctests. Clippy, formatting, offline cargo-deny and the
+  planning self-test passed. The first all-features DNS run inside the sandbox
+  failed its durable-store test with `UnsafePath` because the sandbox changed
+  the root directory owner; the full subsequent run outside it passed. The
+  gateway-readiness and listener-port regressions each failed when their
+  corresponding check was deliberately disabled, then sources were restored.
+  PR127 head `a9f70a1` failed CodeScene run 8287293: the gate reported
+  complexity in the preview listener and TLS parser and also measured two test
+  files, which the owner excludes as independent metric targets. The listener
+  task and bounded TLS-record/name parsing were subsequently separated for
+  reviewability; the failed run remains failed. Follow-up head checks and an
+  actual independent security review remain required.
+
+- Current worktree on 2026-11-05: the gateway has an opt-in, non-default
+  `experimental-tls` preview which composes bounded ClientHello inspection,
+  current-route admission, direct origin resolution and bounded TCP relay.
+  Local tests exercise this composition with synthetic DNS and a test-only
+  loopback origin. The default listener remains fail-closed; this preview does
+  not advertise DNS readiness. Gateway DNS answers remain SERVFAIL. Real TLS
+  certificate validation, DNS-to-TLS acceptance, independent security review,
+  current-worktree Windows testing and deployment remain outstanding. The
+  owner-reported Windows results below apply to the earlier merge only.
+  Local Linux verification passed 60 core tests and five doctests, 38 gateway
+  tests plus one doctest with the experimental feature, and 27 gateway tests
+  plus one doctest with default features. Clippy, formatting, offline cargo-deny
+  and the planning self-test passed; cargo-deny reported duplicate dependencies.
+  The first full core run in the sandbox failed 19 durable-store tests because
+  the sandbox gives `/` an untrusted owner. A subsequent run outside that
+  sandbox passed all 60; this does not erase the initial failure.
+
 - On 2026-11-03 the owner authorized the assistant to make development changes
   and development decisions autonomously across the project. This standing
   instruction supersedes earlier project guidance to seek separate owner choices
   for ordinary development decisions. Continue to record consequential choices,
   actual review and test evidence, and applicable external safety constraints.
+
+- On 2026-11-05 the owner supplied a screenshot reporting Windows tests in a
+  clean worktree at merge commit `836d655`: 27 gateway tests and one doctest,
+  plus 16 isolated TLS parser tests, all passed without ignored tests. This is
+  owner-reported evidence; the screenshot does not identify the Windows version,
+  commands, feature profile or raw logs. It does not verify gateway passthrough
+  or SmartDNS DNS answers. See [P4-02](P4_02_ORIGIN_WORK.md) and
+  [P4-03 qualification](P4_03_TLS_PARSER_CANDIDATE.md).
 
 - On 2026-11-03 the owner authorized starting P4-02 through P4-04 while
   P3-06 remains open, to enable its eventual real DNS-to-TLS acceptance.

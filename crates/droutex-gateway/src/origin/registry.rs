@@ -30,6 +30,12 @@ pub(super) struct Registry {
     drain: tokio::sync::Mutex<()>,
 }
 impl Registry {
+    #[cfg(feature = "experimental-tls")]
+    pub fn available(&self) -> bool {
+        self.state
+            .lock()
+            .is_ok_and(|state| state.accepting && !state.failure)
+    }
     pub fn new() -> Self {
         Self {
             state: Mutex::new(State {

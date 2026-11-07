@@ -3,6 +3,9 @@ use super::*;
 mod forwarding;
 #[path = "tests/ports.rs"]
 mod ports;
+#[cfg(feature = "experimental-smartdns")]
+#[path = "tests/smartdns.rs"]
+mod smartdns;
 use crate::{
     runtime,
     wire::{self, Processor},

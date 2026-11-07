@@ -5,6 +5,7 @@ mod artifacts;
 pub use admission::{
     AdmissionAttempt, AdmissionCode, AdmissionConsumption, AdmissionError, AdmissionScope,
     AuthorizedRequest, AutomaticLearning, DnsIoCheck, GatewayIoCheck, SmartDnsBinding,
+    SmartDnsIngress,
 };
 mod explain;
 pub use explain::SimulationReport;
