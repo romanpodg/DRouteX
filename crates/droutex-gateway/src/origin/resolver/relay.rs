@@ -50,10 +50,21 @@ impl OriginConnection<'_, '_> {
     /// The opt-in preview listener uses this experimental method; the default
     /// fail-closed listener does not.
     pub async fn relay(
+        self,
+        hello: ObservedHello<TcpStream>,
+        shutdown: watch::Receiver<bool>,
+        outer_deadline: Instant,
+    ) -> Result<RelayReport, RelayError> {
+        self.relay_with_idle(hello, shutdown, outer_deadline, IDLE)
+            .await
+    }
+
+    pub(super) async fn relay_with_idle(
         mut self,
         hello: ObservedHello<TcpStream>,
         shutdown: watch::Receiver<bool>,
         outer_deadline: Instant,
+        idle: Duration,
     ) -> Result<RelayReport, RelayError> {
         let origin = &self._origin;
         let (mut client, name, hello) = hello.into_parts();
@@ -92,30 +103,65 @@ impl OriginConnection<'_, '_> {
             port: origin.port,
             deadline,
         };
-        let mut stop = shutdown.clone();
-        let mut budget = Budget {
-            bytes: hello.len(),
-            operations: 0,
-        };
-        write_bytes(&mut self._stream, &hello, context, &mut stop, &mut budget).await?;
-        let (client_read, client_write) = client.split();
-        let (origin_read, origin_write) = self._stream.split();
-        let left = pump(client_read, origin_write, context, shutdown.clone(), budget);
-        let right = pump(
-            origin_read,
-            client_write,
-            context,
-            shutdown,
-            Budget {
-                bytes: 0,
+        let (activity, activity_rx) = watch::channel(Instant::now());
+        let transfer = async {
+            let mut stop = shutdown.clone();
+            let mut budget = Budget {
+                bytes: hello.len(),
                 operations: 0,
-            },
-        );
-        let (client_to_origin, origin_to_client) = tokio::try_join!(left, right)?;
-        Ok(RelayReport {
-            client_to_origin,
-            origin_to_client,
-        })
+            };
+            write_bytes(
+                &mut self._stream,
+                &hello,
+                context,
+                &mut stop,
+                &mut budget,
+                &activity,
+            )
+            .await?;
+            let (client_read, client_write) = client.split();
+            let (origin_read, origin_write) = self._stream.split();
+            let left = pump(
+                client_read,
+                origin_write,
+                context,
+                shutdown.clone(),
+                budget,
+                &activity,
+            );
+            let right = pump(
+                origin_read,
+                client_write,
+                context,
+                shutdown,
+                Budget {
+                    bytes: 0,
+                    operations: 0,
+                },
+                &activity,
+            );
+            let (client_to_origin, origin_to_client) = tokio::try_join!(left, right)?;
+            Ok(RelayReport {
+                client_to_origin,
+                origin_to_client,
+            })
+        };
+        tokio::select! {
+            biased;
+            result = idle_timeout(activity_rx, idle) => Err(result),
+            result = transfer => result,
+        }
+    }
+}
+
+async fn idle_timeout(mut activity: watch::Receiver<Instant>, idle: Duration) -> RelayError {
+    loop {
+        let cutoff = *activity.borrow_and_update() + idle;
+        tokio::select! {
+            biased;
+            changed = activity.changed() => if changed.is_err() { return RelayError::Cancelled; },
+            () = tokio::time::sleep_until(cutoff) => return RelayError::Timeout,
+        }
     }
 }
 
@@ -152,8 +198,13 @@ async fn operation<T>(
     stop: &mut watch::Receiver<bool>,
     future: impl Future<Output = io::Result<T>>,
 ) -> Result<T, RelayError> {
-    let cutoff = context.deadline.min(Instant::now() + IDLE);
-    let future = guarded(context.auth, context.domain, context.port, cutoff, future);
+    let future = guarded(
+        context.auth,
+        context.domain,
+        context.port,
+        context.deadline,
+        future,
+    );
     tokio::pin!(future);
     loop {
         if *stop.borrow() {
@@ -172,6 +223,7 @@ async fn write_bytes<W: AsyncWrite + Unpin>(
     context: Context<'_, '_>,
     stop: &mut watch::Receiver<bool>,
     budget: &mut Budget,
+    activity: &watch::Sender<Instant>,
 ) -> Result<(), RelayError> {
     let mut offset = 0;
     while offset < bytes.len() {
@@ -180,6 +232,7 @@ async fn write_bytes<W: AsyncWrite + Unpin>(
         if size == 0 {
             return Err(RelayError::Io);
         }
+        activity.send_replace(Instant::now());
         offset += size;
     }
     Ok(())
@@ -190,6 +243,7 @@ async fn pump<R: AsyncRead + Unpin, W: AsyncWrite + Unpin>(
     context: Context<'_, '_>,
     mut stop: watch::Receiver<bool>,
     mut budget: Budget,
+    activity: &watch::Sender<Instant>,
 ) -> Result<usize, RelayError> {
     let mut buffer = [0u8; 8192];
     loop {
@@ -199,6 +253,7 @@ async fn pump<R: AsyncRead + Unpin, W: AsyncWrite + Unpin>(
             operation(context, &mut stop, writer.shutdown()).await?;
             return Ok(budget.bytes);
         }
+        activity.send_replace(Instant::now());
         budget.add(size)?;
         write_bytes(
             &mut writer,
@@ -206,6 +261,7 @@ async fn pump<R: AsyncRead + Unpin, W: AsyncWrite + Unpin>(
             context,
             &mut stop,
             &mut budget,
+            activity,
         )
         .await?;
     }

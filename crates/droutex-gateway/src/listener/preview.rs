@@ -135,7 +135,7 @@ pub async fn serve_preview_ready(
 async fn serve(
     deployment: Arc<Deployment>,
     sockets: Vec<ListenerSocket>,
-    mut shutdown: watch::Receiver<bool>,
+    shutdown: watch::Receiver<bool>,
     resolver: Arc<OriginResolver>,
     observations: Vec<OutboundObservation>,
     ready: Option<oneshot::Sender<GatewayReadiness>>,
@@ -145,23 +145,7 @@ async fn serve(
         return Err(ListenerError::Configuration);
     }
     let current = deployment.pin().map_err(|_| ListenerError::Unavailable)?;
-    let mut ids = BTreeSet::new();
-    let mut addresses = BTreeSet::new();
-    let mut bindings = Vec::with_capacity(sockets.len());
-    for listener in sockets {
-        let binding = Binding {
-            id: listener.id,
-            local: listener
-                .socket
-                .local_addr()
-                .map_err(|_| ListenerError::Io)?,
-        };
-        if !ids.insert(binding.id) || !addresses.insert(binding.local) {
-            return Err(ListenerError::Configuration);
-        }
-        binding.check(&current)?;
-        bindings.push((binding, listener.socket));
-    }
+    let bindings = checked_bindings(&current, sockets)?;
     let outbounds = usable_outbounds(&current, &observations);
     let state = Arc::new(ReadyState {
         active: AtomicBool::new(true),
@@ -195,6 +179,15 @@ async fn serve(
     if let Some(ready) = ready {
         let _ = ready.send(GatewayReadiness(state));
     }
+    wait_and_cleanup(shutdown, listeners, cancel, &resolver).await
+}
+
+async fn wait_and_cleanup(
+    mut shutdown: watch::Receiver<bool>,
+    mut listeners: JoinSet<Result<()>>,
+    cancel: watch::Sender<bool>,
+    resolver: &OriginResolver,
+) -> Result<()> {
     let outcome = loop {
         if *shutdown.borrow() {
             break Ok(());
@@ -222,6 +215,30 @@ async fn serve(
         return Err(ListenerError::Cleanup);
     }
     outcome
+}
+
+fn checked_bindings(
+    current: &droutex_core::deployment::Decision<'_>,
+    sockets: Vec<ListenerSocket>,
+) -> Result<Vec<(Binding, tokio::net::TcpListener)>> {
+    let mut ids = BTreeSet::new();
+    let mut addresses = BTreeSet::new();
+    let mut bindings = Vec::with_capacity(sockets.len());
+    for listener in sockets {
+        let binding = Binding {
+            id: listener.id,
+            local: listener
+                .socket
+                .local_addr()
+                .map_err(|_| ListenerError::Io)?,
+        };
+        if !ids.insert(binding.id) || !addresses.insert(binding.local) {
+            return Err(ListenerError::Configuration);
+        }
+        binding.check(current)?;
+        bindings.push((binding, listener.socket));
+    }
+    Ok(bindings)
 }
 
 struct ListenerTask {

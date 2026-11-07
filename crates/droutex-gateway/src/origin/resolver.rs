@@ -1226,6 +1226,73 @@ pub(crate) mod tests {
     }
     #[cfg(feature = "experimental-tls")]
     #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn relay_one_way_activity_extends_idle_until_traffic_stops() {
+        use crate::tls_metadata::{
+            read_hello,
+            tests::{sni, synthetic},
+        };
+        use tokio::net::TcpListener;
+
+        let dns = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+        let dns_address = dns.local_addr().unwrap();
+        let dns_server = tokio::spawn(serve_dns(dns, "8.8.8.8".parse().unwrap(), 3));
+        let ingress = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let upstream = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let target = upstream.local_addr().unwrap();
+        let owner = Deployment::in_memory(id(1), keys().1);
+        apply(&owner, &smart_document(ingress.local_addr().unwrap()), 1);
+        let auth = admitted(&owner).await;
+        let resolver = fixture(dns_address);
+        let connection = resolver
+            .resolve(&auth, Instant::now() + TOTAL)
+            .await
+            .unwrap()
+            .connect_direct_with(0, Instant::now() + TOTAL, |_| async move {
+                TcpStream::connect(target).await
+            })
+            .await
+            .unwrap();
+        let (mut peer, _) = upstream.accept().await.unwrap();
+        let mut client = TcpStream::connect(ingress.local_addr().unwrap())
+            .await
+            .unwrap();
+        let (server, _) = ingress.accept().await.unwrap();
+        let hello_bytes = synthetic(&sni(b"service.test"));
+        client.write_all(&hello_bytes).await.unwrap();
+        let hello = read_hello(server, Instant::now() + TOTAL).await.unwrap();
+        let (_stop, shutdown) = tokio::sync::watch::channel(false);
+        let exchange = async {
+            let mut received_hello = vec![0; hello_bytes.len()];
+            peer.read_exact(&mut received_hello).await.unwrap();
+            assert_eq!(received_hello, hello_bytes);
+            for _ in 0..5 {
+                tokio::time::sleep(Duration::from_millis(70)).await;
+                peer.write_all(b"x").await.unwrap();
+                let mut byte = [0];
+                client.read_exact(&mut byte).await.unwrap();
+                assert_eq!(byte, *b"x");
+            }
+            // Keep both sockets open until the connection-wide idle deadline expires.
+            tokio::time::sleep(Duration::from_millis(250)).await;
+        };
+        let (result, ()) = tokio::join!(
+            connection.relay_with_idle(
+                hello,
+                shutdown,
+                Instant::now() + TOTAL,
+                Duration::from_millis(180),
+            ),
+            exchange
+        );
+        assert_eq!(result, Err(relay::RelayError::Timeout));
+        timeout_at(Instant::now() + TOTAL, dns_server)
+            .await
+            .unwrap()
+            .unwrap();
+    }
+
+    #[cfg(feature = "experimental-tls")]
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
     async fn relay_preserves_clienthello_and_half_closes_both_sides() {
         use crate::tls_metadata::{
             read_hello,

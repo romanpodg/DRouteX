@@ -2,6 +2,53 @@
 
 ## Current execution card
 
+- On 2026-11-07, owner-device Windows testing at `5d36b22` ran outside the
+  restricted sandbox using the project-local Rust tools. `cargo test -p droutex-dns
+  -p droutex-gateway --all-features --locked` stopped after DNS: 115 passed,
+  seven failed, none ignored. Five IPv6 TCP connection attempts returned Windows
+  socket error 10013 (PermissionDenied); one IPv6 admission and one cache test
+  timed out. A separate exact IPv6 gateway-types test repeated error 10013. The
+  cause of these errors and timeouts is unverified. An independent .NET IPv6
+  loopback TCP listener/connect probe also returned socket error 10013; it does
+  not explain either timeout. A separate `cargo test -p
+  droutex-gateway --all-features --locked` passed 38 tests and one doctest, none
+  ignored. The Linux-only OpenSSL test was not run. This does not prove real
+  DNS-to-public-origin TLS acceptance. Codex Code Review completed on this head
+  and identified an unresolved per-direction idle timeout defect in the relay:
+  active one-way transfers may be disconnected after 15 seconds. See
+  [review finding](https://github.com/romanpodg/DRouteX/pull/127#discussion_r4501687671).
+  A local follow-up changes the relay to use one connection-wide idle deadline,
+  refreshed by successful reads and writes in either direction. On Windows, all
+  39 all-feature gateway tests and one doctest pass, as does gateway Clippy.
+  The no-default gateway run passes 27 tests and one doctest; all nine selected
+  all-feature SmartDNS tests and the workspace formatting check also pass. A
+  regression exercises an active one-way response beyond the idle interval,
+  then confirms timeout after activity stops; disabling activity updates makes
+  that regression fail. This follow-up has no current-head
+  external review or CI. Ubuntu has no Rust toolchain and Docker's Linux engine
+  is unavailable, so this follow-up has no local Linux test evidence. The
+  Windows IPv6 failures remain unresolved.
+  **Deferred Linux follow-up:** on a supported Linux machine, test the commit
+  containing this relay change with `cargo test -p droutex-gateway --all-features
+  --locked` and `cargo test -p droutex-dns --all-features --locked`. Record the
+  exact commit, environment and results, including IPv6 and the Linux-only
+  OpenSSL test. Investigate any failure; do not treat Windows results or hosted
+  CI on an earlier commit as proof for this Linux run.
+  The next recorded PR gate is CodeScene: on `5d36b22`, analysis
+  [8308476](https://codescene.io/projects/86145/delta/results/8308476) failed
+  and identified application findings in `preview.rs`, `tls_metadata.rs` and
+  `relay.rs`. Its test-file findings are outside the owner's independent metric
+  scope; the overall check remains failed. The local CodeScene CLI requires a
+  token and did not analyze the local follow-up.
+  Local follow-up separates listener binding validation from its lifecycle and
+  cleanup, and separates TLS extension inspection from ClientHello body parsing.
+  The unchanged checks retain their ordering and failure behavior. Windows
+  all-feature gateway (39 tests and one doctest), SmartDNS (nine tests) and
+  gateway/DNS Clippy pass. The original CodeScene analysis remains failed;
+  impact on its findings is unverified until a new analysis completes. The
+  remaining short parser guards and relay argument lists retain security checks;
+  no finding is suppressed or claimed resolved solely from source inspection.
+
 - On 2026-11-06 draft [PR #127](https://github.com/romanpodg/DRouteX/pull/127)
   remained open at `f54dbc012026d0f635be22b61d7632207a23620d`; `main` remained
   at `836d655cdcc0e0073bce9f989504aca0b67683b4`. The four preview commits

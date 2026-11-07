@@ -105,7 +105,10 @@ fn parse_body(body: &[u8]) -> Result<CanonicalDomain, HelloError> {
     {
         return Err(HelloError::Invalid);
     }
-    let mut extensions = hello.ext.ok_or(HelloError::Invalid)?;
+    parse_extensions(hello.ext.ok_or(HelloError::Invalid)?)
+}
+
+fn parse_extensions(mut extensions: &[u8]) -> Result<CanonicalDomain, HelloError> {
     let mut seen = BTreeSet::new();
     let mut name = None;
     while !extensions.is_empty() {
