@@ -26,3 +26,7 @@ droutex-security.workspace = true
 
 [lints]
 workspace = true
+
+[[example]]
+name = "smartdns_public_probe"
+required-features = ["experimental-smartdns"]

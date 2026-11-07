@@ -68,6 +68,19 @@ and keep P3-06 open; do not describe a DNS-only result as complete.
 
 ## Partial implementation and remaining work
 
+On 2026-11-07, the owner selected example.com:443 for a manual external probe.
+The [runnable probe](../../crates/droutex-dns/README.md#manual-public-origin-probe)
+uses the SmartDNS answer for a real HTTPS client connection to the experimental
+gateway. It retains the real origin resolver, inventory screening and numeric
+dial, and curl verifies the public certificate chain and example.com hostname.
+On the owner's Windows device the positive path returned HTTPS 200; removing the
+route in a new signed generation then refused DNS output and a new HTTPS request
+using the cached gateway address. Earlier loopback-only descriptions below are
+historical. This establishes that bounded local IPv4/direct public-origin path,
+not full release acceptance. Public ingress reachability, native Linux/IPv6,
+protected egress, additional revocation races and independent parser security
+review remain open. See the execution card for commit/review/CI identity.
+
 Later current-worktree update: `experimental-smartdns` now connects the DNS
 transport to a gateway-issued readiness handle tied to the same owner,
 generation and listener. It admits only matching address families and a

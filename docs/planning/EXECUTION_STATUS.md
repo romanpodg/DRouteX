@@ -2,6 +2,44 @@
 
 ## Current execution card
 
+- The `684afbc2381bf0d212b8ea5881184c9f42641361` follow-up's CodeScene
+  [8322365](https://codescene.io/projects/86145/delta/results/8322365) remains
+  failed. Listener health improved from 7.87 to 8.13 and relay from 9.19 to 9.69;
+  the application Bumpy Road Ahead finding is absent. The remaining critical
+  metric finding is in a SmartDNS integration test, outside the owner's
+  independent metric scope. Other application maintenance findings retain
+  their [recorded dispositions](OPEN_DECISIONS.md#p3-06-preview-review-dispositions).
+  Required checks are not waived by these dispositions.
+  Its [Codex Code Review](https://github.com/romanpodg/DRouteX/pull/127#issuecomment-6707490736)
+  reported no major issues. Run
+  [42376428621](https://github.com/romanpodg/DRouteX/actions/runs/42376428621)
+  passed Linux, qualifiers, coverage upload and both patch checks, but Windows
+  failed in `checkpoint_before_first_socket_poll_rechecks_changed_self_inventory`:
+  paired loopback fixture setup returned socket error 10013 at forward/io.rs:562.
+  The test profile reported 112 passed and one failed. The cause is unverified;
+  the failed run remains failed and requires current-head follow-up.
+- With the owner's explicit selection of example.com:443, a manual
+  [public-origin probe](../../crates/droutex-dns/README.md#manual-public-origin-probe)
+  now composes real DNS and gateway libraries without test-only origin lookup
+  or dial substitution. On this Windows device, it returned a SmartDNS gateway
+  address, obtained verified example.com HTTPS 200 through actual public origin
+  resolution/numeric dialing, then observed SERVFAIL and cached-address HTTPS
+  refusal after route removal in a new signed generation. Both PASS markers
+  were observed on Windows 10.0.26300.0 / Rust 1.99.0, including after strict
+  curl-failure classification, explicit current-generation Scope refusal,
+  removal of curl trust/keylog environment overrides and cleanup on startup
+  failure or timeout. The classifier regression and Clippy pass.
+  One intermediate external run refused positive TLS before HTTP; its cause
+  was not established. Later strengthened runs passed; these do not erase that
+  failure or prove long-term external reliability.
+  This is local IPv4 ingress/direct public egress evidence, not external gateway
+  reachability, native Linux/IPv6 acceptance, protected proxy proof or an
+  independent TLS-parser security review. The manual probe and its README are
+  a subsequent follow-up and need their own current-head CI/review. The initial
+  probe compile required Hickory's explicit Message constructor arguments; its
+  first runtime response check required a fully qualified DNS query name.
+  Both harness issues were fixed before the passing runs.
+
 - PR127 head `aab4cb9d642820a61f55db27125b1d2ca030f315` passed all
   11 jobs in [42374070307](https://github.com/romanpodg/DRouteX/actions/runs/42374070307)
   and both Codecov patch checks. Its [Codex Code Review](https://github.com/romanpodg/DRouteX/pull/127#issuecomment-6707281019)
