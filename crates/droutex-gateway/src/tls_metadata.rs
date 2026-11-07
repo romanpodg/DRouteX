@@ -335,4 +335,85 @@ pub(crate) mod tests {
             Err(HelloError::Invalid)
         ));
     }
+
+    #[test]
+    fn inspection_enforces_record_extension_and_wire_boundaries() {
+        let expected = Inspection::Complete("service.test".parse().unwrap());
+        let good = sni(b"service.test");
+        let mut extensions = good.clone();
+        for kind in 1..MAX_EXTENSIONS as u16 {
+            extensions.extend(extension(kind, &[]));
+        }
+        assert_eq!(inspect(&synthetic(&extensions)), Ok(expected));
+        extensions.extend(extension(MAX_EXTENSIONS as u16, &[]));
+        assert_eq!(inspect(&synthetic(&extensions)), Err(HelloError::Limit));
+
+        let wire = synthetic(&good);
+        let handshake = &wire[5..];
+        for count in [MAX_RECORDS, MAX_RECORDS + 1] {
+            let mut fragmented = Vec::new();
+            for byte in &handshake[..count - 1] {
+                fragmented.extend(record(&[*byte]));
+            }
+            fragmented.extend(record(&handshake[count - 1..]));
+            let result = inspect(&fragmented);
+            if count == MAX_RECORDS {
+                assert_eq!(
+                    result,
+                    Ok(Inspection::Complete("service.test".parse().unwrap()))
+                );
+            } else {
+                assert_eq!(result, Err(HelloError::Limit));
+            }
+        }
+
+        let padding = vec![0; MAX_INPUT - wire.len() - 4];
+        let mut padded = good;
+        padded.extend(extension(21, &padding));
+        let mut at_limit = synthetic(&padded);
+        assert_eq!(at_limit.len(), MAX_INPUT);
+        assert_eq!(
+            inspect(&at_limit),
+            Ok(Inspection::Complete("service.test".parse().unwrap()))
+        );
+        at_limit.push(0);
+        assert_eq!(inspect(&at_limit), Err(HelloError::Limit));
+    }
+
+    #[test]
+    fn inspection_rejects_library_permissive_sni_and_body_tails() {
+        let good = sni(b"service.test");
+        let mut value = good[4..].to_vec();
+        value.push(0xff); // Truncated second SNI entry inside the declared list.
+        let length = (value.len() - 2) as u16;
+        value[..2].copy_from_slice(&length.to_be_bytes());
+        assert_eq!(
+            inspect(&synthetic(&extension(0, &value))),
+            Err(HelloError::Invalid)
+        );
+
+        let mut wire = synthetic(&good);
+        wire.push(0xff); // Unconsumed data inside the declared ClientHello body.
+        let record_length = (wire.len() - 5) as u16;
+        wire[3..5].copy_from_slice(&record_length.to_be_bytes());
+        let body_length = wire.len() - 9;
+        wire[6..9].copy_from_slice(&[
+            (body_length >> 16) as u8,
+            (body_length >> 8) as u8,
+            body_length as u8,
+        ]);
+        assert_eq!(inspect(&wire), Err(HelloError::Invalid));
+    }
+
+    #[test]
+    fn production_inspection_handles_a_deterministic_mutation_corpus_without_panics() {
+        let original = fixture();
+        for index in 0..original.len() {
+            for byte in [0, 0xff] {
+                let mut mutated = original.clone();
+                mutated[index] = byte;
+                let _ = inspect(&mutated);
+            }
+        }
+    }
 }

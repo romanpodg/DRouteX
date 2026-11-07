@@ -1,4 +1,14 @@
-# P4-03 TLS parser candidate — review pending
+# P4-03 TLS parser candidate — external review pending
+
+On 2026-11-07 a [focused local security review](../security/PREVIEW_SECURITY_REVIEW.md)
+inspected runtime baseline `885de5000680d389e3a8e260d1e8b25c502bff7d`, its
+resolved parser sources and ingress/origin/relay composition. It found no
+confirmed exploitable defect in that scope and adds three production-wrapper
+regressions, including mutation proof for exact body/SNI consumption. The report
+records limits and residual timing/port-consistency observations. This local
+review does not close the independent external security audit or production
+acceptance gates. The manual example.com DNS-to-TLS smoke result is recorded
+separately in the execution card; native Linux follow-up remains deferred.
 
 The owner authorized the P4-02 through P4-04 tasks while P3-06 remains open.
 The owner separately authorized isolated qualification of the candidate below.

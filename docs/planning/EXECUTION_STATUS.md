@@ -2,6 +2,18 @@
 
 ## Current execution card
 
+- Focused [local security review](../security/PREVIEW_SECURITY_REVIEW.md) of
+  runtime source `885de5000680d389e3a8e260d1e8b25c502bff7d` found no confirmed
+  exploitable defect in the reviewed TLS/ingress/origin/relay paths. The
+  follow-up adds three production-wrapper security regressions without changing
+  runtime behavior. It records residual post-parse timing and direct-ingress
+  port-consistency observations, not demonstrated authorization bypasses.
+  New raw body/SNI consumption mutations fail as intended and sources are
+  restored. Local Windows gateway/qualifier checks and cargo-deny evidence are
+  recorded in the report. This is not an independent external audit; P3-06/P4-03
+  and the owner's deferred native Linux gate remain open. Current-head external
+  CI and account review are required for the follow-up tests/docs.
+
 - The `684afbc2381bf0d212b8ea5881184c9f42641361` follow-up's CodeScene
   [8322365](https://codescene.io/projects/86145/delta/results/8322365) remains
   failed. Listener health improved from 7.87 to 8.13 and relay from 9.19 to 9.69;

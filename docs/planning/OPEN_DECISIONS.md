@@ -131,6 +131,15 @@ before dependent implementation and its own application acceptance checks.
 
 ## P3-06 preview review dispositions
 
+The [focused local security review](../security/PREVIEW_SECURITY_REVIEW.md) of
+`885de50` found no confirmed exploitable defect in its inspected scope. Two
+non-blocking observations remain owned by P4-03/P4-04 before production
+acceptance: whether strict post-parse deadline completion needs an additional
+timestamp check, and whether the direct-ingress port rule should match the
+DNS-readiness listener/route port rule. Neither was established as a grant
+bypass. Do not infer an approved stronger guarantee or change port semantics
+from the review alone. Independent external security review remains open.
+
 CodeScene [8322184](https://codescene.io/projects/86145/delta/results/8322184)
 failed on PR127 head `aab4cb9d642820a61f55db27125b1d2ca030f315`.
 The raw check remains failed. The following dispositions cover minor
