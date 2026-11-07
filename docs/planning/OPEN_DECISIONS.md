@@ -129,6 +129,22 @@ application behavior/resources/adoption were separately accepted in complete D53
 on2026-10-28 after this qualification. Finish current PR114 documentation gates
 before dependent implementation and its own application acceptance checks.
 
+## P3-06 preview review dispositions
+
+CodeScene [8322184](https://codescene.io/projects/86145/delta/results/8322184)
+failed on PR127 head `aab4cb9d642820a61f55db27125b1d2ca030f315`.
+The raw check remains failed. The following dispositions cover minor
+maintainability risks, not parser security acceptance or a required-check waiver.
+P3-06/P4-02/P4-03 own these items; reassess them before production acceptance.
+
+| Item | Finding, impact, rationale and evidence | Revisit trigger |
+|---|---|---|
+| P3-06-PREVIEW-LIFECYCLE | ListenerTask.run and wait_and_cleanup combine admission, task ownership and cleanup, making control flow harder to audit. The follow-up separates session spawning and bounded listener draining. An added regression checks normal joins and forced-abort ownership release. Windows gateway, SmartDNS and Clippy checks pass; a new external analysis must assess the changed source. | Current-head CodeScene/review, then any change to shutdown, binding validation, quotas or readiness lifetime. |
+| P3-06-PREVIEW-RELAY | Relay size and argument-count findings mix initial validation with byte transfer. The follow-up separates transfer from validation and shares the activity sender through the existing relay context. Byte/operation limits, admission checks, half-close and idle timeout remain exercised by gateway regressions. | Current-head CodeScene/review, then changes to byte accounting, cancellation or idle/lifetime semantics. |
+| P3-06-PREVIEW-TLS | handshake_record, parse_body and parse_server_name have short compound rejection guards. These check independent TLS version/length, full consumption, cipher/compression and SNI type/ASCII/name constraints at an untrusted-input boundary. Splitting these guards solely for a score would distribute related rejection conditions. No concrete behavioral defect was established by source review; prefix/fragment, malformed/duplicate/encrypted-name and bounded-reader regressions pass. Remaining maintenance risk is minor; retain the explicit checks pending independent parser security review. | Independent P4-03 security review or any change to the parser version, accepted grammar, limits or hostname handling. |
+| P3-06-PREVIEW-API | Preview/session signatures carry separately sourced deployment, bound sockets, shutdown, resolver, outbound observations and readiness output. Argument count alone is not evidence of incorrect provenance. Retain existing public signatures while their host composition is still experimental; no new abstraction is introduced solely for a score. | Host/runtime integration or a concrete caller-maintenance defect; preserve source provenance and shutdown ownership. |
+| P3-06-PREVIEW-TESTS | smartdns.rs and tls_acceptance.rs contain multi-step integration tests and are outside the owner's independent metric scope. Preserve the denial, lifecycle and certificate assertions; their metrics do not justify reducing behavioral proof. | A concrete test correctness or reliability defect; actual public-origin acceptance remains independently required. |
+
 ## P3-06 foundation review dispositions
 
 CodeScene [8280140](https://codescene.io/projects/86145/delta/results/8280140)

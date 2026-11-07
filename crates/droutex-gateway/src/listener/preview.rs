@@ -202,19 +202,26 @@ async fn wait_and_cleanup(
         }
     };
     cancel.send_replace(true);
-    let drained = timeout(CLEANUP, async {
-        while listeners.join_next().await.is_some() {}
-    })
-    .await;
-    if drained.is_err() {
-        listeners.abort_all();
-        while listeners.join_next().await.is_some() {}
-    }
+    let drained = drain_listeners(&mut listeners).await;
     let cleanup = timeout(CLEANUP, resolver.shutdown_inventory()).await;
-    if drained.is_err() || !matches!(cleanup, Ok(Ok(()))) {
+    if !drained || !matches!(cleanup, Ok(Ok(()))) {
         return Err(ListenerError::Cleanup);
     }
     outcome
+}
+
+async fn drain_listeners(listeners: &mut JoinSet<Result<()>>) -> bool {
+    if timeout(CLEANUP, async {
+        while listeners.join_next().await.is_some() {}
+    })
+    .await
+    .is_ok()
+    {
+        return true;
+    }
+    listeners.abort_all();
+    while listeners.join_next().await.is_some() {}
+    false
 }
 
 fn checked_bindings(
@@ -262,30 +269,55 @@ impl ListenerTask {
                 result = sessions.join_next(), if !sessions.is_empty() => { let _ = result; },
                 accepted = socket.accept() => {
                     let (stream, peer) = match accepted { Ok(result) => result, Err(_) => break Err(ListenerError::Io) };
-                    let current = match self.owner.pin() { Ok(current) => current, Err(_) => break Err(ListenerError::Unavailable) };
-                    if let Err(error) = binding.check(&current) { break Err(error); }
-                    drop(current);
-                    let Ok(permit) = Arc::clone(&self.permits).try_acquire_owned() else { drop(stream); continue; };
-                    let owner = Arc::clone(&self.owner);
-                    let resolver = Arc::clone(&self.resolver);
-                    let facts = Arc::clone(&self.facts);
-                    let mut session_stop = self.stop.clone();
-                    sessions.spawn(async move {
-                        let _permit = permit;
-                        if *session_stop.borrow() { return; }
-                        let work = session(owner, resolver, facts, binding.id, peer.ip(), stream, session_stop.clone());
-                        tokio::select! {
-                            biased;
-                            _ = session_stop.wait_for(|stopped| *stopped) => (),
-                            _ = work => (),
-                        }
-                    });
+                    if let Err(error) = self.spawn_session(binding, stream, peer.ip(), &mut sessions) {
+                        break Err(error);
+                    }
                 }
             }
         };
         sessions.abort_all();
         while sessions.join_next().await.is_some() {}
         outcome
+    }
+
+    fn spawn_session(
+        &self,
+        binding: Binding,
+        stream: TcpStream,
+        peer: std::net::IpAddr,
+        sessions: &mut JoinSet<()>,
+    ) -> Result<()> {
+        let current = self.owner.pin().map_err(|_| ListenerError::Unavailable)?;
+        binding.check(&current)?;
+        drop(current);
+        let Ok(permit) = Arc::clone(&self.permits).try_acquire_owned() else {
+            return Ok(());
+        };
+        let owner = Arc::clone(&self.owner);
+        let resolver = Arc::clone(&self.resolver);
+        let facts = Arc::clone(&self.facts);
+        let mut session_stop = self.stop.clone();
+        sessions.spawn(async move {
+            let _permit = permit;
+            if *session_stop.borrow() {
+                return;
+            }
+            let work = session(
+                owner,
+                resolver,
+                facts,
+                binding.id,
+                peer,
+                stream,
+                session_stop.clone(),
+            );
+            tokio::select! {
+                biased;
+                _ = session_stop.wait_for(|stopped| *stopped) => (),
+                _ = work => (),
+            }
+        });
+        Ok(())
     }
 }
 
@@ -364,6 +396,24 @@ mod tests {
         io::{AsyncReadExt, AsyncWriteExt},
         net::{TcpListener, UdpSocket},
     };
+
+    #[tokio::test]
+    async fn listener_cleanup_joins_completed_and_aborted_tasks() {
+        let mut completed = JoinSet::new();
+        completed.spawn(async { Ok(()) });
+        assert!(drain_listeners(&mut completed).await);
+        assert!(completed.is_empty());
+
+        let mut blocked = JoinSet::new();
+        let (dropped, receipt) = oneshot::channel::<()>();
+        blocked.spawn(async move {
+            let _dropped = dropped;
+            std::future::pending::<Result<()>>().await
+        });
+        assert!(!drain_listeners(&mut blocked).await);
+        assert!(blocked.is_empty());
+        assert!(receipt.await.is_err());
+    }
 
     async fn refuses_before_dns(source: &str, hello: Vec<u8>) {
         let socket = TcpListener::bind("127.0.0.1:0").await.unwrap();

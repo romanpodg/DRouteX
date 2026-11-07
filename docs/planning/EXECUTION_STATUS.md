@@ -2,6 +2,24 @@
 
 ## Current execution card
 
+- PR127 head `aab4cb9d642820a61f55db27125b1d2ca030f315` passed all
+  11 jobs in [42374070307](https://github.com/romanpodg/DRouteX/actions/runs/42374070307)
+  and both Codecov patch checks. Its [Codex Code Review](https://github.com/romanpodg/DRouteX/pull/127#issuecomment-6707281019)
+  completed without reported major issues. CodeScene
+  [8322184](https://codescene.io/projects/86145/delta/results/8322184) failed;
+  [preview dispositions](OPEN_DECISIONS.md#p3-06-preview-review-dispositions)
+  record the application findings, changes and remaining review triggers.
+  A follow-up separates listener session spawning and bounded draining, and
+  separates admitted relay setup from byte transfer while sharing the existing
+  activity context. Windows passes 40 gateway tests plus one doctest, nine
+  selected SmartDNS tests and gateway/DNS Clippy. The first new-test compile
+  failed due to an unspecified oneshot channel type; adding its unit type fixed
+  the error. Standards and spec diff reviews found no concrete defects.
+  Current-head external checks/review remain required for this follow-up.
+  The owner's native Linux follow-up remains deferred. A bounded direct DNS
+  probe to 1.1.1.1 succeeded; this is only a prerequisite check and does not
+  prove the real DNS-to-TLS path, public numeric origin dialing or revocation.
+
 - On 2026-11-07, owner-device Windows testing at `5d36b22` ran outside the
   restricted sandbox using the project-local Rust tools. `cargo test -p droutex-dns
   -p droutex-gateway --all-features --locked` stopped after DNS: 115 passed,

@@ -97,61 +97,53 @@ impl OriginConnection<'_, '_> {
         if peer.ip() != candidate.identity().source || !binding {
             return Err(RelayError::Admission);
         }
+        let (activity, activity_rx) = watch::channel(Instant::now());
         let context = Context {
             auth: origin.owner,
             domain: &origin.domain,
             port: origin.port,
             deadline,
-        };
-        let (activity, activity_rx) = watch::channel(Instant::now());
-        let transfer = async {
-            let mut stop = shutdown.clone();
-            let mut budget = Budget {
-                bytes: hello.len(),
-                operations: 0,
-            };
-            write_bytes(
-                &mut self._stream,
-                &hello,
-                context,
-                &mut stop,
-                &mut budget,
-                &activity,
-            )
-            .await?;
-            let (client_read, client_write) = client.split();
-            let (origin_read, origin_write) = self._stream.split();
-            let left = pump(
-                client_read,
-                origin_write,
-                context,
-                shutdown.clone(),
-                budget,
-                &activity,
-            );
-            let right = pump(
-                origin_read,
-                client_write,
-                context,
-                shutdown,
-                Budget {
-                    bytes: 0,
-                    operations: 0,
-                },
-                &activity,
-            );
-            let (client_to_origin, origin_to_client) = tokio::try_join!(left, right)?;
-            Ok(RelayReport {
-                client_to_origin,
-                origin_to_client,
-            })
+            activity: &activity,
         };
         tokio::select! {
             biased;
             result = idle_timeout(activity_rx, idle) => Err(result),
-            result = transfer => result,
+            result = transfer(&mut client, &mut self._stream, &hello, context, shutdown) => result,
         }
     }
+}
+
+async fn transfer(
+    client: &mut TcpStream,
+    origin: &mut TcpStream,
+    hello: &[u8],
+    context: Context<'_, '_>,
+    shutdown: watch::Receiver<bool>,
+) -> Result<RelayReport, RelayError> {
+    let mut stop = shutdown.clone();
+    let mut budget = Budget {
+        bytes: hello.len(),
+        operations: 0,
+    };
+    write_bytes(origin, hello, context, &mut stop, &mut budget).await?;
+    let (client_read, client_write) = client.split();
+    let (origin_read, origin_write) = origin.split();
+    let left = pump(client_read, origin_write, context, shutdown.clone(), budget);
+    let right = pump(
+        origin_read,
+        client_write,
+        context,
+        shutdown,
+        Budget {
+            bytes: 0,
+            operations: 0,
+        },
+    );
+    let (client_to_origin, origin_to_client) = tokio::try_join!(left, right)?;
+    Ok(RelayReport {
+        client_to_origin,
+        origin_to_client,
+    })
 }
 
 async fn idle_timeout(mut activity: watch::Receiver<Instant>, idle: Duration) -> RelayError {
@@ -171,6 +163,7 @@ struct Context<'request, 'store> {
     domain: &'request str,
     port: NonZeroU16,
     deadline: Instant,
+    activity: &'request watch::Sender<Instant>,
 }
 struct Budget {
     bytes: usize,
@@ -223,7 +216,6 @@ async fn write_bytes<W: AsyncWrite + Unpin>(
     context: Context<'_, '_>,
     stop: &mut watch::Receiver<bool>,
     budget: &mut Budget,
-    activity: &watch::Sender<Instant>,
 ) -> Result<(), RelayError> {
     let mut offset = 0;
     while offset < bytes.len() {
@@ -232,7 +224,7 @@ async fn write_bytes<W: AsyncWrite + Unpin>(
         if size == 0 {
             return Err(RelayError::Io);
         }
-        activity.send_replace(Instant::now());
+        context.activity.send_replace(Instant::now());
         offset += size;
     }
     Ok(())
@@ -243,7 +235,6 @@ async fn pump<R: AsyncRead + Unpin, W: AsyncWrite + Unpin>(
     context: Context<'_, '_>,
     mut stop: watch::Receiver<bool>,
     mut budget: Budget,
-    activity: &watch::Sender<Instant>,
 ) -> Result<usize, RelayError> {
     let mut buffer = [0u8; 8192];
     loop {
@@ -253,7 +244,7 @@ async fn pump<R: AsyncRead + Unpin, W: AsyncWrite + Unpin>(
             operation(context, &mut stop, writer.shutdown()).await?;
             return Ok(budget.bytes);
         }
-        activity.send_replace(Instant::now());
+        context.activity.send_replace(Instant::now());
         budget.add(size)?;
         write_bytes(
             &mut writer,
@@ -261,7 +252,6 @@ async fn pump<R: AsyncRead + Unpin, W: AsyncWrite + Unpin>(
             context,
             &mut stop,
             &mut budget,
-            activity,
         )
         .await?;
     }
