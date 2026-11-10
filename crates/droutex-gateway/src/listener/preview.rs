@@ -29,6 +29,10 @@ const SESSION_TIME: Duration = Duration::from_secs(120);
 #[path = "preview/tls_acceptance.rs"]
 mod tls_acceptance;
 
+#[cfg(test)]
+#[path = "preview/negative.rs"]
+mod negative;
+
 struct ReadyState {
     active: AtomicBool,
     deployment: Weak<Deployment>,

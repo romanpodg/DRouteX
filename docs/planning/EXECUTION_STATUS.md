@@ -2,6 +2,20 @@
 
 ## Current execution card
 
+- On 2026-11-10 the owner authorized the connected dedicated Debian server for
+  the four negative-path groups. Seven new controlled composed cases cover
+  wrong SNI/ECH/unapproved name, live lease expiry, generation replacement,
+  route revocation, unavailable/lost origin and no Direct fallback for an
+  authorized ProtectedProxy intent. Production behavior is unchanged.
+  [Negative-path evidence](P3_06_NEGATIVE_PATH_REVIEW.md) records fixture failure
+  history, two red mutation checks and matching local/remote source hashes.
+  Windows passes 50 gateway tests plus one doctest; unprivileged native Debian
+  passes 51 gateway tests plus one doctest, including OpenSSL, and 123 DNS tests
+  including IPv6. Formatting and applicable Clippy checks pass. The prior native
+  Linux deferral is superseded for these checks; full service/public routing and
+  independent external security gates remain open. New tests use synthetic
+  metadata and a controlled origin; they are not encrypted public-path proof.
+
 - Focused [local security review](../security/PREVIEW_SECURITY_REVIEW.md) of
   runtime source `885de5000680d389e3a8e260d1e8b25c502bff7d` found no confirmed
   exploitable defect in the reviewed TLS/ingress/origin/relay paths. The

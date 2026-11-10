@@ -68,6 +68,13 @@ and keep P3-06 open; do not describe a DNS-only result as complete.
 
 ## Partial implementation and remaining work
 
+The [2026-11-10 negative-path evidence](P3_06_NEGATIVE_PATH_REVIEW.md) adds seven
+controlled preview-listener cases for unauthorized metadata, live lease expiry,
+generation/route withdrawal and unavailable origin/strict protected intent.
+Both Windows and native Debian component runs pass. The tests use real local
+TCP/UDP and synthetic ClientHello plus a test-only origin dial; they do not
+expand the earlier public HTTPS smoke result into full release acceptance.
+
 On 2026-11-07, the owner selected example.com:443 for a manual external probe.
 The [runnable probe](../../crates/droutex-dns/README.md#manual-public-origin-probe)
 uses the SmartDNS answer for a real HTTPS client connection to the experimental
