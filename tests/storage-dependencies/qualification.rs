@@ -78,7 +78,7 @@ fn native_version_wal_foreign_keys_and_extension_boundary() {
             .fetch_one(&mut c)
             .await
             .unwrap();
-        assert_eq!(version, "3.53.2");
+        assert_eq!(version, "3.54.1");
         let mode: String = sqlx::query_scalar("PRAGMA journal_mode")
             .fetch_one(&mut c)
             .await

@@ -9,7 +9,7 @@ use droutex_config::{
     DnsAccess, GatewayCandidate, GrantLease, ListenerTransport, OutboundObservation,
 };
 pub use io::{DnsIoCheck, GatewayIoCheck};
-pub use smartdns::SmartDnsBinding;
+pub use smartdns::{SmartDnsBinding, SmartDnsIngress};
 use std::{
     collections::BTreeSet, error::Error, fmt, net::IpAddr, num::NonZeroU16, sync::Arc,
     time::Duration,
@@ -358,7 +358,15 @@ impl Deployment {
         port: NonZeroU16,
         observations: Vec<OutboundObservation>,
     ) -> Result<AdmissionAttempt<'_>> {
-        let (reservation, identity) = self.reserve(peer, Plane::Gateway, |generation| {
+        let (reservation, identity) = self.reserve_gateway(listener, peer)?;
+        Self::finish_gateway(reservation, identity, domain, port, observations)
+    }
+    fn reserve_gateway(
+        &self,
+        listener: ListenerId,
+        peer: IpAddr,
+    ) -> Result<(Reservation<'_>, GatewayNetworkIdentity)> {
+        self.reserve(peer, Plane::Gateway, |generation| {
             let document = generation.content().configuration().document();
             let mut grants = document
                 .gateway_grants
@@ -381,7 +389,15 @@ impl Deployment {
                 grant.lease.ok_or(AdmissionError(AdmissionCode::Lease))?,
                 identity,
             ))
-        })?;
+        })
+    }
+    fn finish_gateway<'store>(
+        reservation: Reservation<'store>,
+        identity: GatewayNetworkIdentity,
+        domain: &str,
+        port: NonZeroU16,
+        observations: Vec<OutboundObservation>,
+    ) -> Result<AdmissionAttempt<'store>> {
         // Reservation precedes expensive target/policy evaluation. Invalid attempts
         // spend rate credits; failure drops concurrency without refunding those credits.
         let generation = &reservation.decision.generation;

@@ -17,6 +17,29 @@ const MAX_QUERY_BYTES: usize = 12 + 255 + 4 + 12 + 4096;
 pub(super) struct Reply {
     pub message: Message,
     pub expires: Option<tokio::time::Instant>,
+    #[cfg(feature = "experimental-smartdns")]
+    pub gateway: Option<GatewayCheck>,
+}
+#[cfg(feature = "experimental-smartdns")]
+pub(super) struct GatewayCheck {
+    pub name: String,
+    pub outbound: droutex_common::ProxyOutboundId,
+    pub readiness: droutex_gateway::listener::GatewayReadiness,
+}
+#[cfg(feature = "experimental-smartdns")]
+impl GatewayCheck {
+    pub fn check(
+        &self,
+        auth: &AuthorizedRequest<'_>,
+    ) -> std::result::Result<(), droutex_core::deployment::AdmissionCode> {
+        let binding = auth
+            .smart_dns_binding(&self.name, self.outbound)
+            .map_err(|error| error.code())?;
+        if !self.readiness.matches(&binding) {
+            return Err(droutex_core::deployment::AdmissionCode::Unavailable);
+        }
+        binding.verify_current().map_err(|error| error.code())
+    }
 }
 impl Reply {
     pub fn prepare_send(
@@ -53,6 +76,8 @@ impl From<Message> for Reply {
         Self {
             message,
             expires: None,
+            #[cfg(feature = "experimental-smartdns")]
+            gateway: None,
         }
     }
 }
@@ -217,6 +242,8 @@ pub(super) async fn answer<P: Processor>(
     Ok(Reply {
         message: sanitize(request, reply.message, forwarding),
         expires: reply.expires,
+        #[cfg(feature = "experimental-smartdns")]
+        gateway: reply.gateway,
     })
 }
 

@@ -1173,3 +1173,133 @@ fn gateway_io_check_expires_with_original_gateway_lease() {
         AdmissionCode::Lease
     );
 }
+
+#[test]
+fn live_smartdns_gateway_check_requires_current_exact_route() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    let doc = smartdns_document();
+    apply_document(&deployment, &doc, 1);
+    time(&deployment, 1001, 1);
+    let auth = gateway(&deployment, peer(), "service.test", 443)
+        .unwrap()
+        .consume()
+        .unwrap();
+    auth.verify_smartdns_gateway_destination("service.test", NonZeroU16::new(443).unwrap())
+        .unwrap();
+    assert!(
+        auth.verify_smartdns_gateway_destination("other.test", NonZeroU16::new(443).unwrap())
+            .is_err()
+    );
+    let mut removed = doc;
+    removed["smartDnsRoutes"] = json!([]);
+    apply_document(&deployment, &removed, 2);
+    assert_eq!(
+        auth.verify_smartdns_gateway_destination("service.test", NonZeroU16::new(443).unwrap())
+            .unwrap_err()
+            .code(),
+        AdmissionCode::Retired
+    );
+    let generic = gateway(&deployment, peer(), "service.test", 443)
+        .unwrap()
+        .consume()
+        .unwrap();
+    assert_eq!(
+        generic
+            .verify_smartdns_gateway_destination("service.test", NonZeroU16::new(443).unwrap())
+            .unwrap_err()
+            .code(),
+        AdmissionCode::Scope
+    );
+}
+
+#[test]
+fn transparent_smartdns_selects_only_an_unambiguous_signed_port() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    let mut doc = smartdns_document();
+    apply_document(&deployment, &doc, 1);
+    time(&deployment, 1001, 1);
+    let auth = deployment
+        .prepare_smartdns_gateway_for_name(typed(22), peer(), "service.test", observations())
+        .unwrap()
+        .consume()
+        .unwrap();
+    assert!(
+        matches!(auth.scope(), AdmissionScope::Gateway(candidate) if candidate.port().get() == 443)
+    );
+    assert!(
+        deployment
+            .prepare_smartdns_gateway_for_name(
+                typed(22),
+                "203.0.113.8".parse().unwrap(),
+                "service.test",
+                observations()
+            )
+            .is_err()
+    );
+    drop(auth);
+    doc["gatewayGrants"][0]["ports"] = json!([{"from":443,"to":8443}]);
+    doc["endpoints"].as_array_mut().unwrap().push(json!({"id":text(31),"name":"second","enabled":true,"profile":text(10),"access":[{"transport":"udp","listener":text(20),"grants":[text(43)]}]}));
+    doc["legacyGrants"].as_array_mut().unwrap().push(json!({"id":text(43),"source":"203.0.113.8","listener":text(20),"group":text(50),"endpoint":text(31),"lease":{"cause":"manual","issuedAt":900,"expiresAt":1500}}));
+    doc["smartDnsRoutes"].as_array_mut().unwrap().push(json!({"endpoint":text(31),"grant":text(42),"domain":"service.test","port":8443,"outbound":text(90),"addresses":["203.0.113.2"],"ttl":30}));
+    apply_document(&deployment, &doc, 2);
+    assert!(
+        deployment
+            .prepare_smartdns_gateway_for_name(typed(22), peer(), "service.test", observations())
+            .is_err()
+    );
+}
+
+#[test]
+fn transparent_smartdns_invalid_names_spend_gateway_rate_credit() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    apply_document(&deployment, &smartdns_document(), 1);
+    time(&deployment, 1002, 2);
+    for _ in 0..40 {
+        assert!(
+            deployment
+                .prepare_smartdns_gateway_for_name(
+                    typed(22),
+                    peer(),
+                    "unknown.test",
+                    observations()
+                )
+                .is_err()
+        );
+    }
+    assert_eq!(
+        deployment
+            .prepare_smartdns_gateway_for_name(typed(22), peer(), "service.test", observations())
+            .unwrap_err()
+            .code(),
+        AdmissionCode::Quota
+    );
+    time(&deployment, 1003, 3);
+    assert!(
+        deployment
+            .prepare_smartdns_gateway_for_name(typed(22), peer(), "service.test", observations())
+            .is_ok()
+    );
+}
+
+#[test]
+fn smartdns_ingress_reservation_does_not_repin_after_publication() {
+    let deployment = Deployment::in_memory(typed(1), trust(false));
+    start(&deployment, 1000);
+    let doc = smartdns_document();
+    apply_document(&deployment, &doc, 1);
+    time(&deployment, 1001, 1);
+    let ingress = deployment
+        .reserve_smartdns_gateway_ingress(typed(22), peer())
+        .unwrap();
+    apply_document(&deployment, &doc, 2);
+    let attempt = ingress
+        .prepare_for_name("service.test", observations())
+        .unwrap();
+    assert_eq!(
+        attempt.consume().unwrap_err().code(),
+        AdmissionCode::Retired
+    );
+}

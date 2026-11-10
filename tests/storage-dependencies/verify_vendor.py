@@ -21,7 +21,9 @@ def verify():
         assert fingerprint(VENDOR / name) == digest, f'Reviewed source changed: {name}'
     assert proof['upstream_patch_commit'] == '94aafe3a68884d923b0798a767c8d7f6cfda89d2'
     assert proof['modified_archive_files'] == ['Cargo.toml', 'LICENSE-APACHE', 'LICENSE-MIT']
-    assert 'version = ">=0.30.1, <0.39.0"' in (VENDOR / 'Cargo.toml').read_text()
+    assert proof['droutex_security_update']['advisory'] == 'RUSTSEC-2026-0459'
+    assert proof['droutex_security_update']['libsqlite3_sys'] == '0.39.1'
+    assert 'version = ">=0.39.1, <0.40.0"' in (VENDOR / 'Cargo.toml').read_text()
     assert (VENDOR / 'LICENSE-APACHE').stat().st_size > 10_000
     assert (VENDOR / 'LICENSE-MIT').stat().st_size > 1_000
     print(f'Verified {len(expected)} SQLx source files; one manifest line and restored license texts')

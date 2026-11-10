@@ -147,3 +147,9 @@ admission; it does not extend the production resolution deadline, alter leases,
 or disable current-generation checks. Local gateway tests pass in both feature
 profiles. The first local Clippy attempt found a test-helper style lint, which was
 fixed; the corrected Clippy run passed. Fresh Windows CI remains necessary.
+
+On 2026-11-05 the owner supplied a screenshot reporting a separate clean
+Windows worktree at `836d655`: all 27 gateway tests and one doctest passed,
+with no failures or skipped tests. This is owner-reported evidence; the Windows
+version, invoked commands, feature profile and raw logs were not supplied. It
+does not establish real origin connectivity, TLS passthrough or SmartDNS output.

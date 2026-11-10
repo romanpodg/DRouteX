@@ -6,10 +6,15 @@ rust-version.workspace = true
 publish.workspace = true
 license.workspace = true
 
+[features]
+default = []
+experimental-smartdns = ["dep:droutex-gateway", "droutex-gateway/experimental-tls"]
+
 [dependencies]
 droutex-common.workspace = true
 droutex-config.workspace = true
 droutex-core = { path = "../droutex-core", version = "=0.1.0" }
+droutex-gateway = { path = "../droutex-gateway", version = "=0.1.0", optional = true }
 droutex-policy.workspace = true
 hickory-proto.workspace = true
 hickory-net.workspace = true
@@ -21,3 +26,7 @@ droutex-security.workspace = true
 
 [lints]
 workspace = true
+
+[[example]]
+name = "smartdns_public_probe"
+required-features = ["experimental-smartdns"]

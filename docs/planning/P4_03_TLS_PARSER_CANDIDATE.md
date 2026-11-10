@@ -1,9 +1,21 @@
-# P4-03 TLS parser candidate — review pending
+# P4-03 TLS parser candidate — external review pending
+
+On 2026-11-07 a [focused local security review](../security/PREVIEW_SECURITY_REVIEW.md)
+inspected runtime baseline `885de5000680d389e3a8e260d1e8b25c502bff7d`, its
+resolved parser sources and ingress/origin/relay composition. It found no
+confirmed exploitable defect in that scope and adds three production-wrapper
+regressions, including mutation proof for exact body/SNI consumption. The report
+records limits and residual timing/port-consistency observations. This local
+review does not close the independent external security audit or production
+acceptance gates. The manual example.com DNS-to-TLS smoke result is recorded
+separately in the execution card; native Linux follow-up remains deferred.
 
 The owner authorized the P4-02 through P4-04 tasks while P3-06 remains open.
 The owner separately authorized isolated qualification of the candidate below.
-This does not authorize runtime adoption; no new TLS parser has been added to
-the production workspace.
+Subsequent owner authorization covers continued implementation. The current
+worktree integrates this parser behind the non-default `experimental-tls`
+feature for a preview listener; it does not grant production readiness. The
+independent security audit and real DNS-to-TLS acceptance remain outstanding.
 
 Candidate for isolated qualification: `tls-parser` 0.12.2. The crates.io
 metadata declares MIT/Apache-2.0 and Rust 1.63, compatible with the current
@@ -32,8 +44,8 @@ error or unavailable qualification cannot become an ordinary direct route.
 
 On 2026-11-03 the owner explicitly authorized isolated qualification of
 `tls-parser` 0.12.2. The separate `tests/tls-parser-qualification` workspace
-pins that exact release with default features off; it is not a dependency of any
-production crate. Crates.io identifies it as not yanked and gives SHA-256
+pins that exact release with default features off; at that time it was not a
+dependency of any production crate. Crates.io identifies it as not yanked and gives SHA-256
 `22c36249c6082584b1f224e70f6bdadf5102197be6cfa92b353efe605d9ac741`.
 The current isolated lock contains 33 third-party packages, including build and
 procedural-macro dependencies. `cargo deny` passed advisories, bans, licenses
@@ -90,3 +102,11 @@ and [version documentation](https://docs.rs/tls-parser/0.12.2/tls_parser/).
 The available environment has only the Linux Rust target and no Wine runtime;
 no Windows result is claimed. The raw parser's documented permissive cases
 remain reasons not to switch on production TLS handling.
+
+On 2026-11-05 the owner supplied a screenshot reporting that all 16 isolated
+TLS parser tests passed on Windows in a clean worktree at merge commit
+`836d655`, with no failures or skipped tests. This is owner-reported evidence;
+the Windows version, invoked commands, feature profile and raw logs were not
+supplied. The earlier statements that Windows execution was unverified describe
+the state before this report. This result does not constitute an independent
+parser audit or production TLS/gateway acceptance.

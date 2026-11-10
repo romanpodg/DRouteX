@@ -78,6 +78,20 @@ impl DnsNode {
     pub fn deployment(&self) -> &Arc<Deployment> {
         &self.deployment
     }
+    /// Opt-in experimental SmartDNS. Readiness is issued by the running
+    /// gateway for this same deployment and is rechecked at every output poll.
+    #[cfg(feature = "experimental-smartdns")]
+    pub async fn serve_with_gateway(
+        self,
+        sockets: Vec<ListenerSocket>,
+        aliases: Vec<std::net::IpAddr>,
+        shutdown: watch::Receiver<bool>,
+        readiness: droutex_gateway::listener::GatewayReadiness,
+    ) -> Result<ShutdownReport> {
+        let mut forwarder = forward::Forwarder::new(aliases)?;
+        forwarder.readiness = Some(readiness);
+        runtime::serve(self.deployment, sockets, shutdown, forwarder).await
+    }
     /// Runs on the caller's Tokio runtime. No bind or runtime starts implicitly.
     /// Signal shutdown through the watch channel and await this future for a clean
     /// result. Dropping/aborting it cannot claim graceful or durable completion.

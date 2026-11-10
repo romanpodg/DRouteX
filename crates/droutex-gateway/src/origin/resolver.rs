@@ -1,4 +1,6 @@
 //! Bounded independent DNS origin resolution and opaque direct connection.
+#[cfg(feature = "experimental-tls")]
+mod relay;
 use super::{
     inventory::{InventoryError, OriginInventory},
     registry::Registry,
@@ -12,6 +14,8 @@ use hickory_proto::{
     op::{Message, Query},
     rr::Name,
 };
+#[cfg(feature = "experimental-tls")]
+pub use relay::{RelayError, RelayReport};
 use std::{
     error::Error,
     fmt,
@@ -75,6 +79,8 @@ pub struct ResolvedOrigin<'request, 'store> {
     aliases: Vec<IpAddr>,
     deadline: Instant,
     registry: Arc<Registry>,
+    #[cfg(all(test, feature = "experimental-tls"))]
+    dial_fixture: Option<SocketAddr>,
 }
 impl fmt::Debug for ResolvedOrigin<'_, '_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -95,8 +101,8 @@ impl ResolvedOrigin<'_, '_> {
     }
 }
 
-/// A connected socket is intentionally opaque: data transfer is not yet
-/// implemented and must preserve current-admission checks on every I/O poll.
+/// A connected socket is intentionally opaque. The opt-in experimental relay
+/// preserves current-admission checks on every I/O poll.
 /// The original admission and global connection slot stay held for its lifetime.
 pub struct OriginConnection<'request, 'store> {
     _origin: ResolvedOrigin<'request, 'store>,
@@ -110,7 +116,7 @@ impl fmt::Debug for OriginConnection<'_, '_> {
 }
 impl<'request, 'store> ResolvedOrigin<'request, 'store> {
     /// Establish one numeric direct connection from this exact resolution.
-    /// This does not implement a gateway listener or permit data transfer.
+    /// Data transfer requires the separate opt-in experimental relay.
     /// Consumes the resolution; a retry requires a new DNS resolution.
     ///
     /// ```compile_fail
@@ -126,6 +132,14 @@ impl<'request, 'store> ResolvedOrigin<'request, 'store> {
         index: usize,
         outer_deadline: Instant,
     ) -> Result<OriginConnection<'request, 'store>> {
+        #[cfg(all(test, feature = "experimental-tls"))]
+        if let Some(test_address) = self.dial_fixture {
+            return self
+                .connect_direct_with(index, outer_deadline, move |_| {
+                    TcpStream::connect(test_address)
+                })
+                .await;
+        }
         self.connect_direct_with(index, outer_deadline, TcpStream::connect)
             .await
     }
@@ -196,8 +210,19 @@ pub struct OriginResolver {
     registry: Arc<Registry>,
     #[cfg(test)]
     fixture: Option<SocketAddr>,
+    #[cfg(all(test, feature = "experimental-tls"))]
+    dial_fixture: Option<SocketAddr>,
 }
 impl OriginResolver {
+    #[cfg(feature = "experimental-tls")]
+    pub(crate) fn inventory_available(&self) -> bool {
+        self.registry.available()
+    }
+    /// Host-declared addresses behind NAT or otherwise absent from local binds.
+    #[cfg(feature = "experimental-tls")]
+    pub(crate) fn has_trusted_alias(&self, address: IpAddr) -> bool {
+        self.aliases.contains(&address)
+    }
     pub fn new(aliases: Vec<IpAddr>) -> Result<Self> {
         if aliases.len() > super::MAX_SELF_ADDRESSES {
             return Err(ResolveError::Unavailable);
@@ -208,6 +233,8 @@ impl OriginResolver {
             registry: Arc::new(Registry::new()),
             #[cfg(test)]
             fixture: None,
+            #[cfg(all(test, feature = "experimental-tls"))]
+            dial_fixture: None,
         })
     }
 
@@ -333,6 +360,8 @@ impl OriginResolver {
             aliases: self.aliases.clone(),
             deadline,
             registry: Arc::clone(&self.registry),
+            #[cfg(all(test, feature = "experimental-tls"))]
+            dial_fixture: self.dial_fixture,
         })
     }
 }
@@ -655,7 +684,7 @@ pub(crate) mod tests {
             )
             .unwrap();
     }
-    fn observations() -> Vec<OutboundObservation> {
+    pub(crate) fn observations() -> Vec<OutboundObservation> {
         vec![OutboundObservation {
             id: id(90),
             kind: ProxyOutboundKind::GatewayDirect,
@@ -663,7 +692,9 @@ pub(crate) mod tests {
             tcp: TcpCapability::Supported,
         }]
     }
-    async fn admitted(owner: &Deployment) -> droutex_core::deployment::AuthorizedRequest<'_> {
+    pub(crate) async fn admitted(
+        owner: &Deployment,
+    ) -> droutex_core::deployment::AuthorizedRequest<'_> {
         admitted_with(owner, observations()).await
     }
     async fn admitted_with(
@@ -764,13 +795,20 @@ pub(crate) mod tests {
         auth.verify_gateway_destination("service.test", NonZeroU16::new(443).unwrap())
             .unwrap();
     }
-    fn fixture(address: SocketAddr) -> OriginResolver {
+    pub(crate) fn fixture(address: SocketAddr) -> OriginResolver {
         assert!(address.ip().is_loopback() && address.port() != 0);
         let mut resolver = OriginResolver::new(vec![]).unwrap();
         resolver.fixture = Some(address);
         resolver
     }
-    async fn serve_dns(socket: UdpSocket, answer_ip: Ipv4Addr, requests: usize) {
+    #[cfg(feature = "experimental-tls")]
+    pub(crate) fn fixture_with_dial(dns: SocketAddr, target: SocketAddr) -> OriginResolver {
+        assert!(target.ip().is_loopback() && target.port() != 0);
+        let mut resolver = fixture(dns);
+        resolver.dial_fixture = Some(target);
+        resolver
+    }
+    pub(crate) async fn serve_dns(socket: UdpSocket, answer_ip: Ipv4Addr, requests: usize) {
         let mut buf = [0; MAX_WIRE];
         for _ in 0..requests {
             let (size, peer) = socket.recv_from(&mut buf).await.unwrap();
@@ -996,6 +1034,8 @@ pub(crate) mod tests {
             aliases: vec![],
             deadline: Instant::now() + TOTAL,
             registry: Arc::new(Registry::new()),
+            #[cfg(feature = "experimental-tls")]
+            dial_fixture: None,
         };
         assert!(matches!(
             origin().connect_direct(1, Instant::now() + TOTAL).await,
@@ -1068,6 +1108,8 @@ pub(crate) mod tests {
             aliases: vec![],
             deadline: Instant::now() + TOTAL,
             registry: Arc::new(Registry::new()),
+            #[cfg(feature = "experimental-tls")]
+            dial_fixture: None,
         };
         assert!(matches!(
             origin.connect_direct(0, Instant::now() + TOTAL).await,
@@ -1169,5 +1211,347 @@ pub(crate) mod tests {
             .await
             .unwrap()
             .unwrap();
+    }
+    #[cfg(feature = "experimental-tls")]
+    pub(crate) fn smart_document(gateway: SocketAddr) -> Value {
+        let mut doc = document();
+        let lease = doc["gatewayGrants"][0]["lease"].clone();
+        doc["profiles"][0]["defaultDnsAction"] = json!({"kind":"gateway", "outbound":text(90)});
+        doc["listeners"][0]["bind"] = json!(gateway.to_string());
+        doc["listeners"].as_array_mut().unwrap().push(json!({"id":text(20), "name":"dns", "enabled":true, "bind":"127.0.0.1:5353", "transport":"dns_udp"}));
+        doc["endpoints"] = json!([{"id":text(30), "name":"dns", "enabled":true, "profile":text(10), "access":[{"transport":"udp", "listener":text(20), "grants":[text(40)]}]}]);
+        doc["legacyGrants"] = json!([{"id":text(40), "source":"127.0.0.1", "listener":text(20), "group":text(50), "endpoint":text(30), "lease":lease}]);
+        doc["smartDnsRoutes"] = json!([{"endpoint":text(30), "grant":text(42), "domain":"service.test", "port":443, "outbound":text(90), "addresses":["127.0.0.1"], "ttl":30}]);
+        doc
+    }
+    #[cfg(feature = "experimental-tls")]
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn relay_one_way_activity_extends_idle_until_traffic_stops() {
+        use crate::tls_metadata::{
+            read_hello,
+            tests::{sni, synthetic},
+        };
+        use tokio::net::TcpListener;
+
+        let dns = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+        let dns_address = dns.local_addr().unwrap();
+        let dns_server = tokio::spawn(serve_dns(dns, "8.8.8.8".parse().unwrap(), 3));
+        let ingress = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let upstream = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let target = upstream.local_addr().unwrap();
+        let owner = Deployment::in_memory(id(1), keys().1);
+        apply(&owner, &smart_document(ingress.local_addr().unwrap()), 1);
+        let auth = admitted(&owner).await;
+        let resolver = fixture(dns_address);
+        let connection = resolver
+            .resolve(&auth, Instant::now() + TOTAL)
+            .await
+            .unwrap()
+            .connect_direct_with(0, Instant::now() + TOTAL, |_| async move {
+                TcpStream::connect(target).await
+            })
+            .await
+            .unwrap();
+        let (mut peer, _) = upstream.accept().await.unwrap();
+        let mut client = TcpStream::connect(ingress.local_addr().unwrap())
+            .await
+            .unwrap();
+        let (server, _) = ingress.accept().await.unwrap();
+        let hello_bytes = synthetic(&sni(b"service.test"));
+        client.write_all(&hello_bytes).await.unwrap();
+        let hello = read_hello(server, Instant::now() + TOTAL).await.unwrap();
+        let (_stop, shutdown) = tokio::sync::watch::channel(false);
+        let exchange = async {
+            let mut received_hello = vec![0; hello_bytes.len()];
+            peer.read_exact(&mut received_hello).await.unwrap();
+            assert_eq!(received_hello, hello_bytes);
+            for _ in 0..5 {
+                tokio::time::sleep(Duration::from_millis(70)).await;
+                peer.write_all(b"x").await.unwrap();
+                let mut byte = [0];
+                client.read_exact(&mut byte).await.unwrap();
+                assert_eq!(byte, *b"x");
+            }
+            // Keep both sockets open until the connection-wide idle deadline expires.
+            tokio::time::sleep(Duration::from_millis(250)).await;
+        };
+        let (result, ()) = tokio::join!(
+            connection.relay_with_idle(
+                hello,
+                shutdown,
+                Instant::now() + TOTAL,
+                Duration::from_millis(180),
+            ),
+            exchange
+        );
+        assert_eq!(result, Err(relay::RelayError::Timeout));
+        timeout_at(Instant::now() + TOTAL, dns_server)
+            .await
+            .unwrap()
+            .unwrap();
+    }
+
+    #[cfg(feature = "experimental-tls")]
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn relay_preserves_clienthello_and_half_closes_both_sides() {
+        use crate::tls_metadata::{
+            read_hello,
+            tests::{sni, synthetic},
+        };
+        use tokio::net::TcpListener;
+        let dns = UdpSocket::bind("127.0.0.1:0").await.unwrap();
+        let dns_address = dns.local_addr().unwrap();
+        let dns_server = tokio::spawn(serve_dns(dns, "8.8.8.8".parse().unwrap(), 3));
+        let ingress = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let upstream = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let target = upstream.local_addr().unwrap();
+        let owner = Deployment::in_memory(id(1), keys().1);
+        apply(&owner, &smart_document(ingress.local_addr().unwrap()), 1);
+        let auth = admitted(&owner).await;
+        auth.verify_smartdns_gateway_destination("service.test", NonZeroU16::new(443).unwrap())
+            .unwrap();
+        let resolver = fixture(dns_address);
+        let resolved = resolver
+            .resolve(&auth, Instant::now() + TOTAL)
+            .await
+            .unwrap();
+        let connection = resolved
+            .connect_direct_with(0, Instant::now() + TOTAL, |selected| async move {
+                assert_eq!(selected, "8.8.8.8:443".parse::<SocketAddr>().unwrap());
+                TcpStream::connect(target).await
+            })
+            .await
+            .unwrap();
+        let (mut peer, _) = upstream.accept().await.unwrap();
+        let mut client = TcpStream::connect(ingress.local_addr().unwrap())
+            .await
+            .unwrap();
+        let (server, _) = ingress.accept().await.unwrap();
+        let hello_bytes = synthetic(&sni(b"service.test"));
+        client.write_all(&hello_bytes).await.unwrap();
+        client.write_all(b"application-data").await.unwrap();
+        client.shutdown().await.unwrap();
+        let hello = read_hello(server, Instant::now() + TOTAL).await.unwrap();
+        let (_stop, shutdown) = tokio::sync::watch::channel(false);
+        let peer_task = tokio::spawn(async move {
+            let mut bytes = Vec::new();
+            peer.read_to_end(&mut bytes).await.unwrap();
+            peer.write_all(b"origin-reply").await.unwrap();
+            peer.shutdown().await.unwrap();
+            bytes
+        });
+        let read = async {
+            let mut bytes = Vec::new();
+            client.read_to_end(&mut bytes).await.unwrap();
+            bytes
+        };
+        let (report, reply) = tokio::join!(
+            connection.relay(hello, shutdown, Instant::now() + TOTAL),
+            read
+        );
+        let report = report.unwrap();
+        let received = timeout_at(Instant::now() + TOTAL, peer_task)
+            .await
+            .unwrap()
+            .unwrap();
+        let mut expected = hello_bytes;
+        expected.extend_from_slice(b"application-data");
+        assert_eq!(received, expected);
+        assert_eq!(reply, b"origin-reply");
+        assert_eq!(report.client_to_origin, expected.len());
+        assert_eq!(report.origin_to_client, reply.len());
+        timeout_at(Instant::now() + TOTAL, dns_server)
+            .await
+            .unwrap()
+            .unwrap();
+    }
+    #[cfg(feature = "experimental-tls")]
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn relay_refuses_a_different_listener_before_sending_any_bytes() {
+        use crate::tls_metadata::{
+            read_hello,
+            tests::{sni, synthetic},
+        };
+        use tokio::net::TcpListener;
+        let configured = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let other = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let upstream = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let owner = Deployment::in_memory(id(1), keys().1);
+        apply(&owner, &smart_document(configured.local_addr().unwrap()), 1);
+        let auth = admitted(&owner).await;
+        let stream = TcpStream::connect(upstream.local_addr().unwrap())
+            .await
+            .unwrap();
+        let (mut origin_peer, _) = upstream.accept().await.unwrap();
+        let result = ResolvedOrigin {
+            owner: &auth,
+            domain: "service.test".to_owned(),
+            addresses: vec!["8.8.8.8".parse().unwrap()],
+            port: NonZeroU16::new(443).unwrap(),
+            aliases: vec![],
+            deadline: Instant::now() + TOTAL,
+            registry: Arc::new(Registry::new()),
+            #[cfg(feature = "experimental-tls")]
+            dial_fixture: None,
+        };
+        let slot = Arc::new(Semaphore::new(1)).try_acquire_owned().unwrap();
+        let connection = OriginConnection {
+            _origin: result,
+            _stream: stream,
+            _slot: slot,
+        };
+        let mut client = TcpStream::connect(other.local_addr().unwrap())
+            .await
+            .unwrap();
+        let (server, _) = other.accept().await.unwrap();
+        client
+            .write_all(&synthetic(&sni(b"service.test")))
+            .await
+            .unwrap();
+        let hello = read_hello(server, Instant::now() + TOTAL).await.unwrap();
+        let (_stop, shutdown) = tokio::sync::watch::channel(false);
+        assert!(matches!(
+            connection
+                .relay(hello, shutdown, Instant::now() + TOTAL)
+                .await,
+            Err(RelayError::Admission)
+        ));
+        let mut byte = [0u8; 1];
+        assert_eq!(
+            timeout_at(Instant::now() + TOTAL, origin_peer.read(&mut byte))
+                .await
+                .unwrap()
+                .unwrap(),
+            0
+        );
+    }
+    #[cfg(feature = "experimental-tls")]
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn relay_drops_late_origin_data_after_route_revocation() {
+        use crate::tls_metadata::{
+            read_hello,
+            tests::{sni, synthetic},
+        };
+        use tokio::net::TcpListener;
+        let ingress = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let upstream = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let owner = Deployment::in_memory(id(1), keys().1);
+        let doc = smart_document(ingress.local_addr().unwrap());
+        apply(&owner, &doc, 1);
+        let auth = admitted(&owner).await;
+        let stream = TcpStream::connect(upstream.local_addr().unwrap())
+            .await
+            .unwrap();
+        let (mut origin_peer, _) = upstream.accept().await.unwrap();
+        let result = ResolvedOrigin {
+            owner: &auth,
+            domain: "service.test".to_owned(),
+            addresses: vec!["8.8.8.8".parse().unwrap()],
+            port: NonZeroU16::new(443).unwrap(),
+            aliases: vec![],
+            deadline: Instant::now() + TOTAL,
+            registry: Arc::new(Registry::new()),
+            #[cfg(feature = "experimental-tls")]
+            dial_fixture: None,
+        };
+        let slot = Arc::new(Semaphore::new(1)).try_acquire_owned().unwrap();
+        let connection = OriginConnection {
+            _origin: result,
+            _stream: stream,
+            _slot: slot,
+        };
+        let mut client = TcpStream::connect(ingress.local_addr().unwrap())
+            .await
+            .unwrap();
+        let (server, _) = ingress.accept().await.unwrap();
+        let hello_wire = synthetic(&sni(b"service.test"));
+        client.write_all(&hello_wire).await.unwrap();
+        let hello = read_hello(server, Instant::now() + TOTAL).await.unwrap();
+        let (_stop, shutdown) = tokio::sync::watch::channel(false);
+        let change = async {
+            let mut bytes = vec![0u8; hello_wire.len()];
+            timeout_at(Instant::now() + TOTAL, origin_peer.read_exact(&mut bytes))
+                .await
+                .unwrap()
+                .unwrap();
+            assert_eq!(bytes, hello_wire);
+            let mut revoked = doc;
+            revoked["smartDnsRoutes"] = json!([]);
+            apply(&owner, &revoked, 2);
+            let _ = origin_peer.write_all(b"late-response").await;
+            let mut received = Vec::new();
+            timeout_at(Instant::now() + TOTAL, client.read_to_end(&mut received))
+                .await
+                .unwrap()
+                .unwrap();
+            assert!(
+                received.is_empty(),
+                "revoked route must not deliver origin data"
+            );
+        };
+        let (result, ()) = tokio::join!(
+            connection.relay(hello, shutdown, Instant::now() + TOTAL),
+            change
+        );
+        assert!(matches!(result, Err(RelayError::Admission)));
+    }
+    #[cfg(feature = "experimental-tls")]
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn relay_refuses_another_sni_without_sending_origin_data() {
+        use crate::tls_metadata::{
+            read_hello,
+            tests::{sni, synthetic},
+        };
+        use tokio::net::TcpListener;
+        let ingress = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let upstream = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let owner = Deployment::in_memory(id(1), keys().1);
+        apply(&owner, &smart_document(ingress.local_addr().unwrap()), 1);
+        let auth = admitted(&owner).await;
+        let stream = TcpStream::connect(upstream.local_addr().unwrap())
+            .await
+            .unwrap();
+        let (mut origin_peer, _) = upstream.accept().await.unwrap();
+        let result = ResolvedOrigin {
+            owner: &auth,
+            domain: "service.test".to_owned(),
+            addresses: vec!["8.8.8.8".parse().unwrap()],
+            port: NonZeroU16::new(443).unwrap(),
+            aliases: vec![],
+            deadline: Instant::now() + TOTAL,
+            registry: Arc::new(Registry::new()),
+            #[cfg(feature = "experimental-tls")]
+            dial_fixture: None,
+        };
+        let slot = Arc::new(Semaphore::new(1)).try_acquire_owned().unwrap();
+        let connection = OriginConnection {
+            _origin: result,
+            _stream: stream,
+            _slot: slot,
+        };
+        let mut client = TcpStream::connect(ingress.local_addr().unwrap())
+            .await
+            .unwrap();
+        let (server, _) = ingress.accept().await.unwrap();
+        client
+            .write_all(&synthetic(&sni(b"other.test")))
+            .await
+            .unwrap();
+        let hello = read_hello(server, Instant::now() + TOTAL).await.unwrap();
+        let (_stop, shutdown) = tokio::sync::watch::channel(false);
+        assert!(matches!(
+            connection
+                .relay(hello, shutdown, Instant::now() + TOTAL)
+                .await,
+            Err(RelayError::NameMismatch)
+        ));
+        let mut byte = [0u8; 1];
+        assert_eq!(
+            timeout_at(Instant::now() + TOTAL, origin_peer.read(&mut byte))
+                .await
+                .unwrap()
+                .unwrap(),
+            0
+        );
     }
 }

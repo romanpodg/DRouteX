@@ -14,7 +14,7 @@
   "files_SHA256_LF": {
     ".cargo_vcs_info.json": "34f4ec6fd11a78aa8ef5214c49a5c2d5dffd80079196c13797887f36a88b9cab",
     "Cargo.lock": "aa84ca06b7b49982d0242cc5e4154e67bc2608434000da2e750864fbc8ff06f9",
-    "Cargo.toml": "363d8ace4031b3b0a95f13201500aa4ed38075d1a1bffd06889165fac2bec1fe",
+    "Cargo.toml": "493aa99eb2ebe598420db7dcd523ba8ce61f2d0f0c0439cb200baf8f1b73a2aa",
     "Cargo.toml.orig": "af4193e1d9d8e9f63c85bf2468cdb24f4e9b7c217bd0745082fecf1a7369b0c6",
     "LICENSE-APACHE": "c8f5453612253e8ea8bad241617fe74c4a6d5d592ba64ff881668c211b50ac99",
     "LICENSE-MIT": "5abbdd842310c8f1650fcde3a5a51a3e09412b9e5a6eea87519e0db9e32b339d",
@@ -69,5 +69,13 @@
     "src/types/uint.rs": "323ceaae2608521a410a4be9635ce8654c98b06914faac0aba1743caf78439d1",
     "src/types/uuid.rs": "42beb2e273bcb48426d4f7f0ee01ec6f7d80a38417a202269fe6d4bf45c794d1",
     "src/value.rs": "0d067051b2f86c53ed4e12f5c4fad27bbb3e4a4fb020e37b08415806c9b164d4"
+  },
+  "droutex_security_update": {
+    "date": "2026-11-10",
+    "advisory": "RUSTSEC-2026-0459",
+    "libsqlite3_sys": "0.39.1",
+    "bundled_sqlite": "3.54.1",
+    "constraint": ">=0.39.1, <0.40.0",
+    "authority": "Direct owner approval to qualify on Windows and Debian and adopt only after success"
   }
 }

@@ -34,6 +34,7 @@ jobs:
       - run: cargo clippy --workspace --all-targets --all-features --locked -- -D warnings
       - run: cargo test --workspace --locked
       - run: cargo test --workspace --no-default-features --locked
+      - run: cargo test -p droutex-dns -p droutex-gateway --all-features --locked
       - name: Qualify pinned IDNA domain profile in isolation
         run: |
           cargo fmt --manifest-path tests/policy-dependencies/Cargo.toml -- --check
