@@ -1,5 +1,9 @@
 # P1-03 SQLite persistence review
 
+The 2026-11-10 [security follow-up](P1_03_SQLITE_SECURITY_UPDATE.md) supersedes
+the historical libsqlite3-sys 0.38.2 / SQLite 3.53.2 dependency selection below.
+The original implementation evidence and storage contract remain historical facts.
+
 Date: 2026-10-17. Status: **complete; PR #6 merged normally after startup-fix review and checks**.
 Base: verified PR #5 merge `57ce7973228d1c2153601b58f82c08c9cd9302fa`.
 Authority: accepted CR-0002, task P1-03, direct owner answers in D14/D26/D27/D28 of

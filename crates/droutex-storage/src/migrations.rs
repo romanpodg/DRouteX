@@ -62,7 +62,7 @@ pub(crate) async fn initialize(paths: &Paths) -> Result<SqliteConnection, Storag
         .fetch_one(&mut connection)
         .await
         .map_err(database)?;
-    if version != "3.53.2" {
+    if version != "3.54.1" {
         return Err(StorageError::new(StorageErrorCode::Unavailable));
     }
     apply(&mut connection, paths, &migrations()).await?;

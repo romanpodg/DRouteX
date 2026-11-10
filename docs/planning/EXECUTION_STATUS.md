@@ -2,6 +2,18 @@
 
 ## Current execution card
 
+- On 2026-11-10 the owner approved qualifying libsqlite3-sys 0.39.1 / SQLite
+  3.54.1 on Windows and Debian and adopting it only after success. This addresses
+  RUSTSEC-2026-0459, which failed PR127 run 42851496750's dependency/coverage job
+  and prevented its Codecov upload; its other nine jobs passed. The
+  [SQLite security follow-up](P1_03_SQLITE_SECURITY_UPDATE.md) records the exact
+  manifest/lockfile update, unchanged SQLx features, archive/native hashes and
+  passing seven-case qualification on both hosts. Windows application checks and
+  the full unprivileged native Debian workspace run pass after correcting the
+  application's exact SQLite startup version gate. The report retains the first
+  native storage failure and its cause. Current-head CI/account review
+  remain required; no advisory or maintenance gate is waived.
+
 - On 2026-11-10 the owner authorized the connected dedicated Debian server for
   the four negative-path groups. Seven new controlled composed cases cover
   wrong SNI/ECH/unapproved name, live lease expiry, generation replacement,
