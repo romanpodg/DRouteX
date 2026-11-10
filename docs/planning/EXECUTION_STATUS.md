@@ -27,6 +27,10 @@
   Linux deferral is superseded for these checks; full service/public routing and
   independent external security gates remain open. New tests use synthetic
   metadata and a controlled origin; they are not encrypted public-path proof.
+  Run 42856025377 later exposed a lease-observer race with normal clock-floor
+  maintenance. The test now waits through bounded maintenance refusals but
+  requires explicit Lease; runtime admission and deadlines remain unchanged.
+  The linked report retains this failure and follow-up verification.
 
 - Focused [local security review](../security/PREVIEW_SECURITY_REVIEW.md) of
   runtime source `885de5000680d389e3a8e260d1e8b25c502bff7d` found no confirmed

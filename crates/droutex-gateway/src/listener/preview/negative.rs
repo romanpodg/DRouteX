@@ -247,6 +247,13 @@ async fn changing_authority_stops_both_directions(change: Change) {
                         // Initial bidirectional exchange proved this connection.
                         // Waiting is below IDLE; I/O here could itself race expiry.
                         Ok(attempt) => drop(attempt),
+                        // Clock maintenance temporarily denies admission while its
+                        // floor commit is pending. Only Lease completes this wait.
+                        Err(error)
+                            if matches!(
+                                error.code(),
+                                AdmissionCode::Unavailable | AdmissionCode::CheckpointRequired
+                            ) => {}
                         Err(error) => panic!("unexpected refusal before lease expiry: {error}"),
                     }
                     sleep(Duration::from_millis(100)).await;

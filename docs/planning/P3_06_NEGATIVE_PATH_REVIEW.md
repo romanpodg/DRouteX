@@ -51,6 +51,15 @@ remain covered separately by the earlier manual public-origin probe.
   wait; the initial bidirectional proof and explicit Lease refusal remain.
 - Clippy initially rejected redundant `matches!(result, Ok(_))`; it was replaced
   with `result.is_ok()` without changing refusal assertions.
+- Windows CI on `6d561d4` in run 42856025377 passed 49 gateway cases but failed
+  the lease observer on `AdmissionCode::Unavailable`. The fixture's concurrent
+  clock refresh sets `checkpoint_failed` while committing its floor, intentionally
+  returning Unavailable; a due floor can similarly return CheckpointRequired.
+  The observer now retries only these maintenance refusals within its existing
+  12-second bound. Only explicit Lease completes the wait. Other refusals still
+  fail, the clock worker must join successfully, and the initial bidirectional
+  exchange plus both post-expiry byte denials remain mandatory. No runtime
+  admission check, lease or deadline is relaxed.
 - Windows mutation checks compiled and failed behaviorally when current authority checks
   were disabled, and independently when `ProtectedProxy` was incorrectly allowed
   through the Direct connector. Failure was the missing bounded connection
@@ -78,17 +87,28 @@ was one on the small server. Rust was installed in that test user's profile;
 existing host services and network settings were preserved.
 
 The initial remote copy was a tracked-only archive of the baseline, with only
-the module declaration and new test file overlaid. Final local/remote SHA-256
-values matched for the tested source:
+the module declaration and new test file overlaid. For initial commit `e2a3327`,
+local/remote SHA-256 values matched for the tested source:
 
 - `listener/preview.rs`:
   `d38cda4077f3598e1d8f9179f64bf18f5700b892845aacb026bce93de019bd43`
 - `listener/preview/negative.rs`:
   `3a6b44e7c5c5e5745533a1450eccd2f99137c14cb39622023c8f048086447221`
 
-The subsequent commit packages these tested sources with this evidence. Remote
+The initial commit packages those tested sources with this evidence. Remote
 access keys, addresses, credentials, caches and build output are not part of the
 commit. Current-head hosted CI/account review remain separate gates.
+
+The clock-maintenance observer follow-up passes five focused lease repetitions
+on each host, then the full gateway suite: Windows 50 tests and one doctest;
+Debian 51 tests and one doctest including OpenSSL. Applicable formatting/Clippy
+also pass. The repetitions intentionally filter unrelated cases; final full
+gateway runs have zero failed, ignored or filtered tests. This test-only change
+uses the separately qualified libsqlite3-sys 0.39.1 / SQLite 3.54.1 profile; it
+does not change production code or require repeating unrelated DNS/storage runs.
+The updated `negative.rs` SHA-256, normalized to LF, is
+`66769d63b5afc583a98e6d039ed2d177ebb09c0defb719c779015e89dd4adaeb`.
+Separate local standards/spec passes found no concrete remaining defect.
 
 ## Acceptance boundary
 
